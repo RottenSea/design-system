@@ -6,7 +6,10 @@
   "sets": {
     "foundation": {
       "description": "Tokens shared by every theme.",
-      "sources": [{ "$ref": "foundation.tokens.json" }]
+      "sources": [
+        { "$ref": "color/palette.tokens.json" },
+        { "$ref": "color/semantic.tokens.json" }
+      ]
     }
   },
   "resolutionOrder": [{ "$ref": "#/sets/foundation" }]

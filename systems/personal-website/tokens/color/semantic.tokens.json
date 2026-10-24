@@ -1,0 +1,102 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "color": {
+    "$type": "color",
+    "primary": {
+      "default": {
+        "$value": "{color.palette.coral.500}",
+        "$description": "Fill for primary buttons and coral callouts."
+      },
+      "pressed": {
+        "$value": "{color.palette.coral.600}",
+        "$description": "Primary fill while pressed. Kept light enough for ink text to stay above 4.5:1."
+      },
+      "disabled": {
+        "$value": "{color.palette.cream.500}",
+        "$description": "Primary fill when the control is disabled."
+      }
+    },
+    "text": {
+      "ink": {
+        "$value": "{color.palette.ink.900}",
+        "$description": "Headlines and the strongest text."
+      },
+      "body-strong": {
+        "$value": "{color.palette.ink.800}",
+        "$description": "Emphasized body text."
+      },
+      "body": {
+        "$value": "{color.palette.ink.700}",
+        "$description": "Default body text."
+      },
+      "muted": {
+        "$value": "{color.palette.ink.500}",
+        "$description": "Secondary text such as metadata and captions."
+      },
+      "disabled": {
+        "$value": "{color.palette.ink.400}",
+        "$description": "Text of disabled controls only. Below 4.5:1, which WCAG allows for inactive components."
+      },
+      "link": {
+        "$value": "{color.palette.coral.800}",
+        "$description": "Inline links. A darker coral than the primary fill so it reads at 4.5:1 on every light surface."
+      },
+      "on-primary": {
+        "$value": "{color.palette.ink.900}",
+        "$description": "Text and icons on a primary fill."
+      }
+    },
+    "surface": {
+      "canvas": {
+        "$value": "{color.palette.cream.50}",
+        "$description": "Page background."
+      },
+      "soft": {
+        "$value": "{color.palette.cream.100}",
+        "$description": "Slightly raised band on the canvas."
+      },
+      "card": {
+        "$value": "{color.palette.cream.200}",
+        "$description": "Cards and alternating bands."
+      },
+      "strong": {
+        "$value": "{color.palette.cream.400}",
+        "$description": "The darkest light surface, for selected or pressed areas."
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "{color.palette.cream.500}",
+        "$description": "Hairline dividers and card outlines. Decorative, so it has no contrast requirement."
+      },
+      "soft": {
+        "$value": "{color.palette.cream.300}",
+        "$description": "Fainter dividers inside cards."
+      }
+    },
+    "accent": {
+      "teal": {
+        "$value": "{color.palette.teal.400}",
+        "$description": "Category marks. Below 3:1 on light surfaces, so never the only way to convey meaning."
+      },
+      "amber": {
+        "$value": "{color.palette.amber.400}",
+        "$description": "Category marks. Below 3:1 on light surfaces, so never the only way to convey meaning."
+      }
+    },
+    "status": {
+      "success": {
+        "$value": "{color.palette.green.500}",
+        "$description": "Success marks. Below 3:1 on light surfaces, so pair it with text or an icon."
+      },
+      "warning": {
+        "$value": "{color.palette.gold.500}",
+        "$description": "Warning marks. Below 3:1 on light surfaces, so pair it with text or an icon."
+      },
+      "error": {
+        "$value": "{color.palette.red.500}",
+        "$description": "Error marks and messages."
+      }
+    }
+  }
+}
