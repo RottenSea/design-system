@@ -1,0 +1,13 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "name": "personal-website",
+  "version": "2025.10",
+  "description": "Design tokens for the personal website.",
+  "sets": {
+    "foundation": {
+      "description": "Tokens shared by every theme.",
+      "sources": [{ "$ref": "foundation.tokens.json" }]
+    }
+  },
+  "resolutionOrder": [{ "$ref": "#/sets/foundation" }]
+}
