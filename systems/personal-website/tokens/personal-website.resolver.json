@@ -10,7 +10,11 @@
         { "$ref": "color/palette.tokens.json" },
         { "$ref": "color/semantic.tokens.json" },
         { "$ref": "typography/font.tokens.json" },
-        { "$ref": "typography/styles.tokens.json" }
+        { "$ref": "typography/styles.tokens.json" },
+        { "$ref": "size/space.tokens.json" },
+        { "$ref": "size/radius.tokens.json" },
+        { "$ref": "effect/shadow.tokens.json" },
+        { "$ref": "effect/border.tokens.json" }
       ]
     }
   },

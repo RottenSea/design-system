@@ -1,0 +1,22 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "border": {
+    "$type": "border",
+    "hairline": {
+      "$value": {
+        "color": "{color.border.default}",
+        "width": { "value": 1, "unit": "px" },
+        "style": "solid"
+      },
+      "$description": "Dividers and card outlines."
+    },
+    "hairline-soft": {
+      "$value": {
+        "color": "{color.border.soft}",
+        "width": { "value": 1, "unit": "px" },
+        "style": "solid"
+      },
+      "$description": "Fainter dividers inside cards."
+    }
+  }
+}

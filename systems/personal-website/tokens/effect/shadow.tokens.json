@@ -1,0 +1,27 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "shadow": {
+    "$type": "shadow",
+    "$description": "Surfaces separate by color first, so shadows are rare. The color is ink 900 with transparency, written inline because a reference cannot add alpha.",
+    "hover": {
+      "$value": {
+        "color": { "colorSpace": "srgb", "components": [0.0784, 0.0784, 0.0745], "alpha": 0.08, "hex": "#141413" },
+        "offsetX": { "value": 0, "unit": "px" },
+        "offsetY": { "value": 1, "unit": "px" },
+        "blur": { "value": 3, "unit": "px" },
+        "spread": { "value": 0, "unit": "px" }
+      },
+      "$description": "A card or row under the pointer."
+    },
+    "float": {
+      "$value": {
+        "color": { "colorSpace": "srgb", "components": [0.0784, 0.0784, 0.0745], "alpha": 0.1, "hex": "#141413" },
+        "offsetX": { "value": 0, "unit": "px" },
+        "offsetY": { "value": 8, "unit": "px" },
+        "blur": { "value": 24, "unit": "px" },
+        "spread": { "value": 0, "unit": "px" }
+      },
+      "$description": "Menus, popovers and tooltips that sit above the page."
+    }
+  }
+}
