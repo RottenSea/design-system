@@ -8,7 +8,9 @@
       "description": "Tokens shared by every theme.",
       "sources": [
         { "$ref": "color/palette.tokens.json" },
-        { "$ref": "color/semantic.tokens.json" }
+        { "$ref": "color/semantic.tokens.json" },
+        { "$ref": "typography/font.tokens.json" },
+        { "$ref": "typography/styles.tokens.json" }
       ]
     }
   },

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "font": {
+    "serif": {
+      "$type": "fontFamily",
+      "$value": ["Noto Serif SC", "serif"],
+      "$description": "Display headlines."
+    },
+    "sans": {
+      "$type": "fontFamily",
+      "$value": ["Manrope", "Noto Sans SC", "sans-serif"],
+      "$description": "Body, titles and interface text. Manrope sets Latin text and Noto Sans SC sets Chinese."
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": ["Maple Mono NL NF CN", "monospace"],
+      "$description": "Code and technical detail."
+    },
+    "math": {
+      "$type": "fontFamily",
+      "$value": ["Noto Sans Math", "sans-serif"],
+      "$description": "Math formulas."
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "regular": {
+        "$value": 400,
+        "$description": "Display headlines, body text and code."
+      },
+      "medium": {
+        "$value": 500,
+        "$description": "Titles, captions and labels."
+      },
+      "bold": {
+        "$value": 700,
+        "$description": "Strong emphasis in running text."
+      }
+    }
+  }
+}

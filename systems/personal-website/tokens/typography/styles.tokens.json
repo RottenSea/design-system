@@ -1,0 +1,136 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "typography": {
+    "$type": "typography",
+    "display": {
+      "xl": {
+        "$value": {
+          "fontFamily": "{font.serif}",
+          "fontSize": { "value": 4, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.25
+        },
+        "$description": "Page hero headline."
+      },
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.serif}",
+          "fontSize": { "value": 3, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.3
+        },
+        "$description": "Section headline."
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.serif}",
+          "fontSize": { "value": 2.25, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.3
+        },
+        "$description": "Article title."
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.serif}",
+          "fontSize": { "value": 1.75, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.35
+        },
+        "$description": "Small headline, such as a card or band title."
+      }
+    },
+    "title": {
+      "lg": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 1.375, "unit": "rem" },
+          "fontWeight": "{font.weight.medium}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.5
+        },
+        "$description": "Large interface title."
+      },
+      "md": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 1.125, "unit": "rem" },
+          "fontWeight": "{font.weight.medium}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.5
+        },
+        "$description": "Interface title."
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 1, "unit": "rem" },
+          "fontWeight": "{font.weight.medium}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.5
+        },
+        "$description": "Small interface title."
+      }
+    },
+    "body": {
+      "md": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 1, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.75
+        },
+        "$description": "Default body text."
+      },
+      "sm": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 0.875, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.75
+        },
+        "$description": "Compact body text."
+      }
+    },
+    "caption": {
+      "default": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 0.8125, "unit": "rem" },
+          "fontWeight": "{font.weight.medium}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.6
+        },
+        "$description": "Metadata and captions."
+      },
+      "upper": {
+        "$value": {
+          "fontFamily": "{font.sans}",
+          "fontSize": { "value": 0.75, "unit": "rem" },
+          "fontWeight": "{font.weight.medium}",
+          "letterSpacing": { "value": 0.09375, "unit": "rem" },
+          "lineHeight": 1.6
+        },
+        "$description": "Uppercase Latin labels such as NEW. Set text-transform: uppercase where it is used."
+      }
+    },
+    "code": {
+      "default": {
+        "$value": {
+          "fontFamily": "{font.mono}",
+          "fontSize": { "value": 0.875, "unit": "rem" },
+          "fontWeight": "{font.weight.regular}",
+          "letterSpacing": { "value": 0, "unit": "rem" },
+          "lineHeight": 1.6
+        },
+        "$description": "Inline code and code blocks."
+      }
+    }
+  }
+}

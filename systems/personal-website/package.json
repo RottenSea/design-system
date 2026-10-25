@@ -6,10 +6,12 @@
   "license": "Apache-2.0",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "exports": {
-    "./tokens.css": "./dist/tokens.css"
+    "./tokens.css": "./dist/tokens.css",
+    "./fonts.css": "./src/fonts.css"
   },
   "scripts": {
     "check": "tz check tokens/personal-website.resolver.json",
