@@ -4,3 +4,6 @@ node_modules/
 # build output, published as GitHub Release assets instead
 dist/
 *.tgz
+
+# VitePress cache for the docs site
+docs/.vitepress/cache/
