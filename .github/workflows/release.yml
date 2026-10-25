@@ -1,0 +1,68 @@
+name: Release
+
+# A tag named <system>-v<version>, such as personal-website-v0.1.0, releases systems/<system>.
+on:
+  push:
+    tags: ["*-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Read the system and version from the tag
+        id: tag
+        run: |
+          system="${GITHUB_REF_NAME%-v*}"
+          version="${GITHUB_REF_NAME##*-v}"
+          dir="systems/$system"
+          if [ ! -f "$dir/package.json" ]; then
+            echo "::error::No system at $dir for tag $GITHUB_REF_NAME"
+            exit 1
+          fi
+          package_version="$(node -p "require('./$dir/package.json').version")"
+          if [ "$package_version" != "$version" ]; then
+            echo "::error::Tag says $version but $dir/package.json says $package_version"
+            exit 1
+          fi
+          echo "system=$system" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir "${{ steps.tag.outputs.dir }}" run check
+      - run: pnpm --dir "${{ steps.tag.outputs.dir }}" run build
+      - run: pnpm --dir "${{ steps.tag.outputs.dir }}" pack --pack-destination "$RUNNER_TEMP/pack"
+
+      # The release notes are this version's section of the system's CHANGELOG.md.
+      - name: Extract the release notes
+        run: |
+          awk -v heading="## [${{ steps.tag.outputs.version }}]" '
+            index($0, heading) == 1 { found = 1; next }
+            found && (/^## \[/ || /^\[[^]]+\]: /) { exit }
+            found { print }
+          ' "${{ steps.tag.outputs.dir }}/CHANGELOG.md" > "$RUNNER_TEMP/notes.md"
+          if ! grep -q '[^[:space:]]' "$RUNNER_TEMP/notes.md"; then
+            echo "::error::CHANGELOG.md has no section for ${{ steps.tag.outputs.version }}"
+            exit 1
+          fi
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP"/pack/*.tgz \
+            --verify-tag \
+            --title "${{ steps.tag.outputs.system }} v${{ steps.tag.outputs.version }}" \
+            --notes-file "$RUNNER_TEMP/notes.md"
