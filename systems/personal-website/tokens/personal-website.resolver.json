@@ -14,7 +14,9 @@
         { "$ref": "size/space.tokens.json" },
         { "$ref": "size/radius.tokens.json" },
         { "$ref": "effect/shadow.tokens.json" },
-        { "$ref": "effect/border.tokens.json" }
+        { "$ref": "effect/border.tokens.json" },
+        { "$ref": "motion/timing.tokens.json" },
+        { "$ref": "motion/transition.tokens.json" }
       ]
     }
   },

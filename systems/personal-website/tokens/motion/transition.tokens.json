@@ -1,0 +1,31 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "transition": {
+    "$type": "transition",
+    "$description": "A duration, delay and easing for one kind of change. A transition token names no CSS property, so a component lists the properties it animates, for example `transition: color var(--transition-tint), background-color var(--transition-tint)`. Add a token per scene as components need one.",
+    "tint": {
+      "$value": {
+        "duration": "{duration.fast}",
+        "delay": { "value": 0, "unit": "ms" },
+        "timingFunction": "{easing.enter}"
+      },
+      "$description": "Background, text and border color on a control."
+    },
+    "surface": {
+      "$value": {
+        "duration": "{duration.base}",
+        "delay": { "value": 0, "unit": "ms" },
+        "timingFunction": "{easing.enter}"
+      },
+      "$description": "Background, border and shadow on a surface such as the nav bar or a card."
+    },
+    "fade": {
+      "$value": {
+        "duration": "{duration.base}",
+        "delay": { "value": 0, "unit": "ms" },
+        "timingFunction": "{easing.enter}"
+      },
+      "$description": "Opacity as something appears."
+    }
+  }
+}
