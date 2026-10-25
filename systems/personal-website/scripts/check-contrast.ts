@@ -6,11 +6,12 @@ import { tokenToColor } from "@terrazzo/token-tools";
 import { contrastWCAG21 } from "colorjs.io/fn";
 import { type ContrastPair, contrastPairs } from "../contrast-pairs.ts";
 
-const AA = 4.5;
+// WCAG AA minimums, the same ones the a11y/min-contrast lint applies.
+const AA = { default: 4.5, largeText: 3 };
 const root = new URL("../", import.meta.url);
 const resolverFile = new URL("tokens/personal-website.resolver.json", root);
 
-/** Returns one message per pair below AA, empty when every pair passes. */
+/** Returns one message per pair below its AA minimum, empty when every pair passes. */
 function failingPairs(tokens: TokenNormalizedSet, pairs: ContrastPair[]): string[] {
   const color = (id: string) => {
     // A misspelled id is a broken pair list, not a contrast failure, so stop like the lint does.
@@ -19,9 +20,10 @@ function failingPairs(tokens: TokenNormalizedSet, pairs: ContrastPair[]): string
     }
     return tokenToColor(tokens[id].$value);
   };
-  return pairs.flatMap(({ foreground, background }) => {
+  return pairs.flatMap(({ foreground, background, largeText }) => {
     const ratio = contrastWCAG21(color(foreground), color(background));
-    return ratio < AA ? [`${foreground} on ${background}: ${ratio.toFixed(2)}`] : [];
+    const min = largeText ? AA.largeText : AA.default;
+    return ratio < min ? [`${foreground} on ${background}: ${ratio.toFixed(2)}, needs ${min}`] : [];
   });
 }
 
@@ -33,7 +35,7 @@ const { resolver } = await parse([{ src: await readFile(resolverFile, "utf8"), f
 
 const failures = failingPairs(resolver.apply({ theme: "dark" }), contrastPairs);
 if (failures.length > 0) {
-  console.error(`dark theme: ${failures.length} pair(s) below WCAG AA ${AA}:1\n  ${failures.join("\n  ")}`);
+  console.error(`dark theme: ${failures.length} pair(s) below WCAG AA:\n  ${failures.join("\n  ")}`);
   process.exit(1);
 }
-console.log(`dark theme: all ${contrastPairs.length} pairs meet WCAG AA ${AA}:1`);
+console.log(`dark theme: all ${contrastPairs.length} pairs meet WCAG AA`);

@@ -74,6 +74,10 @@
         "$description": "Fainter dividers inside cards."
       }
     },
+    "focus": {
+      "$value": "{color.palette.coral.800}",
+      "$description": "Keyboard focus outline. Above 3:1 on every light surface, as WCAG requires for focus indicators."
+    },
     "accent": {
       "teal": {
         "$value": "{color.palette.teal.400}",

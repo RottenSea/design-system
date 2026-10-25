@@ -11,7 +11,9 @@
   ],
   "exports": {
     "./tokens.css": "./dist/tokens.css",
-    "./fonts.css": "./src/fonts.css"
+    "./fonts.css": "./src/fonts.css",
+    "./base.css": "./src/base.css",
+    "./index.css": "./src/index.css"
   },
   "scripts": {
     "check": "tz check tokens/personal-website.resolver.json && node scripts/check-contrast.ts",
@@ -23,5 +25,8 @@
     "@terrazzo/plugin-css": "2.10.0",
     "@terrazzo/token-tools": "2.10.0",
     "colorjs.io": "0.7.1"
+  },
+  "dependencies": {
+    "@unocss/reset": "66.10.5"
   }
 }

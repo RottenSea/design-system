@@ -1,0 +1,133 @@
+/*
+ * Element defaults built on the design tokens. Every rule sits in the `base` layer, so any
+ * unlayered rule in the site overrides it whatever its specificity. index.css puts the
+ * Tailwind Preflight reset in the `reset` layer underneath.
+ */
+@layer reset, base;
+
+@layer base {
+  html {
+    /* Show only the weights and styles fonts.css loads instead of faking bold or italic. */
+    font-synthesis: none;
+  }
+
+  body {
+    background-color: var(--color-surface-canvas);
+    color: var(--color-text-body);
+    font: var(--typography-body-md);
+    letter-spacing: var(--typography-body-md-letter-spacing);
+  }
+
+  /* body's color is computed in the outer theme, so a themed subtree has to read the text color again. */
+  [data-theme] {
+    color: var(--color-text-body);
+  }
+
+  /* Declared on every element, not inherited from :root, so a [data-theme] subtree gets its own color. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border-default);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-text-ink);
+  }
+
+  h1 {
+    font: var(--typography-display-xl);
+    letter-spacing: var(--typography-display-xl-letter-spacing);
+  }
+
+  h2 {
+    font: var(--typography-display-lg);
+    letter-spacing: var(--typography-display-lg-letter-spacing);
+  }
+
+  h3 {
+    font: var(--typography-display-md);
+    letter-spacing: var(--typography-display-md-letter-spacing);
+  }
+
+  h4 {
+    font: var(--typography-display-sm);
+    letter-spacing: var(--typography-display-sm-letter-spacing);
+  }
+
+  h5 {
+    font: var(--typography-title-lg);
+    letter-spacing: var(--typography-title-lg-letter-spacing);
+  }
+
+  h6 {
+    font: var(--typography-title-md);
+    letter-spacing: var(--typography-title-md-letter-spacing);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Underlined because link and body colors are below the 3:1 that color alone would need (WCAG 1.4.1). */
+  a {
+    color: var(--color-text-link);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  code,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+  }
+
+  pre {
+    font: var(--typography-code-default);
+    letter-spacing: var(--typography-code-default-letter-spacing);
+  }
+
+  ::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-primary-default) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Reduced motion. Transitions and animations finish in 1ms instead of 0 so transitionend and
+   * animationend still fire, and run once so a looping animation cannot flicker. Loading
+   * animations opt out with data-motion="essential", which covers the element and its children.
+   * !important inside a layer outranks !important outside it, so component styles cannot undo this.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto !important;
+    }
+
+    :not([data-motion="essential"], [data-motion="essential"] *),
+    :not([data-motion="essential"], [data-motion="essential"] *)::before,
+    :not([data-motion="essential"], [data-motion="essential"] *)::after {
+      animation-duration: 1ms !important;
+      animation-delay: 0ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      transition-delay: 0ms !important;
+    }
+  }
+}

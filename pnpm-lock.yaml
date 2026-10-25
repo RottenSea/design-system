@@ -9,6 +9,10 @@ importers:
   .: {}
 
   systems/personal-website:
+    dependencies:
+      '@unocss/reset':
+        specifier: 66.10.5
+        version: 66.10.5
     devDependencies:
       '@terrazzo/cli':
         specifier: 2.10.0
@@ -171,6 +175,9 @@ packages:
 
   '@types/babel__code-frame@7.27.0':
     resolution: {integrity: sha512-Dwlo+LrxDx/0SpfmJ/BKveHf7QXWvLBLc+x03l5sbzykj3oB9nHygCpSECF1a+s+QIxbghe+KHqC90vGtxLRAA==}
+
+  '@unocss/reset@66.10.5':
+    resolution: {integrity: sha512-AElCFeXaK+3a8LX1obMSmhYhhlRKDXXVngn0Kse7XwxHOItQqpncTU6ZKUeNNGmeoE0Vwc6MfrLw6eGE7EEpgw==}
 
   cac@7.1.0:
     resolution: {integrity: sha512-LMDU/U2yA4IPIY8KT0NsNPWEYZvAMkbgyspxJ6btJaYV+WMDOHAZCmB0lsTObiHaRS1V/ztKAl7+TSkTqXyeoA==}
@@ -567,6 +574,8 @@ snapshots:
   '@terrazzo/token-types@2.10.0': {}
 
   '@types/babel__code-frame@7.27.0': {}
+
+  '@unocss/reset@66.10.5': {}
 
   cac@7.1.0: {}
 
