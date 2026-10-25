@@ -14,11 +14,14 @@
     "./fonts.css": "./src/fonts.css"
   },
   "scripts": {
-    "check": "tz check tokens/personal-website.resolver.json",
+    "check": "tz check tokens/personal-website.resolver.json && node scripts/check-contrast.ts",
     "build": "tz build"
   },
   "devDependencies": {
     "@terrazzo/cli": "2.10.0",
-    "@terrazzo/plugin-css": "2.10.0"
+    "@terrazzo/parser": "2.10.0",
+    "@terrazzo/plugin-css": "2.10.0",
+    "@terrazzo/token-tools": "2.10.0",
+    "colorjs.io": "0.7.1"
   }
 }

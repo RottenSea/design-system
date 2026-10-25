@@ -5,7 +5,7 @@
   "description": "Design tokens for the personal website.",
   "sets": {
     "foundation": {
-      "description": "Tokens shared by every theme.",
+      "description": "Tokens shared by every theme. The semantic colors and shadows here are the light theme's.",
       "sources": [
         { "$ref": "color/palette.tokens.json" },
         { "$ref": "color/semantic.tokens.json" },
@@ -20,5 +20,15 @@
       ]
     }
   },
-  "resolutionOrder": [{ "$ref": "#/sets/foundation" }]
+  "modifiers": {
+    "theme": {
+      "description": "Color theme. Light uses the foundation as it is; dark overrides semantic colors and shadows.",
+      "contexts": {
+        "light": [],
+        "dark": [{ "$ref": "theme/dark.tokens.json" }]
+      },
+      "default": "light"
+    }
+  },
+  "resolutionOrder": [{ "$ref": "#/sets/foundation" }, { "$ref": "#/modifiers/theme" }]
 }

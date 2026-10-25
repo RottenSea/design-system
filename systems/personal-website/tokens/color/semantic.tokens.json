@@ -94,8 +94,8 @@
         "$description": "Warning marks. Below 3:1 on light surfaces, so pair it with text or an icon."
       },
       "error": {
-        "$value": "{color.palette.red.500}",
-        "$description": "Error marks and messages."
+        "$value": "{color.palette.red.600}",
+        "$description": "Error marks and messages. Reads at 4.5:1 on every light surface."
       }
     }
   }
