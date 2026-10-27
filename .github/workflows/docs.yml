@@ -1,15 +1,12 @@
-# Builds the docs site in docs/ and deploys it to GitHub Pages at rottensea.github.io/design-system,
+# Builds the docs site in docs/ and deploys it to GitHub Pages,
 # following https://docs.astro.build/en/guides/deploy/github/
-# It also runs when a system changes, because the docs will show each system's tokens and components.
 name: Docs
 
+# The docs site now builds for the root of its own domain. Until that subdomain is set up, a
+# deploy to rottensea.github.io/design-system would break every link, so it runs only by hand.
+# When the subdomain is ready, restore the push trigger on docs/**, systems/** (the docs show each
+# system's tokens and components) and this file.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "docs/**"
-      - "systems/**"
-      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 permissions:

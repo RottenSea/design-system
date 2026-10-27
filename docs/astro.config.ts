@@ -14,12 +14,11 @@ const specPages = [
   ["writing", "Writing", "写作"]
 ] as const;
 
-// Served from GitHub Pages at rottensea.github.io/design-system. Every language has its own
-// folder in src/content/docs/, so there is no page at the root; it redirects to English.
+// Served from the root of its own domain, a subdomain chosen when it is deployed; set `site` to
+// that address then. Every language has its own folder in src/content/docs/, so there is no page
+// at the root; it redirects to English.
 export default defineConfig({
-  site: "https://rottensea.github.io",
-  base: "/design-system",
-  redirects: { "/": "/design-system/en/" },
+  redirects: { "/": "/en/" },
   integrations: [
     starlight({
       title: "Design Systems",
