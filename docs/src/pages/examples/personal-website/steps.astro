@@ -1,0 +1,16 @@
+---
+import { Steps } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const items = [
+  { title: "Install the dependencies", body: "Run pnpm install in the repository root." },
+  { title: "Create a post", body: "Run pnpm new-post with a short English name." },
+  { title: "Write and preview", body: "Run pnpm dev and open the post." },
+  { title: "Publish", body: "Set draft to false and push." }
+];
+---
+
+<ExampleLayout title="Steps">
+  <Steps items={items} />
+  <Steps items={items} current={2} />
+</ExampleLayout>

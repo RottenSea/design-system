@@ -1,0 +1,69 @@
+---
+title: Admonition 提示块
+description: 把一个要点从正文里拎出来，又不打断阅读。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把一个要点从正文里拎出来，又不打断阅读。
+
+<Example system="personal-website" name="admonition" title="各种类型的提示块" />
+
+## 什么时候用
+
+这个要点会改变读者的做法时用：不能跳过的一步、会浪费时间的错误。只写一两句话；要标题和几段话才说得清的，应该是一个小节。
+
+只是对刚读到的内容补充一句时，用脚注。
+
+## 文章里怎么写
+
+```md
+:::tip
+文章的图片放在文章所在的文件夹里。
+:::
+
+:::warning[推送前先检查]
+草稿不会出现在构建好的网站里。
+:::
+
+:::details[全部 frontmatter 字段]{open}
+title、description、lang 等等。
+:::
+```
+
+指令名就是类型。方括号里的文字替换默认的标签，`{open}` 让 `details` 一开始就展开。
+
+## 结构
+
+一张米色卡片，顶部是一个 6px 的圆点和一个大写的小标签，颜色随类型变，下面是内容。`details` 类型在标签右边多一个箭头。
+
+## 类型
+
+| `variant` | 颜色 | 默认标签 | 用于 |
+| --- | --- | --- | --- |
+| `note` | 青色 | Note | 读者应该知道的背景 |
+| `tip` | 绿色 | Tip | 更好的做法 |
+| `important` | 珊瑚色 | Important | 读者绝不能漏掉的一件事。一页最多一个，因为珊瑚色是品牌强调色 |
+| `warning` | 金色 | Warning | 可能出错的地方 |
+| `caution` | 红色 | Caution | 会丢数据或弄坏网站的事 |
+| `details` | 灰色 | Details | 可看可不看的细节，读者点开才显示 |
+
+`tone="dark"` 把卡片放在深色表面上，用于页面里深色的区域。
+
+## 状态
+
+只有 `details` 有状态：默认收起，点开后展开。展开时箭头朝上。
+
+## 无障碍
+
+普通类型是 `<aside>`，属于补充内容的区域。`details` 用浏览器原生的 `<details>` 和 `<summary>`：键盘可以聚焦到标题，Enter 和空格打开或收起，读屏软件会读出是否展开。颜色从来不是唯一的信号，标签写明了类型。
+
+## API
+
+[`Admonition.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Admonition.astro)。props 和交付包一样。`details` 用原生元素，不是带状态的按钮，所以 `open` 和 `defaultOpen` 都是设置一开始是否展开，也没有 `onToggle`。
+
+## 相关
+
+[Spoiler 剧透遮罩](../spoiler/)用来盖住答案，不是收起细节。

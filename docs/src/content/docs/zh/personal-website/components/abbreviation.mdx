@@ -1,0 +1,46 @@
+---
+title: Abbreviation 注释
+description: 给一个词加一行说明，读者可以打开看。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+给一个词加一行说明，鼠标、键盘和点按都能打开。
+
+<Example system="personal-website" name="abbreviation" title="句子里的注释" />
+
+## 什么时候用
+
+读者可能不认识的缩写或术语，一行字就能说清时用。第一次出现时在正文里也写出全称，提示只是提醒，不是定义。读者天天在用的词不要标，满屏虚线只会干扰阅读。
+
+说明要带链接或不止一句话时，用脚注。
+
+## 文章里怎么写
+
+```md
+Astro 也可以在请求时渲染页面，也就是 :term[SSR]{note="Server-Side Rendering"}。
+```
+
+只有手动标出的地方有下划线，文章里别处出现同一个词不会自动加上。
+
+## 结构
+
+这个词下面一条虚线，上方是一个反色表面的提示：浅色页面上是深色，深色页面上是浅色。
+
+## 状态
+
+收起和打开。鼠标停在词上 120 毫秒后打开；键盘聚焦或点按时马上打开；鼠标移开、焦点离开、按 Esc 或点别处时收起。提示只淡入淡出，系统设置了减少动效时直接出现。
+
+## 无障碍
+
+这个词是真正的 `<abbr>`，可以用键盘聚焦，提示用 `aria-describedby` 和它关联，读屏软件会在读完这个词后读出说明。没有加浏览器自带的 `title` 提示，因为它会叠在我们的提示上面，而且键盘和点按都打不开它。
+
+## API
+
+[`Abbreviation.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Abbreviation.astro)，它用到 [`Tooltip.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Tooltip.astro)。props 和交付包一样，改动只有两处：加了点按，去掉了 `title`。
+
+## 相关
+
+脚注，用于一行说不清的解释。

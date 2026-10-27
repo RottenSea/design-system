@@ -1,0 +1,57 @@
+---
+title: Steps 步骤条
+description: 把操作步骤排成带编号的竖列。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把操作步骤排成带编号的竖列，还可以标出读者做到了哪一步。
+
+<Example system="personal-website" name="steps" title="普通的和带进度的步骤条" />
+
+## 什么时候用
+
+顺序重要、每一步是一个动作时用。顺序无所谓的选项或事实，用普通列表。
+
+## 文章里怎么写
+
+```md
+:::steps
+1. 安装依赖
+
+   在仓库根目录运行 `pnpm install`。
+
+2. 新建文章
+3. 发布
+:::
+```
+
+有序列表的每一项是一步。第一段是这一步的标题，可以带链接和代码；后面的内容是这一步的说明。在 `:::steps` 后面加 `{current=1}` 表示第二步正在进行，从 0 开始数。
+
+## 结构
+
+一列 28px 的编号圆点，用细线连起来，每个圆点旁边是这一步的标题和说明。
+
+## 类型
+
+`tone="dark"` 把圆点和文字放在深色表面上。
+
+## 状态
+
+| 状态 | 圆点 |
+| --- | --- |
+| 未开始 | 卡片底色加编号 |
+| 进行中 | 深色底，系统里表示“选中”的信号 |
+| 已完成 | 珊瑚色底加对勾 |
+
+不写 `current` 时每一步都是未开始，也就是普通的编号列表。
+
+## 无障碍
+
+它是有序列表，读屏软件会读出一共几步、现在是第几步。进行中的那一步有 `aria-current="step"`。已完成除了颜色还有对勾。
+
+## API
+
+[`Steps.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Steps.astro) 和 [`Step.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Step.astro)。`Steps` 保留交付包的 `items` 和 `current` 两个 props，也可以在默认插槽里直接放 `Step`，`:::steps` 指令写出来的就是这种。

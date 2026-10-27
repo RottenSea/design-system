@@ -1,0 +1,55 @@
+---
+title: Spoiler
+description: Covers text until the reader chooses to see it.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Covers text until the reader chooses to see it: an answer, a plot point, a solution.
+
+<Example system="personal-website" name="spoiler" title="Inline and block spoilers" />
+
+## When to use
+
+Use a spoiler for text a reader may want to work out first. Do not use it to hide content that is merely long; fold that away with a `details` [admonition](../admonition/).
+
+## In a post
+
+```md
+The function returns :spoiler[an empty array] when nothing matches.
+
+:::spoiler
+The whole answer, which can be several sentences.
+:::
+```
+
+## Anatomy
+
+A flat cover in the text's place, with the text set to the cover's color. There is no blur, because the system has no blur layer.
+
+## Variants
+
+| `variant` | Covers |
+| --- | --- |
+| `inline` | A few words inside a sentence. This is `:spoiler[...]` |
+| `block` | A paragraph. This is `:::spoiler` |
+
+`tone="dark"` uses a cover for the night surface.
+
+## States
+
+Covered, then revealed. Revealing is one way: a revealed spoiler stays uncovered until the page reloads. `revealed` starts it uncovered.
+
+## Accessibility
+
+While covered it is a button named "Reveal" (or `label`), reachable with Tab, opened with a click, Enter or Space, and `aria-expanded` reports the change. A screen reader hears the button's name, not the hidden text. Once revealed it is plain text again.
+
+## API
+
+[`Spoiler.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Spoiler.astro). It keeps the handoff's props, except `onReveal`: the reveal runs in a small script in the page.
+
+## Related
+
+[Admonition](../admonition/) with the `details` variant, for optional detail.

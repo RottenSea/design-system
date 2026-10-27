@@ -1,0 +1,16 @@
+---
+import { Admonition } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Admonition">
+  <Admonition variant="note">Posts are stored and shown in UTC.</Admonition>
+  <Admonition variant="tip">Put a post's images in the same folder as the post.</Admonition>
+  <Admonition variant="important">Run pnpm check before you push.</Admonition>
+  <Admonition variant="warning">A draft post is left out of the built site.</Admonition>
+  <Admonition variant="caution">Changing a post's folder name changes its URL.</Admonition>
+  <Admonition variant="details" title="Every frontmatter field">
+    title, description, lang, published, publishedAt, updated, updatedAt, tags, category,
+    image, revision, pinned, comment, permalink and draft.
+  </Admonition>
+</ExampleLayout>

@@ -1,0 +1,55 @@
+---
+title: Spoiler 剧透遮罩
+description: 盖住一段文字，读者想看时再打开。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+盖住一段文字，读者想看时再打开：答案、剧情、解法。
+
+<Example system="personal-website" name="spoiler" title="行内和整段的剧透遮罩" />
+
+## 什么时候用
+
+读者可能想先自己想一想的内容。只是篇幅长的内容不要用它，用 `details` 类型的[提示块](../admonition/)收起来。
+
+## 文章里怎么写
+
+```md
+找不到匹配时，这个函数返回 :spoiler[一个空数组]。
+
+:::spoiler
+完整的答案，可以有好几句话。
+:::
+```
+
+## 结构
+
+文字的位置上是一块纯色的遮罩，文字颜色和遮罩一样。没有模糊效果，因为这个系统没有模糊层。
+
+## 类型
+
+| `variant` | 盖住 |
+| --- | --- |
+| `inline` | 句子里的几个词，就是 `:spoiler[...]` |
+| `block` | 一整段，就是 `:::spoiler` |
+
+`tone="dark"` 用深色表面的遮罩。
+
+## 状态
+
+先盖住，打开后就一直打开，直到页面刷新。`revealed` 让它一开始就是打开的。
+
+## 无障碍
+
+盖住时它是一个按钮，名字是 “Reveal”（或者 `label`），可以用 Tab 走到，点击、Enter 或空格打开，`aria-expanded` 会报告变化。读屏软件读到的是按钮的名字，不是被盖住的文字。打开后就是普通文字。
+
+## API
+
+[`Spoiler.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Spoiler.astro)。props 和交付包一样，只是没有 `onReveal`：打开的动作由页面里的一小段脚本完成。
+
+## 相关
+
+`details` 类型的 [Admonition 提示块](../admonition/)，用于可看可不看的细节。

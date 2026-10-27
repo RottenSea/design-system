@@ -1,0 +1,57 @@
+---
+title: Steps
+description: Numbers a procedure as a vertical flow.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Numbers a procedure as a vertical flow, and can show how far along it the reader is.
+
+<Example system="personal-website" name="steps" title="Steps, plain and with progress" />
+
+## When to use
+
+Use steps when the order matters and each step is one action. A list of options or facts, where order does not matter, is an ordinary list.
+
+## In a post
+
+```md
+:::steps
+1. Install the dependencies
+
+   Run `pnpm install` in the repository root.
+
+2. Create a post
+3. Publish
+:::
+```
+
+Each item of the ordered list is a step. Its first paragraph is the title, which keeps links and code; anything after it is the step's detail. Add `{current=1}` after `:::steps` to mark the second step as in progress; counting starts at 0.
+
+## Anatomy
+
+A column of 28px numbered discs joined by a hairline, with each step's title and detail beside its disc.
+
+## Variants
+
+`tone="dark"` puts the discs and text on the night surface.
+
+## States
+
+| State | Disc |
+| --- | --- |
+| To do | Card fill with the number |
+| Current | Dark fill, the system's selected signal |
+| Done | Coral fill with a check |
+
+Without `current` every step is to do, which is a plain numbered list.
+
+## Accessibility
+
+An ordered list, so screen readers announce how many steps there are and which one they are on. The current step has `aria-current="step"`. Done is shown with a check as well as a color.
+
+## API
+
+[`Steps.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Steps.astro) and [`Step.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Step.astro). `Steps` keeps the handoff's `items` and `current` props, and also takes `Step` elements in its slot, which is what the `:::steps` directive writes.

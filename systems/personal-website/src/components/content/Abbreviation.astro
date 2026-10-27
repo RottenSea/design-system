@@ -1,0 +1,48 @@
+---
+/**
+ * An <abbr> the reader can reach: a dotted hairline underline, focusable, and the expansion in
+ * the system's Tooltip, which opens on hover, keyboard focus and a tap.
+ *
+ * Ported from the handoff's Abbreviation.jsx with the same props. It leaves out the `title`
+ * attribute the handoff also sets: with it, a mouse would get the browser's own bubble on top
+ * of the Tooltip. Screen readers get the expansion through the Tooltip's aria-describedby.
+ *
+ * Expand the term in the prose on first use as well; the tip is a reminder, not the definition.
+ */
+import Tooltip from "../feedback/Tooltip.astro";
+
+interface Props {
+  /** The expansion, shown in the Tooltip. */
+  term: string;
+  /** The surface the text sits on. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { term, tone = "cream", class: className, ...rest } = Astro.props;
+---
+
+<Tooltip label={term} tone={tone}>
+  <abbr
+    class:list={["ds-abbreviation", { "ds-abbreviation--dark": tone === "dark" }, className]}
+    tabindex="0"
+    {...rest}
+  >
+    <slot />
+  </abbr>
+</Tooltip>
+
+<style>
+  .ds-abbreviation {
+    color: inherit;
+    cursor: help;
+    text-decoration: underline dotted;
+    text-decoration-color: var(--hairline);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .ds-abbreviation--dark {
+    text-decoration-color: var(--hairline-on-dark);
+  }
+</style>

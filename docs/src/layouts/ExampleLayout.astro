@@ -1,0 +1,58 @@
+---
+/**
+ * A bare page for one component example, loaded in an iframe by the Example component. It loads
+ * only the system's own CSS, so Starlight's styles and the example never touch each other.
+ */
+import "@rottensea/ds-personal-website/index.css";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+    {/*
+      Takes the docs page's theme before the first paint. The docs page and the example share an
+      origin, so the parent's data-theme can be read directly; Example.astro keeps it in sync.
+    */}
+    <script is:inline>
+      try {
+        document.documentElement.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      } catch {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
+  </head>
+  <body>
+    <main class="example">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .example {
+    padding: var(--space-lg);
+  }
+
+  /* Examples stack their parts with the same gap, whatever the components' own margins are. */
+  .example > :global(* + *) {
+    margin-top: var(--space-md);
+  }
+
+  .example > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .example > :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

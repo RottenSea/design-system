@@ -1,0 +1,13 @@
+---
+import { Spoiler } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Spoiler">
+  <p>The function returns <Spoiler>an empty array</Spoiler> when nothing matches.</p>
+  <Spoiler variant="block">
+    The bug was in the date parser: a bare date was read as midnight UTC, which is the previous
+    evening in some time zones.
+  </Spoiler>
+  <p>Already uncovered: <Spoiler revealed>a revealed spoiler keeps no cover</Spoiler>.</p>
+</ExampleLayout>

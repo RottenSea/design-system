@@ -1,0 +1,46 @@
+---
+title: Abbreviation
+description: Gives a term a one-line explanation the reader can open.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Gives a term a one-line explanation the reader can open with a mouse, the keyboard or a tap.
+
+<Example system="personal-website" name="abbreviation" title="Abbreviations in a sentence" />
+
+## When to use
+
+Use it for an acronym or a term the reader may not know, where one line is enough. Write the full form in the prose the first time as well; the tip reminds, it does not define. Leave out terms the reader uses every day, because a page full of dotted underlines is noise.
+
+When the explanation needs links or more than one sentence, use a footnote.
+
+## In a post
+
+```md
+Astro can also render pages on request, which is :term[SSR]{note="Server-Side Rendering"}.
+```
+
+Only the places you mark get the underline; the same term elsewhere in the post stays plain.
+
+## Anatomy
+
+The term, with a dotted hairline underline, and a tip on the inverse surface above it: dark on a light page, light on a dark one.
+
+## States
+
+Closed, and open. It opens 120ms after a mouse rests on the term, at once on keyboard focus or a tap, and closes when the mouse leaves, focus moves on, Escape is pressed or the reader taps elsewhere. The tip fades in and out; with reduced motion it appears at once.
+
+## Accessibility
+
+The term is a real `<abbr>` that takes keyboard focus, and the tip is linked to it with `aria-describedby`, so a screen reader reads the explanation after the term. The browser's own `title` bubble is left off, because it would open on top of the tip and never opens for the keyboard or a tap.
+
+## API
+
+[`Abbreviation.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Abbreviation.astro), which uses [`Tooltip.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Tooltip.astro). It keeps the handoff's props. The tap and the missing `title` are the two changes.
+
+## Related
+
+A footnote, for explanations that need more than one line.

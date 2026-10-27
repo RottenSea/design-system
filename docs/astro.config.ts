@@ -45,6 +45,29 @@ export default defineConfig({
             // Pages build to folders, so their URLs end in a slash.
             link: slug ? `/spec/${slug}/` : "/spec/"
           }))
+        },
+        // One group per system. Entries given as a slug take their label from the page's title
+        // in each language.
+        {
+          label: "Personal website",
+          translations: { "zh-CN": "个人网站" },
+          items: [
+            { slug: "personal-website", label: "Overview", translations: { "zh-CN": "概览" } },
+            {
+              label: "Components",
+              translations: { "zh-CN": "组件" },
+              items: [
+                {
+                  slug: "personal-website/components",
+                  label: "All components",
+                  translations: { "zh-CN": "全部组件" }
+                },
+                ...["admonition", "spoiler", "abbreviation", "steps"].map((name) => ({
+                  slug: `personal-website/components/${name}`
+                }))
+              ]
+            }
+          ]
         }
       ]
     })

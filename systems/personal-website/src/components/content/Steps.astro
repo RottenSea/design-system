@@ -1,0 +1,76 @@
+---
+/**
+ * Sequential instructions as a numbered vertical flow.
+ *
+ * Ported from the handoff's Steps.jsx with the same props: pass `items`, and `current` to mark
+ * progress. In Markdown the `:::steps` directive writes the Step elements itself and works out
+ * each one's status, so the default slot also takes Step elements directly.
+ */
+import Step from "./Step.astro";
+
+interface StepItem {
+  id?: string;
+  /** One line, imperative: "Copy the template folder". */
+  title: string;
+  /** The step's detail. */
+  body?: string;
+  /** Overrides the state derived from `current`. */
+  status?: "done" | "current" | "todo";
+}
+
+interface Props {
+  items?: StepItem[];
+  /** Index of the step in progress. Earlier steps render done, later ones todo. Omit for a
+   *  plain numbered list with no progress state. */
+  current?: number;
+  /** The surface the list sits on. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const {
+  items,
+  current,
+  tone = "cream",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const statusOf = (item: StepItem, index: number) =>
+  item.status ??
+  (current === undefined
+    ? "todo"
+    : index < current
+      ? "done"
+      : index === current
+        ? "current"
+        : "todo");
+---
+
+<ol class:list={["ds-steps", { "ds-steps--dark": tone === "dark" }, className]} {...rest}>
+  {
+    items
+      ? items.map((item, index) =>
+          item.body ? (
+            <Step title={item.title} status={statusOf(item, index)}>
+              {item.body}
+            </Step>
+          ) : (
+            <Step title={item.title} status={statusOf(item, index)} />
+          )
+        )
+      : <slot />
+  }
+</ol>
+
+<style>
+  .ds-steps {
+    counter-reset: ds-step;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+    padding: 0;
+  }
+</style>

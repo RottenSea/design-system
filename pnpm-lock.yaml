@@ -16,6 +16,9 @@ importers:
       '@astrojs/starlight':
         specifier: 0.42.7
         version: 0.42.7(@astrojs/markdown-remark@7.3.4)(astro@7.4.2(@astrojs/markdown-remark@7.3.4)(@types/node@24.19.2)(yaml@2.9.1))(typescript@6.0.3)
+      '@rottensea/ds-personal-website':
+        specifier: workspace:*
+        version: link:../systems/personal-website
       astro:
         specifier: 7.4.2
         version: 7.4.2(@astrojs/markdown-remark@7.3.4)(@types/node@24.19.2)(yaml@2.9.1)
@@ -32,6 +35,18 @@ importers:
       '@unocss/reset':
         specifier: 66.10.5
         version: 66.10.5
+      astro:
+        specifier: ^7.2.0
+        version: 7.4.2(@astrojs/markdown-remark@7.3.4)(@types/node@24.19.2)(yaml@2.9.1)
+      mdast-util-to-string:
+        specifier: 4.0.0
+        version: 4.0.0
+      remark-directive:
+        specifier: 4.0.0
+        version: 4.0.0
+      unist-util-visit:
+        specifier: 5.2.0
+        version: 5.2.0
     devDependencies:
       '@terrazzo/cli':
         specifier: 2.10.0
@@ -39,6 +54,21 @@ importers:
       '@terrazzo/plugin-css':
         specifier: 2.10.0
         version: 2.10.0(@terrazzo/cli@2.10.0(@types/node@24.19.2))(@terrazzo/parser@2.10.0(yaml-to-momoa@0.1.0))
+      '@types/mdast':
+        specifier: 4.0.4
+        version: 4.0.4
+      remark-mdx:
+        specifier: 3.1.1
+        version: 3.1.1
+      remark-parse:
+        specifier: 11.0.0
+        version: 11.0.0
+      unified:
+        specifier: 11.0.5
+        version: 11.0.5
+      vfile:
+        specifier: 6.0.3
+        version: 6.0.3
 
 packages:
 

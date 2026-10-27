@@ -1,0 +1,113 @@
+---
+/**
+ * Text the reader chooses to see: an answer, a plot point, a solution. The cover is a flat fill
+ * with the text set to the same colour (the system has no blur layer), and it lifts on click,
+ * Enter or Space. Revealing is one-way. `block` covers a paragraph, `inline` a few words.
+ *
+ * Ported from the handoff's Spoiler.jsx with the same props. `revealed` sets whether it starts
+ * uncovered; there is no `onReveal` because the reveal runs in a small script, not in React.
+ */
+interface Props {
+  /** `inline` covers a run of words (default) · `block` covers a paragraph. */
+  variant?: "inline" | "block";
+  /** Accessible name while covered. */
+  label?: string;
+  /** Starts uncovered. */
+  revealed?: boolean;
+  /** The surface the spoiler sits on. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const {
+  variant = "inline",
+  label = "Reveal",
+  revealed = false,
+  tone = "cream",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<ds-spoiler
+  class:list={[
+    "ds-spoiler",
+    `ds-spoiler--${variant}`,
+    { "ds-spoiler--dark": tone === "dark" },
+    className
+  ]}
+  data-revealed={revealed ? "" : undefined}
+  role={revealed ? undefined : "button"}
+  tabindex={revealed ? undefined : "0"}
+  aria-expanded={revealed ? "true" : "false"}
+  aria-label={revealed ? undefined : label}
+  {...rest}
+>
+  <slot />
+</ds-spoiler>
+
+<script>
+  class DsSpoiler extends HTMLElement {
+    connectedCallback() {
+      if (this.hasAttribute("data-revealed")) return;
+      const reveal = () => {
+        this.setAttribute("data-revealed", "");
+        this.setAttribute("aria-expanded", "true");
+        this.removeAttribute("role");
+        this.removeAttribute("tabindex");
+        this.removeAttribute("aria-label");
+      };
+      this.addEventListener("click", reveal, { once: true });
+      this.addEventListener("keydown", (event) => {
+        if (this.hasAttribute("data-revealed")) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          reveal();
+        }
+      });
+    }
+  }
+
+  if (!customElements.get("ds-spoiler")) customElements.define("ds-spoiler", DsSpoiler);
+</script>
+
+<style>
+  .ds-spoiler {
+    --ds-spoiler-cover: var(--surface-cream-strong);
+    -webkit-box-decoration-break: clone;
+    background: var(--ds-spoiler-cover);
+    border-radius: var(--radius-xs);
+    box-decoration-break: clone;
+    color: var(--ds-spoiler-cover);
+    cursor: pointer;
+    transition: var(--transition-tint);
+  }
+
+  .ds-spoiler--dark {
+    --ds-spoiler-cover: var(--surface-dark-elevated);
+  }
+
+  .ds-spoiler--inline {
+    display: inline;
+    margin: 0 -0.05em;
+    padding: 0.1em 0.2em;
+  }
+
+  .ds-spoiler--block {
+    display: block;
+    margin: var(--space-md) 0;
+    padding: var(--space-sm);
+  }
+
+  /* Links and code inside keep their own colours, so they are covered too. */
+  .ds-spoiler:not([data-revealed]) :global(*) {
+    color: inherit;
+    background: transparent;
+  }
+
+  .ds-spoiler[data-revealed] {
+    background: transparent;
+    color: inherit;
+    cursor: auto;
+  }
+</style>

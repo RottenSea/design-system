@@ -1,0 +1,69 @@
+---
+title: Admonition
+description: Pulls one point out of the reading flow without breaking it.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Pulls one point out of the reading flow without breaking it.
+
+<Example system="personal-website" name="admonition" title="Admonition in every variant" />
+
+## When to use
+
+Use an admonition when the point changes what the reader should do: a step they must not skip, a mistake that costs them time. Keep it to one or two sentences; a point that needs a heading and paragraphs is a section.
+
+Use a footnote instead when the note only qualifies what the reader just read.
+
+## In a post
+
+```md
+:::tip
+Put a post's images in the same folder as the post.
+:::
+
+:::warning[Check before you push]
+A draft post is left out of the built site.
+:::
+
+:::details[Every frontmatter field]{open}
+title, description, lang and the rest.
+:::
+```
+
+The directive name is the variant. The text in square brackets replaces the label, and `{open}` makes a `details` admonition start open.
+
+## Anatomy
+
+A cream card with, at the top, a 6px dot and an uppercase label in the variant's color, and the content below. The `details` variant adds a chevron on the right of the label.
+
+## Variants
+
+| `variant` | Color | Default label | Use for |
+| --- | --- | --- | --- |
+| `note` | Teal | Note | Background the reader should know |
+| `tip` | Green | Tip | A better way to do something |
+| `important` | Coral | Important | The one thing the reader must not miss. At most one per page, because coral is the brand accent |
+| `warning` | Gold | Warning | Something that can go wrong |
+| `caution` | Red | Caution | Something that loses data or breaks the site |
+| `details` | Muted | Details | Optional detail, folded away until the reader opens it |
+
+`tone="dark"` puts the card on the night surface, for a dark section of a page.
+
+## States
+
+Only `details` has states: closed, the default, and open. It turns the chevron to point up while open.
+
+## Accessibility
+
+The plain variants are an `<aside>`, a complementary landmark. `details` is a native `<details>` and `<summary>`: the summary takes the keyboard focus, Enter and Space open and close it, and screen readers announce whether it is expanded. The color is never the only signal; the label names the variant.
+
+## API
+
+[`Admonition.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Admonition.astro). It keeps the handoff's props. `details` is a native element instead of a button with state, so `open` and `defaultOpen` both set whether it starts open, and there is no `onToggle`.
+
+## Related
+
+[Spoiler](../spoiler/) hides an answer instead of folding away detail.

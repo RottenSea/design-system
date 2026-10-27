@@ -6,7 +6,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "check": "pnpm -r run check",
+    "check": "pnpm -r run check && pnpm -r run test",
     "build": "pnpm -r run build"
   }
 }

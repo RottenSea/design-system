@@ -1,0 +1,147 @@
+---
+/**
+ * The inverse-surface tip: dark on a cream page, cream on a dark one. `tone` names the surface
+ * the trigger sits on, as everywhere else in the system. It opens on hover after `delay`, on
+ * keyboard focus and on a tap, fades only, and closes on Escape.
+ *
+ * Ported from the handoff's Tooltip.jsx with the same props. The handoff opens it on hover and
+ * focus only; a tap is added here so a phone, which has neither, can open it too.
+ * The trigger goes in the default slot and must be focusable for the keyboard path to work.
+ */
+interface Props {
+  /** The tip text. One short line. */
+  label: string;
+  /** Which side of the trigger the tip opens on. */
+  placement?: "top" | "bottom" | "left" | "right";
+  /** The surface the trigger sits on. */
+  tone?: "cream" | "dark";
+  /** Open delay in ms. */
+  delay?: number;
+  class?: string;
+}
+
+const {
+  label,
+  placement = "top",
+  tone = "cream",
+  delay = 120,
+  class: className,
+  ...rest
+} = Astro.props;
+// Unique per render, so the trigger can point at its own tip with aria-describedby.
+const id = `ds-tooltip-${Math.random().toString(36).slice(2, 10)}`;
+---
+
+<ds-tooltip
+  class:list={["ds-tooltip", { "ds-tooltip--dark": tone === "dark" }, className]}
+  data-placement={placement}
+  data-delay={delay}
+  data-tip={id}
+  {...rest}
+>
+  <slot />
+  <span class="ds-tooltip__tip" role="tooltip" id={id}>{label}</span>
+</ds-tooltip>
+
+<script>
+  class DsTooltip extends HTMLElement {
+    connectedCallback() {
+      const tip = this.querySelector<HTMLElement>(".ds-tooltip__tip");
+      const trigger = this.firstElementChild;
+      if (!tip || !trigger || trigger === tip) return;
+      trigger.setAttribute("aria-describedby", tip.id);
+
+      const delay = Number(this.dataset.delay) || 0;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const show = (wait: number) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => this.setAttribute("data-open", ""), wait);
+      };
+      const hide = () => {
+        clearTimeout(timer);
+        this.removeAttribute("data-open");
+      };
+
+      this.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse") show(delay);
+      });
+      this.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "mouse") hide();
+      });
+      this.addEventListener("focusin", () => show(delay));
+      this.addEventListener("focusout", hide);
+      this.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") hide();
+      });
+      // A tap on a touch screen toggles the tip; a tap anywhere else closes it.
+      this.addEventListener("pointerup", (event) => {
+        if (event.pointerType === "mouse") return;
+        if (this.hasAttribute("data-open")) hide();
+        else show(0);
+      });
+      document.addEventListener("pointerdown", (event) => {
+        if (!this.contains(event.target as Node)) hide();
+      });
+    }
+  }
+
+  if (!customElements.get("ds-tooltip")) customElements.define("ds-tooltip", DsTooltip);
+</script>
+
+<style>
+  .ds-tooltip {
+    display: inline-flex;
+    position: relative;
+  }
+
+  .ds-tooltip__tip {
+    background: var(--surface-dark);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-hover);
+    color: var(--text-on-dark);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-weight: var(--caption-weight);
+    line-height: var(--caption-lh);
+    opacity: 0;
+    padding: var(--space-xxs) var(--space-xs);
+    pointer-events: none;
+    position: absolute;
+    transition: var(--transition-fade);
+    white-space: nowrap;
+    z-index: 40;
+  }
+
+  .ds-tooltip--dark .ds-tooltip__tip {
+    background: var(--surface-canvas);
+    color: var(--text-ink);
+  }
+
+  .ds-tooltip[data-open] .ds-tooltip__tip {
+    opacity: 1;
+  }
+
+  .ds-tooltip[data-placement="top"] .ds-tooltip__tip {
+    bottom: calc(100% + var(--space-xs));
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .ds-tooltip[data-placement="bottom"] .ds-tooltip__tip {
+    left: 50%;
+    top: calc(100% + var(--space-xs));
+    transform: translateX(-50%);
+  }
+
+  .ds-tooltip[data-placement="left"] .ds-tooltip__tip {
+    right: calc(100% + var(--space-xs));
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ds-tooltip[data-placement="right"] .ds-tooltip__tip {
+    left: calc(100% + var(--space-xs));
+    top: 50%;
+    transform: translateY(-50%);
+  }
+</style>
