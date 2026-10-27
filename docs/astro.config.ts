@@ -62,7 +62,7 @@ export default defineConfig({
                   label: "All components",
                   translations: { "zh-CN": "全部组件" }
                 },
-                ...["admonition", "spoiler", "abbreviation", "steps"].map((name) => ({
+                ...["admonition", "spoiler", "abbreviation", "steps", "code-block", "table-scroll"].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))
               ]

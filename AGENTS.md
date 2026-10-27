@@ -32,6 +32,8 @@ Design systems, each in `systems/<name>/` with its own version, and a Starlight 
 - Interactive components define a custom element in their `<script>` (`ds-spoiler`, `ds-tooltip`) and guard `customElements.define` with `customElements.get`, since a page can include a component many times.
 - Scoped styles do not reach slot content or other components' elements; select those with `:global()` under one of the component's own classes.
 - An Astro component cannot pass props to its children. `Steps` numbers its items with a CSS counter, and the `:::steps` directive works out each `Step`'s status itself.
+- `CodeBlock` calls Shiki itself and imports its two themes as objects. When a site's build bundles Shiki, as the docs site does with this workspace-linked package, the bundler empties Shiki's table of named themes, and a theme given by name, including through Astro's `<Code>`, fails with "not included in this bundle".
+- A post's code fences and tables reach `MarkdownCode` and `MarkdownTable` only on a site that passes `components` to its MDX content; the docs site cannot show that path, because Expressive Code takes over its code fences. Test it by linking the package into the personal site without committing the link.
 - In MDX, a named slot is filled with an element carrying `slot="..."`. The plugin writes `<div slot="title">` for a step's title, so the title keeps its links and code.
 
 ## The directive plugin

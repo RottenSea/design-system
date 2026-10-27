@@ -1,0 +1,74 @@
+---
+title: CodeBlock
+description: Shows code with its filename, language, line numbers and a copy button.
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows code with its filename, language, line numbers and a copy button, and marks the lines that matter.
+
+<Example system="personal-website" name="code-block" title="Code blocks with a filename, highlights, a diff and folding" />
+
+## When to use
+
+Use it for any code longer than a few words. Inline code, such as a command name inside a sentence, stays inline.
+
+## In a post
+
+Write an ordinary code fence. Its language, an optional `title` and line numbers in braces become the block's chrome:
+
+````md
+```ts title="astro.config.ts" {2}
+export default defineConfig({
+  site: "https://example.com",
+  build: { format: "directory" }, // [!code --]
+  build: { format: "file" }, // [!code ++]
+});
+```
+````
+
+| In the fence | What it does |
+| --- | --- |
+| `title="file.ts"` | Shows the filename in the bar |
+| `{2,4-5}` | Highlights those lines |
+| `// [!code ++]`, `// [!code --]` | Marks a line as added or removed |
+| `// [!code highlight]` | Highlights that one line |
+| `// [!code focus]` | Dims the other lines until the reader points at the block |
+| `// [!code error]`, `// [!code warning]` | Marks a line with the error or warning color |
+| `showLineNumbers=false` | Turns the line numbers off |
+
+The `[!code]` comments are removed from the shown code. The site needs the system's Shiki transformers for these; see the [overview](../../).
+
+## Anatomy
+
+A bar with the filename, the language as an uppercase label and the copy button, then the code on the code surface, then an optional caption.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` | `dark` (default), the warm-navy code surface in both themes; `cream`, the page canvas with a hairline |
+| `showLineNumbers` | On by default. A block of one line never shows a number |
+| `copy` | On by default |
+| `frame` | Off drops the margin, border and fill, for a block inside another frame |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Copied | The copy button turns coral and reads "Copied" for 1.6 seconds |
+| Folded | A block longer than 20 lines shows its first 16 and a "Show all N lines" button; it unfolds for good when pressed |
+
+## Accessibility
+
+The copy button is a real button named "Copy code", and "Copied" once it has worked. The fold button reports `aria-expanded`. Long lines scroll sideways instead of wrapping, because a wrapped line loses its indentation. Line numbers are drawn by CSS, so they are neither read aloud nor copied. Copying leaves out lines marked as removed.
+
+## API
+
+[`CodeBlock.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/CodeBlock.astro), and [`MarkdownCode.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/MarkdownCode.astro), which stands in for a post's code fences. `CodeBlock` keeps the handoff's props. Highlighting is done by Shiki, with `code` and `lang` or with Shiki's output in the slot. Folding long blocks is new; the handoff does not have it.
+
+## Related
+
+[TableScroll](../table-scroll/), the other component that a post's plain Markdown turns into.

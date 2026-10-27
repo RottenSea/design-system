@@ -44,9 +44,12 @@
     "astro": "^7.2.0"
   },
   "dependencies": {
+    "@shikijs/themes": "4.5.0",
+    "@shikijs/transformers": "4.5.0",
     "@unocss/reset": "66.10.5",
     "mdast-util-to-string": "4.0.0",
     "remark-directive": "4.0.0",
+    "shiki": "4.5.0",
     "unist-util-visit": "5.2.0"
   },
   "devDependencies": {

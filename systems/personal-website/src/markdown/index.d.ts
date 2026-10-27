@@ -1,3 +1,4 @@
+import type { ShikiTransformer } from "@shikijs/types";
 import type { Root } from "mdast";
 import type { Processor } from "unified";
 import type { VFile } from "vfile";
@@ -8,3 +9,10 @@ import type { VFile } from "vfile";
  * It also turns on remark-directive's parser.
  */
 export function remarkDsDirectives(this: Processor): (tree: Root, file: VFile) => void;
+
+/** Copies `title="..."` and `showLineNumbers=false` from a code fence's meta onto the <pre>. */
+export function transformerMetaAttributes(): ShikiTransformer;
+
+/** Every Shiki transformer the code blocks use: meta and notation highlights, diff, focus,
+ *  error levels and the fence's title. */
+export function shikiTransformers(): ShikiTransformer[];

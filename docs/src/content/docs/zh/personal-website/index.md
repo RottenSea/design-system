@@ -27,7 +27,7 @@ import "@rottensea/ds-personal-website/index.css";
 ---
 ```
 
-组件是 Astro 组件。可以按名字单独引入，也可以一次全部传给 MDX 页面，文章里就不用写 import：
+组件是 Astro 组件。可以按名字单独引入，也可以一次全部传给 MDX 页面，文章里就不用写 import。同一张对照表还会把文章里的代码块和表格换成 CodeBlock 和 TableScroll：
 
 ```astro
 ---
@@ -37,14 +37,21 @@ const { Content } = await render(post);
 <Content components={components} />
 ```
 
-文章用 `:::tip` 这类指令写组件。把这个系统的 remark 插件加到 unified 处理器里，指令才会变成组件：
+文章用 `:::tip` 这类指令写组件。把这个系统的 remark 插件加到 unified 处理器里，指令才会变成组件；再加上它的 Shiki 转换器，代码块才能写标题和高亮行：
 
 ```ts
 import { unified } from "@astrojs/markdown-remark";
-import { remarkDsDirectives } from "@rottensea/ds-personal-website/markdown";
+import { remarkDsDirectives, shikiTransformers } from "@rottensea/ds-personal-website/markdown";
 
 export default defineConfig({
-  markdown: { processor: unified({ remarkPlugins: [remarkDsDirectives] }) }
+  markdown: {
+    processor: unified({ remarkPlugins: [remarkDsDirectives] }),
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+      transformers: shikiTransformers()
+    }
+  }
 });
 ```
 

@@ -13,3 +13,5 @@ sidebar:
 | [Spoiler 剧透遮罩](./spoiler/) | `:spoiler[...]`、`:::spoiler` | 盖住答案，读者想看时再打开 |
 | [Abbreviation 注释](./abbreviation/) | `:term[...]{note="..."}` | 给一个词加一行说明 |
 | [Steps 步骤条](./steps/) | `:::steps` | 给操作步骤编号 |
+| [CodeBlock 代码块](./code-block/) | 代码块 | 显示代码，带文件名、行号和复制 |
+| [TableScroll 表格滚动](./table-scroll/) | Markdown 表格 | 让宽表格横向滚动 |

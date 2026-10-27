@@ -1,0 +1,21 @@
+---
+/**
+ * Stands in for the <pre> of a code fence in an MDX post, through the `components` map
+ * (`pre: MarkdownCode`). It receives Shiki's <pre> attributes and the highlighted code, and puts
+ * them inside a CodeBlock. The fence's `title="..."` arrives as data-title, from the system's
+ * Shiki transformers, and the language as data-language.
+ */
+import CodeBlock from "./CodeBlock.astro";
+
+type Props = Record<string, unknown>;
+
+const props = Astro.props;
+const filename = typeof props["data-title"] === "string" ? props["data-title"] : undefined;
+const language = typeof props["data-language"] === "string" ? props["data-language"] : undefined;
+// Plain text needs no language label.
+const lang = language && language !== "plaintext" && language !== "text" ? language : undefined;
+---
+
+<CodeBlock filename={filename} lang={lang}>
+  <pre {...props}><slot /></pre>
+</CodeBlock>

@@ -1,0 +1,74 @@
+---
+title: CodeBlock 代码块
+description: 显示代码，带文件名、语言、行号和复制按钮。
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+显示代码，带文件名、语言、行号和复制按钮，并标出要紧的行。
+
+<Example system="personal-website" name="code-block" title="带文件名、高亮、diff 和折叠的代码块" />
+
+## 什么时候用
+
+超过几个词的代码都用它。句子里的命令名这种行内代码，还是写成行内代码。
+
+## 文章里怎么写
+
+照常写代码块。语言、可选的 `title` 和大括号里的行号，会变成代码块上的标题栏和标记：
+
+````md
+```ts title="astro.config.ts" {2}
+export default defineConfig({
+  site: "https://example.com",
+  build: { format: "directory" }, // [!code --]
+  build: { format: "file" }, // [!code ++]
+});
+```
+````
+
+| 代码块里写 | 作用 |
+| --- | --- |
+| `title="file.ts"` | 在标题栏显示文件名 |
+| `{2,4-5}` | 高亮这几行 |
+| `// [!code ++]`、`// [!code --]` | 标记这一行是新增还是删除 |
+| `// [!code highlight]` | 高亮这一行 |
+| `// [!code focus]` | 其他行变淡，鼠标移到代码块上时恢复 |
+| `// [!code error]`、`// [!code warning]` | 用错误色或警告色标记这一行 |
+| `showLineNumbers=false` | 不显示行号 |
+
+`[!code]` 注释不会显示出来。网站要加上这个系统的 Shiki 转换器才支持这些写法，见[概览](../../)。
+
+## 结构
+
+标题栏（文件名、大写的语言标签、复制按钮），下面是代码区，最后是可选的说明。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone` | `dark`（默认），浅色和深色主题下都是暖藏青色的代码底色；`cream`，页面底色加细线边框 |
+| `showLineNumbers` | 默认开。只有一行的代码块永远不显示行号 |
+| `copy` | 默认开 |
+| `frame` | 关掉后去掉外边距、边框和底色，用于放在别的框里的代码块 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 已复制 | 复制按钮变成珊瑚色，显示 “Copied” 1.6 秒 |
+| 折叠 | 超过 20 行的代码块只显示前 16 行和一个 “Show all N lines” 按钮，点开后不再收起 |
+
+## 无障碍
+
+复制按钮是真正的按钮，名字是 “Copy code”，复制成功后变成 “Copied”。展开按钮会报告 `aria-expanded`。长行横向滚动、不换行，因为换行会丢掉缩进。行号由 CSS 画出，读屏软件不读，复制时也不带上。复制时会跳过标记为删除的行。
+
+## API
+
+[`CodeBlock.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/CodeBlock.astro)，以及替换文章里代码块的 [`MarkdownCode.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/MarkdownCode.astro)。`CodeBlock` 的 props 和交付包一样。语法高亮由 Shiki 完成：传 `code` 和 `lang`，或者把 Shiki 的输出放进插槽。长代码折叠是新加的，交付包里没有。
+
+## 相关
+
+[TableScroll 表格滚动](../table-scroll/)，文章里的普通 Markdown 会变成的另一个组件。

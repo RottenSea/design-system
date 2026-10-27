@@ -1,0 +1,51 @@
+---
+title: TableScroll
+description: Lets a wide table scroll inside the reading column.
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Lets a wide table scroll inside the reading column instead of pushing the page open.
+
+<Example system="personal-website" name="table-scroll" title="A table with a caption" />
+
+## When to use
+
+Every table in a post gets it. Use a table for data the reader compares across rows; a list of steps or options is a list.
+
+## In a post
+
+Write an ordinary Markdown table. The site passes the system's components to its posts, and they put every table inside a TableScroll.
+
+```md
+| Field | Type |
+| --- | --- |
+| title | string |
+```
+
+## Anatomy
+
+A rounded frame with a hairline, the header row on the card fill in uppercase micro-labels, and rows divided by a soft hairline. The first column is in ink, as the row's name.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `caption` | A line under the table, also the scrolling region's name |
+| `wrap` | Lets cells wrap. Off by default: a scrolled column reads better than a wrapped one |
+| `stickyHeader` | Pins the header row while the body scrolls |
+| `tone` | `cream` (default) or `dark` |
+
+## Accessibility
+
+The scrolling region takes keyboard focus, so it can be scrolled with the arrow keys, and is a named region: the caption, or "Table" without one.
+
+## API
+
+[`TableScroll.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/TableScroll.astro), and [`MarkdownTable.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MarkdownTable.astro), which stands in for a post's tables. It keeps the handoff's props.
+
+## Related
+
+[CodeBlock](../code-block/), which also scrolls sideways instead of wrapping.

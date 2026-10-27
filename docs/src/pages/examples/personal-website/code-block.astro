@@ -1,0 +1,28 @@
+---
+import { CodeBlock } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const css = `.ds-reveal-in {
+  animation: ds-reveal-in var(--motion-base) var(--ease-enter) both;
+}
+
+@keyframes ds-reveal-in {
+  from { opacity: 0; transform: translateY(4px); }
+}`;
+
+const diff = `export default defineConfig({
+  site: "https://rottenth.cafe",
+  build: { format: "directory" }, // [!code --]
+  build: { format: "file" }, // [!code ++]
+  trailingSlash: "never"
+});`;
+
+const long = Array.from({ length: 28 }, (_, i) => `const line${i + 1} = ${i + 1};`).join("\n");
+---
+
+<ExampleLayout title="CodeBlock">
+  <CodeBlock code={css} lang="css" filename="src/styles/motion.css" highlightLines={[2]} />
+  <CodeBlock code={diff} lang="ts" filename="astro.config.ts" />
+  <CodeBlock code="pnpm add astro" lang="sh" tone="cream" />
+  <CodeBlock code={long} lang="js" filename="long.js" caption="A block longer than 20 lines starts folded." />
+</ExampleLayout>

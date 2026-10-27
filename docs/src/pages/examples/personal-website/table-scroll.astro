@@ -1,0 +1,20 @@
+---
+import { TableScroll } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="TableScroll">
+  <TableScroll caption="Frontmatter fields">
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Type</th><th>Required</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>title</td><td>string</td><td>yes</td><td>The post's title, on the page and in the list</td></tr>
+        <tr><td>published</td><td>date</td><td>yes</td><td>A bare date means 11:00 UTC+8 that day</td></tr>
+        <tr><td>publishedAt</td><td>date and time</td><td>no</td><td>Orders posts published on the same day, so it has to fall on that day</td></tr>
+        <tr><td>permalink</td><td>string</td><td>no</td><td>Replaces the folder name in the post's URL</td></tr>
+      </tbody>
+    </table>
+  </TableScroll>
+</ExampleLayout>

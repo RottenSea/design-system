@@ -13,3 +13,5 @@ Each page says when to use the component, how to write it in a post, and what it
 | [Spoiler](./spoiler/) | `:spoiler[...]`, `:::spoiler` | Covers an answer until the reader asks for it |
 | [Abbreviation](./abbreviation/) | `:term[...]{note="..."}` | Gives a term a one-line explanation |
 | [Steps](./steps/) | `:::steps` | Numbers a procedure |
+| [CodeBlock](./code-block/) | A code fence | Shows code with its filename, line numbers and copy |
+| [TableScroll](./table-scroll/) | A Markdown table | Lets a wide table scroll |

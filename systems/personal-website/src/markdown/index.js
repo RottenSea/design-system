@@ -155,3 +155,5 @@ export function remarkDsDirectives() {
     transform(tree, file);
   };
 }
+
+export { shikiTransformers, transformerMetaAttributes } from "./shiki.js";

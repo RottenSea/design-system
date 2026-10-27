@@ -1,0 +1,14 @@
+---
+/**
+ * Stands in for a Markdown table in an MDX post, through the `components` map
+ * (`table: MarkdownTable`). The map replaces the <table> element itself, while TableScroll wraps
+ * a whole table, so this puts the table back together inside one.
+ */
+import TableScroll from "./TableScroll.astro";
+
+type Props = Record<string, unknown>;
+---
+
+<TableScroll>
+  <table {...Astro.props}><slot /></table>
+</TableScroll>

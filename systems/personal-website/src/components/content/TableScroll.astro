@@ -1,0 +1,134 @@
+---
+/**
+ * Wraps a <table> so a wide one scrolls inside the reading column instead of pushing it open.
+ * The table is styled by element selectors under the wrapper, because a Markdown table arrives
+ * as plain HTML with nothing to pass props to. Cells do not wrap by default: a wrapped column is
+ * harder to read than a scrolled one.
+ *
+ * Ported from the handoff's TableScroll.jsx with the same props. The scrolling region takes the
+ * keyboard focus, so it can be scrolled without a mouse, and is named by the caption.
+ */
+interface Props {
+  /** Caption under the table. Also the region's accessible name. */
+  caption?: string;
+  /** Lets cells wrap. */
+  wrap?: boolean;
+  /** Pins <thead> while the body scrolls vertically. */
+  stickyHeader?: boolean;
+  /** The surface the table sits on. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const {
+  caption,
+  wrap = false,
+  stickyHeader = false,
+  tone = "cream",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<figure class:list={["ds-table", className]} {...rest}>
+  <div
+    class="ds-table-scroll"
+    data-tone={tone}
+    data-wrap={wrap ? "true" : undefined}
+    data-sticky={stickyHeader ? "true" : undefined}
+    tabindex="0"
+    role="region"
+    aria-label={caption ?? "Table"}
+  >
+    <slot />
+  </div>
+  {caption && <figcaption class="ds-table__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .ds-table {
+    margin: var(--space-lg) 0;
+    max-width: 100%;
+  }
+
+  .ds-table-scroll {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+  }
+
+  .ds-table-scroll :global(table) {
+    border-collapse: collapse;
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    width: 100%;
+  }
+
+  .ds-table-scroll :global(:is(th, td)) {
+    border-bottom: 1px solid var(--hairline-soft);
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .ds-table-scroll :global(th) {
+    background: var(--surface-card);
+    border-bottom-color: var(--hairline);
+    color: var(--text-muted);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    text-transform: uppercase;
+  }
+
+  .ds-table-scroll :global(tr:last-child :is(th, td)) {
+    border-bottom: 0;
+  }
+
+  .ds-table-scroll :global(td:first-child) {
+    color: var(--text-ink);
+  }
+
+  .ds-table-scroll[data-wrap="true"] :global(:is(th, td)) {
+    white-space: normal;
+  }
+
+  .ds-table-scroll[data-sticky="true"] :global(thead th) {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .ds-table-scroll[data-tone="dark"] {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-table-scroll[data-tone="dark"] :global(table) {
+    color: var(--text-on-dark);
+  }
+
+  .ds-table-scroll[data-tone="dark"] :global(:is(th, td)) {
+    border-bottom-color: var(--hairline-on-dark);
+  }
+
+  .ds-table-scroll[data-tone="dark"] :global(th) {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-table-scroll[data-tone="dark"] :global(td:first-child) {
+    color: var(--text-on-dark);
+  }
+
+  .ds-table__caption {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    margin-top: var(--space-xs);
+  }
+</style>

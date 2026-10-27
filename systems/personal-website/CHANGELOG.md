@@ -11,7 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Astro components, ported from the brand design handoff with the same props: `Admonition` (note, tip, important, warning, caution and a foldable details variant), `Spoiler` (inline and block), `Abbreviation` with `Tooltip`, and `Steps` with `Step`. Import them from `components`, which also exports all of them as `components` for an MDX page.
 - `markdown`, a remark plugin that turns directives in MDX posts into those components: `:::note`, `:::tip`, `:::important`, `:::warning`, `:::caution`, `:::details`, `:::spoiler`, `:::steps`, `:spoiler[...]` and `:term[...]{note="..."}`. A directive it does not know is kept as text, with a warning when its name starts with a letter.
-- Two Tabler icons the components use, in `src/icons/`.
+- `CodeBlock`, highlighted by Shiki, with a filename, a language label, line numbers, highlighted, added and removed lines, a copy button that leaves removed lines out, and, new to the system, folding for blocks longer than 20 lines. `MarkdownCode` puts a post's code fences into it.
+- `TableScroll`, which lets a wide table scroll, and `MarkdownTable`, which puts a post's tables into it. The `components` map now also replaces `pre` and `table`.
+- `shikiTransformers()` from `markdown`, for a site's `shikiConfig`: line highlights in a fence's meta, Shiki's `[!code ...]` notations, and the fence's `title`.
+- The Tabler icons the components use, in `src/icons/`.
 
 ### Changed
 

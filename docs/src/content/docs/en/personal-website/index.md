@@ -27,7 +27,7 @@ import "@rottensea/ds-personal-website/index.css";
 ---
 ```
 
-The components are Astro components. Import one by name, or pass all of them to an MDX page so posts can use them without imports:
+The components are Astro components. Import one by name, or pass all of them to an MDX page so posts can use them without imports. The same map turns a post's code fences and tables into CodeBlock and TableScroll:
 
 ```astro
 ---
@@ -37,14 +37,21 @@ const { Content } = await render(post);
 <Content components={components} />
 ```
 
-Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components:
+Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, and its Shiki transformers so code fences can have a title and highlighted lines:
 
 ```ts
 import { unified } from "@astrojs/markdown-remark";
-import { remarkDsDirectives } from "@rottensea/ds-personal-website/markdown";
+import { remarkDsDirectives, shikiTransformers } from "@rottensea/ds-personal-website/markdown";
 
 export default defineConfig({
-  markdown: { processor: unified({ remarkPlugins: [remarkDsDirectives] }) }
+  markdown: {
+    processor: unified({ remarkPlugins: [remarkDsDirectives] }),
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+      transformers: shikiTransformers()
+    }
+  }
 });
 ```
 
