@@ -1,0 +1,98 @@
+<!-- @dsCard group="Colors" viewport="700x130" name="Coral — the brand voltage" subtitle="Scarce on individual elements, generous only on full-bleed callouts" -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="../src/styles.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        background: var(--surface-canvas);
+        font-family: var(--font-sans);
+      }
+      .c {
+        padding: 20px 24px;
+        box-sizing: border-box;
+      }
+      .sw {
+        display: flex;
+        gap: 10px;
+      }
+      .s {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .chip {
+        height: 56px;
+        border-radius: var(--radius-md);
+        display: block;
+      }
+      .n {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-ink);
+        margin-top: 8px;
+        display: block;
+      }
+      .h {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted-soft);
+        display: block;
+        margin-top: 2px;
+      }
+      .row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+      }
+      .meta {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted-soft);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="c">
+      <div class="sw">
+        <div class="s">
+          <span
+            class="chip"
+            style="background: var(--color-primary)"
+          ></span
+          ><span class="n">Primary</span><span class="h">#d97757</span>
+        </div>
+        <div class="s">
+          <span
+            class="chip"
+            style="background: var(--color-primary-active)"
+          ></span
+          ><span class="n">Primary active</span><span class="h">#a9583e</span>
+        </div>
+        <div class="s">
+          <span
+            class="chip"
+            style="background: var(--color-primary-disabled)"
+          ></span
+          ><span class="n">Disabled</span><span class="h">#e6dfd8</span>
+        </div>
+        <div class="s">
+          <span
+            class="chip"
+            style="
+              background: var(--color-on-primary);
+              border: var(--border-hairline);
+            "
+          ></span
+          ><span class="n">On primary</span><span class="h">#ffffff</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

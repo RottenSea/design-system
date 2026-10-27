@@ -1,0 +1,10 @@
+/*
+ * The design system without a reset, for a plain HTML page: every import is a relative path the
+ * browser can follow. The guideline pages link this file directly.
+ */
+@import "./fonts.css";
+@import "../dist/tokens.css";
+@import "./typography.css";
+@import "./motion.css";
+@import "./touch.css";
+@import "./base.css";

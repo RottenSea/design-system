@@ -1,117 +1,114 @@
 /*
- * Element defaults built on the design tokens. Every rule sits in the `base` layer, so any
- * unlayered rule in the site overrides it whatever its specificity. index.css puts the
+ * Element defaults: the cream floor and the type voice, for free. Every rule sits in the `base`
+ * layer, so any unlayered rule in a site overrides it whatever its specificity. index.css puts the
  * Tailwind Preflight reset in the `reset` layer underneath.
  */
 @layer reset, base;
 
 @layer base {
   html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     /* Show only the weights and styles fonts.css loads instead of faking bold or italic. */
     font-synthesis: none;
   }
 
   body {
-    background-color: var(--color-surface-canvas);
-    color: var(--color-text-body);
-    font: var(--typography-body-md);
-    letter-spacing: var(--typography-body-md-letter-spacing);
+    margin: 0;
+    background: var(--surface-canvas);
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-lh);
   }
 
   /* body's color is computed in the outer theme, so a themed subtree has to read the text color again. */
   [data-theme] {
-    color: var(--color-text-body);
+    color: var(--text-body);
   }
 
-  /* Declared on every element, not inherited from :root, so a [data-theme] subtree gets its own color. */
+  /* Declared on every element, not inherited from :root, so a [data-theme] subtree gets its own hairline. */
   *,
   ::before,
   ::after {
-    border-color: var(--color-border-default);
+    border-color: var(--hairline);
   }
 
   h1,
   h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: var(--color-text-ink);
+  h3 {
+    margin: 0;
+    color: var(--text-ink);
+    font-family: var(--font-display);
+    font-weight: 400;
   }
 
   h1 {
-    font: var(--typography-display-xl);
-    letter-spacing: var(--typography-display-xl-letter-spacing);
+    font-size: var(--display-xl-size);
+    line-height: var(--display-xl-lh);
+    letter-spacing: var(--display-xl-ls);
   }
 
   h2 {
-    font: var(--typography-display-lg);
-    letter-spacing: var(--typography-display-lg-letter-spacing);
+    font-size: var(--display-lg-size);
+    line-height: var(--display-lg-lh);
+    letter-spacing: var(--display-lg-ls);
   }
 
   h3 {
-    font: var(--typography-display-md);
-    letter-spacing: var(--typography-display-md-letter-spacing);
+    font-size: var(--display-md-size);
+    line-height: var(--display-md-lh);
+    letter-spacing: var(--display-md-ls);
   }
 
-  h4 {
-    font: var(--typography-display-sm);
-    letter-spacing: var(--typography-display-sm-letter-spacing);
-  }
-
-  h5 {
-    font: var(--typography-title-lg);
-    letter-spacing: var(--typography-title-lg-letter-spacing);
-  }
-
+  h4,
+  h5,
   h6 {
-    font: var(--typography-title-md);
-    letter-spacing: var(--typography-title-md-letter-spacing);
+    margin: 0;
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    font-weight: 500;
   }
 
   p {
+    margin: 0;
     text-wrap: pretty;
   }
 
-  /* Underlined because link and body colors are below the 3:1 that color alone would need (WCAG 1.4.1). */
   a {
-    color: var(--color-text-link);
-    text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.2em;
+    color: var(--text-link);
+    text-decoration: none;
   }
 
   a:hover {
-    text-decoration-thickness: 2px;
+    color: var(--color-primary-active);
+    text-decoration: underline;
   }
 
   code,
-  kbd,
-  samp {
-    font-family: var(--font-mono);
-  }
-
   pre {
-    font: var(--typography-code-default);
-    letter-spacing: var(--typography-code-default-letter-spacing);
-  }
-
-  ::placeholder {
-    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
+    line-height: var(--code-lh);
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-primary-default) 22%, transparent);
+    background: rgb(217 119 87 / 22%);
   }
 
+  /*
+   * Keyboard focus on links and buttons. Inputs draw their own --focus-ring halo; everything else
+   * gets this outline so a keyboard user can always see where they are (WCAG 2.4.7).
+   */
   :focus-visible {
-    outline: 2px solid var(--color-focus);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 
   /*
-   * Reduced motion. Transitions and animations finish in 1ms instead of 0 so transitionend and
-   * animationend still fire, and run once so a looping animation cannot flicker. Loading
+   * Reduced motion, at two levels: the OS setting, and a site switch a page can set on <html> as
+   * data-reduce-motion="true". Transitions and animations finish in 1ms instead of 0 so transitionend
+   * and animationend still fire, and run once so a looping animation cannot flicker. Loading
    * animations opt out with data-motion="essential", which covers the element and its children.
    * !important inside a layer outranks !important outside it, so component styles cannot undo this.
    */
@@ -127,7 +124,33 @@
       animation-delay: 0ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 1ms !important;
-      transition-delay: 0ms !important;
     }
+
+    .ds-progress-indeterminate:not([data-motion="essential"]) {
+      animation: none !important;
+      left: 0 !important;
+      width: 100% !important;
+      opacity: 0.4;
+    }
+  }
+
+  [data-reduce-motion="true"]
+    :not([data-motion="essential"], [data-motion="essential"] *),
+  [data-reduce-motion="true"]
+    :not([data-motion="essential"], [data-motion="essential"] *)::before,
+  [data-reduce-motion="true"]
+    :not([data-motion="essential"], [data-motion="essential"] *)::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  [data-reduce-motion="true"]
+    .ds-progress-indeterminate:not([data-motion="essential"]) {
+    animation: none !important;
+    left: 0 !important;
+    width: 100% !important;
+    opacity: 0.4;
   }
 }

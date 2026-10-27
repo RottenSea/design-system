@@ -1,0 +1,57 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Corner radii.",
+  "radius": {
+    "$type": "dimension",
+    "$description": "8px controls, 12px cards, 16px hero artifacts, pills for badges.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "控件 8px，卡片 12px，大块展示 16px，徽章用胶囊形。"
+        }
+      }
+    },
+    "xs": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 6,
+        "unit": "px"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "xl": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "pill": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      }
+    },
+    "full": {
+      "$value": {
+        "value": 9999,
+        "unit": "px"
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Touch targets.",
+  "tap-min": {
+    "$type": "dimension",
+    "$value": {
+      "value": 44,
+      "unit": "px"
+    },
+    "$description": "Minimum touch target below 768px. Elements opt in with data-ds-tap.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "768px 以下的最小触控尺寸。元素加 data-ds-tap 属性才生效。"
+        }
+      }
+    }
+  }
+}

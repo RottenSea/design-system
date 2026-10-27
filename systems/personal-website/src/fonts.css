@@ -1,5 +1,5 @@
 /*
- * Loads the font families named by --font-serif, --font-sans, --font-mono and --font-math.
+ * Loads the font families named by --font-display, --font-sans, --font-mono and --font-math.
  *
  * Manrope, Noto Sans SC and Noto Serif SC are variable fonts on Google Fonts, so one
  * 400..700 range covers the regular, medium and bold weight tokens with the same files.

@@ -1,0 +1,105 @@
+<!-- @dsCard group="Motion" viewport="700x260" name="What moves, what never does" subtitle="Color and opacity by default; two levels of reduced motion" -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="../src/styles.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        background: var(--surface-canvas);
+        font-family: var(--font-sans);
+      }
+      .c {
+        padding: 20px 24px;
+        box-sizing: border-box;
+      }
+      .meta {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted-soft);
+        white-space: nowrap;
+      }
+      .n {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-ink);
+      }
+      .note {
+        font-size: 12px;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+      }
+      ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+      li {
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-body);
+      }
+      li::marker {
+        color: var(--text-muted-soft);
+      }
+      h4 {
+        margin: 0 0 6px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="c"
+      style="display: flex; flex-direction: column; gap: 16px"
+    >
+      <div class="cols">
+        <div>
+          <h4 style="color: var(--text-muted)">Animates</h4>
+          <ul>
+            <li>Tint on press, tab select, link and row hover</li>
+            <li>Nav going transparent to solid on scroll</li>
+            <li>Banner, drawer, and dialog scrim opacity</li>
+            <li>Height on a collapsing year or widget</li>
+            <li>List membership — the three primitives</li>
+            <li>Back-to-top appearing, on opacity</li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--color-primary)">Never</h4>
+          <ul>
+            <li>Scale, shrink, or lift on press</li>
+            <li>Scroll-triggered reveals and parallax</li>
+            <li>
+              Springs, bounces, overshoot — except the one Dialog entrance
+            </li>
+            <li>Looping or attention-seeking motion; no marquee</li>
+            <li>Skeleton shimmer; a static cream block is the loading state</li>
+            <li>Page transitions on navigation</li>
+          </ul>
+        </div>
+      </div>
+      <span
+        class="note"
+        style="border-top: 1px solid var(--hairline-soft); padding-top: 12px"
+        >Two levels of degrade, both to 1ms: the OS setting via
+        <span class="meta">prefers-reduced-motion</span>, and a site switch the
+        page flips as <span class="meta">data-reduce-motion="true"</span> on the
+        html element. Anything that only conveys meaning while moving is
+        therefore already broken — motion is confirmation, never
+        information.</span
+      >
+    </div>
+  </body>
+</html>

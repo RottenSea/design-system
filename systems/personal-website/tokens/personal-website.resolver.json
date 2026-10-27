@@ -5,30 +5,67 @@
   "description": "Design tokens for the personal website.",
   "sets": {
     "foundation": {
-      "description": "Tokens shared by every theme. The semantic colors and shadows here are the light theme's.",
+      "description": "Tokens shared by every context. The semantic colors here are the light theme's, and the display sizes are the wide screen's.",
       "sources": [
-        { "$ref": "color/palette.tokens.json" },
-        { "$ref": "color/semantic.tokens.json" },
-        { "$ref": "typography/font.tokens.json" },
-        { "$ref": "typography/styles.tokens.json" },
-        { "$ref": "size/space.tokens.json" },
-        { "$ref": "size/radius.tokens.json" },
-        { "$ref": "effect/shadow.tokens.json" },
-        { "$ref": "effect/border.tokens.json" },
-        { "$ref": "motion/timing.tokens.json" },
-        { "$ref": "motion/transition.tokens.json" }
+        {
+          "$ref": "colors.tokens.json"
+        },
+        {
+          "$ref": "typography.tokens.json"
+        },
+        {
+          "$ref": "spacing.tokens.json"
+        },
+        {
+          "$ref": "radius.tokens.json"
+        },
+        {
+          "$ref": "elevation.tokens.json"
+        },
+        {
+          "$ref": "motion.tokens.json"
+        },
+        {
+          "$ref": "touch.tokens.json"
+        }
       ]
     }
   },
   "modifiers": {
     "theme": {
-      "description": "Color theme. Light uses the foundation as it is; dark overrides semantic colors and shadows.",
+      "description": "Color theme. Light uses the foundation as it is; dark remaps the semantic colors.",
       "contexts": {
         "light": [],
-        "dark": [{ "$ref": "theme/dark.tokens.json" }]
+        "dark": [
+          {
+            "$ref": "theme-dark.tokens.json"
+          }
+        ]
       },
       "default": "light"
+    },
+    "viewport": {
+      "description": "Screen width. Narrow is below 768px, where the three largest display sizes step down.",
+      "contexts": {
+        "wide": [],
+        "narrow": [
+          {
+            "$ref": "typography-narrow.tokens.json"
+          }
+        ]
+      },
+      "default": "wide"
     }
   },
-  "resolutionOrder": [{ "$ref": "#/sets/foundation" }, { "$ref": "#/modifiers/theme" }]
+  "resolutionOrder": [
+    {
+      "$ref": "#/sets/foundation"
+    },
+    {
+      "$ref": "#/modifiers/theme"
+    },
+    {
+      "$ref": "#/modifiers/viewport"
+    }
+  ]
 }

@@ -1,0 +1,174 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Shadows and border shorthands.",
+  "shadow": {
+    "$type": "shadow",
+    "$description": "Color-block first; a shadow appears twice in the whole system.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "优先用色块区分层级，整个系统只有两处用阴影。"
+        }
+      }
+    },
+    "none": {
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0, 0, 0],
+          "hex": "#000000",
+          "alpha": 0
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": 0,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 0,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "No shadow.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "没有阴影。"
+          }
+        }
+      }
+    },
+    "hover": {
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0.0784, 0.0784, 0.0745],
+          "hex": "#141413",
+          "alpha": 0.08
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": 1,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 3,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "A card under the pointer.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "鼠标悬停的卡片。"
+          }
+        }
+      }
+    },
+    "float": {
+      "$value": {
+        "color": {
+          "colorSpace": "srgb",
+          "components": [0.0784, 0.0784, 0.0745],
+          "hex": "#141413",
+          "alpha": 0.1
+        },
+        "offsetX": {
+          "value": 0,
+          "unit": "px"
+        },
+        "offsetY": {
+          "value": 8,
+          "unit": "px"
+        },
+        "blur": {
+          "value": 24,
+          "unit": "px"
+        },
+        "spread": {
+          "value": 0,
+          "unit": "px"
+        }
+      },
+      "$description": "Floating layers: menus, popovers, dialogs.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "浮层：菜单、弹出框、对话框。"
+          }
+        }
+      }
+    }
+  },
+  "border": {
+    "$type": "border",
+    "hairline": {
+      "$value": {
+        "color": "{hairline}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      },
+      "$description": "Dividers and card outlines.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "分割线和卡片边框。"
+          }
+        }
+      }
+    },
+    "hairline-soft": {
+      "$value": {
+        "color": "{hairline-soft}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      },
+      "$description": "Fainter dividers inside cards.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "卡片内更淡的分割线。"
+          }
+        }
+      }
+    },
+    "hairline-dark": {
+      "$value": {
+        "color": "{hairline-on-dark}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      },
+      "$description": "Borders on dark surfaces.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "深色表面上的边框。"
+          }
+        }
+      }
+    }
+  }
+}

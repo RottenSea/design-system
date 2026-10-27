@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+This release redesigns the system after the brand design handoff. Most variable names change, so sites have to update their styles.
+
+### Added
+
+- Specimen pages in `guidelines/`, one per foundation topic: brand, colors, layout, motion, spacing and shape, and type. Each is a plain HTML page that links `src/styles.css`, and opens with an `@dsCard` comment giving its group, name, subtitle and size.
+- `styles.css`, the whole system without a reset, for plain HTML pages. `index.css` now loads the reset and then `styles.css`.
+- `typography.css` with the `.ds-display-*`, `.ds-title-*`, `.ds-body-*`, `.ds-caption`, `.ds-caption-upper` and `.ds-code` classes.
+- `motion.css` with the composed `--transition-tint`, `--transition-surface`, `--transition-fade` and `--transition-collapse` shorthands, the `.ds-reveal-in`, `.ds-fade-out` and `.ds-collapse` primitives, and the `.ds-progress-indeterminate` loop.
+- `touch.css`, which grows elements marked `data-ds-tap` to `--tap-min` (44px) below 768px.
+- Layout tokens: `--container-max`, `--container-reading`, `--container-wide`, `--rail-left`, `--rail-right`, `--nav-height`, `--control-height`, `--icon-button-size`, and `--break-rails` and `--break-stack` for reference.
+- Marker tints `--marker-coral`, `--marker-teal`, `--marker-amber` and `--marker-red`, with on-dark pairs.
+- Translucent surfaces for backdrop blur, `--surface-blur-cream` and `--surface-blur-dark`, with opaque fallbacks.
+- `--focus-ring`, the halo around a focused input, and `--motion-entrance` and `--motion-shift`.
+- Below 768px the three largest display sizes step down to 44, 38 and 32px.
+- Setting `data-reduce-motion="true"` on an element reduces motion inside it, as the OS setting does.
+- Chinese descriptions for tokens in `$extensions["cafe.rottenth"].description["zh-CN"]`.
+- The brand mark, `assets/logo-colored.svg`.
+
+### Changed
+
+- Variable names follow the handoff. Palette steps drop the `color-palette` prefix (`--coral-500`), semantic colors drop the `color` prefix (`--text-body`, `--surface-canvas`, `--hairline`), spacing uses size names (`--space-xxs` to `--space-xxl` and `--space-section`), and each text style writes its properties separately (`--display-xl-size`, `-weight`, `-lh`, `-ls`, `-family`) instead of a `font` shorthand.
+- The display font token is `--font-display`, formerly `--font-serif`.
+- Durations are `--motion-fast`, `--motion-base` and `--motion-slow`, and easings are `--ease-enter`, `--ease-exit` and `--ease-move`. The `--transition-*` variables now include the properties they animate, so use them as `transition: var(--transition-tint)`.
+- The dark theme applies only under `data-theme="dark"`; there is no `prefers-color-scheme` query. A page sets `data-theme` before the first paint from the saved choice or the OS setting. Only the tokens the dark theme changes are written in its block.
+- Links have no underline until hovered, and inline links use coral 500.
+- h1 to h3 use the display styles and h4 to h6 use the sans at weight 500.
+- Colors are written as hex.
+
+### Removed
+
+- The contrast check in `pnpm check`. It now only validates the tokens against the DTCG format.
+- `--color-text-disabled`, `--color-focus`, the extra palette steps coral 600 and 800, night 600 to 750, and red 400 and 600, and the font weight tokens.
+
 ## [0.1.0] - 2026-10-25
 
 ### Added

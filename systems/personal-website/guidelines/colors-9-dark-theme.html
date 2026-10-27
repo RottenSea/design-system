@@ -1,0 +1,217 @@
+<!-- @dsCard group="Colors" viewport="1100x400" name="Dark theme" subtitle="tokens/theme.css remaps the semantic aliases only — the ramps and the coral never move" -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="../src/styles.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        background: var(--surface-canvas);
+        font-family: var(--font-sans);
+      }
+      .c {
+        padding: 20px 24px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .pane {
+        padding: 16px;
+        border-radius: var(--radius-lg);
+        background: var(--surface-canvas);
+        border: var(--border-hairline);
+      }
+      .lbl {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--text-muted-soft);
+        display: block;
+        margin-bottom: 12px;
+      }
+      .sw {
+        display: flex;
+        gap: 8px;
+      }
+      .s {
+        flex: 1;
+        min-width: 0;
+      }
+      .chip {
+        height: 44px;
+        border-radius: var(--radius-md);
+        display: block;
+        border: var(--border-hairline);
+      }
+      .n {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-ink);
+        margin-top: 6px;
+        display: block;
+      }
+      .h {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--text-muted-soft);
+        display: block;
+      }
+      .type {
+        margin-top: 14px;
+      }
+      .t1 {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 400;
+        letter-spacing: -0.3px;
+        color: var(--text-ink);
+      }
+      .t2 {
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--text-body);
+        margin-top: 4px;
+      }
+      .t3 {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+      .cta {
+        margin-top: 12px;
+        display: inline-flex;
+        height: 32px;
+        align-items: center;
+        padding: 0 14px;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: var(--color-on-primary);
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .note {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted-soft);
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="c">
+      <div
+        class="pane"
+        data-theme="light"
+      >
+        <span class="lbl">Light · data-theme="light"</span>
+        <div class="sw">
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-canvas)"
+            ></span
+            ><span class="n">Canvas</span><span class="h">cream-50</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-card)"
+            ></span
+            ><span class="n">Card</span><span class="h">cream-200</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-dark)"
+            ></span
+            ><span class="n">Dark</span><span class="h">night-900</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--hairline)"
+            ></span
+            ><span class="n">Hairline</span><span class="h">cream-500</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--marker-amber)"
+            ></span
+            ><span class="n">Marker</span><span class="h">amber tint</span>
+          </div>
+        </div>
+        <div class="type">
+          <div class="t1">Hairlines carry more</div>
+          <div class="t2">Body copy at --text-body, the reading colour.</div>
+          <div class="t3">Muted meta line · Mar 4, 2026</div>
+          <div class="cta">Start free</div>
+        </div>
+      </div>
+      <div
+        class="pane"
+        data-theme="dark"
+      >
+        <span class="lbl">Dark · data-theme="dark"</span>
+        <div class="sw">
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-canvas)"
+            ></span
+            ><span class="n">Canvas</span><span class="h">night-900</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-card)"
+            ></span
+            ><span class="n">Card</span><span class="h">night-800</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--surface-dark)"
+            ></span
+            ><span class="n">Dark</span><span class="h">#2b2925</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--hairline)"
+            ></span
+            ><span class="n">Hairline</span><span class="h">#35332f</span>
+          </div>
+          <div class="s">
+            <span
+              class="chip"
+              style="background: var(--marker-amber)"
+            ></span
+            ><span class="n">Marker</span><span class="h">amber on dark</span>
+          </div>
+        </div>
+        <div class="type">
+          <div class="t1">Hairlines carry more</div>
+          <div class="t2">Body copy at --text-body, the reading colour.</div>
+          <div class="t3">Muted meta line · Mar 4, 2026</div>
+          <div class="cta">Start free</div>
+        </div>
+      </div>
+      <div
+        class="note"
+        style="grid-column: 1 / -1"
+      >
+        Same token names, same component code. The dark theme steps
+        --surface-dark one level ABOVE the canvas, so a dark card stays a
+        distinct band instead of dissolving into the page. Coral, on-primary,
+        and the focus ring are identical in both.
+      </div>
+    </div>
+  </body>
+</html>

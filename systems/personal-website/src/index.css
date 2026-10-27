@@ -1,11 +1,7 @@
 /*
- * Everything the personal website needs, in cascade order: the Tailwind Preflight reset, the
- * fonts, the tokens and the element defaults. The reset and base layers sit below any unlayered
- * site styles. "@unocss/reset" is a bare import that the site's bundler resolves.
+ * The design system with the Tailwind Preflight reset, for a site built with a bundler, which
+ * resolves the bare @unocss/reset import. The reset sits in the lowest layer.
  */
 @layer reset, base;
-
 @import "@unocss/reset/tailwind-v4.css" layer(reset);
-@import "./fonts.css";
-@import "../dist/tokens.css";
-@import "./base.css";
+@import "./styles.css";

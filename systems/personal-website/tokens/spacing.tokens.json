@@ -1,0 +1,223 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Spacing, page widths and fixed sizes.",
+  "space": {
+    "$type": "dimension",
+    "$description": "4px base unit.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "以 4px 为基本单位。"
+        }
+      }
+    },
+    "xxs": {
+      "$value": {
+        "value": 4,
+        "unit": "px"
+      }
+    },
+    "xs": {
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      }
+    },
+    "sm": {
+      "$value": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "md": {
+      "$value": {
+        "value": 16,
+        "unit": "px"
+      }
+    },
+    "lg": {
+      "$value": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "xl": {
+      "$value": {
+        "value": 32,
+        "unit": "px"
+      }
+    },
+    "xxl": {
+      "$value": {
+        "value": 48,
+        "unit": "px"
+      }
+    },
+    "section": {
+      "$value": {
+        "value": 96,
+        "unit": "px"
+      },
+      "$description": "Between major bands, uniformly.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "大区块之间的距离，全站一致。"
+          }
+        }
+      }
+    }
+  },
+  "container": {
+    "$type": "dimension",
+    "max": {
+      "$value": {
+        "value": 1200,
+        "unit": "px"
+      },
+      "$description": "Content width.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "内容宽度。"
+          }
+        }
+      }
+    },
+    "reading": {
+      "$value": {
+        "value": 680,
+        "unit": "px"
+      },
+      "$description": "Single-column reading measure: article body, about page.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "单栏阅读宽度：文章正文、关于页。"
+          }
+        }
+      }
+    },
+    "wide": {
+      "$value": {
+        "value": 1360,
+        "unit": "px"
+      },
+      "$description": "Three-column content pages: two rails and gutters around a full reading column.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "三栏内容页：两侧栏加间距，中间保留完整的阅读宽度。"
+          }
+        }
+      }
+    }
+  },
+  "nav-height": {
+    "$type": "dimension",
+    "$value": {
+      "value": 64,
+      "unit": "px"
+    },
+    "$description": "Top navigation bar height.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "顶部导航栏高度。"
+        }
+      }
+    }
+  },
+  "control-height": {
+    "$type": "dimension",
+    "$value": {
+      "value": 40,
+      "unit": "px"
+    },
+    "$description": "Inputs and buttons.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "输入框和按钮的高度。"
+        }
+      }
+    }
+  },
+  "icon-button-size": {
+    "$type": "dimension",
+    "$value": {
+      "value": 36,
+      "unit": "px"
+    },
+    "$description": "Icon-only buttons.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "只有图标的按钮。"
+        }
+      }
+    }
+  },
+  "rail": {
+    "$type": "dimension",
+    "$description": "Fixed side rails on content pages; the main column takes the rest.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "内容页两侧的固定栏，中间栏占剩下的宽度。"
+        }
+      }
+    },
+    "left": {
+      "$value": {
+        "value": 200,
+        "unit": "px"
+      }
+    },
+    "right": {
+      "$value": {
+        "value": 280,
+        "unit": "px"
+      }
+    }
+  },
+  "break": {
+    "$type": "dimension",
+    "$description": "The only two breakpoints. Custom properties cannot be used inside media queries, so these document the values the CSS writes out.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "仅有的两个断点。CSS 变量不能用在媒体查询里，这两个 token 记录 CSS 里写的值。"
+        }
+      }
+    },
+    "rails": {
+      "$value": {
+        "value": 1080,
+        "unit": "px"
+      },
+      "$description": "Below this the right rail drops.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "小于这个宽度时去掉右侧栏。"
+          }
+        }
+      }
+    },
+    "stack": {
+      "$value": {
+        "value": 768,
+        "unit": "px"
+      },
+      "$description": "Below this everything stacks, main column first.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "小于这个宽度时全部变成单栏，正文在最前。"
+          }
+        }
+      }
+    }
+  }
+}

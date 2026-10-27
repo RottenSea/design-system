@@ -1,0 +1,82 @@
+/*
+ * Type classes. Each one applies a whole text style from the typography tokens. Below 768px the
+ * display tokens step down in tokens.css, so these classes follow without a media query of their own.
+ */
+.ds-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--display-xl-size);
+  font-weight: var(--display-xl-weight);
+  line-height: var(--display-xl-lh);
+  letter-spacing: var(--display-xl-ls);
+}
+.ds-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--display-lg-size);
+  font-weight: var(--display-lg-weight);
+  line-height: var(--display-lg-lh);
+  letter-spacing: var(--display-lg-ls);
+}
+.ds-display-md {
+  font-family: var(--font-display);
+  font-size: var(--display-md-size);
+  font-weight: var(--display-md-weight);
+  line-height: var(--display-md-lh);
+  letter-spacing: var(--display-md-ls);
+}
+.ds-display-sm {
+  font-family: var(--font-display);
+  font-size: var(--display-sm-size);
+  font-weight: var(--display-sm-weight);
+  line-height: var(--display-sm-lh);
+  letter-spacing: var(--display-sm-ls);
+}
+.ds-title-lg {
+  font-family: var(--font-sans);
+  font-size: var(--title-lg-size);
+  font-weight: var(--title-lg-weight);
+  line-height: var(--title-lg-lh);
+}
+.ds-title-md {
+  font-family: var(--font-sans);
+  font-size: var(--title-md-size);
+  font-weight: var(--title-md-weight);
+  line-height: var(--title-md-lh);
+}
+.ds-title-sm {
+  font-family: var(--font-sans);
+  font-size: var(--title-sm-size);
+  font-weight: var(--title-sm-weight);
+  line-height: var(--title-sm-lh);
+}
+.ds-body-md {
+  font-family: var(--font-sans);
+  font-size: var(--body-md-size);
+  font-weight: var(--body-md-weight);
+  line-height: var(--body-md-lh);
+}
+.ds-body-sm {
+  font-family: var(--font-sans);
+  font-size: var(--body-sm-size);
+  font-weight: var(--body-sm-weight);
+  line-height: var(--body-sm-lh);
+}
+.ds-caption {
+  font-family: var(--font-sans);
+  font-size: var(--caption-size);
+  font-weight: var(--caption-weight);
+  line-height: var(--caption-lh);
+}
+.ds-caption-upper {
+  font-family: var(--font-sans);
+  font-size: var(--caption-upper-size);
+  font-weight: var(--caption-upper-weight);
+  line-height: var(--caption-upper-lh);
+  letter-spacing: var(--caption-upper-ls);
+  text-transform: uppercase;
+}
+.ds-code {
+  font-family: var(--font-mono);
+  font-size: var(--code-size);
+  font-weight: var(--code-weight);
+  line-height: var(--code-lh);
+}

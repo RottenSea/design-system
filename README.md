@@ -17,11 +17,13 @@ Run these from the repository root:
 | Command | What it does |
 | --- | --- |
 | `pnpm install` | Installs the build tools for every system |
-| `pnpm check` | Validates every system's tokens against the DTCG 2025.10 format and checks color contrast in every theme |
+| `pnpm check` | Validates every system's tokens against the DTCG 2025.10 format |
 | `pnpm build` | Builds each system's tokens into CSS under its `dist/` folder, and the docs site |
 | `pnpm --filter @rottensea/ds-docs dev` | Serves the docs site locally while you edit it |
 
 The docs site in `docs/` is built with [VitePress](https://vitepress.dev/) and published at [rottensea.github.io/design-system](https://rottensea.github.io/design-system/). English pages are in `docs/en/` and Chinese pages in `docs/zh/`, with the same structure.
+
+Each system also has specimen pages in its `guidelines/` folder, one per foundation topic. They are plain HTML that link the system's own `src/styles.css`, so after `pnpm build` they open in a browser as they are, and a site can show them in iframes without its own styles getting in the way.
 
 Tokens follow the [Design Tokens Format Module 2025.10](https://www.designtokens.org/TR/2025.10/). [Terrazzo](https://terrazzo.app/) reads them and writes the CSS. `dist/` is build output and is not committed.
 

@@ -1,0 +1,692 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Palette and semantic colors for the light theme. Components use the semantic tokens only.",
+  "cream": {
+    "50": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9765, 0.9608],
+        "hex": "#faf9f5"
+      }
+    },
+    "100": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9412, 0.9098],
+        "hex": "#f5f0e8"
+      }
+    },
+    "200": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9373, 0.9137, 0.8706],
+        "hex": "#efe9de"
+      }
+    },
+    "300": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9098, 0.8784, 0.8235],
+        "hex": "#e8e0d2"
+      }
+    },
+    "400": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9216, 0.902, 0.8745],
+        "hex": "#ebe6df"
+      }
+    },
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.902, 0.8745, 0.8471],
+        "hex": "#e6dfd8"
+      }
+    },
+    "$type": "color",
+    "$description": "Warm cream ramp. The canvas and light surfaces.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "暖米色色阶，用于画布和浅色表面。"
+        }
+      }
+    }
+  },
+  "ink": {
+    "300": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.6275, 0.6157, 0.5882],
+        "hex": "#a09d96"
+      }
+    },
+    "400": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.5569, 0.5451, 0.5098],
+        "hex": "#8e8b82"
+      }
+    },
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.4235, 0.4157, 0.3922],
+        "hex": "#6c6a64"
+      }
+    },
+    "700": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2392, 0.2392, 0.2275],
+        "hex": "#3d3d3a"
+      }
+    },
+    "800": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1451, 0.1451, 0.1373],
+        "hex": "#252523"
+      }
+    },
+    "900": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0784, 0.0784, 0.0745],
+        "hex": "#141413"
+      }
+    },
+    "$type": "color",
+    "$description": "Warm ink ramp. Text on cream, never pure black.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "暖墨色色阶，浅色底上的文字，从不用纯黑。"
+        }
+      }
+    }
+  },
+  "night": {
+    "800": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1451, 0.1373, 0.1255],
+        "hex": "#252320"
+      }
+    },
+    "850": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1216, 0.1176, 0.1059],
+        "hex": "#1f1e1b"
+      }
+    },
+    "900": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0941, 0.0902, 0.0824],
+        "hex": "#181715"
+      }
+    },
+    "$type": "color",
+    "$description": "Dark warm-navy surfaces.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "暖调深色表面。"
+        }
+      }
+    }
+  },
+  "coral": {
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.851, 0.4667, 0.3412],
+        "hex": "#d97757"
+      }
+    },
+    "700": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.6627, 0.3451, 0.2431],
+        "hex": "#a9583e"
+      }
+    },
+    "$type": "color",
+    "$description": "The brand voltage.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "品牌强调色。"
+        }
+      }
+    }
+  },
+  "teal": {
+    "400": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3647, 0.7216, 0.651],
+        "hex": "#5db8a6"
+      }
+    },
+    "$type": "color"
+  },
+  "amber": {
+    "400": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9098, 0.6471, 0.3529],
+        "hex": "#e8a55a"
+      }
+    },
+    "$type": "color"
+  },
+  "green": {
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3647, 0.7216, 0.4471],
+        "hex": "#5db872"
+      }
+    },
+    "$type": "color"
+  },
+  "gold": {
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8314, 0.6275, 0.0902],
+        "hex": "#d4a017"
+      }
+    },
+    "$type": "color"
+  },
+  "red": {
+    "500": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7765, 0.2706, 0.2706],
+        "hex": "#c64545"
+      }
+    },
+    "$type": "color"
+  },
+  "white": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [1, 1, 1],
+      "hex": "#ffffff"
+    }
+  },
+  "color": {
+    "$type": "color",
+    "$description": "Primary action colors.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "主要操作的颜色。"
+        }
+      }
+    },
+    "primary": {
+      "$value": "{coral.500}",
+      "$description": "Primary buttons, full-bleed callouts and CTA surfaces. Scarce on individual elements.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "主按钮、整块的强调区和行动号召区。单个元素上少用。"
+          }
+        }
+      }
+    },
+    "primary-active": {
+      "$value": "{coral.700}",
+      "$description": "Primary fill while pressed, and link hover.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "主按钮按下时的填充色，以及链接悬停色。"
+          }
+        }
+      }
+    },
+    "primary-disabled": {
+      "$value": "{cream.500}",
+      "$description": "Primary fill when disabled.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "主按钮禁用时的填充色。"
+          }
+        }
+      }
+    },
+    "on-primary": {
+      "$value": "{white}",
+      "$description": "Text and icons on the primary fill.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "主色填充上的文字和图标。"
+          }
+        }
+      }
+    }
+  },
+  "text": {
+    "$type": "color",
+    "$description": "Text colors.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "文字颜色。"
+        }
+      }
+    },
+    "ink": {
+      "$value": "{ink.900}",
+      "$description": "Headlines and the strongest text.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "标题和最强调的文字。"
+          }
+        }
+      }
+    },
+    "body-strong": {
+      "$value": "{ink.800}",
+      "$description": "Emphasized body text.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "强调的正文。"
+          }
+        }
+      }
+    },
+    "body": {
+      "$value": "{ink.700}",
+      "$description": "Running text.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "正文。"
+          }
+        }
+      }
+    },
+    "muted": {
+      "$value": "{ink.500}",
+      "$description": "Secondary text such as dates and metadata.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "次要文字，例如日期和元信息。"
+          }
+        }
+      }
+    },
+    "muted-soft": {
+      "$value": "{ink.400}",
+      "$description": "The quietest text: hints and micro-labels.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "最弱的文字：提示和小标签。"
+          }
+        }
+      }
+    },
+    "on-dark": {
+      "$value": "{cream.50}",
+      "$description": "Text on dark surfaces. Cream-tinted, never pure white.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "深色表面上的文字。带米色，不用纯白。"
+          }
+        }
+      }
+    },
+    "on-dark-soft": {
+      "$value": "{ink.300}",
+      "$description": "Secondary text on dark surfaces.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "深色表面上的次要文字。"
+          }
+        }
+      }
+    },
+    "link": {
+      "$value": "{coral.500}",
+      "$description": "Inline links.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "正文里的链接。"
+          }
+        }
+      }
+    }
+  },
+  "surface": {
+    "$type": "color",
+    "$description": "Surfaces, from the page floor up.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "表面颜色，从页面底色往上。"
+        }
+      }
+    },
+    "canvas": {
+      "$value": "{cream.50}",
+      "$description": "The page floor.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "页面底色。"
+          }
+        }
+      }
+    },
+    "soft": {
+      "$value": "{cream.100}",
+      "$description": "A soft band one step above the canvas.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "比画布高一级的浅色区块。"
+          }
+        }
+      }
+    },
+    "card": {
+      "$value": "{cream.200}",
+      "$description": "Cards on the canvas.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "画布上的卡片。"
+          }
+        }
+      }
+    },
+    "cream-strong": {
+      "$value": "{cream.300}",
+      "$description": "The strongest cream, for emphasis inside cards.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "最深的米色，用于卡片内的强调。"
+          }
+        }
+      }
+    },
+    "dark": {
+      "$value": "{night.900}",
+      "$description": "The emphasis surface: dark cards, code windows, the footer.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "强调表面：深色卡片、代码窗口、页脚。"
+          }
+        }
+      }
+    },
+    "dark-soft": {
+      "$value": "{night.850}",
+      "$description": "One step above the dark surface, such as code inside a dark card.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "比深色表面高一级，例如深色卡片里的代码。"
+          }
+        }
+      }
+    },
+    "dark-elevated": {
+      "$value": "{night.800}",
+      "$description": "Raised elements on dark surfaces.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "深色表面上凸起的元素。"
+          }
+        }
+      }
+    },
+    "blur-cream": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9765, 0.9608],
+        "hex": "#faf9f5",
+        "alpha": 0.72
+      },
+      "$description": "Translucent cream behind a 12px backdrop blur, such as the scrolled top bar.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "12px 背景模糊下的半透明米色，例如滚动后的顶栏。"
+          }
+        }
+      }
+    },
+    "blur-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0941, 0.0902, 0.0824],
+        "hex": "#181715",
+        "alpha": 0.72
+      },
+      "$description": "Translucent dark behind a 12px backdrop blur.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "12px 背景模糊下的半透明深色。"
+          }
+        }
+      }
+    },
+    "blur-cream-opaque": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9765, 0.9608],
+        "hex": "#faf9f5",
+        "alpha": 0.94
+      },
+      "$description": "Near-opaque cream for when the blur is not supported.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "不支持模糊时用的几乎不透明的米色。"
+          }
+        }
+      }
+    },
+    "blur-dark-opaque": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0941, 0.0902, 0.0824],
+        "hex": "#181715",
+        "alpha": 0.94
+      },
+      "$description": "Near-opaque dark for when the blur is not supported.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "不支持模糊时用的几乎不透明的深色。"
+          }
+        }
+      }
+    }
+  },
+  "hairline": {
+    "$type": "color",
+    "$value": "{cream.500}",
+    "$description": "Borders. They read as one elevation step, not as ink lines.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "边框。看起来是高了一级，而不是一条墨线。"
+        }
+      }
+    }
+  },
+  "hairline-soft": {
+    "$type": "color",
+    "$value": "{cream.400}",
+    "$description": "Fainter borders inside cards.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "卡片内更淡的边框。"
+        }
+      }
+    }
+  },
+  "hairline-on-dark": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [0.1922, 0.1882, 0.1725],
+      "hex": "#31302c"
+    },
+    "$description": "Borders on dark surfaces.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "深色表面上的边框。"
+        }
+      }
+    }
+  },
+  "accent": {
+    "$type": "color",
+    "$description": "Small marks only: status dots and category badges.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "只用于小标记：状态点和分类徽章。"
+        }
+      }
+    },
+    "teal": {
+      "$value": "{teal.400}"
+    },
+    "amber": {
+      "$value": "{amber.400}"
+    }
+  },
+  "status": {
+    "$type": "color",
+    "$description": "Validation and status.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "校验和状态。"
+        }
+      }
+    },
+    "success": {
+      "$value": "{green.500}"
+    },
+    "warning": {
+      "$value": "{gold.500}"
+    },
+    "error": {
+      "$value": "{red.500}"
+    }
+  },
+  "marker": {
+    "$type": "color",
+    "$description": "Highlighter tints. Opaque, the accent pre-mixed into the surface, so marked text keeps full contrast and two markers that touch do not darken.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "高亮笔的底色。不透明，强调色事先混进表面颜色，所以标记的文字保持原来的对比度，两段标记相接也不会变深。"
+        }
+      }
+    },
+    "coral": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9569, 0.8863, 0.851],
+        "hex": "#f4e2d9"
+      }
+    },
+    "teal": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8706, 0.9294, 0.9059],
+        "hex": "#deede7"
+      }
+    },
+    "amber": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9686, 0.9176, 0.851],
+        "hex": "#f7ead9"
+      }
+    },
+    "red": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9451, 0.851, 0.8353],
+        "hex": "#f1d9d5"
+      }
+    },
+    "coral-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2588, 0.1725, 0.1412],
+        "hex": "#422c24"
+      }
+    },
+    "teal-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1529, 0.2275, 0.2078],
+        "hex": "#273a35"
+      }
+    },
+    "amber-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2745, 0.2118, 0.1412],
+        "hex": "#463624"
+      }
+    },
+    "red-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2431, 0.1294, 0.1255],
+        "hex": "#3e2120"
+      }
+    }
+  },
+  "focus-ring": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [0.851, 0.4667, 0.3412],
+      "hex": "#d97757",
+      "alpha": 0.15
+    },
+    "$description": "Halo around a focused input, drawn as a 3px box-shadow.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "输入框获得焦点时的光晕，用 3px 的 box-shadow 画出。"
+        }
+      }
+    }
+  }
+}

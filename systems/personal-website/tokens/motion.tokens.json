@@ -1,0 +1,130 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Durations and easing curves. The composed --transition-* shorthands are in src/motion.css, because a DTCG transition cannot list CSS properties.",
+  "motion": {
+    "$type": "duration",
+    "$description": "Four durations. Nothing scales, bounces, springs or fires on scroll.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "四种时长。没有缩放、弹跳、弹簧效果，也没有滚动触发的动画。"
+        }
+      }
+    },
+    "fast": {
+      "$value": {
+        "value": 120,
+        "unit": "ms"
+      },
+      "$description": "Tint on a control: press, tab select, link.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "控件的颜色变化：按下、切换标签、链接。"
+          }
+        }
+      }
+    },
+    "base": {
+      "$value": {
+        "value": 160,
+        "unit": "ms"
+      },
+      "$description": "Surfaces: nav solidify, dismiss, list item enter.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "表面变化：导航栏变实、关闭、列表项进入。"
+          }
+        }
+      }
+    },
+    "slow": {
+      "$value": {
+        "value": 240,
+        "unit": "ms"
+      },
+      "$description": "Geometry: height collapse, rail reflow.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "几何变化：高度折叠、侧栏重排。"
+          }
+        }
+      }
+    },
+    "entrance": {
+      "$value": {
+        "value": 350,
+        "unit": "ms"
+      },
+      "$description": "The dialog entrance and nothing else.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "只用于对话框出现。"
+          }
+        }
+      }
+    },
+    "shift": {
+      "$type": "dimension",
+      "$value": {
+        "value": 8,
+        "unit": "px"
+      },
+      "$description": "The only translate distance in the system.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "系统里唯一的位移距离。"
+          }
+        }
+      }
+    }
+  },
+  "ease": {
+    "$type": "cubicBezier",
+    "$description": "Three curves.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "三条缓动曲线。"
+        }
+      }
+    },
+    "enter": {
+      "$value": [0, 0, 0.2, 1],
+      "$description": "Arriving or settling.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "进入或停稳。"
+          }
+        }
+      }
+    },
+    "exit": {
+      "$value": [0.4, 0, 1, 1],
+      "$description": "Leaving.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "离开。"
+          }
+        }
+      }
+    },
+    "move": {
+      "$value": [0.4, 0, 0.2, 1],
+      "$description": "Changing size or position in place.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "原地改变大小或位置。"
+          }
+        }
+      }
+    }
+  }
+}

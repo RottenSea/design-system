@@ -1,0 +1,285 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Dark theme. Remaps the semantic aliases only: the ramps and the coral never move.",
+  "color": {
+    "$type": "color",
+    "primary-disabled": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.2275,
+          0.2196,
+          0.2
+        ],
+        "hex": "#3a3833"
+      }
+    }
+  },
+  "text": {
+    "$type": "color",
+    "ink": {
+      "$value": "{cream.50}"
+    },
+    "body-strong": {
+      "$value": "{cream.100}"
+    },
+    "body": {
+      "$value": "{cream.300}"
+    },
+    "muted": {
+      "$value": "{ink.300}"
+    },
+    "muted-soft": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.498,
+          0.4863,
+          0.4549
+        ],
+        "hex": "#7f7c74"
+      }
+    }
+  },
+  "surface": {
+    "$type": "color",
+    "canvas": {
+      "$value": "{night.900}"
+    },
+    "soft": {
+      "$value": "{night.850}"
+    },
+    "card": {
+      "$value": "{night.800}"
+    },
+    "cream-strong": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.1686,
+          0.1608,
+          0.1451
+        ],
+        "hex": "#2b2925"
+      }
+    },
+    "dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.1686,
+          0.1608,
+          0.1451
+        ],
+        "hex": "#2b2925"
+      },
+      "$description": "Stays one step above the canvas, so dark cards remain distinct on a dark page.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "比画布高一级，所以深色页面上的深色卡片仍然分得开。"
+          }
+        }
+      }
+    },
+    "dark-soft": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.1961,
+          0.1843,
+          0.1647
+        ],
+        "hex": "#322f2a"
+      }
+    },
+    "dark-elevated": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.2235,
+          0.2118,
+          0.1922
+        ],
+        "hex": "#393631"
+      }
+    },
+    "blur-cream": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.0941,
+          0.0902,
+          0.0824
+        ],
+        "hex": "#181715",
+        "alpha": 0.72
+      }
+    },
+    "blur-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.0941,
+          0.0902,
+          0.0824
+        ],
+        "hex": "#181715",
+        "alpha": 0.72
+      }
+    },
+    "blur-cream-opaque": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.0941,
+          0.0902,
+          0.0824
+        ],
+        "hex": "#181715",
+        "alpha": 0.94
+      }
+    },
+    "blur-dark-opaque": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.0941,
+          0.0902,
+          0.0824
+        ],
+        "hex": "#181715",
+        "alpha": 0.94
+      }
+    }
+  },
+  "hairline": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [
+        0.2078,
+        0.2,
+        0.1843
+      ],
+      "hex": "#35332f"
+    }
+  },
+  "hairline-soft": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [
+        0.1647,
+        0.1569,
+        0.1373
+      ],
+      "hex": "#2a2823"
+    }
+  },
+  "hairline-on-dark": {
+    "$type": "color",
+    "$value": {
+      "colorSpace": "srgb",
+      "components": [
+        0.2627,
+        0.2549,
+        0.2314
+      ],
+      "hex": "#43413b"
+    }
+  },
+  "marker": {
+    "$type": "color",
+    "coral": {
+      "$value": "{marker.coral-on-dark}"
+    },
+    "teal": {
+      "$value": "{marker.teal-on-dark}"
+    },
+    "amber": {
+      "$value": "{marker.amber-on-dark}"
+    },
+    "red": {
+      "$value": "{marker.red-on-dark}"
+    },
+    "coral-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.302,
+          0.2078,
+          0.1686
+        ],
+        "hex": "#4d352b"
+      }
+    },
+    "teal-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.1804,
+          0.2706,
+          0.2471
+        ],
+        "hex": "#2e453f"
+      }
+    },
+    "amber-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.3216,
+          0.2549,
+          0.1725
+        ],
+        "hex": "#52412c"
+      }
+    },
+    "red-on-dark": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [
+          0.2863,
+          0.1569,
+          0.149
+        ],
+        "hex": "#492826"
+      }
+    }
+  },
+  "border": {
+    "$type": "border",
+    "$description": "Declared again for the dark theme: a custom property is substituted where it is declared, so a themed subtree needs its own copy.",
+    "hairline": {
+      "$value": {
+        "color": "{hairline}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      }
+    },
+    "hairline-soft": {
+      "$value": {
+        "color": "{hairline-soft}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      }
+    },
+    "hairline-dark": {
+      "$value": {
+        "color": "{hairline-on-dark}",
+        "width": {
+          "value": 1,
+          "unit": "px"
+        },
+        "style": "solid"
+      }
+    }
+  }
+}

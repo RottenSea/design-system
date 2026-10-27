@@ -26,18 +26,9 @@ importers:
       '@terrazzo/cli':
         specifier: 2.10.0
         version: 2.10.0
-      '@terrazzo/parser':
-        specifier: 2.10.0
-        version: 2.10.0(yaml-to-momoa@0.1.0)
       '@terrazzo/plugin-css':
         specifier: 2.10.0
         version: 2.10.0(@terrazzo/cli@2.10.0)(@terrazzo/parser@2.10.0(yaml-to-momoa@0.1.0))
-      '@terrazzo/token-tools':
-        specifier: 2.10.0
-        version: 2.10.0
-      colorjs.io:
-        specifier: 0.7.1
-        version: 0.7.1
 
 packages:
 
