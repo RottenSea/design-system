@@ -1,4 +1,6 @@
-# Accessibility
+---
+title: "Accessibility"
+---
 
 The docs cite [WCAG 2.2](https://www.w3.org/TR/WCAG22/) for the rules that keep the system usable by everyone, and the [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/) (APG) for how widgets behave. Every system in this repository targets WCAG 2.2 level AA.
 

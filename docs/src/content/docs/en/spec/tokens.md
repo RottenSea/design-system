@@ -1,4 +1,6 @@
-# Tokens
+---
+title: "Tokens"
+---
 
 Design tokens are the named values a design system is built from: colors, sizes, fonts, durations. Their values live in files in the [DTCG Format](https://www.designtokens.org/TR/2025.10/format/). The docs explain what each token is for and leave the value in the file.
 
@@ -28,7 +30,7 @@ Split tokens into two layers so that themes only touch one of them:
 - **Palette tokens** name the raw values: `color.palette.coral.500`. They say what a value is, not where to use it.
 - **Semantic tokens** name a role and reference a palette token: `color.text.link` → `{color.palette.coral.800}`. Components only use semantic tokens.
 
-A theme changes which palette token a semantic token points to. The palette itself never changes. See [Themes](./themes).
+A theme changes which palette token a semantic token points to. The palette itself never changes. See [Themes](../themes/).
 
 ## What a token page says
 

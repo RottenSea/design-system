@@ -1,4 +1,6 @@
-# Writing
+---
+title: "Writing"
+---
 
 These rules are for the docs themselves. They borrow from the [GitHub Docs style guide](https://docs.github.com/en/contributing/style-guide-and-content-model/style-guide), whose first principle fits here too: clarity and meaning come before grammar rules.
 
@@ -21,7 +23,7 @@ Keep one kind per page. A reference table in the middle of an explanation is har
 ## Headings and links
 
 - Headings say what the section holds, in sentence case.
-- Link text says where the link goes. "See [Accessibility](./accessibility)" works; "click here" does not.
+- Link text says where the link goes. "See [Accessibility](../accessibility/)" works; "click here" does not.
 
 ## Images
 

@@ -1,4 +1,6 @@
-# Versioning
+---
+title: "Versioning"
+---
 
 Each system has its own version, changelog and release tag. The version tells people what an upgrade will cost them, and the changelog tells them what changed.
 

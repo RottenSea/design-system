@@ -1,4 +1,6 @@
-# Components
+---
+title: "Components"
+---
 
 A component page tells people when to use a piece of UI and how to use it well. Its API lives in the source code, so the page links there instead of retyping it.
 
@@ -12,7 +14,7 @@ A component page tells people when to use a piece of UI and how to use it well. 
 | Variants | Configurations a developer picks, such as `size` or `tone` |
 | States | Conditions the component is in, such as hover, focus, pressed or disabled |
 | Combinations | Which variants and states can and cannot appear together |
-| Accessibility | Its role, its keyboard behavior and how it gets a name. See [Accessibility](./accessibility) |
+| Accessibility | Its role, its keyboard behavior and how it gets a name. See [Accessibility](../accessibility/) |
 | API | A link to the source file or a generated manifest such as a [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest) |
 | Examples | A live demo or a link to one |
 | Related | Components it uses and components that can replace it |

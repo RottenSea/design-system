@@ -1,4 +1,6 @@
-# Structure
+---
+title: "Structure"
+---
 
 A design system's docs are a set of **entries**, and each entry's content is a list of **sections**. This follows the document model of [DSDS](https://designsystemdocspec.org/), which writes the same structure as YAML. Here it is written as Markdown pages.
 
@@ -21,7 +23,7 @@ Every entry is made of sections, and any section kind can appear in any entry.
 | Section | Holds |
 | --- | --- |
 | Definitions | Terms and what they mean |
-| Guidelines | Rules for using the thing, each with a requirement level. See [Guidelines](./guidelines) |
+| Guidelines | Rules for using the thing, each with a requirement level. See [Guidelines](../guidelines/) |
 | Steps | An ordered procedure, such as installing a package |
 | General section | Prose that does not fit the other kinds |
 

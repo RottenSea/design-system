@@ -21,7 +21,7 @@ Run these from the repository root:
 | `pnpm build` | Builds each system's tokens into CSS under its `dist/` folder, and the docs site |
 | `pnpm --filter @rottensea/ds-docs dev` | Serves the docs site locally while you edit it |
 
-The docs site in `docs/` is built with [VitePress](https://vitepress.dev/) and published at [rottensea.github.io/design-system](https://rottensea.github.io/design-system/). English pages are in `docs/en/` and Chinese pages in `docs/zh/`, with the same structure.
+The docs site in `docs/` is built with [Starlight](https://starlight.astro.build/), Astro's documentation theme, and published at [rottensea.github.io/design-system](https://rottensea.github.io/design-system/). English pages are in `docs/src/content/docs/en/` and Chinese pages in `docs/src/content/docs/zh/`, with the same file paths, which is how Starlight pairs a page with its translation. Each system gets its own section inside both language folders. Links between pages are relative, such as `../tokens/`, because page URLs end in a slash and the site is served under `/design-system/`. `pnpm --filter @rottensea/ds-docs dev` serves it on Astro's default port, 4321.
 
 Each system also has specimen pages in its `guidelines/` folder, one per foundation topic. They are plain HTML that link the system's own `src/styles.css`, so after `pnpm build` they open in a browser as they are, and a site can show them in iframes without its own styles getting in the way.
 

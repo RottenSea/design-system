@@ -1,4 +1,6 @@
-# Docs spec
+---
+title: "Docs spec"
+---
 
 This spec says what the documentation of a design system in this repository contains and where each fact in it comes from. It is a summary written for this project. Every page links the standards it draws on, and when this summary and a standard disagree, the standard wins.
 
@@ -25,14 +27,14 @@ A copied value goes stale without anyone noticing. A link can break too, but a l
 
 ## Pages
 
-- [Structure](./structure): the parts of a design system's docs and how they connect
-- [Tokens](./tokens): documenting design tokens in the DTCG format
-- [Themes](./themes): documenting themes built with the DTCG resolver
-- [Components](./components): anatomy, variants, states and API
-- [Guidelines](./guidelines): writing rules people and tools can act on
-- [Accessibility](./accessibility): the WCAG and APG facts every page relies on
-- [Versioning](./versioning): versions, changelogs and deprecations
-- [Writing](./writing): style for the docs themselves
+- [Structure](./structure/): the parts of a design system's docs and how they connect
+- [Tokens](./tokens/): documenting design tokens in the DTCG format
+- [Themes](./themes/): documenting themes built with the DTCG resolver
+- [Components](./components/): anatomy, variants, states and API
+- [Guidelines](./guidelines/): writing rules people and tools can act on
+- [Accessibility](./accessibility/): the WCAG and APG facts every page relies on
+- [Versioning](./versioning/): versions, changelogs and deprecations
+- [Writing](./writing/): style for the docs themselves
 
 ## Sources
 

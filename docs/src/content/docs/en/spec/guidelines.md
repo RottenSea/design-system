@@ -1,4 +1,6 @@
-# Guidelines
+---
+title: "Guidelines"
+---
 
 A guideline is one rule for using the system. Written well, a person can follow it, an agent can apply it and a tool can check it.
 

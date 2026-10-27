@@ -1,4 +1,6 @@
-# Themes
+---
+title: "Themes"
+---
 
 A theme is a set of token overrides, such as a dark theme or a high-contrast theme. The [DTCG Resolver Module](https://www.designtokens.org/TR/2025.10/resolver/) describes how token files combine into the tokens for one theme.
 
@@ -23,7 +25,7 @@ Put everything shared in the sets, and let each theme context override only the 
 - What the theme is for and when it applies, for example following the operating system's dark mode
 - How a page or part of a page selects it, for example `data-theme="dark"`
 - Which semantic tokens it changes, and why when the reason is not obvious (a link color that has to change to keep its contrast)
-- Which contrast checks it passes. See [Accessibility](./accessibility)
+- Which contrast checks it passes. See [Accessibility](../accessibility/)
 
 ## Source
 

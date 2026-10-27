@@ -1,4 +1,6 @@
-# 主题
+---
+title: "主题"
+---
 
 主题是一组 token 覆盖值，例如暗色主题或高对比度主题。[DTCG Resolver Module](https://www.designtokens.org/TR/2025.10/resolver/) 规定了多个 token 文件怎样组合成某个主题下的全部 token。
 
@@ -23,7 +25,7 @@ resolver 文档由三部分组成：
 - 主题的用途和生效条件，例如跟随操作系统的暗色模式
 - 页面或页面的一部分怎样选中它，例如 `data-theme="dark"`
 - 它改了哪些语义 token；原因不明显时写明原因（例如为了保持对比度，链接颜色必须换一个色阶）
-- 它通过了哪些对比度检查。见[无障碍](./accessibility)
+- 它通过了哪些对比度检查。见[无障碍](../accessibility/)
 
 ## 来源
 

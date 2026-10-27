@@ -1,4 +1,6 @@
-# Token
+---
+title: "Token"
+---
 
 design token 是构成 design system 的具名数值：颜色、尺寸、字体、时长。它们的值写在 [DTCG Format](https://www.designtokens.org/TR/2025.10/format/) 格式的文件里。文档只解释每个 token 的用途，值留在文件里。
 
@@ -28,7 +30,7 @@ design token 是构成 design system 的具名数值：颜色、尺寸、字体�
 - **色板 token** 给原始值命名：`color.palette.coral.500`。它只说明这个值是什么，不说明用在哪里。
 - **语义 token** 给用途命名，并引用一个色板 token：`color.text.link` → `{color.palette.coral.800}`。组件只使用语义 token。
 
-主题改变的是语义 token 指向哪个色板 token，色板本身从不改变。见[主题](./themes)。
+主题改变的是语义 token 指向哪个色板 token，色板本身从不改变。见[主题](../themes/)。
 
 ## token 页写什么
 

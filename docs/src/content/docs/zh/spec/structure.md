@@ -1,4 +1,6 @@
-# 结构
+---
+title: "结构"
+---
 
 design system 的文档由一组**条目（entry）**组成，每个条目的内容是一串**分节（section）**。这套结构来自 [DSDS](https://designsystemdocspec.org/) 的文档模型；DSDS 用 YAML 来写，这里用 Markdown 页面来写。
 
@@ -21,7 +23,7 @@ design system 的文档由一组**条目（entry）**组成，每个条目的内
 | 分节 | 内容 |
 | --- | --- |
 | 定义 | 术语和它们的含义 |
-| 准则 | 使用规则，每条带要求级别。见[准则](./guidelines) |
+| 准则 | 使用规则，每条带要求级别。见[准则](../guidelines/) |
 | 步骤 | 有先后顺序的操作，例如安装一个包 |
 | 一般分节 | 放不进其他类型的文字 |
 

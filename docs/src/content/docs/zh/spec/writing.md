@@ -1,4 +1,6 @@
-# 写作
+---
+title: "写作"
+---
 
 这些规则针对文档本身。它们参考了 [GitHub Docs 写作风格指南](https://docs.github.com/en/contributing/style-guide-and-content-model/style-guide)，指南的第一条原则在这里同样适用：清楚和意思准确比语法规则更重要。
 
@@ -21,7 +23,7 @@
 ## 标题和链接
 
 - 标题写清楚这一节的内容。
-- 链接文字说明链接到哪里。“见[无障碍](./accessibility)”可以，“点这里”不行。
+- 链接文字说明链接到哪里。“见[无障碍](../accessibility/)”可以，“点这里”不行。
 
 ## 图片
 

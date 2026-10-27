@@ -1,4 +1,6 @@
-# 文档规范
+---
+title: "文档规范"
+---
 
 这份规范说明本仓库里每个 design system 的文档要包含哪些内容，以及其中每个事实从哪里来。它是为这个项目写的总结，每一页都链接了所依据的标准；总结和标准不一致时，以标准为准。
 
@@ -25,14 +27,14 @@ design system 里的大多数事实已经有固定的出处。文档只链接出
 
 ## 页面
 
-- [结构](./structure)：design system 文档由哪些部分组成，彼此怎么关联
-- [Token](./tokens)：怎样记录 DTCG 格式的 design token
-- [主题](./themes)：怎样记录用 DTCG resolver 构建的主题
-- [组件](./components)：结构、变体、状态和 API
-- [准则](./guidelines)：写出人和工具都能照做的规则
-- [无障碍](./accessibility)：每一页都要用到的 WCAG 和 APG 要点
-- [版本](./versioning)：版本号、变更记录和弃用
-- [写作](./writing)：文档本身的写作风格
+- [结构](./structure/)：design system 文档由哪些部分组成，彼此怎么关联
+- [Token](./tokens/)：怎样记录 DTCG 格式的 design token
+- [主题](./themes/)：怎样记录用 DTCG resolver 构建的主题
+- [组件](./components/)：结构、变体、状态和 API
+- [准则](./guidelines/)：写出人和工具都能照做的规则
+- [无障碍](./accessibility/)：每一页都要用到的 WCAG 和 APG 要点
+- [版本](./versioning/)：版本号、变更记录和弃用
+- [写作](./writing/)：文档本身的写作风格
 
 ## 来源
 

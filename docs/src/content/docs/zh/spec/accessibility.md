@@ -1,4 +1,6 @@
-# 无障碍
+---
+title: "无障碍"
+---
 
 文档引用 [WCAG 2.2](https://www.w3.org/TR/WCAG22/) 来说明哪些规则保证所有人都能用这套系统，引用 [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)（APG）来说明各类控件该怎样运作。本仓库的所有系统都以 WCAG 2.2 AA 级为目标。
 
