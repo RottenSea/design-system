@@ -1,10 +1,10 @@
 ---
 title: Home
-description: "How RottenSea's design systems are documented."
+description: "How the design systems in this repository are documented."
 template: splash
 hero:
   title: Design Systems
-  tagline: "How RottenSea's design systems are documented."
+  tagline: "How the design systems in this repository are documented."
   actions:
     - text: "Read the docs spec"
       link: ./spec/

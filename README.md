@@ -1,6 +1,6 @@
 # design-system
 
-Design systems for my projects. Each system has its own folder under `systems/` and its own version.
+A set of design systems. Each system has its own folder under `systems/` and its own version.
 
 | System | Folder | Used by |
 | --- | --- | --- |
