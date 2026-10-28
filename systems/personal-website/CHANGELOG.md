@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--font-math` falls back to Cambria Math, STIX Two Math and the `math` family instead of a sans serif, so formulas keep stretchy brackets and large operators when Noto Sans Math cannot load.
 - `styles.css` and `index.css` no longer load the fonts. A font stylesheet pulled in with CSS `@import` held up the whole page until Google Fonts and jsDelivr answered, and those can be slow or unreachable. A site now puts the new `Fonts` component in its `<head>`, which loads the same stylesheets without blocking; a plain HTML page links `fonts.css`, which still loads them the blocking way.
 
+### Removed
+
+- The specimen pages in `guidelines/`, and the `./guidelines/*` export. The foundations are now pages on the docs site, with token tables read from the token files and specimens generated from them, so nothing restates a value by hand.
+
 ## [0.2.0] - 2026-10-27
 
 This release redesigns the system after the brand design handoff. Most variable names change, so sites have to update their styles.

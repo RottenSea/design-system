@@ -1,0 +1,124 @@
+---
+// The content page's three layouts at the system's two breakpoints, with the widths read from the
+// token files.
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens } from "../../../lib/tokens";
+
+const tokens = await loadTokens("personal-website");
+const value = (id: string) => tokens.find((token) => token.id === id)?.value.light ?? "";
+const px = (id: string) => Number.parseInt(value(id), 10);
+const layouts = [
+  {
+    name: "Three columns",
+    meta: `wider than ${value("break.rails")} · ${value("rail.left")} · reading column · ${value("rail.right")}`,
+    columns: ["left", "main", "right"]
+  },
+  {
+    name: "Right rail drops",
+    meta: `${px("break.stack") + 1}–${value("break.rails")} · --break-rails`,
+    columns: ["left", "main"]
+  },
+  { name: "Stacked, main first", meta: `up to ${value("break.stack")} · --break-stack`, columns: ["main", "left", "right"], stack: true }
+];
+---
+
+<ExampleLayout title="Columns and page widths">
+  <div class="layouts">
+    {
+      layouts.map((layout) => (
+        <div class="layout">
+          <div class:list={["frame", { "frame--stack": layout.stack }]}>
+            {layout.columns.map((column) => (
+              <span class:list={["column", `column--${column}`]} />
+            ))}
+          </div>
+          <span class="name">{layout.name}</span>
+          <code class="meta">{layout.meta}</code>
+        </div>
+      ))
+    }
+  </div>
+  <p class="widths">
+    <code>--container-max {value("container.max")}</code>
+    <code>--container-wide {value("container.wide")}</code>
+    <code>--container-reading {value("container.reading")}</code>
+  </p>
+</ExampleLayout>
+
+<style>
+  .layouts {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+
+  .layout {
+    display: grid;
+    gap: var(--space-xxs);
+  }
+
+  .frame {
+    background: var(--surface-canvas);
+    border: var(--border-hairline);
+    border-radius: var(--radius-md);
+    display: flex;
+    gap: 6px;
+    height: 96px;
+    padding: 8px;
+  }
+
+  .frame--stack {
+    flex-direction: column;
+    margin-inline: auto;
+    width: 45%;
+  }
+
+  .column {
+    background: var(--surface-card);
+    border-radius: 3px;
+  }
+
+  .column--main {
+    background: var(--color-primary);
+    flex: 1;
+    opacity: 0.85;
+  }
+
+  .column--left {
+    width: 18%;
+  }
+
+  .column--right {
+    width: 24%;
+  }
+
+  .frame--stack .column {
+    height: 14px;
+    width: auto;
+  }
+
+  .frame--stack .column--main {
+    height: auto;
+  }
+
+  .name {
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    font-weight: 500;
+  }
+
+  .meta,
+  .widths code {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+  }
+
+  .widths {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin: 0;
+  }
+</style>

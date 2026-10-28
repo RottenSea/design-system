@@ -12,7 +12,6 @@
   "files": [
     "dist",
     "src",
-    "guidelines",
     "assets",
     "CHANGELOG.md"
   ],
@@ -26,7 +25,6 @@
     "./base.css": "./src/styles/base.css",
     "./styles.css": "./src/styles/styles.css",
     "./index.css": "./src/styles/index.css",
-    "./guidelines/*": "./guidelines/*",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json",
     "./components": "./src/components/index.ts",

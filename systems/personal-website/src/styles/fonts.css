@@ -1,9 +1,9 @@
 /*
  * Loads the font families named by --font-display, --font-sans, --font-mono and --font-math, the
- * blocking way, for plain HTML pages such as the guideline pages: a page waits for these
- * stylesheets before it shows anything. An Astro site uses the Fonts component instead, which
- * loads the same list from fonts.js without holding up the page; styles.css and index.css do not
- * import this file. A test keeps the two lists equal.
+ * blocking way, for a plain HTML page: the page waits for these stylesheets before it shows
+ * anything. An Astro site uses the Fonts component instead, which loads the same list from
+ * fonts.js without holding up the page; styles.css and index.css do not import this file. A test
+ * keeps the two lists equal.
  */
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400..700&family=Noto+Sans+SC:wght@400..700&family=Noto+Serif+SC:wght@400..700&family=Noto+Sans+Math&display=swap");
 @import url("https://cdn.jsdelivr.net/gh/RottenSea/webfonts@maple-mono-nl-nf-cn-v1.0.0/7.9/400-normal/result.css");

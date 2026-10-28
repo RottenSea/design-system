@@ -1,0 +1,56 @@
+---
+// The order of surfaces down a page, in both themes: never the same surface twice in a row.
+import ThemePair from "../../../components/ThemePair.astro";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const bands = [
+  { name: "Canvas", use: "Hero, body sections", surface: "--surface-canvas", text: "--text-ink" },
+  { name: "Cream card", use: "Feature grid", surface: "--surface-card", text: "--text-ink" },
+  { name: "Dark", use: "Product mockup, comparison", surface: "--surface-dark", text: "--text-on-dark" },
+  { name: "Canvas", use: "Body sections", surface: "--surface-canvas", text: "--text-ink" },
+  { name: "Coral", use: "Call to action", surface: "--color-primary", text: "--color-on-primary" },
+  { name: "Dark", use: "Footer", surface: "--surface-dark", text: "--text-on-dark" }
+];
+---
+
+<ExampleLayout title="Surface rhythm">
+  <ThemePair>
+    <div class="bands">
+      {
+        bands.map((band) => (
+          <div class="band" style={`background: var(${band.surface}); color: var(${band.text})`}>
+            <span class="band__name">{band.name}</span>
+            <span class="band__use">{band.use}</span>
+          </div>
+        ))
+      }
+    </div>
+  </ThemePair>
+</ExampleLayout>
+
+<style>
+  .bands {
+    display: grid;
+    gap: var(--space-xxs);
+  }
+
+  .band {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    display: flex;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    gap: var(--space-sm);
+    justify-content: space-between;
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .band__name {
+    font-weight: 500;
+  }
+
+  .band__use {
+    opacity: 0.75;
+    text-align: right;
+  }
+</style>

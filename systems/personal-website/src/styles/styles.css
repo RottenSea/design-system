@@ -1,7 +1,7 @@
 /*
  * The design system without a reset, for a plain HTML page: every import is a relative path the
- * browser can follow. The guideline pages link this file directly. It loads no fonts, because a
- * remote @import would hold up the page: a page adds the Fonts component, or links fonts.css.
+ * browser can follow. It loads no fonts, because a remote @import would hold up the page: a page
+ * adds the Fonts component, or links fonts.css.
  */
 @import "../../dist/tokens.css";
 @import "./typography.css";

@@ -23,7 +23,7 @@ Run these from the repository root:
 
 The docs site in `docs/` is built with [Starlight](https://starlight.astro.build/), Astro's documentation theme, and served from the root of its own domain, a subdomain set up when it is deployed. Until then the Docs workflow runs only by hand. English pages are in `docs/src/content/docs/en/` and Chinese pages in `docs/src/content/docs/zh/`, with the same file paths, which is how Starlight pairs a page with its translation. Each system gets its own section inside both language folders. Links between pages are relative, such as `../tokens/`, because page URLs end in a slash. `pnpm --filter @rottensea/ds-docs dev` serves it on Astro's default port, 4321.
 
-Each system also has specimen pages in its `guidelines/` folder, one per foundation topic. They are plain HTML that link the system's own `src/styles/fonts.css` and `src/styles/styles.css`, so after `pnpm build` they open in a browser as they are, and a site can show them in iframes without its own styles getting in the way.
+Each system's foundations (colors, typography, spacing and radius, shadows and borders, motion, themes, accessibility) are pages in its docs section. Their token tables are read from the system's token files when the docs build, by `docs/src/lib/tokens.ts`, and their specimens are example pages in `docs/src/pages/examples/<system>/`, shown in iframes so they use only the system's own CSS.
 
 Tokens follow the [Design Tokens Format Module 2025.10](https://www.designtokens.org/TR/2025.10/). [Terrazzo](https://terrazzo.app/) reads them and writes the CSS. `dist/` is build output and is not committed.
 
