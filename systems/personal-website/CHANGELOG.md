@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The CSS files moved to `src/styles/`. The package's export paths, such as `index.css`, are unchanged.
+- `styles.css` and `index.css` no longer load the fonts. A font stylesheet pulled in with CSS `@import` held up the whole page until Google Fonts and jsDelivr answered, and those can be slow or unreachable. A site now puts the new `Fonts` component in its `<head>`, which loads the same stylesheets without blocking; a plain HTML page links `fonts.css`, which still loads them the blocking way.
 
 ## [0.2.0] - 2026-10-27
 
