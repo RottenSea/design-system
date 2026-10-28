@@ -1,0 +1,59 @@
+---
+// Every surface with the text colours meant for it, in both themes. The lists come from the token
+// files, so a new surface or text colour shows up here by itself.
+import ThemePair from "../../../components/ThemePair.astro";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens, select } from "../../../lib/tokens";
+
+const tokens = await loadTokens("personal-website");
+// The translucent blur surfaces belong over imagery, not under text, so they are left out.
+const surfaces = select(tokens, ["surface.*"]).filter((token) => !token.id.includes("blur"));
+const onDark = (id: string) => id.includes("dark");
+const creamText = select(tokens, ["text.ink", "text.body-strong", "text.body", "text.muted", "text.muted-soft", "text.link"]);
+const darkText = select(tokens, ["text.on-dark", "text.on-dark-soft"]);
+---
+
+<ExampleLayout title="Surfaces and text">
+  <ThemePair>
+    <div class="surfaces">
+      {
+        surfaces.map((surface) => (
+          <div class="surface" style={`background: var(${surface.cssVar})`}>
+            <code class="surface__name" style={`color: var(${onDark(surface.id) ? "--text-on-dark-soft" : "--text-muted"})`}>
+              {surface.cssVar}
+            </code>
+            {(onDark(surface.id) ? darkText : creamText).map((text) => (
+              <span class="surface__text" style={`color: var(${text.cssVar})`}>
+                {text.cssVar.replace("--text-", "")}
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </ThemePair>
+</ExampleLayout>
+
+<style>
+  .surfaces {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .surface {
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    gap: var(--space-xxs) var(--space-sm);
+    padding: var(--space-sm);
+  }
+
+  .surface__name {
+    flex-basis: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+// Coral in its two sanctioned sizes, one control or a whole surface, and the small marks that
+// carry the accent and status colours, in both themes.
+import ThemePair from "../../../components/ThemePair.astro";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens, select } from "../../../lib/tokens";
+
+const tokens = await loadTokens("personal-website");
+const dots = select(tokens, ["accent.*", "status.*"]);
+const markers = select(tokens, ["marker.*"]).filter((token) => !token.id.endsWith("-on-dark"));
+---
+
+<ExampleLayout title="Coral and accents">
+  <ThemePair>
+    <div class="coral">
+      <div class="buttons">
+        <span class="button">Subscribe</span>
+        <span class="button button--active">Pressed</span>
+        <span class="button button--disabled">Disabled</span>
+      </div>
+      <p class="text">
+        Read the <span class="link">full changelog</span> before upgrading.
+      </p>
+      <div class="callout">
+        <strong>A whole coral surface</strong>
+        <span>The one place coral is generous: a full-width callout.</span>
+      </div>
+      <div class="dots">
+        {
+          dots.map((dot) => (
+            <span class="dot-label">
+              <span class="dot" style={`background: var(${dot.cssVar})`} />
+              {dot.cssVar}
+            </span>
+          ))
+        }
+      </div>
+      <p class="text">
+        {
+          markers.map((marker, index) => (
+            <>
+              {index > 0 && " "}
+              <mark style={`background: var(${marker.cssVar})`}>{marker.cssVar}</mark>
+            </>
+          ))
+        }
+      </p>
+    </div>
+  </ThemePair>
+</ExampleLayout>
+
+<style>
+  .coral {
+    display: grid;
+    font-family: var(--font-sans);
+    gap: var(--space-sm);
+  }
+
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .button {
+    background: var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-on-primary);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .button--active {
+    background: var(--color-primary-active);
+  }
+
+  .button--disabled {
+    background: var(--color-primary-disabled);
+    color: var(--text-muted);
+  }
+
+  .text {
+    color: var(--text-body);
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+
+  .link {
+    color: var(--text-link);
+  }
+
+  .callout {
+    background: var(--color-primary);
+    border-radius: var(--radius-lg);
+    color: var(--color-on-primary);
+    display: grid;
+    font-size: var(--body-sm-size);
+    gap: var(--space-xxs);
+    padding: var(--space-md);
+  }
+
+  .dots {
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    gap: var(--space-xs) var(--space-md);
+  }
+
+  .dot-label {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--space-xxs);
+  }
+
+  .dot {
+    border-radius: var(--radius-full);
+    height: 6px;
+    width: 6px;
+  }
+
+  mark {
+    color: var(--text-ink);
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    padding: 0 var(--space-xxs);
+  }
+</style>

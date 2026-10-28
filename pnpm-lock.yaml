@@ -29,6 +29,9 @@ importers:
       '@astrojs/check':
         specifier: 0.9.12
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@6.0.3)
+      '@terrazzo/parser':
+        specifier: 2.10.0
+        version: 2.10.0(yaml-to-momoa@0.1.0)
       typescript:
         specifier: 6.0.3
         version: 6.0.3

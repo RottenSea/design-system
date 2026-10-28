@@ -1,0 +1,190 @@
+---
+/**
+ * A table of tokens, in the docs site's own theme, with the values read from the token files when
+ * the docs build. Each row shows the CSS variable, which the copy button copies, the DTCG path
+ * under it, the value in each theme or screen width where it differs, the token it points to, and
+ * the description in the page's language.
+ *
+ * In a page: <TokenTable system="personal-website" tokens={["text.*", "color.primary"]} />
+ */
+import { loadTokens, select } from "../lib/tokens";
+
+interface Props {
+  system: string;
+  /** "text.*" for a whole group, or exact paths. */
+  tokens: string[];
+}
+
+const { system, tokens: patterns } = Astro.props;
+const rows = select(await loadTokens(system), patterns);
+const zh = Astro.locals.starlightRoute.lang.startsWith("zh");
+const t = zh
+  ? { token: "Token", value: "值", description: "说明", light: "浅色", dark: "深色", narrow: "窄屏", copy: "复制", copied: "已复制", to: "指向" }
+  : { token: "Token", value: "Value", description: "Description", light: "Light", dark: "Dark", narrow: "Narrow", copy: "Copy", copied: "Copied", to: "Points to" };
+const hasDark = rows.some((row) => row.value.dark);
+const hasNarrow = rows.some((row) => row.value.narrow);
+const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN"] : undefined) ?? row.description.en;
+---
+
+<ds-token-table data-copied={t.copied}>
+  <table class="token-table">
+    <thead>
+      <tr>
+        <th scope="col">{t.token}</th>
+        <th scope="col">{hasDark ? t.light : hasNarrow ? `${t.value} · ${t.narrow}` : t.value}</th>
+        {hasDark && <th scope="col">{t.dark}</th>}
+        <th scope="col">{t.description}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <td class="token-table__name">
+              <span class="token-table__var">
+                <code>{row.cssVar}</code>
+                <button type="button" class="token-table__copy" data-copy={row.cssVar} aria-label={`${t.copy} ${row.cssVar}`}>
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" />
+                    <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                  </svg>
+                </button>
+              </span>
+              <span class="token-table__path">{row.id}</span>
+            </td>
+            <td>
+              <span class="token-table__value">
+                {row.swatch && <span class="token-table__swatch" style={`background: ${row.swatch.light}`} />}
+                <code>{row.value.light}</code>
+              </span>
+              {row.alias?.light && (
+                <span class="token-table__alias">
+                  {t.to} <code>{row.alias.light}</code>
+                </span>
+              )}
+              {!hasDark && row.value.narrow && (
+                <span class="token-table__alias">
+                  {t.narrow} <code>{row.value.narrow}</code>
+                </span>
+              )}
+            </td>
+            {hasDark && (
+              <td>
+                {row.value.dark ? (
+                  <>
+                    <span class="token-table__value">
+                      {row.swatch?.dark && <span class="token-table__swatch" style={`background: ${row.swatch.dark}`} />}
+                      <code>{row.value.dark}</code>
+                    </span>
+                    {row.alias?.dark && (
+                      <span class="token-table__alias">
+                        {t.to} <code>{row.alias.dark}</code>
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <span class="token-table__same">—</span>
+                )}
+              </td>
+            )}
+            <td>{description(row)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</ds-token-table>
+
+<script>
+  class DsTokenTable extends HTMLElement {
+    connectedCallback() {
+      this.addEventListener("click", async (event) => {
+        const button = (event.target as Element).closest<HTMLButtonElement>("[data-copy]");
+        if (!button?.dataset.copy) return;
+        await navigator.clipboard.writeText(button.dataset.copy);
+        const label = button.getAttribute("aria-label") ?? "";
+        button.dataset.done = "";
+        button.setAttribute("aria-label", this.dataset.copied ?? "Copied");
+        setTimeout(() => {
+          delete button.dataset.done;
+          button.setAttribute("aria-label", label);
+        }, 1600);
+      });
+    }
+  }
+
+  if (!customElements.get("ds-token-table")) customElements.define("ds-token-table", DsTokenTable);
+</script>
+
+<style>
+  ds-token-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .token-table {
+    font-size: var(--sl-text-sm);
+    width: 100%;
+  }
+
+  .token-table td {
+    vertical-align: top;
+  }
+
+  .token-table__name {
+    white-space: nowrap;
+  }
+
+  .token-table__var {
+    align-items: center;
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .token-table__copy {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    display: inline-flex;
+    padding: 0.25rem;
+  }
+
+  .token-table__copy:hover,
+  .token-table__copy[data-done] {
+    color: var(--sl-color-text-accent);
+  }
+
+  .token-table__path,
+  .token-table__alias,
+  .token-table__same {
+    color: var(--sl-color-gray-3);
+    display: block;
+    font-size: var(--sl-text-xs);
+  }
+
+  .token-table__path {
+    font-family: var(--__sl-font-mono);
+  }
+
+  .token-table__alias code {
+    white-space: nowrap;
+  }
+
+  .token-table__value {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+
+  .token-table__swatch {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+    flex: none;
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+</style>

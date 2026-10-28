@@ -1,0 +1,46 @@
+---
+/**
+ * Shows an example in both themes side by side, inside an example page. The system's tokens.css
+ * defines [data-theme="light"] and [data-theme="dark"] blocks, so a subtree takes its theme from
+ * its own attribute whatever the page's theme is. The slot is rendered once and written twice.
+ * For specimens whose colours change with the theme: colours, shadows, hairlines.
+ */
+const html = await Astro.slots.render("default");
+---
+
+<div class="theme-pair">
+  <section data-theme="light" class="theme-pair__side" aria-label="Light theme">
+    <p class="theme-pair__label">Light</p>
+    <Fragment set:html={html} />
+  </section>
+  <section data-theme="dark" class="theme-pair__side" aria-label="Dark theme">
+    <p class="theme-pair__label">Dark</p>
+    <Fragment set:html={html} />
+  </section>
+</div>
+
+<style>
+  .theme-pair {
+    display: grid;
+    gap: var(--space-sm);
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  }
+
+  .theme-pair__side {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    color: var(--text-body);
+    padding: var(--space-md);
+  }
+
+  .theme-pair__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    margin: 0 0 var(--space-sm);
+    text-transform: uppercase;
+  }
+</style>

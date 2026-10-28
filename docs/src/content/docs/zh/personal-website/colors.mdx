@@ -1,0 +1,53 @@
+---
+title: 颜色
+description: 个人网站系统的底色、文字色、珊瑚色、点缀色和细线，以及它们在两种主题下的值。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+整个系统都是暖色：奶油色的底，暖墨色代替黑色，暖色的深色代替蓝黑，只有一种品牌色珊瑚色，而且用得很省。组件只用下面这些语义 token，它们指向[调色板](#调色板)；深色主题只改它们指向哪里，调色板本身不变（见[主题](../themes/)）。
+
+表格里的值是这个网站构建时从 token 文件读出来的。
+
+## 底色
+
+一页里三种底色交替出现：奶油色的画布、奶油色的卡片、深色。相邻的两段不用同一种。奶油色卡片和画布靠底色区分，不靠边框或阴影。深色用来强调：产品截图、对比、页脚。深色主题里它仍然比画布高一级，深色卡片照样显眼。
+
+<Example system="personal-website" name="colors-surfaces" title="每种底色和配它的文字颜色，两种主题并排" />
+
+<TokenTable system="personal-website" tokens={["surface.*"]} />
+
+## 文字
+
+文字是暖墨色，不用纯黑；深色底上的文字带一点奶油色，不用纯白。奶油色的文字颜色放在奶油色底上，on-dark 的放在深色底上，上面的样张列出了每种搭配。链接是珊瑚色。
+
+<TokenTable system="personal-website" tokens={["text.*"]} />
+
+## 珊瑚色
+
+珊瑚色是品牌的电压。用在单个元素上要省：一个主按钮、链接、焦点框。只有铺满一整块时才大方，比如通栏的号召卡片。中间状态没有：不用珊瑚色的边框，也不用珊瑚色的标题。按下时颜色变深；禁用时变成细线的颜色，文字变浅。两种主题里珊瑚色都一样。
+
+<Example system="personal-website" name="colors-coral" title="珊瑚色的按钮、链接和整块底色，以及点缀色和状态圆点，两种主题并排" />
+
+<TokenTable system="personal-website" tokens={["color.*", "focus-ring"]} />
+
+## 点缀色、状态色和荧光笔
+
+青色和琥珀色只用在小标记上：状态圆点、分类标签。状态色表示成功、警告和错误，用圆点或短标签，不铺成一整块。荧光笔用不透明的淡色标记文字，点缀色已经和底下的底色混好，所以被标记的文字对比度不变，两段标记挨在一起也不会叠深。
+
+<TokenTable system="personal-website" tokens={["accent.*", "status.*", "marker.*"]} />
+
+## 细线
+
+边框是奶油色调的细线，看上去是高一级的层次，而不是一条墨线。浅一号的细线用来分隔同一张卡片或同一段里的内容。
+
+<TokenTable system="personal-website" tokens={["hairline", "hairline-soft", "hairline-on-dark"]} />
+
+## 调色板
+
+语义 token 指向的原始颜色。组件里用语义 token；调色板只用来定义它们。
+
+<TokenTable system="personal-website" tokens={["cream.*", "ink.*", "night.*", "coral.*", "teal.*", "amber.*", "green.*", "gold.*", "red.*", "white"]} />

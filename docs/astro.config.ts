@@ -57,6 +57,11 @@ export default defineConfig({
           items: [
             { slug: "personal-website", label: "Overview", translations: { "zh-CN": "概览" } },
             {
+              label: "Foundations",
+              translations: { "zh-CN": "基础" },
+              items: ["colors"].map((name) => ({ slug: `personal-website/${name}` }))
+            },
+            {
               label: "Components",
               translations: { "zh-CN": "组件" },
               items: [

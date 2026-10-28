@@ -1,0 +1,53 @@
+---
+title: Colors
+description: The surfaces, text colours, coral, accents and hairlines of the personal website system, with their values in both themes.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+The system is warm throughout: cream surfaces, warm ink instead of black, a warm dark instead of blue-black, and one brand colour, coral, used sparingly. Components use only the semantic tokens below, which point at the [palette](#palette); the dark theme changes where they point and leaves the palette alone (see [Themes](../themes/)).
+
+The values in the tables are read from the token files when this site builds.
+
+## Surfaces
+
+Three surface modes alternate down a page: the cream canvas, the cream card and the dark surface. No two neighbouring bands use the same one. Cream cards are set apart from the canvas by their fill, not by a border or a shadow. The dark surface is for emphasis: a product mockup, a comparison, the footer. In the dark theme it stays one step above the canvas, so a dark card still stands out.
+
+<Example system="personal-website" name="colors-surfaces" title="Each surface with the text colours meant for it, in both themes" />
+
+<TokenTable system="personal-website" tokens={["surface.*"]} />
+
+## Text
+
+Text is warm ink, never pure black, and the text on dark surfaces is cream-tinted, never pure white. The cream text colours go on the cream surfaces and the on-dark ones on the dark surfaces; the specimen above shows each pairing. Links are coral.
+
+<TokenTable system="personal-website" tokens={["text.*"]} />
+
+## Coral
+
+Coral is the brand voltage. On a single element it is scarce: one primary button, a link, the focus ring. It is generous only as a whole surface, such as a full-width callout. Nothing in between: no coral borders or coral headings. Pressed, coral darkens; disabled, it flattens to the hairline colour with a muted label. Coral is the same in both themes.
+
+<Example system="personal-website" name="colors-coral" title="Coral as controls, a link and a surface, with the accent and status marks, in both themes" />
+
+<TokenTable system="personal-website" tokens={["color.*", "focus-ring"]} />
+
+## Accents, status and markers
+
+Teal and amber appear only as small marks: a status dot, a category badge. The status colours say success, warning and error, as a dot or a short label, never as a whole surface. Markers highlight text with an opaque tint, the accent already mixed into the surface beneath, so highlighted text keeps full contrast and two markers that touch do not darken each other.
+
+<TokenTable system="personal-website" tokens={["accent.*", "status.*", "marker.*"]} />
+
+## Hairlines
+
+Borders are hairlines in a cream tone, so a border reads as one step of elevation, not as an ink line. The soft hairline divides content inside one card or band.
+
+<TokenTable system="personal-website" tokens={["hairline", "hairline-soft", "hairline-on-dark"]} />
+
+## Palette
+
+The raw colours the semantic tokens point at. Use the semantic tokens in components; the palette is for defining them.
+
+<TokenTable system="personal-website" tokens={["cream.*", "ink.*", "night.*", "coral.*", "teal.*", "amber.*", "green.*", "gold.*", "red.*", "white"]} />
