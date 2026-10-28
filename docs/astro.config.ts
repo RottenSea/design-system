@@ -19,6 +19,10 @@ const specPages = [
 // at the root; it redirects to English.
 export default defineConfig({
   redirects: { "/": "/en/" },
+  // The pages link to each other with relative paths such as ../tokens/, which only resolve from
+  // an address that ends in a slash. With "always", every link Starlight writes ends in one,
+  // including the site title's link to /en/.
+  trailingSlash: "always",
   integrations: [
     starlight({
       title: "Design Systems",
