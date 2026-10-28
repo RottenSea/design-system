@@ -5,7 +5,7 @@ import type { VFile } from "vfile";
 
 /**
  * Turns the directive shorthand in MDX posts (`:::tip`, `:::details`, `:::spoiler`,
- * `:::steps`, `:::code-group`, `:::file-tree`, `:::gallery`, `:spoiler[...]`,
+ * `:::steps`, `:::code-group`, `:::file-tree`, `:::gallery`, `::video`, `:spoiler[...]`,
  * `:term[...]{note="..."}`) into this system's components, and marks an image on a line of its
  * own as a figure.
  * It also turns on remark-directive's parser.

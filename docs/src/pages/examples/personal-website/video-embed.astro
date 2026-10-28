@@ -1,0 +1,19 @@
+---
+import { VideoEmbed } from "@rottensea/ds-personal-website/components";
+import dusk from "../../../assets/examples/dusk.jpg";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="VideoEmbed">
+  <VideoEmbed
+    src="https://www.bilibili.com/video/BV1GJ411x7h7"
+    title="Never Gonna Give You Up, the official video"
+    poster={dusk}
+    caption="A Bilibili video with a poster. The player loads only when you press play."
+  />
+  <VideoEmbed
+    src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    title="Never Gonna Give You Up, the official video"
+    caption="A YouTube video without a poster shows the striped placeholder."
+  />
+</ExampleLayout>

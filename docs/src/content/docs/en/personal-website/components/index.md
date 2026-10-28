@@ -19,3 +19,4 @@ Each page says when to use the component, how to write it in a post, and what it
 | [FileTree](./file-tree/) | `:::file-tree` | Shows part of a project's structure |
 | [Figure](./figure/) | An image on a line of its own | Shows an image with a caption, zoom and a placeholder |
 | [ImageGrid](./image-grid/) | `:::gallery` | Shows several images in a grid |
+| [VideoEmbed](./video-embed/) | `::video` | Plays a Bilibili, YouTube, AcFun or Vimeo video once the reader presses play |

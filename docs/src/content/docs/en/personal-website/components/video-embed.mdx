@@ -1,0 +1,64 @@
+---
+title: VideoEmbed
+description: A video from Bilibili, YouTube, AcFun or Vimeo that loads nothing until the reader presses play.
+sidebar:
+  order: 11
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows a video from Bilibili, YouTube, AcFun or Vimeo in a post. Nothing from the video site loads until the reader presses play.
+
+<Example system="personal-website" name="video-embed" title="A video with a poster and one with the placeholder" />
+
+## When to use
+
+Use it when the video is part of what the post says. A video that is only related belongs in a link.
+
+## In a post
+
+Write `::video` with the address of the video's page, copied from the browser:
+
+```md
+::video{src="https://www.bilibili.com/video/BV1GJ411x7h7" title="What the video is" poster="./cover.png"}
+```
+
+| Attribute | What it does |
+| --- | --- |
+| `src` | The video page's address. Bilibili (BV and av), YouTube (including youtu.be and Shorts), AcFun and Vimeo are recognized. A YouTube `t=` and a Bilibili `p=` are kept |
+| `title` | What the video is. It names the play button for screen readers and the player |
+| `poster` | The still shown before playback, a path next to the post or a URL. Without one, the striped placeholder shows with the title |
+| `caption` | One line under the video |
+| `ratio` | The frame's ratio. Default `16/9` |
+
+An address from a site it does not know is used as the player's own address, with a warning when the site builds.
+
+## Anatomy
+
+A frame with `--radius-lg` corners holding the poster or the striped placeholder, with one coral 56px play button in the middle, and an optional caption below.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `provider` and `videoId` | Another way to name a video: `youtube`, `bilibili`, `acfun`, `vimeo`, or `file` for a video file in `src` |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Waiting | The poster or placeholder and the play button. No request goes to the video site |
+| Playing | The site's player replaces the frame's contents and starts. YouTube plays from `youtube-nocookie.com`, which sets no cookies before playback |
+
+## Accessibility
+
+The play control is a button named "Play" followed by the title; Enter and Space both start the video, and the focus moves into the player. Without JavaScript it is a link to the video's page, and a Ctrl or Cmd click opens that page in a new tab. The poster has an empty alt text, because the button already names the video.
+
+## API
+
+[`VideoEmbed.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/VideoEmbed.astro), with the addresses worked out in [`video.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/video.js). It keeps the handoff's props. AcFun is new, and so is recognizing a video page's address in `src`; in the handoff, `src` takes only a player's address or a file. The video sites' players are not part of this system, so how they look and what they load is up to each site.
+
+## Related
+
+[Figure](../figure/), for a still image.

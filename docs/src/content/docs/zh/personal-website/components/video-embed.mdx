@@ -1,0 +1,64 @@
+---
+title: VideoEmbed 视频
+description: 嵌入 B 站、YouTube、AcFun 或 Vimeo 的视频，读者按下播放前什么都不加载。
+sidebar:
+  order: 11
+---
+
+import Example from "../../../../../components/Example.astro";
+
+在文章里嵌入 B 站、YouTube、AcFun 或 Vimeo 的视频。读者按下播放之前，不会向视频网站发出任何请求。
+
+<Example system="personal-website" name="video-embed" title="带封面的视频和条纹占位的视频" />
+
+## 什么时候用
+
+视频本身就是文章要讲的内容时用。只是相关的视频，放一个链接就够了。
+
+## 文章里怎么写
+
+写 `::video`，`src` 填从浏览器复制的视频页面网址：
+
+```md
+::video{src="https://www.bilibili.com/video/BV1GJ411x7h7" title="视频讲的是什么" poster="./cover.png"}
+```
+
+| 属性 | 作用 |
+| --- | --- |
+| `src` | 视频页面的网址。认得 B 站（BV 号和 av 号）、YouTube（包括 youtu.be 和 Shorts）、AcFun 和 Vimeo。YouTube 的 `t=` 和 B 站的 `p=` 会保留 |
+| `title` | 视频讲的是什么。读屏软件读播放按钮时读它，也是播放器的标题 |
+| `poster` | 播放前显示的封面，可以是文章旁边的图片路径或网址。不写就显示条纹占位和标题 |
+| `caption` | 视频下方的一行说明 |
+| `ratio` | 画面比例，默认 `16/9` |
+
+不认得的网站的网址会直接当作播放器地址，构建网站时给出警告。
+
+## 结构
+
+`--radius-lg` 圆角的画面里是封面或条纹占位，中间一个 56px 的珊瑚色播放按钮，下面是可选的说明。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `provider` 和 `videoId` | 另一种指定视频的方式：`youtube`、`bilibili`、`acfun`、`vimeo`，或者 `file`（`src` 是视频文件） |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 等待 | 封面或占位加播放按钮，不会向视频网站发请求 |
+| 播放 | 视频网站的播放器换掉画面里的内容并开始播放。YouTube 用 `youtube-nocookie.com`，播放前不写 cookie |
+
+## 无障碍
+
+播放按钮的名字是 “Play” 加上标题，Enter 和空格都能播放，播放后焦点移进播放器。没有 JavaScript 时它是一个指向视频页面的链接，按住 Ctrl 或 Cmd 点击会在新标签页打开那个页面。封面的替代文字是空的，因为按钮已经说了这是什么视频。
+
+## API
+
+[`VideoEmbed.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/VideoEmbed.astro)，网址的识别在 [`video.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/video.js)。props 和交付包一样。新加的是 AcFun，以及 `src` 可以填视频页面的网址；交付包的 `src` 只接受播放器地址或视频文件。各网站的播放器不属于这个系统，长什么样、会加载什么由各网站决定。
+
+## 相关
+
+[Figure 图片](../figure/)，用于静态图片。

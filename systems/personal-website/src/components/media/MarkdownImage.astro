@@ -3,6 +3,7 @@
  * Stands in for an image in an MDX post, through the `components` map (`img: MarkdownImage`).
  * Astro gives it the imported image as `src`, with the alt text and the Markdown title.
  *
+ * A video's poster, marked by the ::video directive, is drawn plain with an empty alt text.
  * An image on a line of its own, which the system's directive plugin marks as a figure, becomes
  * a Figure: the title is its caption, and it zooms and has a placeholder. An image inside a line
  * of text stays a plain inline image, because a <figure> cannot sit inside a paragraph.
@@ -21,10 +22,19 @@ const { src, alt = "", title, ...rest } = Astro.props;
 // The plugin's mark arrives as dataDsFigure from an imported image and as data-ds-figure from a
 // plain <img>, depending on which of Astro's paths the image took.
 const figure = "dataDsFigure" in rest || "data-ds-figure" in rest;
+// A video's poster, which the ::video directive passes as an image so Astro processes it. The
+// VideoEmbed around it sizes it and makes it the play control's backdrop.
+const poster = "dataDsPoster" in rest || "data-ds-poster" in rest;
 ---
 
 {
-  figure ? (
+  poster ? (
+    typeof src === "string" ? (
+      <img src={src} alt="" loading="lazy" />
+    ) : (
+      <Image src={src} alt="" />
+    )
+  ) : figure ? (
     <Figure src={src} alt={alt} caption={title || undefined} />
   ) : typeof src === "string" ? (
     <img src={src} alt={alt} title={title} loading="lazy" />

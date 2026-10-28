@@ -185,3 +185,22 @@ test(":::gallery leaves out text, with a warning", () => {
   assert.equal(tree.children[0].children.length, 1);
   assert.match(messages[0], /holds only images/);
 });
+
+test("::video becomes a VideoEmbed, with a local poster as a marked image", () => {
+  const source = '::video{src="https://www.acfun.cn/v/ac48905554" title="A talk" poster="./cover.png" ratio="4/3"}\n';
+  const { tree, messages } = run(source);
+  const [node] = tree.children;
+  assert.equal(node.name, "VideoEmbed");
+  assert.deepEqual(attrs(node), { src: "https://www.acfun.cn/v/ac48905554", title: "A talk", ratio: "4/3" });
+  const [poster] = node.children;
+  assert.equal(poster.type, "image");
+  assert.equal(poster.url, "./cover.png");
+  assert.equal(poster.data.hProperties.dataDsPoster, true);
+  assert.deepEqual(messages, []);
+});
+
+test("::video without a src is kept as text, with a warning", () => {
+  const { tree, messages } = run('::video{title="Nothing"}\n');
+  assert.equal(tree.children[0].type, "paragraph");
+  assert.match(messages[0], /needs a src/);
+});

@@ -22,6 +22,7 @@ import Tooltip from "./feedback/Tooltip.astro";
 import Figure from "./media/Figure.astro";
 import ImageGrid from "./media/ImageGrid.astro";
 import MarkdownImage from "./media/MarkdownImage.astro";
+import VideoEmbed from "./media/VideoEmbed.astro";
 
 export {
   Abbreviation,
@@ -40,7 +41,8 @@ export {
   Step,
   Steps,
   TableScroll,
-  Tooltip
+  Tooltip,
+  VideoEmbed
 };
 
 export const components = {
@@ -58,6 +60,7 @@ export const components = {
   Steps,
   TableScroll,
   Tooltip,
+  VideoEmbed,
   img: MarkdownImage,
   pre: MarkdownCode,
   table: MarkdownTable

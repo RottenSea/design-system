@@ -71,7 +71,8 @@ export default defineConfig({
                   "option-group",
                   "file-tree",
                   "figure",
-                  "image-grid"
+                  "image-grid",
+                  "video-embed"
                 ].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))

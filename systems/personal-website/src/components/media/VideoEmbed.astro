@@ -1,0 +1,226 @@
+---
+/**
+ * A video in a post. Nothing from the video site loads until the reader presses play: the frame
+ * shows a poster, or the striped placeholder with the title in the mono face, under one coral
+ * 56px play control, and the player replaces it on activation. 16/9 by default, --radius-lg,
+ * one caption line.
+ *
+ * Ported from the handoff's VideoEmbed.jsx with the same props, plus three things. AcFun is a
+ * provider too. `src` also takes a video page's address (YouTube, Bilibili, AcFun, Vimeo) and
+ * works out the player from it. And the play control is a link to the video's page, which the
+ * script turns into a play button, so without script it still takes the reader to the video.
+ * A poster can be an imported image, a URL, or an image in the slot, which is how the ::video
+ * directive passes a local poster so that Astro processes it.
+ */
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import Play from "../../icons/player-play-filled.svg";
+import { videoSource } from "./video.js";
+
+interface Props {
+  /** Builds the player's address from `videoId`. "file" plays `src` through <video>. */
+  provider?: "youtube" | "bilibili" | "acfun" | "vimeo" | "file";
+  videoId?: string;
+  /** A video page's address, a player's address, or an .mp4, .webm or .ogg file. */
+  src?: string;
+  /** Still image before playback. Without one, the striped placeholder shows. */
+  poster?: ImageMetadata | string;
+  /** What the video is. The player's title and the play control's accessible name. */
+  title?: string;
+  caption?: string;
+  /** Frame ratio. */
+  ratio?: string;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const {
+  provider,
+  videoId,
+  src,
+  poster,
+  title,
+  caption,
+  ratio = "16/9",
+  tone = "cream",
+  class: className
+} = Astro.props;
+
+const source = videoSource({ provider, videoId, src });
+const hasPoster = Boolean(poster) || Astro.slots.has("default");
+const name = title ? `Play ${title}` : "Play video";
+const placeholderLabel = title || (source?.provider ? `${source.provider} video` : "video");
+---
+
+<ds-video>
+  <figure class:list={["ds-video", { "ds-video--dark": tone === "dark" }, className]}>
+    <div class:list={["ds-video__frame", { "ds-video__frame--empty": !hasPoster }]} style={`aspect-ratio: ${ratio}`}>
+      {
+        source ? (
+          <a
+            class="ds-video__play"
+            href={source.page}
+            aria-label={name}
+            data-embed={source.embed}
+            data-kind={source.kind}
+            data-title={title || "Video"}
+          >
+            {poster && typeof poster !== "string" && <Image src={poster} alt="" class="ds-video__poster" />}
+            {poster && typeof poster === "string" && <img src={poster} alt="" class="ds-video__poster" loading="lazy" />}
+            {!poster && <slot />}
+            <span class="ds-video__overlay">
+              <span class="ds-video__button">
+                <Play width={24} height={24} aria-hidden="true" />
+              </span>
+              {!hasPoster && <span class="ds-video__label">{placeholderLabel}</span>}
+            </span>
+          </a>
+        ) : (
+          <span class="ds-video__overlay">
+            <span class="ds-video__label">{placeholderLabel}</span>
+          </span>
+        )
+      }
+    </div>
+    {caption && <figcaption class="ds-video__caption">{caption}</figcaption>}
+  </figure>
+</ds-video>
+
+<script>
+  class DsVideo extends HTMLElement {
+    connectedCallback() {
+      const link = this.querySelector<HTMLAnchorElement>(".ds-video__play");
+      if (!link) return;
+      // With script the control plays the video in place, so it is a button, and Space works
+      // as well as Enter.
+      link.setAttribute("role", "button");
+      link.addEventListener("click", (event) => {
+        // A modified click still opens the video's page, in a new tab or window.
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
+        event.preventDefault();
+        this.#play(link);
+      });
+      link.addEventListener("keydown", (event) => {
+        if (event.key !== " ") return;
+        event.preventDefault();
+        this.#play(link);
+      });
+    }
+
+    #play(link: HTMLAnchorElement) {
+      const { embed = "", kind, title = "Video" } = link.dataset;
+      let player: HTMLIFrameElement | HTMLVideoElement;
+      if (kind === "file") {
+        player = document.createElement("video");
+        player.src = embed;
+        player.controls = true;
+        player.autoplay = true;
+      } else {
+        player = document.createElement("iframe");
+        player.src = embed;
+        player.title = title;
+        player.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture; fullscreen";
+        player.allowFullscreen = true;
+      }
+      player.className = "ds-video__player";
+      link.replaceWith(player);
+      player.focus();
+    }
+  }
+
+  if (!customElements.get("ds-video")) customElements.define("ds-video", DsVideo);
+</script>
+
+<style>
+  ds-video {
+    display: block;
+  }
+
+  .ds-video {
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+  }
+
+  .ds-video__frame {
+    background: var(--surface-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ds-video--dark .ds-video__frame {
+    background: var(--surface-dark);
+  }
+
+  .ds-video__frame--empty {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--surface-card) 0px,
+      var(--surface-card) 8px,
+      var(--surface-soft) 8px,
+      var(--surface-soft) 16px
+    );
+  }
+
+  .ds-video__play {
+    display: block;
+    inset: 0;
+    position: absolute;
+  }
+
+  /* The poster may come from the slot, as an image MarkdownImage draws. */
+  .ds-video__play :global(img) {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .ds-video__overlay {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    inset: 0;
+    justify-content: center;
+    position: absolute;
+  }
+
+  .ds-video__button {
+    align-items: center;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-float);
+    color: var(--color-on-primary);
+    display: inline-flex;
+    height: 56px;
+    justify-content: center;
+    width: 56px;
+  }
+
+  .ds-video__label {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+  }
+
+  .ds-video__frame :global(.ds-video__player) {
+    border: 0;
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .ds-video__caption {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    line-height: var(--caption-lh);
+    margin-top: var(--space-xs);
+  }
+
+  .ds-video--dark .ds-video__caption {
+    color: var(--text-on-dark-soft);
+  }
+</style>

@@ -8,6 +8,7 @@
 //   :::file-tree{label="Your project"} with a nested list inside → <FileTree> of <FileTreeNode>
 //   :::gallery{columns=3 ratio="4/3"} with images inside → <ImageGrid> of figures
 //   ![alt](./a.png "Caption") on a line of its own → a figure with that caption
+//   ::video{src="https://www.bilibili.com/video/BV..." title="..." poster="./cover.png"} → <VideoEmbed>
 //   :spoiler[words]    → <Spoiler>
 //   :term[SSR]{note="Server-Side Rendering"} → <Abbreviation term="...">
 //
@@ -16,6 +17,7 @@
 // for example with `components` from "../components/index.js".
 import remarkDirective from "remark-directive";
 import { toString as textOf } from "mdast-util-to-string";
+import { videoSource } from "../components/media/video.js";
 
 const CALLOUTS = new Set(["note", "tip", "important", "warning", "caution", "details"]);
 
@@ -226,6 +228,33 @@ function gallery(node, file) {
   return { type: "mdxJsxFlowElement", name: "ImageGrid", attributes, children: images.map(asFigure) };
 }
 
+/**
+ * ::video{src title poster caption ratio}. A local poster goes in as an image, so Astro imports
+ * and processes it like any image in the post; MarkdownImage draws it as the poster.
+ */
+function video(node, file) {
+  const label = takeLabel(node);
+  const { src, poster, caption, ratio } = node.attributes ?? {};
+  const title = node.attributes?.title ?? (label ? textOf(label) : undefined);
+  const source = src ? videoSource({ src }) : undefined;
+  if (!source) {
+    file.message('::video needs a src, as in ::video{src="https://www.bilibili.com/video/BV..."}', node);
+    node.data = { ...node.data, dsReported: true };
+    return undefined;
+  }
+  if (!source.provider) {
+    file.message(`::video does not know the site of ${src}; it is used as the player's address`, node);
+  }
+  const attributes = [attribute("src", src)];
+  if (title) attributes.push(attribute("title", title));
+  if (caption) attributes.push(attribute("caption", caption));
+  if (ratio) attributes.push(attribute("ratio", ratio));
+  const children = poster
+    ? [{ type: "image", url: poster, alt: "", title: null, data: { hProperties: { dataDsPoster: true } } }]
+    : [];
+  return { type: "mdxJsxFlowElement", name: "VideoEmbed", attributes, children };
+}
+
 function inlineSpoiler(node) {
   return { type: "mdxJsxTextElement", name: "Spoiler", attributes: [], children: node.children };
 }
@@ -256,7 +285,10 @@ const HANDLERS = {
     if (node.name === "term") return term(node, file);
     return undefined;
   },
-  leafDirective: () => undefined
+  leafDirective: (node, file) => {
+    if (node.name === "video") return video(node, file);
+    return undefined;
+  }
 };
 
 const PREFIX = { containerDirective: ":::", leafDirective: "::", textDirective: ":" };
@@ -264,11 +296,12 @@ const PREFIX = { containerDirective: ":::", leafDirective: "::", textDirective: 
 /**
  * A directive this plugin does not know. remark-directive reads any ASCII colon followed by a
  * letter as one, so ordinary text such as `note:abc` would otherwise vanish. The original text
- * is put back and a warning names it.
+ * is put back and a warning names it. A known directive written wrongly comes here too, after
+ * its handler has warned and set data.dsReported, so it is not called unknown as well.
  */
 function restore(node, file) {
   // Times such as 10:30 parse as a directive named 30; those are never meant as one.
-  if (/^[a-z]/i.test(node.name)) {
+  if (/^[a-z]/i.test(node.name) && !node.data?.dsReported) {
     file.message(`Unknown directive ${PREFIX[node.type]}${node.name}; kept as text`, node);
   }
   const { start, end } = node.position ?? {};
