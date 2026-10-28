@@ -1,0 +1,89 @@
+---
+// How a card is set apart: by fill, by a hairline, or, rarely, by a shadow. In both themes, since
+// the hairlines and the dark surface change with the theme.
+import ThemePair from "../../../components/ThemePair.astro";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Fill, hairline and shadow">
+  <ThemePair>
+    <div class="cards">
+      <div class="card card--fill">
+        <strong>Fill</strong>
+        <span>--surface-card, no border, no shadow</span>
+      </div>
+      <div class="card card--outline">
+        <strong>Hairline</strong>
+        <span>--surface-canvas with --border-hairline</span>
+      </div>
+      <div class="card card--outline card--hover">
+        <strong>Hover</strong>
+        <span>--shadow-hover, on a card under the pointer</span>
+      </div>
+      <div class="card card--outline card--float">
+        <strong>Float</strong>
+        <span>--shadow-float, on something above the page</span>
+      </div>
+      <div class="card card--dark">
+        <strong>Dark</strong>
+        <span>--surface-dark, the emphasis surface</span>
+      </div>
+    </div>
+  </ThemePair>
+</ExampleLayout>
+
+<style>
+  .cards {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .card {
+    border-radius: var(--radius-lg);
+    display: grid;
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    gap: var(--space-xxs);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .card strong {
+    color: var(--text-ink);
+    font-size: var(--body-sm-size);
+    font-weight: 500;
+  }
+
+  .card span {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .card--fill {
+    background: var(--surface-card);
+  }
+
+  .card--outline {
+    background: var(--surface-canvas);
+    border: var(--border-hairline);
+  }
+
+  .card--hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .card--float {
+    box-shadow: var(--shadow-float);
+  }
+
+  .card--dark {
+    background: var(--surface-dark);
+  }
+
+  .card--dark strong {
+    color: var(--text-on-dark);
+  }
+
+  .card--dark span {
+    color: var(--text-on-dark-soft);
+  }
+</style>

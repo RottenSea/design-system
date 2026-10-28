@@ -1,0 +1,25 @@
+---
+title: 阴影与边框
+description: 个人网站系统怎样把卡片和页面区分开：先靠底色，再靠细线，很少用阴影。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+卡片靠底色和页面区分，不靠阴影。层次感主要来自奶油色和深色两种底色的对比。
+
+<Example system="personal-website" name="elevation" title="底色、细线、悬停阴影、浮起阴影和深色底，两种主题并排" />
+
+## 边框
+
+奶油色卡片没有边框也没有阴影，底色就够了。和画布同色的卡片（对比卡、网格小块）加一条细线。细线是奶油色调的，看上去是高一级的层次，而不是一条墨线。浅一号的细线用来分隔同一张卡片或同一段里的内容。细线的颜色见[颜色](../colors/#细线)。
+
+<TokenTable system="personal-website" tokens={["border.*"]} />
+
+## 阴影
+
+阴影只出现在两个地方：鼠标停在卡片上时的一层淡阴影，以及浮在页面上方的东西（比如横幅）的大一点的阴影。悬停效果到那层淡阴影为止：不浮起，不放大。
+
+<TokenTable system="personal-website" tokens={["shadow.*"]} />

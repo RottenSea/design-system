@@ -1,0 +1,32 @@
+---
+title: 文字
+description: 个人网站系统的三种字体，以及从大标题到代码的字号阶梯。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+三种字体，各管一件事：衬线体做标题，无衬线体用于所有要读、要点的文字，等宽字体用于代码。每个字族在西文字体后面列了中文字体，中英混排时两边都用对的字。
+
+## 字体
+
+- **标题**用 Noto Serif SC，只用 400 字重，字号越大字距收得越紧。加粗的衬线体不符合品牌。
+- **正文**、导航、按钮和标签用 Manrope 加 Noto Sans SC：段落用 400，标签和强调用 500。
+- **代码**用 Maple Mono。
+- **数学公式**用 Noto Sans Math，不可用时退回系统自带的数学字体。
+
+强调靠字号，不靠字重：先换更大的衬线体，而不是更粗的。大写小标签是唯一不用句首大写的文字。
+
+字体从 Google Fonts 和 jsDelivr 加载，不挡页面渲染；Fonts 组件见[概览](../)。
+
+<TokenTable system="personal-website" tokens={["font.*"]} />
+
+## 字号阶梯
+
+每种样式是一个类，例如 `.ds-display-xl`，加上一组变量，每个属性一个。屏幕窄于 768px 时，最大的三档标题字号降一级，字距也按新字号重新定，`display-sm` 不变。这是 token 层面的变化，所有类和组件都会跟着变，不用各自写媒体查询。
+
+<Example system="personal-website" name="typography-scale" title="所有文字样式，从 display-xl 到代码" />
+
+<TokenTable system="personal-website" tokens={["display-xl", "display-lg", "display-md", "display-sm", "title-lg", "title-md", "title-sm", "body-md", "body-sm", "caption", "caption-upper", "code", "button", "nav-link"]} />

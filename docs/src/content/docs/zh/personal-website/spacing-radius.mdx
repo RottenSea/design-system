@@ -1,0 +1,33 @@
+---
+title: 间距与圆角
+description: 个人网站系统的间距阶梯、页面宽度、断点和圆角。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+间距以 4px 为基本单位，分八档。圆角是一组短的阶梯，每种圆角各有用途。
+
+<Example system="personal-website" name="spacing-radius" title="按实际长度画出的间距，以及所有圆角" />
+
+## 间距
+
+页面里的大段之间隔 `--space-section`，处处一样，不会在某一页收紧。卡片内边距看卡片的种类：功能卡和对比卡 32px，内容窗口 24px，网格小块 20px。网格变窄时减少列数，不缩小卡片。
+
+<TokenTable system="personal-website" tokens={["space.*"]} />
+
+## 页面宽度和断点
+
+内容最宽到 `--container-max`。两侧都有侧栏的内容页改用 `--container-wide`，这样中间一栏保持阅读宽度 `--container-reading`，两边各一条侧栏。正文永远不超过阅读宽度。
+
+系统只有两个断点：到 `--break-rails` 时右侧栏收起，到 `--break-stack` 时全部堆叠，主栏在最前面。
+
+<TokenTable system="personal-website" tokens={["container.*", "rail.*", "break.*", "nav-height", "control-height", "icon-button-size", "tap-min"]} />
+
+## 圆角
+
+圆角表明东西是什么：按钮和输入框 8px，内容卡片 12px，头图这类大块展示 16px，标签用药丸形，头像和图标按钮用圆形。4px 和 6px 留给标签的点缀和菜单项。
+
+<TokenTable system="personal-website" tokens={["radius.*"]} />

@@ -1,0 +1,33 @@
+---
+title: Spacing and radius
+description: The spacing scale, page widths, breakpoints and corner radii of the personal website system.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+Space comes from a 4px base unit in eight steps. Corners come from a short scale where each radius has a job.
+
+<Example system="personal-website" name="spacing-radius" title="The spacing steps drawn to length, and every radius" />
+
+## Spacing
+
+Major bands of a page sit `--space-section` apart, always the same distance; a page never tightens it. Inside cards the padding depends on the card: 32px for feature and comparison cards, 24px for content windows, 20px for grid tiles. Grids drop columns rather than shrinking cards.
+
+<TokenTable system="personal-website" tokens={["space.*"]} />
+
+## Page widths and breakpoints
+
+Content caps at `--container-max`. A content page with both side rails uses `--container-wide` instead, which keeps the main column at the reading measure, `--container-reading`, with a rail either side. Body text never runs wider than the reading measure.
+
+The system has two breakpoints and no others: at `--break-rails` the right rail drops, and at `--break-stack` everything stacks, with the main column first.
+
+<TokenTable system="personal-website" tokens={["container.*", "rail.*", "break.*", "nav-height", "control-height", "icon-button-size", "tap-min"]} />
+
+## Radius
+
+Radii say what something is: 8px for buttons and inputs, 12px for content cards, 16px for a large artifact such as a hero image, a pill for badges and full for avatars and icon buttons. 4px and 6px are kept for badge accents and menu items.
+
+<TokenTable system="personal-website" tokens={["radius.*"]} />

@@ -1,0 +1,84 @@
+---
+// The spacing steps drawn to length, and every radius on a card-sized tile. Both lists come from
+// the token files.
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens, select } from "../../../lib/tokens";
+
+const tokens = await loadTokens("personal-website");
+const spaces = select(tokens, ["space.*"]);
+const radii = select(tokens, ["radius.*"]);
+---
+
+<ExampleLayout title="Spacing and radius">
+  <div class="spaces">
+    {
+      spaces.map((space) => (
+        <div class="space">
+          <code class="label">
+            {space.cssVar} · {space.value.light}
+          </code>
+          <span class="bar" style={`width: var(${space.cssVar})`} />
+        </div>
+      ))
+    }
+  </div>
+  <div class="radii">
+    {
+      radii.map((radius) => (
+        <div class="radius">
+          <span class="tile" style={`border-radius: var(${radius.cssVar})`} />
+          <code class="label">{radius.cssVar}</code>
+          <code class="label">{radius.value.light}</code>
+        </div>
+      ))
+    }
+  </div>
+</ExampleLayout>
+
+<style>
+  .spaces {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .space {
+    align-items: center;
+    display: grid;
+    gap: var(--space-sm);
+    grid-template-columns: 12rem 1fr;
+  }
+
+  .bar {
+    background: var(--color-primary);
+    border-radius: 2px;
+    display: block;
+    height: 12px;
+  }
+
+  .label {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+  }
+
+  .radii {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .radius {
+    align-items: center;
+    display: grid;
+    justify-items: center;
+  }
+
+  .tile {
+    background: var(--surface-card);
+    border: 1px solid var(--hairline);
+    display: block;
+    height: 64px;
+    margin-bottom: var(--space-xxs);
+    width: 64px;
+  }
+</style>

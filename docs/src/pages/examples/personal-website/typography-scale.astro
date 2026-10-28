@@ -1,0 +1,46 @@
+---
+// Every type style in its own class, from the largest display size down to code. The list comes
+// from the typography tokens; narrow screens show the smaller display sizes on their own.
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens } from "../../../lib/tokens";
+
+const styles = (await loadTokens("personal-website")).filter((token) => token.type === "typography");
+const sample = (id: string) =>
+  id.startsWith("display") ? "Quiet ink on warm paper 暖纸上的静墨" : "The quick brown fox jumps over the lazy dog. 敏捷的狐狸跳过了懒狗。";
+---
+
+<ExampleLayout title="Type scale">
+  <div class="scale">
+    {
+      styles.map((style) => (
+        <div class="row">
+          <code class="label">
+            .ds-{style.id} · {style.value.light}
+          </code>
+          <p class:list={["sample", `ds-${style.id}`]}>{style.id === "caption-upper" ? "Section label" : sample(style.id)}</p>
+        </div>
+      ))
+    }
+  </div>
+</ExampleLayout>
+
+<style>
+  .scale {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .label {
+    color: var(--text-muted);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    margin-bottom: var(--space-xxs);
+  }
+
+  .sample {
+    color: var(--text-ink);
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+</style>

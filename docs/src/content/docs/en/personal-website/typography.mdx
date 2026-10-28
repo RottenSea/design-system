@@ -1,0 +1,32 @@
+---
+title: Typography
+description: The three faces of the personal website system and its type scale, from display headlines to code.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+Three faces, each with one job: a serif for display, a sans for everything people read and click, and a mono for code. Each family lists a Chinese face after the Latin one, so mixed text sets in both.
+
+## Faces
+
+- **Display** is Noto Serif SC at weight 400 only, with negative tracking that grows with the size. A bold serif is off-brand.
+- **Body**, navigation, buttons and labels are Manrope with Noto Sans SC: 400 for paragraphs, 500 for labels and emphasis.
+- **Code** is Maple Mono.
+- **Math** is Noto Sans Math, falling back to the system's math font.
+
+Emphasis grows by size, not weight: reach for a bigger serif before a heavier one. The uppercase micro-label is the only type that is not in sentence case.
+
+The fonts load from Google Fonts and jsDelivr without holding up the page; see the [overview](../) for the Fonts component.
+
+<TokenTable system="personal-website" tokens={["font.*"]} />
+
+## Scale
+
+Each style is a class, such as `.ds-display-xl`, and a set of variables, one per property. On screens narrower than 768px the three largest display sizes step down, with their tracking redrawn for the smaller size, while `display-sm` stays put. This is a token change, so every class and component follows without a media query of its own.
+
+<Example system="personal-website" name="typography-scale" title="Every type style, from display-xl to code" />
+
+<TokenTable system="personal-website" tokens={["display-xl", "display-lg", "display-md", "display-sm", "title-lg", "title-md", "title-sm", "body-md", "body-sm", "caption", "caption-upper", "code", "button", "nav-link"]} />

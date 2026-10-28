@@ -1,0 +1,138 @@
+---
+// The durations, shown as a colour change at each speed, and the three primitives every list
+// change uses, from the system's motion.css. Press Play to run them; with reduced motion on, they
+// finish at once, as the system does.
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import { loadTokens, select } from "../../../lib/tokens";
+
+const durations = select(await loadTokens("personal-website"), ["motion.*"]).filter((token) => token.type === "duration");
+---
+
+<ExampleLayout title="Motion">
+  <ds-motion-demo>
+    <button type="button" class="play">Play</button>
+    <div class="durations">
+      {
+        durations.map((duration) => (
+          <div class="duration">
+            <code class="label">
+              {duration.cssVar} · {duration.value.light}
+            </code>
+            <span class="swatch" style={`transition: background-color var(${duration.cssVar}) var(--ease-enter)`} />
+          </div>
+        ))
+      }
+    </div>
+    <div class="primitives">
+      <div class="primitive">
+        <code class="label">.ds-reveal-in</code>
+        <span class="item" data-primitive="reveal">Arrives</span>
+      </div>
+      <div class="primitive">
+        <code class="label">.ds-fade-out</code>
+        <span class="item" data-primitive="fade">Leaves</span>
+      </div>
+      <div class="primitive">
+        <code class="label">.ds-collapse</code>
+        <span class="item ds-collapse" data-primitive="collapse">Folds away and back</span>
+      </div>
+    </div>
+  </ds-motion-demo>
+</ExampleLayout>
+
+<script>
+  class DsMotionDemo extends HTMLElement {
+    #on = false;
+
+    connectedCallback() {
+      this.querySelector(".play")?.addEventListener("click", () => this.#play());
+    }
+
+    #play() {
+      this.#on = !this.#on;
+      this.toggleAttribute("data-on", this.#on);
+      const reveal = this.querySelector<HTMLElement>("[data-primitive=reveal]");
+      const fade = this.querySelector<HTMLElement>("[data-primitive=fade]");
+      const collapse = this.querySelector<HTMLElement>("[data-primitive=collapse]");
+      // Restart the keyframe primitives each time.
+      for (const [element, name] of [
+        [reveal, "ds-reveal-in"],
+        [fade, "ds-fade-out"]
+      ] as const) {
+        element?.classList.remove(name);
+        void element?.offsetWidth;
+        element?.classList.add(name);
+      }
+      if (collapse) {
+        collapse.style.height = `${collapse.scrollHeight}px`;
+        requestAnimationFrame(() => {
+          collapse.style.height = this.#on ? "0px" : `${collapse.scrollHeight}px`;
+          collapse.style.opacity = this.#on ? "0" : "1";
+        });
+      }
+    }
+  }
+
+  if (!customElements.get("ds-motion-demo")) customElements.define("ds-motion-demo", DsMotionDemo);
+</script>
+
+<style>
+  ds-motion-demo {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .play {
+    background: var(--color-primary);
+    border: 0;
+    border-radius: var(--radius-md);
+    color: var(--color-on-primary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    justify-self: start;
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .durations,
+  .primitives {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .duration,
+  .primitive {
+    align-items: center;
+    display: grid;
+    gap: var(--space-sm);
+    grid-template-columns: 14rem 1fr;
+  }
+
+  .label {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+  }
+
+  .swatch {
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    display: block;
+    height: 24px;
+  }
+
+  ds-motion-demo[data-on] .swatch {
+    background: var(--color-primary);
+  }
+
+  .item {
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-body);
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    padding: var(--space-xxs) var(--space-sm);
+  }
+</style>

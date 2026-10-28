@@ -3,7 +3,8 @@
  * A table of tokens, in the docs site's own theme, with the values read from the token files when
  * the docs build. Each row shows the CSS variable, which the copy button copies, the DTCG path
  * under it, the value in each theme or screen width where it differs, the token it points to, and
- * the description in the page's language.
+ * the description in the page's language. A typography token is named by its size variable, with
+ * its class and other variables listed under it.
  *
  * In a page: <TokenTable system="personal-website" tokens={["text.*", "color.primary"]} />
  */
@@ -22,7 +23,8 @@ const t = zh
   ? { token: "Token", value: "值", description: "说明", light: "浅色", dark: "深色", narrow: "窄屏", copy: "复制", copied: "已复制", to: "指向" }
   : { token: "Token", value: "Value", description: "Description", light: "Light", dark: "Dark", narrow: "Narrow", copy: "Copy", copied: "Copied", to: "Points to" };
 const hasDark = rows.some((row) => row.value.dark);
-const hasNarrow = rows.some((row) => row.value.narrow);
+// A typography token writes one variable per property and a class; the size variable stands for it.
+const nameOf = (row: (typeof rows)[number]) => (row.type === "typography" ? `${row.cssVar}-size` : row.cssVar);
 const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN"] : undefined) ?? row.description.en;
 ---
 
@@ -31,7 +33,7 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
     <thead>
       <tr>
         <th scope="col">{t.token}</th>
-        <th scope="col">{hasDark ? t.light : hasNarrow ? `${t.value} · ${t.narrow}` : t.value}</th>
+        <th scope="col">{hasDark ? t.light : t.value}</th>
         {hasDark && <th scope="col">{t.dark}</th>}
         <th scope="col">{t.description}</th>
       </tr>
@@ -42,8 +44,8 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
           <tr>
             <td class="token-table__name">
               <span class="token-table__var">
-                <code>{row.cssVar}</code>
-                <button type="button" class="token-table__copy" data-copy={row.cssVar} aria-label={`${t.copy} ${row.cssVar}`}>
+                <code>{nameOf(row)}</code>
+                <button type="button" class="token-table__copy" data-copy={nameOf(row)} aria-label={`${t.copy} ${nameOf(row)}`}>
                   <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667l0 -8.666" />
                     <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
@@ -51,6 +53,11 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
                 </button>
               </span>
               <span class="token-table__path">{row.id}</span>
+              {row.type === "typography" && (
+                <span class="token-table__path">
+                  .ds-{row.id} · {row.cssVar}-family -lh -ls -weight
+                </span>
+              )}
             </td>
             <td>
               <span class="token-table__value">

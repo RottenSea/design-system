@@ -1,0 +1,25 @@
+---
+title: Shadows and borders
+description: How the personal website system sets a card apart from the page, by fill first, then hairline, and rarely by shadow.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+Cards are set apart by their fill, not by a shadow. Depth mostly comes from the contrast between the cream surfaces and the dark one.
+
+<Example system="personal-website" name="elevation" title="Fill, hairline, hover shadow, float shadow and the dark surface, in both themes" />
+
+## Borders
+
+A cream card has no border and no shadow; its fill is enough. A card in the canvas colour, such as a comparison card or a grid tile, takes a hairline. The hairline is a cream tone, so it reads as one step of elevation rather than as an ink line. The soft hairline divides content inside one card or band. See the hairline colours on [Colors](../colors/#hairlines).
+
+<TokenTable system="personal-website" tokens={["border.*"]} />
+
+## Shadows
+
+Shadow appears in two places only: a faint one on a card under the pointer, and a larger one on something floating above the page, such as a banner. Hover never goes further than that faint shadow: no lift, no scale.
+
+<TokenTable system="personal-website" tokens={["shadow.*"]} />

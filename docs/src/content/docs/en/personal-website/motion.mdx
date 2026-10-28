@@ -1,0 +1,31 @@
+---
+title: Motion
+description: The durations, curves and three primitives of the personal website system, and how it reduces motion.
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+Motion is as quiet as the rest of the system. Colour and opacity change; things rarely move, and nothing scales, bounces or springs.
+
+<Example system="personal-website" name="motion" title="The durations as colour changes, and the three primitives; press Play" />
+
+## Durations and curves
+
+Four durations: `--motion-fast` for a tint change on a control, `--motion-base` for a surface change, `--motion-slow` for geometry such as a section folding, and `--motion-entrance`, which belongs to the dialog's entrance and nothing else. Three curves: `--ease-enter` for things arriving, `--ease-exit` for things leaving, `--ease-move` for things changing size in place.
+
+`motion.css` combines them into four transitions, `--transition-tint`, `-surface`, `-fade` and `-collapse`. Use those before writing a duration by hand.
+
+<TokenTable system="personal-website" tokens={["motion.*", "ease.*"]} />
+
+## Three primitives
+
+Every set that changes uses three classes: `.ds-reveal-in` (fade in from 8px below), `.ds-fade-out` (opacity only) and `.ds-collapse` (height). A list that gains and loses members runs them in one order: leaving items fade out, the rest move, arriving items reveal in. `--motion-shift` is the only distance anything travels, and reveal-in is the only place it is used.
+
+There is no scroll-triggered reveal, no parallax, no skeleton shimmer and no page transition. The one looping animation is the indeterminate progress bar, which always has a label.
+
+## Reduced motion
+
+Motion drops to 1ms at two levels: the system's `prefers-reduced-motion` setting, and a switch a site sets as `data-reduce-motion="true"` on `<html>`. Because either can be on at any time, motion only confirms an action; it never carries information of its own.
