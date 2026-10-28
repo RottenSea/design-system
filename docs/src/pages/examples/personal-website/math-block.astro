@@ -1,0 +1,19 @@
+---
+import { MathBlock } from "@rottensea/ds-personal-website/components";
+import { typesetMath } from "@rottensea/ds-personal-website/markdown";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const gauss = String.raw`\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}`;
+const bayes = String.raw`P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)}`;
+const inline = String.raw`a^2 + b^2 = c^2`;
+---
+
+<ExampleLayout title="MathBlock">
+  <MathBlock html={typesetMath(gauss)} tex={gauss} />
+  <MathBlock html={typesetMath(bayes)} tex={bayes} number={2} />
+  <p>
+    A right triangle keeps <MathBlock display={false} html={typesetMath(inline, false)} tex={inline} /> on one
+    line.
+  </p>
+  <MathBlock tex={String.raw`\frac{1}{`} />
+</ExampleLayout>

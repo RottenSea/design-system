@@ -204,3 +204,52 @@ test("::video without a src is kept as text, with a warning", () => {
   assert.equal(tree.children[0].type, "paragraph");
   assert.match(messages[0], /needs a src/);
 });
+
+test(String.raw`$$ math becomes a MathBlock with MathML, and \tag becomes its number`, () => {
+  const { tree, messages } = run(String.raw`$$
+E = mc^2 \tag{3}
+$$
+`);
+  const [node] = tree.children;
+  assert.equal(node.name, "MathBlock");
+  const { tex, number, html } = attrs(node);
+  assert.equal(tex, "E = mc^2");
+  assert.equal(number, "3");
+  assert.match(html, /<math[^>]*display="block"/);
+  // MathML only: none of KaTeX's HTML layout, which would need its stylesheet.
+  assert.doesNotMatch(html, /katex-html/);
+  assert.deepEqual(messages, []);
+});
+
+test("$ math inside a sentence becomes an inline MathBlock", () => {
+  const { tree } = run("The energy is $E = mc^2$ here.\n");
+  const node = tree.children[0].children.find((n) => n.type === "mdxJsxTextElement");
+  assert.equal(node.name, "MathBlock");
+  assert.equal(attrs(node).display, "false");
+  assert.match(attrs(node).html, /<math/);
+});
+
+test("math KaTeX cannot read keeps its source, with a warning", () => {
+  const { tree, messages } = run(String.raw`$$
+\frac{1}{
+$$
+`);
+  assert.equal(attrs(tree.children[0]).html, undefined);
+  assert.match(messages[0], /Could not typeset/);
+});
+
+test("a mermaid fence becomes a Mermaid diagram with its label and caption", () => {
+  const { tree } = run('```mermaid title="Build" caption="How a post is built"\ngraph LR\n  A --> B\n```\n');
+  const [node] = tree.children;
+  assert.equal(node.name, "Mermaid");
+  assert.deepEqual(attrs(node), {
+    code: "graph LR\n  A --> B",
+    label: "Build",
+    caption: "How a post is built"
+  });
+});
+
+test("other code fences stay code", () => {
+  const { tree } = run("```js\nconst a = 1;\n```\n");
+  assert.equal(tree.children[0].type, "code");
+});

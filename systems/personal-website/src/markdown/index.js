@@ -9,6 +9,8 @@
 //   :::gallery{columns=3 ratio="4/3"} with images inside → <ImageGrid> of figures
 //   ![alt](./a.png "Caption") on a line of its own → a figure with that caption
 //   ::video{src="https://www.bilibili.com/video/BV..." title="..." poster="./cover.png"} → <VideoEmbed>
+//   $E = mc^2$ and $$...$$                → <MathBlock> holding MathML typeset by KaTeX
+//   ```mermaid                             → <Mermaid>, drawn in the browser
 //   :spoiler[words]    → <Spoiler>
 //   :term[SSR]{note="Server-Side Rendering"} → <Abbreviation term="...">
 //
@@ -16,8 +18,10 @@
 // where Node does not strip TypeScript. The components it names must be passed to the page,
 // for example with `components` from "../components/index.js".
 import remarkDirective from "remark-directive";
+import remarkMath from "remark-math";
 import { toString as textOf } from "mdast-util-to-string";
 import { videoSource } from "../components/media/video.js";
+import { typesetMath } from "./math.js";
 
 const CALLOUTS = new Set(["note", "tip", "important", "warning", "caution", "details"]);
 
@@ -255,6 +259,47 @@ function video(node, file) {
   return { type: "mdxJsxFlowElement", name: "VideoEmbed", attributes, children };
 }
 
+/**
+ * $...$ and $$...$$, typeset with KaTeX at build time as MathML only, so no KaTeX stylesheet or
+ * font is needed: the browser draws MathML itself. \tag{n} becomes MathBlock's number, because
+ * KaTeX puts a tag in an <mlabeledtr>, which browsers do not draw. A formula KaTeX cannot read
+ * keeps its source, shown by MathBlock in the mono face, and the build warns.
+ */
+function math(node, display, file) {
+  const tag = display ? node.value.match(/\\tag\*?\{([^}]*)\}/) : null;
+  const tex = tag ? node.value.replace(tag[0], "").trim() : node.value;
+  const attributes = [attribute("tex", tex)];
+  if (!display) attributes.push(attribute("display", "false"));
+  if (tag) attributes.push(attribute("number", tag[1]));
+  try {
+    attributes.push(attribute("html", typesetMath(tex, display)));
+  } catch (error) {
+    const fence = display ? "$$" : "$";
+    file.message(`Could not typeset ${fence}${tex}${fence}: ${error.message}`, node);
+  }
+  return {
+    type: display ? "mdxJsxFlowElement" : "mdxJsxTextElement",
+    name: "MathBlock",
+    attributes,
+    children: []
+  };
+}
+
+/**
+ * A ```mermaid fence becomes a diagram, drawn in the browser. The fence's title="..." is the
+ * frame's label and caption="..." its caption.
+ */
+function mermaid(node) {
+  const meta = node.meta ?? "";
+  const quoted = (name) => meta.match(new RegExp(`${name}=(?:"([^"]*)"|'([^']*)')`))?.slice(1).find(Boolean);
+  const attributes = [attribute("code", node.value)];
+  const label = quoted("title");
+  const caption = quoted("caption");
+  if (label) attributes.push(attribute("label", label));
+  if (caption) attributes.push(attribute("caption", caption));
+  return { type: "mdxJsxFlowElement", name: "Mermaid", attributes, children: [] };
+}
+
 function inlineSpoiler(node) {
   return { type: "mdxJsxTextElement", name: "Spoiler", attributes: [], children: node.children };
 }
@@ -291,6 +336,13 @@ const HANDLERS = {
   }
 };
 
+/** Markdown nodes, not directives, that become components. Anything else stays as it is. */
+const NODE_HANDLERS = {
+  math: (node, file) => math(node, true, file),
+  inlineMath: (node, file) => math(node, false, file),
+  code: (node) => (node.lang === "mermaid" ? mermaid(node) : node)
+};
+
 const PREFIX = { containerDirective: ":::", leafDirective: "::", textDirective: ":" };
 
 /**
@@ -321,6 +373,8 @@ function transform(node, file) {
   if (Array.isArray(node.children)) {
     node.children = node.children.flatMap((child) => transform(child, file));
   }
+  const nodeHandler = NODE_HANDLERS[node.type];
+  if (nodeHandler) return [nodeHandler(node, file)];
   const handler = HANDLERS[node.type];
   if (!handler) return [node];
   const result = handler(node, file) ?? restore(node, file);
@@ -328,11 +382,13 @@ function transform(node, file) {
 }
 
 /**
- * The remark plugin. It also turns on remark-directive's parser, so a site adds only this one.
+ * The remark plugin. It also turns on the parsers of remark-directive and remark-math, so a site
+ * adds only this one.
  * @this {import("unified").Processor}
  */
 export function remarkDsDirectives() {
   remarkDirective.call(this);
+  remarkMath.call(this);
   return (tree, file) => {
     transform(tree, file);
     liftImages(tree);
@@ -340,3 +396,4 @@ export function remarkDsDirectives() {
 }
 
 export { shikiTransformers, transformerMetaAttributes } from "./shiki.js";
+export { typesetMath } from "./math.js";

@@ -72,7 +72,9 @@ export default defineConfig({
                   "file-tree",
                   "figure",
                   "image-grid",
-                  "video-embed"
+                  "video-embed",
+                  "math-block",
+                  "mermaid"
                 ].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))

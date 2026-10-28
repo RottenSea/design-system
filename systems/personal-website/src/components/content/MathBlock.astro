@@ -1,0 +1,108 @@
+---
+/**
+ * The surface for typeset math: a --surface-card block, centred, capped at the reading measure,
+ * scrolling sideways when the expression is wider than the column, with an optional equation
+ * number in tabular mono to the right. Inline, it keeps the paragraph's line height and never
+ * breaks across a line. It does not typeset: `html` takes MathML the build made, and `tex` alone
+ * shows the source in the mono face, so a formula that could not be typeset is still legible.
+ *
+ * Ported from the handoff's MathBlock.jsx with the same props. The system's directive plugin
+ * typesets a post's $...$ and $$...$$ with KaTeX at build time, as MathML only, so no KaTeX
+ * stylesheet or font reaches the browser; the browser draws MathML itself in --font-math.
+ */
+interface Props {
+  /** Typeset markup, such as KaTeX's MathML. Inserted as HTML, so only from your own build. */
+  html?: string;
+  /** The LaTeX source, shown in the mono face when there is no `html` or slot. */
+  tex?: string;
+  /** false is the inline form. */
+  display?: boolean | string;
+  /** Equation number to the right, display form only. */
+  number?: number | string;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { html, tex, number, tone = "cream", class: className } = Astro.props;
+// MDX passes attributes as strings, so "false" means false.
+const display = Astro.props.display !== false && Astro.props.display !== "false";
+const hasSlot = Astro.slots.has("default");
+const dark = tone === "dark";
+---
+
+{
+  display ? (
+    <div class:list={["ds-math", { "ds-math--dark": dark }, className]}>
+      <div class="ds-math__surface">
+        {html ? <Fragment set:html={html} /> : hasSlot ? <slot /> : <code class="ds-math__tex">{tex}</code>}
+      </div>
+      {number !== undefined && number !== "" && <span class="ds-math__number">({number})</span>}
+    </div>
+  ) : (
+    <span class:list={["ds-math-inline", { "ds-math-inline--dark": dark }, className]}>
+      {html ? <Fragment set:html={html} /> : hasSlot ? <slot /> : <code class="ds-math__tex">{tex}</code>}
+    </span>
+  )
+}
+
+<style>
+  .ds-math {
+    align-items: baseline;
+    display: flex;
+    gap: var(--space-md);
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+  }
+
+  .ds-math__surface {
+    background: var(--surface-card);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    color: var(--text-ink);
+    flex: 1;
+    font-size: var(--body-md-size);
+    min-width: 0;
+    overflow-x: auto;
+    padding: var(--space-md);
+    text-align: center;
+  }
+
+  .ds-math--dark .ds-math__surface {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .ds-math__number {
+    color: var(--text-muted);
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ds-math--dark .ds-math__number {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-math-inline {
+    color: var(--text-ink);
+    white-space: nowrap;
+  }
+
+  .ds-math-inline--dark {
+    color: var(--text-on-dark);
+  }
+
+  /* The MathML comes in as HTML, so it is reached through :global. */
+  .ds-math__surface :global(math),
+  .ds-math-inline :global(math) {
+    font-family: var(--font-math);
+  }
+
+  .ds-math__tex {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
+    white-space: pre-wrap;
+  }
+</style>

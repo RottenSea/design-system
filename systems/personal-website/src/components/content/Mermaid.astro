@@ -1,0 +1,129 @@
+---
+/**
+ * A Mermaid diagram in a DiagramFrame, drawn in the browser. The page carries the diagram's
+ * source, shown in the mono face, and mermaid is fetched, as a separate file, only on a page that
+ * has a diagram; then the drawing replaces the source. The colours are read from the
+ * system's tokens on the element, so the graph matches the page, and because Mermaid writes its
+ * colours into the SVG, the diagram is drawn again when the page switches between light and dark.
+ *
+ * Not in the handoff, which leaves drawing to the page (its DiagramFrame "Mermaid contract"); this
+ * follows that contract's way 2 and its token mapping. Coral is not used: nodes stay on the cream
+ * and dark surfaces.
+ */
+import DiagramFrame from "./DiagramFrame.astro";
+
+interface Props {
+  /** The Mermaid source. */
+  code: string;
+  /** Uppercase label inside the frame. */
+  label?: string;
+  caption?: string;
+  tone?: "cream" | "dark";
+}
+
+const { code, label, caption, tone = "cream" } = Astro.props;
+---
+
+<DiagramFrame label={label} caption={caption} tone={tone}>
+  <ds-mermaid data-tone={tone}>
+    <pre class="ds-diagram__source">{code}</pre>
+  </ds-mermaid>
+</DiagramFrame>
+
+<script>
+  type Mermaid = (typeof import("mermaid"))["default"];
+
+  let library: Promise<Mermaid> | undefined;
+  // Mermaid's settings are global, so diagrams are drawn one after another.
+  let queue: Promise<unknown> = Promise.resolve();
+  let count = 0;
+
+  /** The token pairs for each frame tone, as the handoff's contract lists them. */
+  const PALETTE = {
+    cream: {
+      background: "--surface-canvas",
+      primaryColor: "--surface-card",
+      primaryTextColor: "--text-ink",
+      primaryBorderColor: "--hairline",
+      lineColor: "--text-muted",
+      tertiaryColor: "--surface-soft"
+    },
+    dark: {
+      background: "--surface-dark",
+      primaryColor: "--surface-dark-elevated",
+      primaryTextColor: "--text-on-dark",
+      primaryBorderColor: "--hairline-on-dark",
+      lineColor: "--text-on-dark-soft",
+      tertiaryColor: "--surface-dark-elevated"
+    }
+  };
+
+  class DsMermaid extends HTMLElement {
+    #code = "";
+    #observer: MutationObserver | undefined;
+
+    connectedCallback() {
+      this.#code = this.querySelector("pre")?.textContent ?? "";
+      if (!this.#code.trim()) return;
+      this.#draw();
+      this.#observer = new MutationObserver(() => this.#draw());
+      this.#observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    }
+
+    disconnectedCallback() {
+      this.#observer?.disconnect();
+    }
+
+    #draw() {
+      queue = queue.then(() => this.#render()).catch(() => undefined);
+    }
+
+    async #render() {
+      library ??= import("mermaid").then((module) => module.default);
+      const mermaid = await library;
+      // Mermaid measures its labels, so it waits for the fonts.
+      await document.fonts.ready;
+      const style = getComputedStyle(this);
+      const read = (token: string) => style.getPropertyValue(token).trim();
+      const tone = this.dataset.tone === "dark" ? "dark" : "cream";
+      const themeVariables = Object.fromEntries(
+        Object.entries(PALETTE[tone]).map(([name, token]) => [name, read(token)])
+      );
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "strict",
+        theme: "base",
+        themeVariables: { ...themeVariables, fontFamily: read("--font-sans"), fontSize: "14px" }
+      });
+      try {
+        count += 1;
+        const { svg } = await mermaid.render(`ds-mermaid-${count}`, this.#code);
+        this.innerHTML = svg;
+        this.dataset.drawn = "";
+      } catch (error) {
+        // The source stays on the page, which is the frame's fallback.
+        console.warn("Mermaid could not draw a diagram:", error);
+      }
+    }
+  }
+
+  if (!customElements.get("ds-mermaid")) customElements.define("ds-mermaid", DsMermaid);
+</script>
+
+<style>
+  ds-mermaid {
+    align-self: stretch;
+    display: block;
+    max-width: 100%;
+  }
+
+  ds-mermaid[data-drawn] {
+    display: flex;
+    justify-content: center;
+  }
+
+  ds-mermaid :global(svg) {
+    height: auto;
+    max-width: 100%;
+  }
+</style>

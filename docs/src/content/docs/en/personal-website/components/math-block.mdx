@@ -1,0 +1,61 @@
+---
+title: MathBlock
+description: A formula, typeset at build time as MathML, on a card or inside a sentence.
+sidebar:
+  order: 12
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows a formula on its own card, with an optional equation number, or inside a sentence.
+
+<Example system="personal-website" name="math-block" title="Two display formulas, one numbered, an inline one, and one that could not be typeset" />
+
+## When to use
+
+Use it for real mathematical notation. A number with a unit, such as 16 px, is ordinary text.
+
+## In a post
+
+Write LaTeX between dollar signs. One `$` on each side keeps the formula inside the sentence; `$$` on lines of their own puts it on a card:
+
+```md
+The energy is $E = mc^2$.
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi} \tag{1}
+$$
+```
+
+`\tag{1}` becomes the equation number to the right of the card. The formula is typeset when the site builds, with KaTeX, as MathML, which browsers draw themselves, so the page loads no KaTeX stylesheet, font or script. A formula KaTeX cannot read shows its source and makes the build warn.
+
+## Anatomy
+
+A `--surface-card` block with `--radius-lg` corners, the formula centred inside it, and the number in tabular mono figures to its right. Inline, the formula keeps the paragraph's line height.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `display` | On by default. `false` is the inline form |
+| `number` | The equation number, display form only |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Too wide | The card scrolls sideways; the page does not |
+| Not typeset | With only `tex`, the source shows in muted mono, so a broken formula is still legible |
+
+## Accessibility
+
+MathML is real markup: screen readers that support it read the formula, and the LaTeX source is kept in the MathML's annotation. An inline formula never breaks across lines. The glyphs come from `--font-math`, Noto Sans Math.
+
+## API
+
+[`MathBlock.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MathBlock.astro). It keeps the handoff's props and, like the handoff's, does not typeset. The system's remark plugin typesets a post's formulas; an Astro page can call `typesetMath(tex, display)` from `markdown` and pass the result as `html`.
+
+## Related
+
+[Mermaid](../mermaid/), for diagrams.

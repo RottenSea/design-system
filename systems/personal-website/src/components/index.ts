@@ -11,7 +11,10 @@ import FileTreeNode from "./code/FileTreeNode.astro";
 import MarkdownCode from "./code/MarkdownCode.astro";
 import Abbreviation from "./content/Abbreviation.astro";
 import Admonition from "./content/Admonition.astro";
+import DiagramFrame from "./content/DiagramFrame.astro";
 import MarkdownTable from "./content/MarkdownTable.astro";
+import MathBlock from "./content/MathBlock.astro";
+import Mermaid from "./content/Mermaid.astro";
 import Option from "./content/Option.astro";
 import OptionGroup from "./content/OptionGroup.astro";
 import Spoiler from "./content/Spoiler.astro";
@@ -29,6 +32,7 @@ export {
   Abbreviation,
   Admonition,
   CodeBlock,
+  DiagramFrame,
   Figure,
   FileTree,
   FileTreeNode,
@@ -37,6 +41,8 @@ export {
   MarkdownCode,
   MarkdownImage,
   MarkdownTable,
+  MathBlock,
+  Mermaid,
   Option,
   OptionGroup,
   Spoiler,
@@ -51,10 +57,13 @@ export const components = {
   Abbreviation,
   Admonition,
   CodeBlock,
+  DiagramFrame,
   Figure,
   FileTree,
   FileTreeNode,
   ImageGrid,
+  MathBlock,
+  Mermaid,
   Option,
   OptionGroup,
   Spoiler,

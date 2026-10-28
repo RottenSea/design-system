@@ -1,0 +1,157 @@
+---
+/**
+ * The surface for a diagram the page draws itself, such as a Mermaid graph or an SVG chart: the
+ * canvas with a hairline, or the dark surface, an optional uppercase label inside the top left,
+ * interior padding, sideways scroll for a wide drawing, and a caption below. It never draws the
+ * diagram: `svg` takes a drawing as a string, the slot takes any element, and `source` alone
+ * shows the diagram's own source in the mono face, so a page that could not draw it still shows
+ * what it is.
+ *
+ * Ported from the handoff's DiagramFrame.jsx with the same props, except `style`. The handoff's
+ * data-om-raster attribute, a hint for its PowerPoint export, is left out.
+ */
+interface Props {
+  caption?: string;
+  /** Uppercase micro-label inside the top left of the frame: "Build pipeline". */
+  label?: string;
+  align?: "center" | "start";
+  tone?: "cream" | "dark";
+  /** Interior padding: none, sm (16px), md (24px), lg (32px). */
+  padding?: "none" | "sm" | "md" | "lg";
+  /** A drawing as an SVG string, used when the slot is empty. */
+  svg?: string;
+  /** The diagram's source, shown when there is no slot and no `svg`. */
+  source?: string;
+  class?: string;
+}
+
+const {
+  caption,
+  label,
+  align = "center",
+  tone = "cream",
+  padding = "md",
+  svg,
+  source,
+  class: className
+} = Astro.props;
+const hasSlot = Astro.slots.has("default");
+---
+
+<figure
+  class:list={[
+    "ds-diagram",
+    `ds-diagram--${align}`,
+    `ds-diagram--pad-${padding}`,
+    { "ds-diagram--dark": tone === "dark" },
+    className
+  ]}
+>
+  <div class="ds-diagram__surface">
+    {label && <div class="ds-diagram__label">{label}</div>}
+    {
+      hasSlot ? (
+        <slot />
+      ) : svg ? (
+        <div class="ds-diagram__svg" set:html={svg} />
+      ) : (
+        source && <pre class="ds-diagram__source">{source}</pre>
+      )
+    }
+  </div>
+  {caption && <figcaption class="ds-diagram__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .ds-diagram {
+    margin: var(--space-lg) 0;
+    max-width: 100%;
+  }
+
+  .ds-diagram__surface {
+    align-items: center;
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    padding: var(--space-lg);
+  }
+
+  .ds-diagram--start .ds-diagram__surface {
+    align-items: flex-start;
+  }
+
+  .ds-diagram--pad-none .ds-diagram__surface {
+    padding: 0;
+  }
+
+  .ds-diagram--pad-sm .ds-diagram__surface {
+    padding: var(--space-md);
+  }
+
+  .ds-diagram--pad-lg .ds-diagram__surface {
+    padding: var(--space-xl);
+  }
+
+  .ds-diagram--dark .ds-diagram__surface {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-diagram__label {
+    align-self: flex-start;
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+  }
+
+  .ds-diagram--dark .ds-diagram__label {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-diagram__svg {
+    max-width: 100%;
+  }
+
+  /* The source, in the slot or from `source`, until something draws the diagram. */
+  .ds-diagram__source,
+  .ds-diagram__surface :global(.ds-diagram__source) {
+    align-self: stretch;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
+    line-height: var(--code-lh);
+    margin: 0;
+    text-align: left;
+  }
+
+  .ds-diagram--dark .ds-diagram__source,
+  .ds-diagram--dark .ds-diagram__surface :global(.ds-diagram__source) {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-diagram__caption {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    line-height: var(--caption-lh);
+    margin-top: var(--space-xs);
+    text-align: center;
+  }
+
+  .ds-diagram--start .ds-diagram__caption {
+    text-align: left;
+  }
+
+  .ds-diagram--dark .ds-diagram__caption {
+    color: var(--text-on-dark-soft);
+  }
+</style>

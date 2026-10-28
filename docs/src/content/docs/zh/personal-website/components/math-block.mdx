@@ -1,0 +1,61 @@
+---
+title: MathBlock 数学公式
+description: 构建时排成 MathML 的公式，单独放在卡片上，或者写在句子里。
+sidebar:
+  order: 12
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把公式单独放在一张卡片上（可以带编号），或者写在句子中间。
+
+<Example system="personal-website" name="math-block" title="两个独立公式（一个带编号）、一个行内公式，以及一个没能排版的公式" />
+
+## 什么时候用
+
+真正的数学符号才用它。16 px 这种带单位的数字，照普通文字写。
+
+## 文章里怎么写
+
+LaTeX 写在美元符号之间。两边各一个 `$` 是写在句子里的公式；`$$` 各占一行，公式单独放在卡片上：
+
+```md
+能量是 $E = mc^2$。
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi} \tag{1}
+$$
+```
+
+`\tag{1}` 会变成卡片右边的公式编号。公式在构建网站时用 KaTeX 排成 MathML，浏览器自己就能画，所以页面不加载 KaTeX 的样式表、字体和脚本。KaTeX 读不懂的公式会显示源码，构建时给出警告。
+
+## 结构
+
+`--surface-card` 底色、`--radius-lg` 圆角的卡片，公式居中，编号用等宽的表格数字放在右边。行内公式保持段落原来的行高。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `display` | 默认开。`false` 是行内公式 |
+| `number` | 公式编号，只用于独立公式 |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 太宽 | 卡片横向滚动，页面不跟着变宽 |
+| 没有排版 | 只有 `tex` 时用浅色等宽字显示源码，排版失败的公式也能看懂 |
+
+## 无障碍
+
+MathML 是真正的标记：支持它的读屏软件能读出公式，LaTeX 源码也留在 MathML 的 annotation 里。行内公式不会在中间折行。字形来自 `--font-math`，也就是 Noto Sans Math。
+
+## API
+
+[`MathBlock.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MathBlock.astro)。props 和交付包一样，和交付包一样不负责排版。文章里的公式由这个系统的 remark 插件排版；Astro 页面可以调用 `markdown` 里的 `typesetMath(tex, display)`，把结果传给 `html`。
+
+## 相关
+
+[Mermaid 图表](../mermaid/)，用来画图。

@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Figure`, one image with an optional caption. It enlarges on click or Enter with medium-zoom, into a larger copy made at build time, and shows a blurred 16px copy of itself, written into the HTML, while it loads. `MarkdownImage` puts a post's images into it; the `components` map now also replaces `img`. An image on a line of its own becomes a figure, with its Markdown title as the caption; an image inside a line of text stays inline.
 - `ImageGrid`, several images in fixed columns at a fixed ratio, with the striped placeholder for tiles that have no image yet. The `:::gallery` directive makes one from the images inside it.
 - `VideoEmbed`, a video that loads nothing from the video site until the reader presses play. Besides the handoff's YouTube, Bilibili, Vimeo and files, it plays AcFun, and `src` also takes a video page's address and works out the player from it. Without script, the play control is a link to the video's page. The `::video` directive makes one, and passes a local `poster` as an image so the site processes it.
+- `MathBlock`, the surface for a typeset formula, on a card with an optional equation number or inside a sentence. The `markdown` plugin turns on remark-math and typesets a post's `$...$` and `$$...$$` with KaTeX at build time, as MathML only, so no KaTeX stylesheet, font or script reaches the page; `\tag{n}` becomes the number. `typesetMath()` from `markdown` does the same for an Astro page.
+- `DiagramFrame`, the surface for a diagram the page draws, and `Mermaid`, which draws a ```` ```mermaid ```` fence in the browser in the token colours and draws it again when the theme changes. The mermaid library is fetched only on a page with a diagram.
 - `sharp` is a peer dependency, for the image placeholders. Astro uses it too; with pnpm, a site adds it to its own dependencies.
 - `shikiTransformers()` from `markdown`, for a site's `shikiConfig`: line highlights in a fence's meta, Shiki's `[!code ...]` notations, and the fence's `title`.
 - The Tabler icons the components use, in `src/icons/`.
@@ -25,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The CSS files moved to `src/styles/`. The package's export paths, such as `index.css`, are unchanged.
+- `--font-math` falls back to Cambria Math, STIX Two Math and the `math` family instead of a sans serif, so formulas keep stretchy brackets and large operators when Noto Sans Math cannot load.
 - `styles.css` and `index.css` no longer load the fonts. A font stylesheet pulled in with CSS `@import` held up the whole page until Google Fonts and jsDelivr answered, and those can be slow or unreachable. A site now puts the new `Fonts` component in its `<head>`, which loads the same stylesheets without blocking; a plain HTML page links `fonts.css`, which still loads them the blocking way.
 
 ## [0.2.0] - 2026-10-27

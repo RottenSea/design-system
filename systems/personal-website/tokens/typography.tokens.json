@@ -55,13 +55,15 @@
     "math": {
       "$value": [
         "Noto Sans Math",
-        "sans-serif"
+        "Cambria Math",
+        "STIX Two Math",
+        "math"
       ],
-      "$description": "Math formulas.",
+      "$description": "Math formulas. Without Noto Sans Math, the math font that comes with the system: Cambria Math on Windows, STIX Two Math on macOS. An ordinary sans serif cannot stretch brackets or enlarge operators.",
       "$extensions": {
         "cafe.rottenth": {
           "description": {
-            "zh-CN": "数学公式。"
+            "zh-CN": "数学公式。Noto Sans Math 不可用时，用系统自带的数学字体：Windows 的 Cambria Math、macOS 的 STIX Two Math。普通无衬线字体不能拉伸括号、放大运算符。"
           }
         }
       }

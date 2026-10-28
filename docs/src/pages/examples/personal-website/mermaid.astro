@@ -1,0 +1,19 @@
+---
+import { Mermaid } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const build = `graph LR
+  A[Write the post] --> B[MDX and the directive plugin]
+  B --> C[Astro builds the page]
+  C --> D[Cloudflare serves it]`;
+
+const sequence = `sequenceDiagram
+  Reader->>Page: Opens a post
+  Page->>Mermaid: Loads it, once
+  Mermaid-->>Page: Draws the diagram`;
+---
+
+<ExampleLayout title="Mermaid">
+  <Mermaid code={build} label="Build pipeline" caption="Drawn in the browser, in the token colours." />
+  <Mermaid code={sequence} tone="dark" />
+</ExampleLayout>
