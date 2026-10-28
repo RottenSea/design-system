@@ -1,0 +1,79 @@
+---
+/**
+ * A list of options or parameters on one card: the canvas with a hairline, one Field per row,
+ * the rows divided by soft hairlines. It is a real <dl>, so each name is announced with what it
+ * describes.
+ *
+ * Not in the handoff. It follows the handoff's DeviceCard, whose specs are label and value
+ * hairline rows in a <dl> on an outline Surface; here a row is a whole parameter. The ::::fields
+ * directive makes one from :::field blocks.
+ */
+interface Props {
+  /** Uppercase micro-label above the list: "Options". */
+  label?: string;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { label, tone = "cream", class: className } = Astro.props;
+---
+
+<div class:list={["ds-fields", { "ds-fields--dark": tone === "dark" }, className]}>
+  {label && <div class="ds-fields__label">{label}</div>}
+  <dl class="ds-fields__list">
+    <slot />
+  </dl>
+</div>
+
+<style>
+  .ds-fields {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+    padding: var(--space-xs) var(--space-md);
+  }
+
+  .ds-fields--dark {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-fields__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    padding: var(--space-xs) 0 var(--space-xxs);
+    text-transform: uppercase;
+  }
+
+  .ds-fields--dark .ds-fields__label {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-fields__list {
+    margin: 0;
+  }
+
+  /* The rows are Fields, so the dark tone reaches them through :global. */
+  .ds-fields--dark :global(.ds-field) {
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-fields--dark :global(.ds-field__name),
+  .ds-fields--dark :global(.ds-field__default code),
+  .ds-fields--dark :global(.ds-field__required) {
+    color: var(--text-on-dark);
+  }
+
+  .ds-fields--dark :global(.ds-field__type),
+  .ds-fields--dark :global(.ds-field__default),
+  .ds-fields--dark :global(.ds-field__body) {
+    color: var(--text-on-dark-soft);
+  }
+</style>

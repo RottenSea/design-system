@@ -23,3 +23,5 @@ Each page says when to use the component, how to write it in a post, and what it
 | [MathBlock](./math-block/) | `$...$`, `$$...$$` | Shows a formula, typeset at build time |
 | [Mermaid](./mermaid/) | A `mermaid` code fence | Draws a diagram in a DiagramFrame |
 | [Links](./links/) | Headings and links | Puts a # link beside headings and marks links to other sites |
+| [Fields](./fields/) | `::::fields` | Lists options with their types, defaults and descriptions |
+| [GitHubCard](./github-card/) | `::github` | Shows a GitHub repository as a card |

@@ -12,6 +12,8 @@ import MarkdownCode from "./code/MarkdownCode.astro";
 import Abbreviation from "./content/Abbreviation.astro";
 import Admonition from "./content/Admonition.astro";
 import DiagramFrame from "./content/DiagramFrame.astro";
+import Field from "./content/Field.astro";
+import Fields from "./content/Fields.astro";
 import MarkdownTable from "./content/MarkdownTable.astro";
 import MathBlock from "./content/MathBlock.astro";
 import Mermaid from "./content/Mermaid.astro";
@@ -24,6 +26,7 @@ import TableScroll from "./content/TableScroll.astro";
 import Tooltip from "./feedback/Tooltip.astro";
 import Fonts from "./head/Fonts.astro";
 import Figure from "./media/Figure.astro";
+import GitHubCard from "./media/GitHubCard.astro";
 import ImageGrid from "./media/ImageGrid.astro";
 import MarkdownImage from "./media/MarkdownImage.astro";
 import VideoEmbed from "./media/VideoEmbed.astro";
@@ -33,10 +36,13 @@ export {
   Admonition,
   CodeBlock,
   DiagramFrame,
+  Field,
+  Fields,
   Figure,
   FileTree,
   FileTreeNode,
   Fonts,
+  GitHubCard,
   ImageGrid,
   MarkdownCode,
   MarkdownImage,
@@ -58,9 +64,12 @@ export const components = {
   Admonition,
   CodeBlock,
   DiagramFrame,
+  Field,
+  Fields,
   Figure,
   FileTree,
   FileTreeNode,
+  GitHubCard,
   ImageGrid,
   MathBlock,
   Mermaid,

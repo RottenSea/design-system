@@ -79,7 +79,9 @@ export default defineConfig({
                   "video-embed",
                   "math-block",
                   "mermaid",
-                  "links"
+                  "links",
+                  "fields",
+                  "github-card"
                 ].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))

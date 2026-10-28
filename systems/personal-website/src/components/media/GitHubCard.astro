@@ -1,0 +1,263 @@
+---
+/**
+ * A GitHub repository as a card that links to it: the GitHub mark in a 32px card-colour square,
+ * owner/name, the description, a row with the main language, stars, forks and licence, and the
+ * topics as pills. An archived repository takes a muted 6px dot. The details are fetched from
+ * GitHub when the site builds and written into the page, so readers never contact GitHub; if the
+ * request fails, the card shows the name and link only.
+ *
+ * Not in the handoff. It follows the handoff's ProjectCard: an outline Surface that lifts on
+ * hover, the boxed mark, the status dot and Badge pills. The language dot is the muted text
+ * colour, since in this system a dot's colour means a state. Like a link to another site in a
+ * post, it opens in a new tab, with an arrow and a hidden note.
+ */
+import Fork from "../../icons/git-fork.svg";
+import GitHubMark from "../../icons/brand-github.svg";
+import License from "../../icons/license.svg";
+import Star from "../../icons/star.svg";
+import { type Repository, repository } from "./github.js";
+
+interface Props {
+  /** "owner/name". */
+  repo: string;
+  /** The details to show instead of fetching them, for an example or a test. */
+  details?: Repository;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { repo, details, tone = "cream", class: className } = Astro.props;
+const [owner, name] = repo.split("/");
+const data = details ?? (await repository(repo));
+const url = data?.url ?? `https://github.com/${repo}`;
+const count = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
+---
+
+<a
+  class:list={["ds-repo", { "ds-repo--dark": tone === "dark" }, className]}
+  href={url}
+  target="_blank"
+  rel="noreferrer"
+>
+  <span class="ds-repo__mark" aria-hidden="true">
+    <GitHubMark width={18} height={18} />
+  </span>
+  <span class="ds-repo__main">
+    <span class="ds-repo__title">
+      {
+        data?.archived && (
+          <>
+            <span class="ds-repo__dot" aria-hidden="true" />
+            <span class="ds-repo__hidden">Archived:</span>
+          </>
+        )
+      }
+      <span class="ds-repo__name">
+        {owner}/<strong>{name}</strong>
+      </span>
+      <span class="ds-repo__arrow" aria-hidden="true">↗</span>
+      <span class="ds-repo__hidden"> (opens in a new tab)</span>
+    </span>
+    {data?.description && <span class="ds-repo__description">{data.description}</span>}
+    {
+      data && (
+        <span class="ds-repo__stats">
+          {data.language && (
+            <span class="ds-repo__stat">
+              <span class="ds-repo__language-dot" aria-hidden="true" />
+              {data.language}
+            </span>
+          )}
+          <span class="ds-repo__stat">
+            <Star width={16} height={16} aria-hidden="true" />
+            {count.format(data.stars)}
+            <span class="ds-repo__hidden"> stars</span>
+          </span>
+          <span class="ds-repo__stat">
+            <Fork width={16} height={16} aria-hidden="true" />
+            {count.format(data.forks)}
+            <span class="ds-repo__hidden"> forks</span>
+          </span>
+          {data.license && (
+            <span class="ds-repo__stat">
+              <License width={16} height={16} aria-hidden="true" />
+              {data.license}
+            </span>
+          )}
+        </span>
+      )
+    }
+    {
+      data && data.topics.length > 0 && (
+        <span class="ds-repo__topics">
+          {data.topics.map((topic) => (
+            <span class="ds-repo__topic">{topic}</span>
+          ))}
+        </span>
+      )
+    }
+  </span>
+</a>
+
+<style>
+  .ds-repo {
+    align-items: flex-start;
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    color: var(--text-body);
+    display: flex;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+    padding: var(--space-md);
+    text-decoration: none;
+    transition: box-shadow var(--motion-fast) var(--ease-enter);
+  }
+
+  .ds-repo:hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .ds-repo__mark {
+    align-items: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-ink);
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 32px;
+    justify-content: center;
+    width: 32px;
+  }
+
+  .ds-repo__main {
+    display: block;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ds-repo__title {
+    align-items: center;
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .ds-repo__dot {
+    background: var(--text-muted-soft);
+    border-radius: var(--radius-full);
+    flex: 0 0 auto;
+    height: 6px;
+    width: 6px;
+  }
+
+  .ds-repo__name {
+    color: var(--text-ink);
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--title-sm-size);
+    font-weight: var(--title-sm-weight);
+    line-height: var(--title-sm-lh);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ds-repo__name strong {
+    font-weight: 600;
+  }
+
+  .ds-repo__arrow {
+    color: var(--text-muted);
+    flex: 0 0 auto;
+    font-family: var(--font-sans);
+  }
+
+  .ds-repo__description {
+    color: var(--text-body);
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin-top: var(--space-xxs);
+  }
+
+  .ds-repo__stats {
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-variant-numeric: tabular-nums;
+    gap: var(--space-xxs) var(--space-md);
+    margin-top: var(--space-xs);
+  }
+
+  .ds-repo__stat {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--space-xxs);
+  }
+
+  .ds-repo__language-dot {
+    background: var(--text-muted);
+    border-radius: var(--radius-full);
+    height: 8px;
+    width: 8px;
+  }
+
+  .ds-repo__topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xxs);
+    margin-top: var(--space-xs);
+  }
+
+  /* The handoff's Badge, pill tone. */
+  .ds-repo__topic {
+    background: var(--surface-card);
+    border-radius: var(--radius-pill);
+    color: var(--text-ink);
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-weight: 500;
+    line-height: var(--caption-lh);
+    padding: 4px 12px;
+  }
+
+  .ds-repo__hidden {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .ds-repo--dark {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+    color: var(--text-on-dark);
+  }
+
+  .ds-repo--dark .ds-repo__mark,
+  .ds-repo--dark .ds-repo__topic {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .ds-repo--dark .ds-repo__name {
+    color: var(--text-on-dark);
+  }
+
+  .ds-repo--dark .ds-repo__description,
+  .ds-repo--dark .ds-repo__stats,
+  .ds-repo--dark .ds-repo__arrow {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-repo--dark .ds-repo__language-dot {
+    background: var(--text-on-dark-soft);
+  }
+</style>

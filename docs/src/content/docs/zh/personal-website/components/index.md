@@ -23,3 +23,5 @@ sidebar:
 | [MathBlock 数学公式](./math-block/) | `$...$`、`$$...$$` | 显示构建时排好的公式 |
 | [Mermaid 图表](./mermaid/) | `mermaid` 代码块 | 在 DiagramFrame 里画图 |
 | [链接](./links/) | 标题和链接 | 标题旁的 # 链接，标出指向别的网站的链接 |
+| [Fields 参数卡片](./fields/) | `::::fields` | 列出参数的类型、默认值和说明 |
+| [GitHubCard 仓库卡片](./github-card/) | `::github` | 把 GitHub 仓库显示成一张卡片 |

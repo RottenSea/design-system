@@ -1,0 +1,18 @@
+---
+import { Field, Fields } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Fields">
+  <Fields label="Options">
+    <Field name="build.format" type="'file' | 'directory' | 'preserve'" required>
+      <p>Whether a page builds to <code>about.html</code> or <code>about/index.html</code>.</p>
+    </Field>
+    <Field name="trailingSlash" type="'always' | 'never' | 'ignore'" default="'ignore'">
+      <p>Whether page addresses end in a slash.</p>
+    </Field>
+    <Field name="server.port" type="number" default="4321">
+      <p>The port the dev server listens on.</p>
+    </Field>
+  </Fields>
+</ExampleLayout>

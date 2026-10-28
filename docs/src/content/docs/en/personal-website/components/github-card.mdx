@@ -1,0 +1,55 @@
+---
+title: GitHubCard
+description: A GitHub repository as a card, with details fetched when the site builds.
+sidebar:
+  order: 16
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows a GitHub repository as a card that links to it, with its description, main language, stars, forks, licence and topics.
+
+<Example system="personal-website" name="github-card" title="A made-up repository, an archived one, and a real one fetched from GitHub" />
+
+## When to use
+
+Use it when a post is about a repository or points the reader to one. A repository mentioned in passing is an ordinary link.
+
+## In a post
+
+```md
+::github{repo="RottenSea/design-system"}
+```
+
+The details are fetched from GitHub when the site builds and written into the page, so readers never contact GitHub, and the numbers are as of the last build. Without a token, GitHub allows 60 requests an hour from one address, which a shared build machine can use up; set `GITHUB_TOKEN` in the build's environment to raise that. If a request fails, the card shows the repository's name and link only, and the build goes on with a warning.
+
+## Anatomy
+
+The GitHub mark in a 32px card-colour square, then `owner/name`, the description, a row with the main language, stars, forks and licence, and the topics as pills. An arrow after the name shows that the card opens a new tab.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+| `details` | The details to show instead of fetching them, for an example or a test |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Hover | The card lifts with `--shadow-hover` |
+| Archived | A muted dot before the name |
+| Not fetched | Only the name and link |
+
+## Accessibility
+
+The whole card is one link, named by its text. Screen readers hear "Archived" before an archived repository's name, "stars" and "forks" after the numbers, and that the link opens a new tab. The language dot is the muted text colour: in this system a dot's colour means a state, so the language is told by its name.
+
+## API
+
+[`GitHubCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/GitHubCard.astro), with the request in [`github.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/github.js). Not in the handoff; it follows the handoff's ProjectCard: the boxed mark, the status dot and Badge pills on an outline Surface.
+
+## Related
+
+[Fields](../fields/), the other card designed for this system.

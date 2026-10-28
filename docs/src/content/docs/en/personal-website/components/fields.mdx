@@ -1,0 +1,68 @@
+---
+title: Fields
+description: A card listing options or parameters, each with its type, whether it is required, its default and a description.
+sidebar:
+  order: 15
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Lists the options or parameters of something, such as a config file or a function, on one card: each with its name, type, whether it is required or what its default is, and a description.
+
+<Example system="personal-website" name="fields" title="Three options, one required and two with defaults" />
+
+## When to use
+
+Use it when a post explains options a reader will set. For a few values without types, a sentence or a list reads better.
+
+## In a post
+
+Put one `:::field` per option inside `::::fields`, with the description inside it:
+
+```md
+::::fields[Options]
+:::field{name="build.format" type="'file' | 'directory'" required}
+Whether a page builds to `about.html` or `about/index.html`.
+:::
+
+:::field{name="trailingSlash" type="'always' | 'never' | 'ignore'" default="'ignore'"}
+Whether page addresses end in a slash.
+:::
+::::
+```
+
+| Attribute | What it does |
+| --- | --- |
+| `name` | The option's name, in the mono face. Write an option inside another as a dotted name, such as `build.format` |
+| `type` | Its type, after the name |
+| `required` | Marks it "Required", at the right |
+| `default` | Its default, at the right |
+| `[...]` after `::::fields` | An uppercase label above the list |
+
+The outer block has four colons so the inner ones can close with three. A `:::field` outside `::::fields` gets a card of its own, with a warning when the site builds.
+
+## Anatomy
+
+The canvas with a hairline and `--radius-lg` corners. Each row has the name and type on the first line, "Required" or the default at the right, and the description below; soft hairlines divide the rows.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` (Fields) | `cream` (default); `dark`, for a dark surface |
+
+## States
+
+A long type wraps onto more lines rather than widening the card.
+
+## Accessibility
+
+The card is a real `<dl>`: each name and its line is a `<dt>`, each description a `<dd>`, so screen readers announce which description belongs to which option. "Required" is written out, not shown by colour.
+
+## API
+
+[`Fields.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Fields.astro) and [`Field.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Field.astro). Not in the handoff; it follows the handoff's DeviceCard, whose specs are label and value hairline rows in a `<dl>`.
+
+## Related
+
+[GitHubCard](../github-card/), the other card designed for this system.

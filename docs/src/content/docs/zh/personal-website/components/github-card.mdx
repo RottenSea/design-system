@@ -1,0 +1,55 @@
+---
+title: GitHubCard 仓库卡片
+description: 把 GitHub 仓库显示成一张卡片，数据在构建网站时取得。
+sidebar:
+  order: 16
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把一个 GitHub 仓库显示成一张链接到它的卡片，带描述、主要语言、Star、Fork、许可证和 topics。
+
+<Example system="personal-website" name="github-card" title="一个虚构的仓库、一个已归档的仓库，以及一个从 GitHub 实际取数据的仓库" />
+
+## 什么时候用
+
+文章讲的就是某个仓库，或者要读者去看某个仓库时用。顺带提到的仓库写成普通链接。
+
+## 文章里怎么写
+
+```md
+::github{repo="RottenSea/design-system"}
+```
+
+数据在构建网站时向 GitHub 请求并写进页面，读者打开页面时不会连 GitHub，数字停在上次构建的时候。不带 token 时 GitHub 每小时只允许同一个地址请求 60 次，共用的构建机器可能用完；在构建环境里设 `GITHUB_TOKEN` 可以提高次数。请求失败时卡片只显示仓库名和链接，构建继续，并给出警告。
+
+## 结构
+
+左边 32px 的卡片色方块里是 GitHub 标志，右边是 `owner/name`、描述、一行主要语言、Star、Fork 和许可证，下面是药丸形的 topics。名字后面的箭头表示会在新标签页打开。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+| `details` | 直接给出要显示的数据，不去请求，用于示例和测试 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 鼠标悬停 | 卡片浮起，带 `--shadow-hover` 阴影 |
+| 已归档 | 名字前面一个灰色圆点 |
+| 没取到数据 | 只有名字和链接 |
+
+## 无障碍
+
+整张卡片是一个链接，名字取自卡片上的文字。已归档的仓库名字前面读出 “Archived”，数字后面读出 “stars”“forks”，还会告诉读者链接在新标签页打开。语言的圆点用次要文字颜色：这个系统里圆点的颜色表示状态，所以语言靠名字区分。
+
+## API
+
+[`GitHubCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/GitHubCard.astro)，请求在 [`github.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/github.js)。交付包里没有，沿用交付包的 ProjectCard：轮廓 Surface 上的标志方块、状态圆点和 Badge 药丸。
+
+## 相关
+
+[Fields 参数卡片](../fields/)，这个系统另一张自己设计的卡片。

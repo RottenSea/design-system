@@ -1,0 +1,26 @@
+---
+import { GitHubCard } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+// Made-up repositories with fixed details, so the example shows the whole card whatever GitHub
+// answers when the docs build. The last card fetches a real repository.
+const sample = {
+  description: "A static site generator for content-driven websites.",
+  language: "TypeScript",
+  stars: 12345,
+  forks: 678,
+  license: "MIT",
+  topics: ["static-site-generator", "markdown", "themes"],
+  archived: false,
+  url: "https://github.com"
+};
+---
+
+<ExampleLayout title="GitHubCard">
+  <GitHubCard repo="example/static-site" details={sample} />
+  <GitHubCard
+    repo="example/old-tool"
+    details={{ ...sample, description: "A tool nobody maintains any more.", topics: [], archived: true }}
+  />
+  <GitHubCard repo="RottenSea/design-system" />
+</ExampleLayout>

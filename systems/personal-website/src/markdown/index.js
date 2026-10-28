@@ -9,7 +9,9 @@
 //   :::gallery{columns=3 ratio="4/3"} with images inside → <ImageGrid> of figures
 //   ![alt](./a.png "Caption") on a line of its own → a figure with that caption
 //   ::video{src="https://www.bilibili.com/video/BV..." title="..." poster="./cover.png"} → <VideoEmbed>
-//   $E = mc^2$ and $$...$$                → <MathBlock> holding MathML typeset by KaTeX
+//   ::::fields with :::field{name type required default} blocks inside → <Fields> of <Field>
+//   ::github{repo="owner/name"}           → <GitHubCard>, filled in from GitHub at build time
+//   $E = mc^2$ and $$...$$               → <MathBlock> holding MathML typeset by KaTeX
 //   ```mermaid                             → <Mermaid>, drawn in the browser
 //   :spoiler[words]    → <Spoiler>
 //   :term[SSR]{note="Server-Side Rendering"} → <Abbreviation term="...">
@@ -300,6 +302,77 @@ function mermaid(node) {
   return { type: "mdxJsxFlowElement", name: "Mermaid", attributes, children: [] };
 }
 
+/** :::field{name type required default} with the description inside. */
+function field(node, file) {
+  takeLabel(node);
+  const { name, type, default: fallback } = node.attributes ?? {};
+  if (!name) file.message(':::field needs a name, as in :::field{name="build.format"}', node);
+  const attributes = [attribute("name", name ?? "")];
+  if (type) attributes.push(attribute("type", type));
+  if (node.attributes && "required" in node.attributes) attributes.push(attribute("required", null));
+  if (fallback !== undefined) attributes.push(attribute("default", fallback));
+  return { type: "mdxJsxFlowElement", name: "Field", attributes, children: node.children };
+}
+
+const isField = (node) => node.type === "mdxJsxFlowElement" && node.name === "Field";
+
+/** ::::fields holds :::field blocks; anything else stays above the card, with a warning. */
+function fields(node, file) {
+  const label = groupLabel(node);
+  const rows = node.children.filter(isField);
+  const rest = node.children.filter((child) => !isField(child));
+  if (rest.length) file.message("::::fields holds only :::field blocks; the rest stays above the card", node);
+  const element = {
+    type: "mdxJsxFlowElement",
+    name: "Fields",
+    attributes: label ? [attribute("label", label)] : [],
+    children: rows,
+    data: { dsFields: true }
+  };
+  return [...rest, element];
+}
+
+/**
+ * A Field outside a Fields card would be a <dt> with no <dl>, so runs of them get a card of their
+ * own, with a warning.
+ */
+function wrapStrayFields(node, file, inFields = false) {
+  if (!Array.isArray(node.children)) return;
+  const inside = inFields || node.data?.dsFields === true;
+  const children = [];
+  for (const child of node.children) {
+    if (!inside && isField(child)) {
+      const previous = children.at(-1);
+      if (previous?.data?.dsStray) previous.children.push(child);
+      else {
+        file.message(":::field belongs inside ::::fields; it was given a card of its own", child);
+        children.push({
+          type: "mdxJsxFlowElement",
+          name: "Fields",
+          attributes: [],
+          children: [child],
+          data: { dsFields: true, dsStray: true }
+        });
+      }
+      continue;
+    }
+    wrapStrayFields(child, file, inside);
+    children.push(child);
+  }
+  node.children = children;
+}
+
+/** ::github{repo="owner/name"}, a card filled in from GitHub when the site builds. */
+function github(node, file) {
+  const repo = node.attributes?.repo;
+  if (!repo || !/^[\w.-]+\/[\w.-]+$/.test(repo)) {
+    file.message('::github needs a repo, as in ::github{repo="withastro/astro"}', node);
+    node.data = { ...node.data, dsReported: true };
+    return undefined;
+  }
+  return { type: "mdxJsxFlowElement", name: "GitHubCard", attributes: [attribute("repo", repo)], children: [] };
+}
+
 function inlineSpoiler(node) {
   return { type: "mdxJsxTextElement", name: "Spoiler", attributes: [], children: node.children };
 }
@@ -323,6 +396,8 @@ const HANDLERS = {
     if (node.name === "code-group") return codeGroup(node, file);
     if (node.name === "file-tree") return fileTree(node, file);
     if (node.name === "gallery") return gallery(node, file);
+    if (node.name === "field") return field(node, file);
+    if (node.name === "fields") return fields(node, file);
     return undefined;
   },
   textDirective: (node, file) => {
@@ -332,6 +407,7 @@ const HANDLERS = {
   },
   leafDirective: (node, file) => {
     if (node.name === "video") return video(node, file);
+    if (node.name === "github") return github(node, file);
     return undefined;
   }
 };
@@ -391,6 +467,7 @@ export function remarkDsDirectives() {
   remarkMath.call(this);
   return (tree, file) => {
     transform(tree, file);
+    wrapStrayFields(tree, file);
     liftImages(tree);
   };
 }

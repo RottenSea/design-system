@@ -1,0 +1,68 @@
+---
+title: Fields 参数卡片
+description: 一张列出参数的卡片，每个参数有类型、是否必填、默认值和说明。
+sidebar:
+  order: 15
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把配置文件、函数这类东西的参数列在一张卡片上：每个参数有名字、类型、是否必填或默认值，以及说明。
+
+<Example system="personal-website" name="fields" title="三个参数，一个必填，两个有默认值" />
+
+## 什么时候用
+
+文章要讲读者会设置的参数时用。只有几个值、没有类型时，写成一句话或一个列表更好读。
+
+## 文章里怎么写
+
+在 `::::fields` 里每个参数写一个 `:::field`，说明写在里面：
+
+```md
+::::fields[Options]
+:::field{name="build.format" type="'file' | 'directory'" required}
+页面生成 `about.html` 还是 `about/index.html`。
+:::
+
+:::field{name="trailingSlash" type="'always' | 'never' | 'ignore'" default="'ignore'"}
+页面地址是否以斜杠结尾。
+:::
+::::
+```
+
+| 属性 | 作用 |
+| --- | --- |
+| `name` | 参数名，用等宽字体。参数里的子参数用带点的名字写，例如 `build.format` |
+| `type` | 类型，跟在名字后面 |
+| `required` | 右边标出 “Required” |
+| `default` | 默认值，显示在右边 |
+| `::::fields` 后面的 `[...]` | 列表上方的大写小标题 |
+
+外层用四个冒号，里面的 `:::` 才能先闭合。写在 `::::fields` 外面的 `:::field` 会单独成一张卡片，构建时给出警告。
+
+## 结构
+
+页面底色加细线边框、`--radius-lg` 圆角。每一行第一排是名字和类型，右边是 “Required” 或默认值，下面是说明；行与行之间是浅色细线。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone`（Fields） | `cream`（默认）；`dark`，放在深色底上时用 |
+
+## 状态
+
+类型很长时换行，卡片不会变宽。
+
+## 无障碍
+
+卡片是真正的 `<dl>`：名字那一行是 `<dt>`，说明是 `<dd>`，读屏软件会读出哪段说明属于哪个参数。“Required” 写成文字，不靠颜色表示。
+
+## API
+
+[`Fields.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Fields.astro) 和 [`Field.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Field.astro)。交付包里没有，沿用交付包 DeviceCard 的做法：规格写成 `<dl>` 里的细线行。
+
+## 相关
+
+[GitHubCard 仓库卡片](../github-card/)，这个系统另一张自己设计的卡片。

@@ -1,0 +1,124 @@
+---
+/**
+ * One option or parameter in a Fields card: the name and type in the mono face on the first line,
+ * "Required" or the default value at the right, and the description below. Use it only directly
+ * inside Fields, whose <dl> it fills with a <dt> and a <dd>.
+ *
+ * Not in the handoff; see Fields. Nested options are written with dotted names (build.format),
+ * not as Fields inside a Field.
+ */
+interface Props {
+  /** The option's name, as the reader writes it: "build.format". */
+  name: string;
+  /** Its type: "'file' | 'directory'". */
+  type?: string;
+  /** Marks the option as required. MDX may pass it as an empty string. */
+  required?: boolean | string;
+  /** The value used when the option is left out. */
+  default?: string;
+}
+
+const { name, type, default: fallback } = Astro.props;
+const required = Astro.props.required !== undefined && Astro.props.required !== false && Astro.props.required !== "false";
+---
+
+<div class="ds-field">
+  <dt class="ds-field__head">
+    <code class="ds-field__name">{name}</code>
+    {type && <code class="ds-field__type">{type}</code>}
+    {
+      (required || fallback !== undefined) && (
+        <span class="ds-field__meta">
+          {required && <span class="ds-field__required">Required</span>}
+          {fallback !== undefined && (
+            <span class="ds-field__default">
+              Default <code>{fallback}</code>
+            </span>
+          )}
+        </span>
+      )
+    }
+  </dt>
+  <dd class="ds-field__body">
+    <slot />
+  </dd>
+</div>
+
+<style>
+  .ds-field {
+    border-top: 1px solid var(--hairline-soft);
+    padding: var(--space-sm) 0;
+  }
+
+  .ds-field:first-child {
+    border-top: 0;
+  }
+
+  .ds-field__head {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xxs) var(--space-sm);
+  }
+
+  .ds-field__name,
+  .ds-field__type,
+  .ds-field__default code {
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
+  }
+
+  .ds-field__name {
+    color: var(--text-ink);
+    font-weight: 500;
+  }
+
+  /* A long union type wraps rather than widening the card. */
+  .ds-field__type {
+    color: var(--text-muted);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ds-field__meta {
+    align-items: baseline;
+    display: inline-flex;
+    gap: var(--space-sm);
+    margin-left: auto;
+  }
+
+  .ds-field__required {
+    color: var(--text-body-strong);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    text-transform: uppercase;
+  }
+
+  .ds-field__default {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+  }
+
+  .ds-field__default code {
+    color: var(--text-body-strong);
+  }
+
+  .ds-field__body {
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: var(--space-xxs) 0 0;
+  }
+
+  .ds-field__body > :global(*) {
+    margin: 0;
+  }
+
+  .ds-field__body > :global(* + *) {
+    margin-top: var(--space-xs);
+  }
+</style>
