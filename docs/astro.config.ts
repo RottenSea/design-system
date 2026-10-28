@@ -78,7 +78,8 @@ export default defineConfig({
                   "image-grid",
                   "video-embed",
                   "math-block",
-                  "mermaid"
+                  "mermaid",
+                  "links"
                 ].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))

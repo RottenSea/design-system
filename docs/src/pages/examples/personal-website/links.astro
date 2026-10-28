@@ -1,0 +1,49 @@
+---
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "@rottensea/ds-personal-website/markdown";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+// The same Markdown a post would have, run through the system's two rehype plugins.
+const markdown = `## Install the theme
+
+Point at this heading and a # appears beside it; it links to the heading.
+
+### From the registry
+
+Read [Astro's guide](https://docs.astro.build/) or the [about page](/about), or write to [the author](mailto:hello@example.com).`;
+
+const processor = await createMarkdownProcessor({
+  syntaxHighlight: false,
+  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://rottenth.cafe" }]]
+});
+const { code } = await processor.render(markdown);
+---
+
+<ExampleLayout title="Links">
+  <div class="post" set:html={code} />
+</ExampleLayout>
+
+<style>
+  .post :global(h2) {
+    font-family: var(--font-display);
+    font-size: var(--display-sm-size);
+    font-weight: 400;
+    line-height: var(--display-sm-lh);
+    margin: 0;
+  }
+
+  .post :global(h3) {
+    font-size: var(--title-md-size);
+    font-weight: 500;
+    line-height: var(--title-md-lh);
+    margin: var(--space-lg) 0 0;
+  }
+
+  .post :global(p) {
+    margin: var(--space-sm) 0 0;
+  }
+
+  .post :global(a:not(.ds-heading__anchor)) {
+    color: var(--text-link);
+  }
+</style>

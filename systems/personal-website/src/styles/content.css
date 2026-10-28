@@ -1,0 +1,75 @@
+/*
+ * Classes the system's rehype plugins write into a post's HTML, which no component owns: heading
+ * anchors (rehypeDsHeadingAnchors) and links to other sites (rehypeDsExternalLinks).
+ */
+
+/* Read by screen readers, not shown. */
+.ds-visually-hidden {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* A heading and its "#" link, side by side on the heading's first baseline. */
+.ds-heading {
+  align-items: baseline;
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.ds-heading > :first-child {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.ds-heading__anchor {
+  color: var(--text-muted-soft);
+  flex: none;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  opacity: 0;
+  text-decoration: none;
+  transition:
+    var(--transition-fade),
+    color var(--motion-fast) var(--ease-enter);
+}
+
+/* The "#" sits outside the heading, so it takes the heading's size from the level: the sizes of
+   the handoff's Prose headings. */
+.ds-heading--h2 .ds-heading__anchor {
+  font-size: var(--display-sm-size);
+}
+
+.ds-heading--h3 .ds-heading__anchor {
+  font-size: var(--title-md-size);
+}
+
+.ds-heading--h4 .ds-heading__anchor {
+  font-size: var(--title-sm-size);
+}
+
+.ds-heading:hover .ds-heading__anchor,
+.ds-heading__anchor:focus-visible {
+  opacity: 1;
+}
+
+.ds-heading__anchor:hover {
+  color: var(--text-link);
+}
+
+/* A touch screen has no pointer to reveal it, so it always shows there. */
+@media (hover: none) {
+  .ds-heading__anchor {
+    opacity: 1;
+  }
+}
+
+/* The visible cue for a link that opens a new tab. The empty alt text keeps screen readers on
+   the hidden note instead. */
+a.ds-external::after {
+  content: "↗" / "";
+  margin-left: 0.125em;
+}

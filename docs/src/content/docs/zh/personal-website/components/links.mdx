@@ -1,0 +1,66 @@
+---
+title: 链接
+description: 标题旁的 # 链接；指向别的网站的链接加箭头，并在新标签页打开。
+sidebar:
+  order: 14
+---
+
+import Example from "../../../../../components/Example.astro";
+
+在每个标题旁放一个 “#” 链接，读者可以直接链接到某一节；指向别的网站的链接加一个箭头，并在新标签页打开。
+
+<Example system="personal-website" name="links" title="带锚点的标题，以及指向别的网站、本站和邮箱的链接" />
+
+## 什么时候用
+
+两者都由 rehype 插件自动作用于每篇文章，文章里照常写标题和链接。
+
+## 文章里怎么写
+
+照常写标题和链接：
+
+```md
+## 安装主题
+
+读 [Astro 的指南](https://docs.astro.build/) 或者 [关于页](/about)。
+```
+
+在网站的 unified 处理器里加上这两个插件，放在 remark 插件旁边。传入网站自己的地址，指向本站的绝对链接就不会被当成外部链接：
+
+```ts
+import { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "@rottensea/ds-personal-website/markdown";
+
+processor: unified({
+  remarkPlugins: [remarkDsDirectives],
+  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://example.com" }]]
+})
+```
+
+## 结构
+
+标题和它的 “#” 并排放在 `div.ds-heading` 里，“#” 用最浅的次要文字颜色。指向别的网站的链接保持页面原来的链接样式，文字后面多一个小小的 “↗”。
+
+## 类型
+
+| 选项 | 取值 |
+| --- | --- |
+| `levels`（锚点） | 哪几级标题加锚点，默认 `[2, 3, 4]` |
+| `label`（锚点） | 读屏软件读链接时放在标题文字前面的话，默认 “Link to section:” |
+| `site`（外部链接） | 网站自己的地址，指向它的链接不加标记 |
+| `note`（外部链接） | 隐藏的提示，默认 “ (opens in a new tab)”；其他语言的网站传自己的 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 鼠标移到标题上 | “#” 淡入；移到 “#” 上时变成链接色 |
+| 键盘聚焦 | 聚焦时显示 “#” |
+| 触屏 | 没有鼠标可以移上去，所以一直显示 |
+
+## 无障碍
+
+“#” 是标题外面的一个链接，不会混进标题的名字和目录。读屏软件读到的不是 “#”，而是 “Link to section:” 加上标题文字。指向别的网站的链接带一句隐藏的提示，说明它会在新标签页打开（WCAG 技术 G201）；箭头由 CSS 画出，替代文字为空，不会读两遍。只有网页地址才算别的网站：`mailto:` 和 `tel:` 打开的是应用，保持原样。
+
+## API
+
+插件在 [`links.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/markdown/links.js)，样式在 [`content.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/content.css)，`styles.css` 和 `index.css` 都已包含。标题插件先用 Astro 自己的 `rehypeHeadingIds` 给标题加 id，再加链接，所以 id 和 Astro 在其他地方用的一致。交付包里都没有这两样；箭头和隐藏提示沿用个人网站现在的做法。

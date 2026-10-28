@@ -397,3 +397,4 @@ export function remarkDsDirectives() {
 
 export { shikiTransformers, transformerMetaAttributes } from "./shiki.js";
 export { typesetMath } from "./math.js";
+export { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "./links.js";

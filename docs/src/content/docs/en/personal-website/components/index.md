@@ -22,3 +22,4 @@ Each page says when to use the component, how to write it in a post, and what it
 | [VideoEmbed](./video-embed/) | `::video` | Plays a Bilibili, YouTube, AcFun or Vimeo video once the reader presses play |
 | [MathBlock](./math-block/) | `$...$`, `$$...$$` | Shows a formula, typeset at build time |
 | [Mermaid](./mermaid/) | A `mermaid` code fence | Draws a diagram in a DiagramFrame |
+| [Links](./links/) | Headings and links | Puts a # link beside headings and marks links to other sites |

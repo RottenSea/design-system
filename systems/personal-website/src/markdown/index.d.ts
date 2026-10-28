@@ -1,4 +1,5 @@
 import type { ShikiTransformer } from "@shikijs/types";
+import type { Root as HastRoot } from "hast";
 import type { Root } from "mdast";
 import type { Processor } from "unified";
 import type { VFile } from "vfile";
@@ -17,6 +18,28 @@ export function remarkDsDirectives(this: Processor): (tree: Root, file: VFile) =
  * inside a sentence. Throws when KaTeX cannot read the formula.
  */
 export function typesetMath(tex: string, display?: boolean): string;
+
+/**
+ * Puts a "#" link beside each h2, h3 and h4, in a div.ds-heading that content.css styles. Gives
+ * the headings their ids first, with Astro's rehypeHeadingIds.
+ */
+export function rehypeDsHeadingAnchors(options?: {
+  /** Heading levels that get an anchor. */
+  levels?: number[];
+  /** Comes before the heading's text in the link's name for screen readers. */
+  label?: string;
+}): (tree: HastRoot, file: VFile) => void;
+
+/**
+ * Opens links to other sites in a new tab, marks them with an arrow that content.css draws, and
+ * adds a visually hidden note for screen readers.
+ */
+export function rehypeDsExternalLinks(options?: {
+  /** The site's own address, whose links stay internal. */
+  site?: string;
+  /** The visually hidden note after the link text. */
+  note?: string;
+}): (tree: HastRoot) => void;
 
 /** Copies `title="..."` and `showLineNumbers=false` from a code fence's meta onto the <pre>. */
 export function transformerMetaAttributes(): ShikiTransformer;

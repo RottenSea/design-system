@@ -1,0 +1,66 @@
+---
+title: Links
+description: A # link beside each heading, and an arrow and a new tab for links to other sites.
+sidebar:
+  order: 14
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Puts a "#" link beside each heading, so a reader can link to a section, and marks links to other sites with an arrow and opens them in a new tab.
+
+<Example system="personal-website" name="links" title="Headings with anchors, and links to another site, this site and an email address" />
+
+## When to use
+
+Both apply to every post on their own, from two rehype plugins; a post writes ordinary headings and links.
+
+## In a post
+
+Write headings and links as usual:
+
+```md
+## Install the theme
+
+Read [Astro's guide](https://docs.astro.build/) or the [about page](/about).
+```
+
+Add the plugins to the site's unified processor, next to the remark plugin, and pass the site's own address so its absolute links stay internal:
+
+```ts
+import { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "@rottensea/ds-personal-website/markdown";
+
+processor: unified({
+  remarkPlugins: [remarkDsDirectives],
+  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://example.com" }]]
+})
+```
+
+## Anatomy
+
+A heading and its "#" sit side by side in a `div.ds-heading`, the "#" in the muted soft colour. A link to another site keeps the page's link style and gains a small "↗" after its text.
+
+## Variants
+
+| Option | Values |
+| --- | --- |
+| `levels` (anchors) | The heading levels that get one. Default `[2, 3, 4]` |
+| `label` (anchors) | Comes before the heading's text in the link's name for screen readers. Default "Link to section:" |
+| `site` (external links) | The site's own address; its links are not marked |
+| `note` (external links) | The hidden note. Default " (opens in a new tab)"; a site in another language passes its own |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Pointer on the heading | The "#" fades in; on the "#" itself it turns to the link colour |
+| Keyboard focus | The "#" shows while it has focus |
+| Touch screen | The "#" always shows, since there is no pointer to reveal it |
+
+## Accessibility
+
+The "#" is a link outside the heading, so it adds nothing to the heading's name or to the table of contents. Screen readers hear "Link to section:" and the heading's text instead of the "#". A link to another site gets a hidden note that it opens a new tab (WCAG technique G201); the arrow is drawn by CSS with empty alternative text, so it is not read twice. Only web addresses count as other sites: `mailto:` and `tel:` links open an app and stay as they are.
+
+## API
+
+[`links.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/markdown/links.js) for the plugins and [`content.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/content.css) for the styles, which `styles.css` and `index.css` include. The heading plugin gives headings their ids with Astro's own `rehypeHeadingIds` before adding the links, so the ids match the ones Astro uses everywhere else. Neither is in the handoff; the arrow and the hidden note come from the personal site.

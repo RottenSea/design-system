@@ -75,6 +75,9 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
     devDependencies:
+      '@astrojs/markdown-remark':
+        specifier: 7.3.4
+        version: 7.3.4
       '@terrazzo/cli':
         specifier: 2.10.0
         version: 2.10.0(@types/node@24.19.2)
