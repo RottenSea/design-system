@@ -1,0 +1,22 @@
+---
+import { CodeBlock, Option, OptionGroup } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="OptionGroup">
+  <OptionGroup label="Package manager" syncKey="pkg">
+    <Option label="pnpm"><CodeBlock code="pnpm add astro" lang="sh" /></Option>
+    <Option label="npm"><CodeBlock code="npm install astro" lang="sh" /></Option>
+    <Option label="yarn"><CodeBlock code="yarn add astro" lang="sh" /></Option>
+  </OptionGroup>
+  <p>A second group with the same key follows the first.</p>
+  <OptionGroup syncKey="pkg">
+    <Option label="pnpm"><CodeBlock code="pnpm dev" lang="sh" /></Option>
+    <Option label="npm"><CodeBlock code="npm run dev" lang="sh" /></Option>
+    <Option label="yarn"><CodeBlock code="yarn dev" lang="sh" /></Option>
+  </OptionGroup>
+  <OptionGroup label="System" size="md">
+    <Option label="macOS"><p>Open the app from Launchpad, then allow it in System Settings.</p></Option>
+    <Option label="Windows"><p>Open the app from the Start menu. No extra permission is needed.</p></Option>
+  </OptionGroup>
+</ExampleLayout>

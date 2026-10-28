@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `markdown`, a remark plugin that turns directives in MDX posts into those components: `:::note`, `:::tip`, `:::important`, `:::warning`, `:::caution`, `:::details`, `:::spoiler`, `:::steps`, `:spoiler[...]` and `:term[...]{note="..."}`. A directive it does not know is kept as text, with a warning when its name starts with a letter.
 - `CodeBlock`, highlighted by Shiki, with a filename, a language label, line numbers, highlighted, added and removed lines, a copy button that leaves removed lines out, and, new to the system, folding for blocks longer than 20 lines. `MarkdownCode` puts a post's code fences into it.
 - `TableScroll`, which lets a wide table scroll, and `MarkdownTable`, which puts a post's tables into it. The `components` map now also replaces `pre` and `table`.
+- `OptionGroup` with `Option`: one instruction in several flavours behind a segmented switch, where groups sharing a `syncKey` switch together. The `:::code-group` directive makes one from code fences and labels each option with the fence's `title`.
+- `FileTree` with `FileTreeNode`: part of a project's structure as a tree whose folders fold as native `<details>`, with change-state dots and hints. The `:::file-tree` directive makes one from a nested list.
 - `shikiTransformers()` from `markdown`, for a site's `shikiConfig`: line highlights in a fence's meta, Shiki's `[!code ...]` notations, and the fence's `title`.
 - The Tabler icons the components use, in `src/icons/`.
 

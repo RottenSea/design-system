@@ -1,0 +1,215 @@
+---
+/**
+ * One row of a FileTree: a file, or a folder with its contents below it. A folder with contents
+ * is a native <details>, so it folds with a click or the keyboard without any script; an empty
+ * folder is a plain row. Change state is a 6px dot, never a coloured name.
+ *
+ * Give it either a `node` (the handoff's FileNode data, as FileTree passes when it has `items`)
+ * or the props one by one with its contents as FileTreeNode children, which is what the
+ * :::file-tree directive writes.
+ */
+import FileIcon from "../../icons/file.svg";
+import FolderOpen from "../../icons/folder-open.svg";
+import Folder from "../../icons/folder.svg";
+
+export interface FileNode {
+  name: string;
+  /** Stable id for defaultOpen and selected. Falls back to `name`. */
+  path?: string;
+  /** Present (even empty) makes the node a folder. */
+  children?: FileNode[];
+  /** Draws a 6px dot: added green, changed amber, removed red. */
+  state?: "added" | "changed" | "removed";
+  /** Right-aligned micro-label: "new", "3 files". */
+  hint?: string;
+}
+
+interface Props {
+  node?: FileNode;
+  /** With `node`: paths of the folders that start open. */
+  defaultOpen?: string[];
+  /** With `node`: path of the highlighted file. */
+  selectedPath?: string;
+  name?: string;
+  folder?: boolean;
+  /** Whether a folder starts open. */
+  open?: boolean;
+  /** Highlights the row. */
+  selected?: boolean;
+  state?: FileNode["state"];
+  hint?: string;
+  /** Nesting level, 0 at the top. Sets the indent. */
+  depth?: number | string;
+}
+
+const { node, defaultOpen = [], selectedPath } = Astro.props;
+const depth = Number(Astro.props.depth ?? 0);
+const id = node ? (node.path ?? node.name) : undefined;
+const name = node ? node.name : (Astro.props.name ?? "");
+const state = node ? node.state : Astro.props.state;
+const hint = node ? node.hint : Astro.props.hint;
+const folder = node ? Array.isArray(node.children) : Boolean(Astro.props.folder);
+const open = node ? defaultOpen.includes(id ?? "") : Boolean(Astro.props.open);
+const selected = node ? selectedPath === id : Boolean(Astro.props.selected);
+const hasContents = node ? Boolean(node.children?.length) : Astro.slots.has("default");
+const style = `--ds-depth: ${depth}`;
+---
+
+<li class="ds-file-tree__item">
+  {
+    folder && hasContents ? (
+      <details open={open}>
+        <summary class="ds-file-tree__row" style={style} aria-current={selected ? "true" : undefined} data-ds-tap="row">
+          <span class="ds-file-tree__icon" aria-hidden="true">
+            <Folder class="ds-file-tree__closed" width={16} height={16} />
+            <FolderOpen class="ds-file-tree__open" width={16} height={16} />
+          </span>
+          <span class="ds-file-tree__name">{name}</span>
+          {state && <span class:list={["ds-file-tree__dot", `ds-file-tree__dot--${state}`]} />}
+          {state && <span class="ds-file-tree__state">({state})</span>}
+          {hint && <span class="ds-file-tree__hint">{hint}</span>}
+        </summary>
+        <ul class="ds-file-tree__list" role="list" style={style}>
+          {
+            node ? (
+              node.children?.map((child) => (
+                <Astro.self
+                  node={child}
+                  defaultOpen={defaultOpen}
+                  selectedPath={selectedPath}
+                  depth={depth + 1}
+                />
+              ))
+            ) : (
+              <slot />
+            )
+          }
+        </ul>
+      </details>
+    ) : (
+      <div class="ds-file-tree__row" style={style} aria-current={selected ? "true" : undefined}>
+        <span class="ds-file-tree__icon" aria-hidden="true">
+          {folder ? <Folder width={16} height={16} /> : <FileIcon width={16} height={16} />}
+        </span>
+        <span class="ds-file-tree__name">{name}</span>
+        {state && <span class:list={["ds-file-tree__dot", `ds-file-tree__dot--${state}`]} />}
+        {state && <span class="ds-file-tree__state">({state})</span>}
+        {hint && <span class="ds-file-tree__hint">{hint}</span>}
+      </div>
+    )
+  }
+</li>
+
+<style>
+  .ds-file-tree__item {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 28px mono rows, indented one --space-md per level. */
+  .ds-file-tree__row {
+    align-items: center;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-body-strong);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    gap: var(--space-xs);
+    height: 28px;
+    padding-left: calc(var(--space-xs) + var(--ds-depth) * var(--space-md));
+    padding-right: var(--space-xs);
+    transition: var(--transition-tint);
+  }
+
+  summary.ds-file-tree__row {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary.ds-file-tree__row::-webkit-details-marker {
+    display: none;
+  }
+
+  .ds-file-tree__row[aria-current="true"] {
+    background: var(--surface-card);
+  }
+
+  .ds-file-tree__icon {
+    color: var(--text-muted);
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .ds-file-tree__open,
+  details[open] > summary .ds-file-tree__closed {
+    display: none;
+  }
+
+  details[open] > summary .ds-file-tree__open {
+    display: block;
+  }
+
+  .ds-file-tree__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ds-file-tree__dot {
+    border-radius: var(--radius-full);
+    flex: 0 0 auto;
+    height: 6px;
+    width: 6px;
+  }
+
+  .ds-file-tree__dot--added {
+    background: var(--status-success);
+  }
+
+  .ds-file-tree__dot--changed {
+    background: var(--accent-amber);
+  }
+
+  .ds-file-tree__dot--removed {
+    background: var(--status-error);
+  }
+
+  /* The state in words, for screen readers; sighted readers have the dot. */
+  .ds-file-tree__state {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .ds-file-tree__hint {
+    color: var(--text-muted);
+    flex: 0 0 auto;
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+  }
+
+  /* A folder's contents hang off a hairline guide under the folder icon (8px is half the icon). */
+  .ds-file-tree__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  .ds-file-tree__list::before {
+    background: var(--hairline);
+    bottom: var(--space-xxs);
+    content: "";
+    left: calc(var(--space-xs) + var(--ds-depth) * var(--space-md) + 7.5px);
+    position: absolute;
+    top: 0;
+    width: 1px;
+  }
+
+</style>

@@ -1,0 +1,115 @@
+---
+/**
+ * Project structure as a foldable tree: where files go after a step, what a template contains.
+ * Rows are 28px in the mono face, indented 16px per level along a hairline guide; folders fold;
+ * a file can carry a change state as a 6px dot. Keep it to the part of the tree the point needs;
+ * a full repository listing is a CodeBlock.
+ *
+ * Ported from the handoff's FileTree.jsx with the same props, except `onSelect`: nothing runs in
+ * the browser, so files are not buttons, and folders fold as native <details>. The tree comes
+ * from `items` as in the handoff, or from FileTreeNode children, which is what the :::file-tree
+ * directive writes.
+ */
+import FileTreeNode, { type FileNode } from "./FileTreeNode.astro";
+
+interface Props {
+  items?: FileNode[];
+  /** Paths of the folders open at first; with `items` only. Children set `open` themselves. */
+  defaultOpen?: string[];
+  /** Path of the highlighted file; with `items` only. Children set `selected` themselves. */
+  selected?: string;
+  tone?: "cream" | "dark";
+  /** Uppercase micro-label above the tree: "Your project". */
+  label?: string;
+  /** false drops the frame (margin, border, radius, fill, measure). */
+  frame?: boolean;
+  class?: string;
+}
+
+const {
+  items,
+  defaultOpen = [],
+  selected,
+  tone = "cream",
+  label,
+  frame = true,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    "ds-file-tree",
+    { "ds-file-tree--framed": frame, "ds-file-tree--dark": tone === "dark" },
+    className
+  ]}
+  {...rest}
+>
+  {label && <div class="ds-file-tree__label">{label}</div>}
+  <ul class="ds-file-tree__root" role="list">
+    {
+      items ? (
+        items.map((node) => <FileTreeNode node={node} defaultOpen={defaultOpen} selectedPath={selected} />)
+      ) : (
+        <slot />
+      )
+    }
+  </ul>
+</div>
+
+<style>
+  .ds-file-tree {
+    box-sizing: border-box;
+    padding: var(--space-xs);
+  }
+
+  .ds-file-tree--framed {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+  }
+
+  .ds-file-tree__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    padding: var(--space-xs) var(--space-xs) var(--space-xxs);
+    text-transform: uppercase;
+  }
+
+  .ds-file-tree__root {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* The rows belong to FileTreeNode, so the dark tone reaches them through :global. */
+  .ds-file-tree--framed.ds-file-tree--dark {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-file-tree--dark .ds-file-tree__label,
+  .ds-file-tree--dark :global(.ds-file-tree__icon),
+  .ds-file-tree--dark :global(.ds-file-tree__hint) {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-file-tree--dark :global(.ds-file-tree__row) {
+    color: var(--text-on-dark);
+  }
+
+  .ds-file-tree--dark :global(.ds-file-tree__row[aria-current="true"]) {
+    background: rgba(250, 249, 245, 0.1);
+  }
+
+  .ds-file-tree--dark :global(.ds-file-tree__list::before) {
+    background: var(--hairline-on-dark);
+  }
+</style>

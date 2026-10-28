@@ -1,0 +1,40 @@
+---
+import { FileTree, FileTreeNode } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const items = [
+  {
+    name: "src",
+    path: "src",
+    children: [
+      {
+        name: "content",
+        path: "src/content",
+        children: [{ name: "config.ts", path: "src/content/config.ts", state: "removed" as const }]
+      },
+      { name: "content.config.ts", path: "src/content.config.ts", state: "added" as const },
+      { name: "pages", path: "src/pages", children: [] }
+    ]
+  },
+  { name: "astro.config.ts", path: "astro.config.ts", state: "changed" as const, hint: "one line" },
+  { name: "package.json", path: "package.json" }
+];
+---
+
+<ExampleLayout title="FileTree">
+  <FileTree label="Your project">
+    <FileTreeNode name="src" folder open>
+      <FileTreeNode name="pages" folder open depth={1}>
+        <FileTreeNode name="index.astro" depth={2} />
+      </FileTreeNode>
+      <FileTreeNode name="content.config.ts" hint="new" depth={1} />
+    </FileTreeNode>
+    <FileTreeNode name="astro.config.ts" />
+  </FileTree>
+  <FileTree
+    label="After the migration"
+    items={items}
+    defaultOpen={["src", "src/content"]}
+    selected="src/content.config.ts"
+  />
+</ExampleLayout>

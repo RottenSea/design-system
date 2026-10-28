@@ -1,0 +1,70 @@
+---
+title: OptionGroup 选项组
+description: 同一个操作的几种写法，整页共用一个切换。
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把同一个操作的几种写法（npm 和 pnpm，macOS 和 Windows）放在一起，读者选一次，整页都跟着换。
+
+<Example system="personal-website" name="option-group" title="同步切换的包管理器代码组，以及一组文字" />
+
+## 什么时候用
+
+读者只需要其中一种写法时用。两到四个选项，每个选项的名字最好是一个词。要读者把几种写法放在一起比较时，全部列出来，不用它。
+
+## 文章里怎么写
+
+把代码块放进 `:::code-group`。每个代码块的 `title` 是它在切换按钮上的名字：
+
+````md
+:::code-group{sync="pkg" label="Package manager"}
+```sh title="pnpm"
+pnpm add astro
+```
+
+```sh title="npm"
+npm install astro
+```
+:::
+````
+
+| 写在哪里 | 作用 |
+| --- | --- |
+| `sync="pkg"` | 这一页 `sync` 相同的代码组一起切换 |
+| `label="..."` | 切换按钮前的大写小标题 |
+| 代码块的 `title="..."` | 选项的名字。没写时用代码块的语言 |
+
+`title` 已经显示在切换按钮上，所以代码块的标题栏不再重复。两个代码块之间的文字归上面那个选项。
+
+## 结构
+
+一行里是可选的大写小标题和切换按钮，下面是选中那项的内容。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `size` | `sm`（默认），切换按钮高 32px；`md`，高 40px |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 选中 | 这一格变成页面底色，带细线边框，内容淡入 |
+| 同步 | 在一个组里选了某项，`sync` 相同的组都换过去。选择只存在内存里，刷新后回到第一项 |
+
+## 无障碍
+
+切换按钮是一组标签页（tablist）：Tab 键停在选中的那项，左右方向键切换，Home 和 End 跳到第一项和最后一项。每块内容是一个 tabpanel，名字取自它的选项。切换时别的组也跟着换，上方的内容高度变了，页面会滚动，让你按的那个按钮停在原处。没有 JavaScript 时显示第一项，按钮不起作用。
+
+## API
+
+[`OptionGroup.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/OptionGroup.astro) 和 [`Option.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Option.astro)。`OptionGroup` 保留了交付包的 `syncKey`、`label`、`size`、`tone`。交付包的 `options` 数组改成了 `<Option label value>` 子元素，因为 Astro 组件不能通过属性传入内容。选项的图标没有移植。
+
+## 相关
+
+[CodeBlock 代码块](../code-block/)，选项里最常放的内容。

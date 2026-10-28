@@ -15,3 +15,5 @@ sidebar:
 | [Steps 步骤条](./steps/) | `:::steps` | 给操作步骤编号 |
 | [CodeBlock 代码块](./code-block/) | 代码块 | 显示代码，带文件名、行号和复制 |
 | [TableScroll 表格滚动](./table-scroll/) | Markdown 表格 | 让宽表格横向滚动 |
+| [OptionGroup 选项组](./option-group/) | `:::code-group` | 同一操作的几种写法，选一种显示 |
+| [FileTree 文件树](./file-tree/) | `:::file-tree` | 显示项目结构的一部分 |

@@ -1,0 +1,70 @@
+---
+title: OptionGroup
+description: The same instruction in several flavours, behind a switch the whole page shares.
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows one instruction in several flavours, such as npm and pnpm or macOS and Windows, and lets the reader pick one for the whole page.
+
+<Example system="personal-website" name="option-group" title="Synced package-manager groups and a group of text" />
+
+## When to use
+
+Use it when the reader needs only one of the alternatives. Two to four options with one-word labels. If the reader should compare the alternatives side by side, show them all instead.
+
+## In a post
+
+Wrap the code fences in `:::code-group`. Each fence's `title` becomes its label on the switch:
+
+````md
+:::code-group{sync="pkg" label="Package manager"}
+```sh title="pnpm"
+pnpm add astro
+```
+
+```sh title="npm"
+npm install astro
+```
+:::
+````
+
+| In the directive | What it does |
+| --- | --- |
+| `sync="pkg"` | Every group on the page with the same `sync` switches together |
+| `label="..."` | An uppercase label before the switch |
+| `title="..."` on a fence | The option's label. Without it, the fence's language is used |
+
+The title moves to the switch, so the code block's bar does not repeat it. Text between two fences belongs to the option above it.
+
+## Anatomy
+
+An optional uppercase label and the switch on one line, then the panel of the picked option.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `size` | `sm` (default), 32px switch; `md`, 40px |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Picked | The segment is raised to the canvas color with a hairline, and its panel fades in |
+| Synced | Picking an option in one group switches every group with the same key. The choice is kept in memory only, so a reload returns to the first option |
+
+## Accessibility
+
+The switch is a tablist: Tab reaches the picked option, the arrow keys move between options and pick them, and Home and End jump to the first and last. Each panel is a tabpanel named by its option. When a pick switches other groups and the page above changes height, the page scrolls to keep the switch you pressed in place. Without JavaScript the first option shows and the switch does nothing.
+
+## API
+
+[`OptionGroup.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/OptionGroup.astro) and [`Option.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Option.astro). `OptionGroup` keeps the handoff's `syncKey`, `label`, `size` and `tone`. The handoff's `options` array becomes `<Option label value>` children, because an Astro component cannot take content through a prop. The options' icons are not ported.
+
+## Related
+
+[CodeBlock](../code-block/), the usual content of an option.

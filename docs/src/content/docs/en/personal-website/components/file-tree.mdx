@@ -1,0 +1,69 @@
+---
+title: FileTree
+description: Shows the part of a project's structure that a point needs, as a foldable tree.
+sidebar:
+  order: 8
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows where files go, such as what a template contains or how a project looks after a step, as a foldable tree.
+
+<Example system="personal-website" name="file-tree" title="A tree from a post, and one from data with change states" />
+
+## When to use
+
+Keep it to the part of the tree that the point needs. A full repository listing belongs in a [CodeBlock](../code-block/).
+
+## In a post
+
+Write a nested list inside `:::file-tree`:
+
+```md
+:::file-tree{label="Your project"}
+- src/
+  - pages/
+    - index.astro
+  - content.config.ts  new
+- astro.config.ts
+:::
+```
+
+| In the list | What it does |
+| --- | --- |
+| A name ending in `/` | A folder. An item with a list inside is a folder too, and starts open |
+| Two or more spaces, then text | A hint at the right end of the row |
+| `label="..."` on the directive | An uppercase label above the tree |
+
+Names are read as written, so `__init__.py` stays as it is and is not turned into bold text.
+
+## Anatomy
+
+An optional uppercase label, then one 28px row per entry in the mono face: an icon, the name, an optional change dot and an optional hint. Each level is indented 16px along a hairline guide.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+| `frame` | On by default. Off drops the margin, border and fill, for a tree inside another frame |
+| `state` on an entry | `added` (green dot), `changed` (amber), `removed` (red) |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Open folder | The icon turns to an open folder and the contents show |
+| Selected | The row takes the card color. Set with `selected` |
+
+## Accessibility
+
+The tree is a nested list. A folder with contents is a native `<details>`, so it opens with a click, Enter or Space, and screen readers report whether it is open. A change state is also written out for screen readers, for example "(added)", because the dot is color only. The selected row is marked `aria-current`.
+
+## API
+
+[`FileTree.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/FileTree.astro) and [`FileTreeNode.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/FileTreeNode.astro). `FileTree` keeps the handoff's props and takes the tree as `items` data or as `FileTreeNode` children. `onSelect` is not ported: nothing runs in the browser, so files are not buttons.
+
+## Related
+
+[CodeBlock](../code-block/), for a full listing or a file's contents.

@@ -1,0 +1,329 @@
+---
+/**
+ * The same instruction in several flavours (npm or pnpm, macOS or Windows) behind a segmented
+ * switch. Groups that share a syncKey switch together, so a reader who picks pnpm once reads
+ * pnpm for the rest of the page. The choice lives in memory only; a reload returns to the
+ * first option.
+ *
+ * Ported from the handoff's OptionGroup.jsx with the same props, except that the options are
+ * <Option> children instead of an `options` array, and the `icon` of an option is not ported.
+ * The switch is the handoff's SegmentedControl, drawn here on the server: a tablist with roving
+ * focus, arrow keys, Home and End. Without script the first option shows and the switch does
+ * nothing. Switching keeps the clicked switch where it was on screen, because the groups that
+ * follow it change height when they switch too.
+ *
+ * It renders its slot to HTML and reads the options from the markers <Option> writes, then
+ * renames those markers so an OptionGroup further out does not count them as its own.
+ */
+interface Props {
+  /** Groups sharing a key switch together, e.g. "pkg" for every install snippet on the page. */
+  syncKey?: string;
+  /** Uppercase micro-label before the switch: "Package manager". */
+  label?: string;
+  /** Switch size. */
+  size?: "md" | "sm";
+  /** The surface the group sits on. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { syncKey, label, size = "sm", tone = "cream", class: className, ...rest } = Astro.props;
+
+const id = `ds-options-${crypto.randomUUID().slice(0, 8)}`;
+const html = await Astro.slots.render("default");
+// Astro has already escaped both values, so they can go back into the HTML as they are.
+const options: { label: string; value: string }[] = [];
+const panels = html.replace(
+  /<div data-ds-option-label="([^"]*)" data-ds-option-value="([^"]*)">/g,
+  (_, optionLabel: string, value: string) => {
+    const index = options.push({ label: optionLabel, value }) - 1;
+    return (
+      `<div class="ds-option-group__panel" role="tabpanel" id="${id}-panel-${index}"` +
+      ` aria-labelledby="${id}-tab-${index}" tabindex="0" data-value="${value}"` +
+      `${index === 0 ? "" : " hidden"}>`
+    );
+  }
+);
+---
+
+<ds-option-group data-sync={syncKey}>
+  <div
+    class:list={[
+      "ds-option-group",
+      `ds-option-group--${size}`,
+      { "ds-option-group--dark": tone === "dark" },
+      className
+    ]}
+    {...rest}
+  >
+    <div class="ds-option-group__head">
+      {
+        label && (
+          <span class="ds-option-group__label" id={`${id}-label`}>
+            {label}
+          </span>
+        )
+      }
+      <div
+        class="ds-option-group__tabs"
+        role="tablist"
+        aria-labelledby={label ? `${id}-label` : undefined}
+        aria-label={label ? undefined : "Options"}
+      >
+        {
+          options.map((option, index) => (
+            <button
+              type="button"
+              class="ds-option-group__tab"
+              role="tab"
+              id={`${id}-tab-${index}`}
+              aria-controls={`${id}-panel-${index}`}
+              aria-selected={index === 0 ? "true" : "false"}
+              tabindex={index === 0 ? 0 : -1}
+              data-value={option.value}
+              data-ds-tap="cell"
+              set:html={option.label}
+            />
+          ))
+        }
+      </div>
+    </div>
+    <Fragment set:html={panels} />
+  </div>
+</ds-option-group>
+
+<script>
+  /** The event a group sends when the reader picks an option, so its sync partners follow. */
+  const SYNC = "ds-option-sync";
+  /** The last pick per syncKey, so a group added to the page later starts on it. */
+  const picked = new Map<string, string>();
+
+  interface SyncDetail {
+    key: string;
+    value: string;
+    source: HTMLElement;
+  }
+
+  class DsOptionGroup extends HTMLElement {
+    #tabs: HTMLButtonElement[] = [];
+    #panels: HTMLElement[] = [];
+    #onSync = (event: Event) => {
+      const { key, value, source } = (event as CustomEvent<SyncDetail>).detail;
+      if (source !== this && key === this.dataset.sync) this.#selectValue(value);
+    };
+
+    connectedCallback() {
+      // Only this group's own tabs and panels; a group nested in a panel has its own.
+      this.#tabs = [
+        ...this.querySelectorAll<HTMLButtonElement>(
+          ":scope > .ds-option-group > .ds-option-group__head > [role=tablist] > [role=tab]"
+        )
+      ];
+      this.#panels = [
+        ...this.querySelectorAll<HTMLElement>(":scope > .ds-option-group > [role=tabpanel]")
+      ];
+      const tablist = this.#tabs[0]?.parentElement;
+      if (!tablist) return;
+
+      tablist.addEventListener("click", (event) => {
+        const tab = (event.target as Element).closest<HTMLButtonElement>("[role=tab]");
+        if (tab) this.#pick(this.#tabs.indexOf(tab));
+      });
+      tablist.addEventListener("keydown", (event) => {
+        const current = this.#tabs.findIndex((tab) => tab.ariaSelected === "true");
+        const last = this.#tabs.length - 1;
+        const next =
+          event.key === "ArrowRight"
+            ? current === last
+              ? 0
+              : current + 1
+            : event.key === "ArrowLeft"
+              ? current === 0
+                ? last
+                : current - 1
+              : event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? last
+                  : undefined;
+        if (next === undefined) return;
+        event.preventDefault();
+        this.#pick(next);
+        this.#tabs[next]?.focus();
+      });
+
+      const key = this.dataset.sync;
+      if (key) {
+        document.addEventListener(SYNC, this.#onSync);
+        const value = picked.get(key);
+        if (value !== undefined) this.#selectValue(value);
+      }
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener(SYNC, this.#onSync);
+    }
+
+    /** The reader picked a tab: show it, tell the sync partners, and hold the tab still. */
+    #pick(index: number) {
+      const tab = this.#tabs[index];
+      if (!tab || !this.#select(index)) return;
+      const key = this.dataset.sync;
+      if (!key) return;
+      const value = tab.dataset.value ?? "";
+      const top = tab.getBoundingClientRect().top;
+      picked.set(key, value);
+      document.dispatchEvent(
+        new CustomEvent<SyncDetail>(SYNC, { detail: { key, value, source: this } })
+      );
+      window.scrollBy(0, tab.getBoundingClientRect().top - top);
+    }
+
+    #selectValue(value: string) {
+      const index = this.#tabs.findIndex((tab) => tab.dataset.value === value);
+      if (index !== -1) this.#select(index);
+    }
+
+    /** Shows one panel. Returns false when it was already showing. */
+    #select(index: number) {
+      if (this.#tabs[index]?.ariaSelected === "true") return false;
+      this.#tabs.forEach((tab, i) => {
+        tab.ariaSelected = i === index ? "true" : "false";
+        tab.tabIndex = i === index ? 0 : -1;
+      });
+      this.#panels.forEach((panel, i) => {
+        panel.hidden = i !== index;
+      });
+      const panel = this.#panels[index];
+      if (panel) {
+        // Restart the reveal each time, as the handoff does by remounting the panel.
+        panel.classList.remove("ds-reveal-in");
+        void panel.offsetWidth;
+        panel.classList.add("ds-reveal-in");
+      }
+      return true;
+    }
+  }
+
+  if (!customElements.get("ds-option-group")) customElements.define("ds-option-group", DsOptionGroup);
+</script>
+
+<style>
+  ds-option-group {
+    display: block;
+  }
+
+  .ds-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+  }
+
+  .ds-option-group__head {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .ds-option-group__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  /* The track is the card colour and the picked segment is raised to the canvas, so the switch
+     reads on the canvas and on a card alike. */
+  .ds-option-group__tabs {
+    align-items: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    display: inline-flex;
+    gap: var(--space-xxs);
+    padding: var(--space-xxs);
+  }
+
+  .ds-option-group__tab {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    gap: var(--space-xs);
+    height: 24px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 var(--space-md);
+    transition: var(--transition-tint);
+    white-space: nowrap;
+  }
+
+  .ds-option-group--md .ds-option-group__tab {
+    height: 32px;
+  }
+
+  .ds-option-group__tab[aria-selected="true"] {
+    background: var(--surface-canvas);
+    border-color: var(--hairline);
+    color: var(--text-ink);
+  }
+
+  /* The panels are written as a string from the slot's HTML, so they carry no scope attribute
+     and are reached through :global. */
+  .ds-option-group > :global(.ds-option-group__panel) {
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+  }
+
+  /* The panel's first and last blocks sit flush, including a code block's framed figure. */
+  .ds-option-group > :global(.ds-option-group__panel > :first-child),
+  .ds-option-group > :global(.ds-option-group__panel > :first-child > figure) {
+    margin-top: 0;
+  }
+
+  .ds-option-group > :global(.ds-option-group__panel > :last-child),
+  .ds-option-group > :global(.ds-option-group__panel > :last-child > figure) {
+    margin-bottom: 0;
+  }
+
+  .ds-option-group > :global(.ds-option-group__panel > * + *) {
+    margin-top: var(--space-sm);
+  }
+
+  .ds-option-group--dark .ds-option-group__label {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-option-group--dark .ds-option-group__tabs {
+    background: var(--surface-dark-elevated);
+  }
+
+  .ds-option-group--dark .ds-option-group__tab {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-option-group--dark .ds-option-group__tab[aria-selected="true"] {
+    background: rgba(250, 249, 245, 0.14);
+    border-color: transparent;
+    color: var(--text-on-dark);
+  }
+
+  .ds-option-group--dark > :global(.ds-option-group__panel) {
+    color: var(--text-on-dark);
+  }
+</style>

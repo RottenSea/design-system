@@ -78,3 +78,68 @@ test("an unknown directive is kept as text, with a warning", () => {
   assert.equal(messages.length, 1);
   assert.match(messages[0], /Unknown directive :abc/);
 });
+
+test(":::code-group turns each fence into an Option labelled by its title", () => {
+  const source = [
+    ':::code-group{sync="pkg" label="Package manager"}',
+    '```sh title="pnpm" {1}',
+    "pnpm add astro",
+    "```",
+    "",
+    "Needs pnpm 9.",
+    "",
+    "```sh",
+    "npm install astro",
+    "```",
+    ":::",
+    ""
+  ].join("\n");
+  const { tree } = run(source);
+  const [group] = tree.children;
+  assert.equal(group.name, "OptionGroup");
+  assert.deepEqual(attrs(group), { syncKey: "pkg", label: "Package manager" });
+  assert.deepEqual(
+    group.children.map((option) => attrs(option).label),
+    ["pnpm", "sh"]
+  );
+  const [first] = group.children;
+  // The title moves to the switch; the rest of the meta stays for Shiki.
+  assert.equal(first.children[0].meta, "{1}");
+  // Text after a fence belongs to that fence's option.
+  assert.equal(text(first.children[1]), "Needs pnpm 9.");
+});
+
+test(":::code-group without a fence is unwrapped, with a warning", () => {
+  const { tree, messages } = run(":::code-group\nJust text.\n:::\n");
+  assert.equal(tree.children[0].type, "paragraph");
+  assert.match(messages[0], /needs at least one code fence/);
+});
+
+test(":::file-tree turns a nested list into FileTreeNodes", () => {
+  const source = [
+    ':::file-tree{label="Your project"}',
+    "- src/",
+    "  - __init__.py",
+    "  - content.config.ts  new",
+    "- dist/",
+    "- astro.config.ts",
+    ":::",
+    ""
+  ].join("\n");
+  const { tree } = run(source);
+  const [root] = tree.children;
+  assert.equal(root.name, "FileTree");
+  assert.deepEqual(attrs(root), { label: "Your project" });
+  const [src, dist, config] = root.children;
+  assert.deepEqual(attrs(src), { name: "src", depth: "0", folder: true, open: true });
+  assert.deepEqual(attrs(dist), { name: "dist", depth: "0", folder: true });
+  assert.deepEqual(attrs(config), { name: "astro.config.ts", depth: "0" });
+  // Names are read from the source, so underscores are not emphasis.
+  assert.deepEqual(
+    src.children.map(attrs),
+    [
+      { name: "__init__.py", depth: "1" },
+      { name: "content.config.ts", depth: "1", hint: "new" }
+    ]
+  );
+});

@@ -1,0 +1,69 @@
+---
+title: FileTree 文件树
+description: 用可以折叠的树，显示项目结构里和这件事有关的部分。
+sidebar:
+  order: 8
+---
+
+import Example from "../../../../../components/Example.astro";
+
+用一棵可以折叠的树显示文件放在哪里，例如模板里有什么，或者做完一步后项目变成什么样。
+
+<Example system="personal-website" name="file-tree" title="文章里写的树，以及用数据生成、带改动标记的树" />
+
+## 什么时候用
+
+只画出要讲的那一部分。整个仓库的文件列表放进 [CodeBlock 代码块](../code-block/)。
+
+## 文章里怎么写
+
+在 `:::file-tree` 里写一个嵌套的无序列表：
+
+```md
+:::file-tree{label="你的项目"}
+- src/
+  - pages/
+    - index.astro
+  - content.config.ts  新加的
+- astro.config.ts
+:::
+```
+
+| 写法 | 作用 |
+| --- | --- |
+| 名字以 `/` 结尾 | 文件夹。下面有缩进列表的也是文件夹，默认展开 |
+| 名字后空两格以上再写字 | 显示在这一行右边的提示 |
+| 指令上的 `label="..."` | 树上方的大写小标题 |
+
+名字按原样读取，所以 `__init__.py` 不会被当成粗体。
+
+## 结构
+
+可选的大写小标题，下面每项一行，高 28px，用等宽字体：图标、名字、可选的改动圆点、可选的提示。每深一层缩进 16px，旁边有一条细线。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+| `frame` | 默认开。关掉后去掉外边距、边框和底色，用于放在别的框里 |
+| 每一项的 `state` | `added`（绿点）、`changed`（琥珀色点）、`removed`（红点） |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 文件夹展开 | 图标变成打开的文件夹，显示里面的内容 |
+| 选中 | 这一行变成卡片底色。用 `selected` 设定 |
+
+## 无障碍
+
+整棵树是嵌套列表。有内容的文件夹是原生的 `<details>`，鼠标点击、Enter 或空格都能展开，读屏软件会读出它是否展开。圆点只有颜色，所以改动状态还会写成文字给读屏软件，例如 “(added)”。选中的那一行标了 `aria-current`。
+
+## API
+
+[`FileTree.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/FileTree.astro) 和 [`FileTreeNode.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/code/FileTreeNode.astro)。`FileTree` 保留了交付包的 props，树可以用 `items` 数据给出，也可以写成 `FileTreeNode` 子元素。`onSelect` 没有移植：这个组件不在浏览器里运行脚本，所以文件不是按钮。
+
+## 相关
+
+[CodeBlock 代码块](../code-block/)，用来放完整的文件列表或文件内容。

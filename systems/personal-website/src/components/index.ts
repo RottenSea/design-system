@@ -6,10 +6,14 @@
 // The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
 // so pages get the components' prop types; pages are compiled by Vite, which handles it.
 import CodeBlock from "./code/CodeBlock.astro";
+import FileTree from "./code/FileTree.astro";
+import FileTreeNode from "./code/FileTreeNode.astro";
 import MarkdownCode from "./code/MarkdownCode.astro";
 import Abbreviation from "./content/Abbreviation.astro";
 import Admonition from "./content/Admonition.astro";
 import MarkdownTable from "./content/MarkdownTable.astro";
+import Option from "./content/Option.astro";
+import OptionGroup from "./content/OptionGroup.astro";
 import Spoiler from "./content/Spoiler.astro";
 import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
@@ -20,8 +24,12 @@ export {
   Abbreviation,
   Admonition,
   CodeBlock,
+  FileTree,
+  FileTreeNode,
   MarkdownCode,
   MarkdownTable,
+  Option,
+  OptionGroup,
   Spoiler,
   Step,
   Steps,
@@ -33,6 +41,10 @@ export const components = {
   Abbreviation,
   Admonition,
   CodeBlock,
+  FileTree,
+  FileTreeNode,
+  Option,
+  OptionGroup,
   Spoiler,
   Step,
   Steps,
