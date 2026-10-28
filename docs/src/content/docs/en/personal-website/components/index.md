@@ -17,3 +17,5 @@ Each page says when to use the component, how to write it in a post, and what it
 | [TableScroll](./table-scroll/) | A Markdown table | Lets a wide table scroll |
 | [OptionGroup](./option-group/) | `:::code-group` | Shows one of several flavours of an instruction |
 | [FileTree](./file-tree/) | `:::file-tree` | Shows part of a project's structure |
+| [Figure](./figure/) | An image on a line of its own | Shows an image with a caption, zoom and a placeholder |
+| [ImageGrid](./image-grid/) | `:::gallery` | Shows several images in a grid |

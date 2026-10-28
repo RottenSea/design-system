@@ -1,0 +1,66 @@
+---
+title: ImageGrid
+description: Several images as one block, in fixed columns with a fixed aspect ratio.
+sidebar:
+  order: 10
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Lays out several images as one block, in fixed columns with a fixed aspect ratio, so a row of photographs never goes ragged.
+
+<Example system="personal-website" name="image-grid" title="Three tiles at 4/3, and two square tiles, one of them a placeholder" />
+
+## When to use
+
+Use it for images that belong together, such as several views of one place. Two to four columns; past four, the tiles are too small to read as images. A single image is a [Figure](../figure/).
+
+## In a post
+
+Put the images inside `:::gallery`, one per line:
+
+```md
+:::gallery{columns=3 ratio="4/3"}
+![Hills under a low sun](./dusk.jpg "Dusk")
+![A pale shore under a bright sky](./shore.jpg "Shore")
+![Dark hills under a small moon](./night.jpg)
+:::
+```
+
+| In the directive | What it does |
+| --- | --- |
+| `columns=3` | The number of columns. Default 3 |
+| `ratio="4/3"` | The aspect ratio of every tile. Default `4/3` |
+| `"..."` after an image | One line under that tile |
+
+Anything other than images inside `:::gallery` is left out, with a warning when the site builds.
+
+## Anatomy
+
+Tiles with `--radius-lg` corners, in equal columns with a `--space-sm` gap. Each tile crops its image to the ratio, and can have a caption in muted caption text below it.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `columns`, `ratio`, `gap` | The grid. A tile's own `ratio` overrides the grid's |
+| `fit` on an item | `cover` (default) crops the image to the tile; `contain` fits it inside |
+| `lightbox` | On by default. Off makes the tiles plain pictures |
+| `tone` | `cream` (default); `dark`, for a dark surface |
+| An item without `src` | The striped placeholder with the alt text in the mono face, for laying out a page before the photographs exist |
+
+## States
+
+The tiles are [Figures](../figure/), so they show the same blurred copy while loading. When a tile is opened, the whole image shows, uncropped.
+
+## Accessibility
+
+Each tile is a button named "Enlarge image" followed by its alt text. Opening a tile shows that one image; there is no stepping to the next, so the reader returns to the grid to pick another.
+
+## API
+
+[`ImageGrid.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/ImageGrid.astro). It keeps the handoff's props. Two things differ from the handoff. `lightbox` opens one image with medium-zoom, where the handoff's Lightbox steps from image to image. And the tiles can be given as Figure children instead of `items`, which is what `:::gallery` writes.
+
+## Related
+
+[Figure](../figure/), a single image.

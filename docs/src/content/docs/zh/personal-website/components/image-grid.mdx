@@ -1,0 +1,66 @@
+---
+title: ImageGrid 多图网格
+description: 几张图排成一块，列数和比例固定。
+sidebar:
+  order: 10
+---
+
+import Example from "../../../../../components/Example.astro";
+
+把几张图排成一块，列数固定，每张的比例也固定，所以一行照片的边缘永远是齐的。
+
+<Example system="personal-website" name="image-grid" title="三张 4/3 的图，以及两张方图，其中一张是占位" />
+
+## 什么时候用
+
+几张图要放在一起看的时候用，例如同一个地方的几个角度。两到四列；超过四列，每张图就小得看不清了。单张图片用 [Figure 图片](../figure/)。
+
+## 文章里怎么写
+
+把图片放进 `:::gallery`，一行一张：
+
+```md
+:::gallery{columns=3 ratio="4/3"}
+![低垂的太阳下的山](./dusk.jpg "黄昏")
+![明亮天空下浅色的海岸](./shore.jpg "海岸")
+![小小的月亮下的暗色山丘](./night.jpg)
+:::
+```
+
+| 写法 | 作用 |
+| --- | --- |
+| `columns=3` | 列数，默认 3 |
+| `ratio="4/3"` | 每张图的比例，默认 `4/3` |
+| 图片后面引号里的字 | 这张图下面的一行字 |
+
+`:::gallery` 里除了图片以外的内容都会被去掉，构建网站时会给出警告。
+
+## 结构
+
+`--radius-lg` 圆角的图块，排成等宽的几列，间距 `--space-sm`。每块按比例裁切图片，下面可以有一行浅色的小字。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `columns`、`ratio`、`gap` | 网格本身。某一项自己的 `ratio` 优先于网格的 |
+| 每一项的 `fit` | `cover`（默认）把图片裁成图块的形状；`contain` 完整放进图块 |
+| `lightbox` | 默认开。关掉后图块就是普通图片 |
+| `tone` | `cream`（默认）；`dark`，放在深色底上时用 |
+| 没有 `src` 的一项 | 斜条纹占位，中间用等宽字写着替代文字，照片还没有时先用它排版 |
+
+## 状态
+
+每个图块都是一个 [Figure 图片](../figure/)，所以加载时一样会显示模糊的缩略图。点开一块时显示完整的图片，不裁切。
+
+## 无障碍
+
+每个图块都是一个按钮，名字是 “Enlarge image” 加上它的替代文字。点开只显示这一张，不能切到下一张，读者回到网格里再选另一张。
+
+## API
+
+[`ImageGrid.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/ImageGrid.astro)，props 和交付包一样，有两处不同：`lightbox` 用 medium-zoom 一次放大一张，交付包的 Lightbox 可以一张张往下翻；图块除了用 `items` 给出，还可以写成 Figure 子元素，`:::gallery` 生成的就是这种。
+
+## 相关
+
+[Figure 图片](../figure/)，单张图片。

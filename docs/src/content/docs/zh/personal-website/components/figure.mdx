@@ -1,0 +1,56 @@
+---
+title: Figure 图片
+description: 一张图片，可以带图注，点击放大，加载时先显示模糊的缩略图。
+sidebar:
+  order: 9
+---
+
+import Example from "../../../../../components/Example.astro";
+
+一张和正文一样宽的图片，可以带图注。点击会在页面上放大；加载完之前，先显示这张图模糊的缩略图。
+
+<Example system="personal-website" name="figure" title="带图注的图片" />
+
+## 什么时候用
+
+段落之间单独放的图片都用它。几张放在一起看的图片，用 [ImageGrid 多图网格](../image-grid/)。
+
+## 文章里怎么写
+
+图片单独占一行，引号里的字是图注：
+
+```md
+![低垂的太阳下三道山脊](./dusk.jpg "从山口看下去")
+```
+
+方括号里是替代文字，读屏软件会读它，图片加载失败时也会显示它。写清楚图上是什么。写在一行文字中间的图片仍然是行内的小图，没有图注，也不能放大。
+
+## 结构
+
+和正文一样宽、`--radius-lg` 圆角的图片，下面是可选的图注，用浅色的小字。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `zoom` | 默认开。关掉后就是一张普通图片 |
+| `placeholder` | 默认开。只对不透明的、用 import 引入的图片生效；透明图片和网址图片没有 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 加载中 | 构建时生成的 16px 缩略图模糊地铺在图片的位置，给页面增加大约 200 字节 |
+| 放大 | 图片从原来的位置放大到窗口能容纳的最大尺寸，背后是深色遮罩。放大后换成构建时生成的大图，所以仍然清晰。点击、按 Esc 或滚动页面就关闭 |
+
+## 无障碍
+
+图片本身是一个按钮，名字是 “Enlarge image” 加上替代文字，所以 Enter 和空格也能放大；关闭后焦点还停在它上面。图注是 figure 的 `<figcaption>`。开了“减少动效”时，放大和关闭都没有动画。
+
+## API
+
+[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro)，以及替换文章里图片的 [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro)。交付包里没有单张图片的组件，这个组件沿用交付包里正文图片和图注的样式。放大用 [medium-zoom](https://github.com/francoischalifour/medium-zoom)。缩略图用 sharp 生成，Astro 处理图片用的也是它。
+
+## 相关
+
+[ImageGrid 多图网格](../image-grid/)，把几张这样的图片排在一起。

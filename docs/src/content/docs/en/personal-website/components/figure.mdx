@@ -1,0 +1,56 @@
+---
+title: Figure
+description: One image with an optional caption, which enlarges on click and shows a blurred copy while it loads.
+sidebar:
+  order: 9
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Shows one image at the full width of the text, with an optional caption. Clicking it enlarges it over the page, and a blurred copy of it shows while it loads.
+
+<Example system="personal-website" name="figure" title="An image with a caption" />
+
+## When to use
+
+Use it for any image that stands on its own between paragraphs. For several images that belong together, use [ImageGrid](../image-grid/).
+
+## In a post
+
+Put the image on a line of its own. The text in quotes becomes the caption:
+
+```md
+![Three ridges of hills under a low sun](./dusk.jpg "The view from the pass")
+```
+
+The text in brackets is the alt text, which screen readers read and which shows if the image fails to load. Describe what the image shows. An image inside a line of text stays a small inline image, without a caption or zoom.
+
+## Anatomy
+
+The image with `--radius-lg` corners at the full measure, and an optional caption in muted small text below it.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `zoom` | On by default. Off makes the image a plain picture |
+| `placeholder` | On by default. Applies to imported images that are opaque; transparent images and URLs never get one |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Loading | A 16px copy of the image, made at build time, shows blurred in its place. It adds about 200 bytes to the page |
+| Zoomed | The image grows from where it sits to as large as the window allows, over a dark scrim. A larger copy made at build time replaces it, so it stays sharp. A click, Escape or scrolling closes it |
+
+## Accessibility
+
+The image is a real button named "Enlarge image" followed by the alt text, so Enter and Space open it too, and the focus stays on it after the zoom closes. The caption is the figure's `<figcaption>`. With reduced motion on, the zoom opens and closes without moving.
+
+## API
+
+[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro), and [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro), which stands in for a post's images. The handoff has no single-image component; this one follows the handoff's styles for images and captions in running text. The zoom is [medium-zoom](https://github.com/francoischalifour/medium-zoom). The placeholder is made with sharp, which Astro uses for its own images.
+
+## Related
+
+[ImageGrid](../image-grid/), which lays out several of these.

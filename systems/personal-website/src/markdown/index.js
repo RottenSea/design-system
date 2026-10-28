@@ -6,6 +6,8 @@
 //   :::steps{current=1} with an ordered list inside → <Steps> and one <Step> per item
 //   :::code-group{sync="pkg"} with code fences inside → <OptionGroup> and one <Option> per fence
 //   :::file-tree{label="Your project"} with a nested list inside → <FileTree> of <FileTreeNode>
+//   :::gallery{columns=3 ratio="4/3"} with images inside → <ImageGrid> of figures
+//   ![alt](./a.png "Caption") on a line of its own → a figure with that caption
 //   :spoiler[words]    → <Spoiler>
 //   :term[SSR]{note="Server-Side Rendering"} → <Abbreviation term="...">
 //
@@ -180,6 +182,50 @@ function fileTree(node, file) {
   };
 }
 
+/**
+ * Marks an image as a figure. The mark rides on the <img> into the site's `img` component,
+ * MarkdownImage, which then draws a Figure with the title as its caption.
+ */
+function asFigure(image) {
+  image.data = { ...image.data, hProperties: { ...image.data?.hProperties, dataDsFigure: true } };
+  return image;
+}
+
+const isBlank = (node) => node.type === "text" && !node.value.trim();
+
+/** A paragraph that holds only images, with nothing but line breaks between them. */
+const isImageParagraph = (node) =>
+  node.type === "paragraph" &&
+  node.children.some((child) => child.type === "image") &&
+  node.children.every((child) => child.type === "image" || child.type === "break" || isBlank(child));
+
+/** Takes images out of the paragraphs they sit in alone, so each becomes a figure. */
+function liftImages(node) {
+  if (!Array.isArray(node.children)) return;
+  node.children = node.children.flatMap((child) => {
+    if (isImageParagraph(child)) return child.children.filter((c) => c.type === "image").map(asFigure);
+    liftImages(child);
+    return [child];
+  });
+}
+
+/** Every image in the container becomes a tile; anything else is dropped, with a warning. */
+function gallery(node, file) {
+  takeLabel(node);
+  const images = [];
+  let dropped = false;
+  for (const child of node.children) {
+    if (isImageParagraph(child)) images.push(...child.children.filter((c) => c.type === "image"));
+    else if (child.type === "image") images.push(child);
+    else dropped = true;
+  }
+  if (dropped) file.message(":::gallery holds only images; other content in it was left out", node);
+  const attributes = [];
+  if (node.attributes?.columns) attributes.push(attribute("columns", node.attributes.columns));
+  if (node.attributes?.ratio) attributes.push(attribute("ratio", node.attributes.ratio));
+  return { type: "mdxJsxFlowElement", name: "ImageGrid", attributes, children: images.map(asFigure) };
+}
+
 function inlineSpoiler(node) {
   return { type: "mdxJsxTextElement", name: "Spoiler", attributes: [], children: node.children };
 }
@@ -202,6 +248,7 @@ const HANDLERS = {
     if (node.name === "steps") return steps(node, file);
     if (node.name === "code-group") return codeGroup(node, file);
     if (node.name === "file-tree") return fileTree(node, file);
+    if (node.name === "gallery") return gallery(node, file);
     return undefined;
   },
   textDirective: (node, file) => {
@@ -255,6 +302,7 @@ export function remarkDsDirectives() {
   remarkDirective.call(this);
   return (tree, file) => {
     transform(tree, file);
+    liftImages(tree);
   };
 }
 

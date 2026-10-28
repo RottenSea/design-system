@@ -1,8 +1,8 @@
 // Every component, for passing to an MDX page at once:
 //   import { components } from "@rottensea/ds-personal-website/components";
 //   <Content components={components} />
-// The map also replaces the <pre> of code fences and Markdown tables, so a post's plain Markdown
-// gets the system's code blocks and scrolling tables too.
+// The map also replaces the <pre> of code fences, Markdown tables and images, so a post's plain
+// Markdown gets the system's code blocks, scrolling tables and figures too.
 // The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
 // so pages get the components' prop types; pages are compiled by Vite, which handles it.
 import CodeBlock from "./code/CodeBlock.astro";
@@ -19,14 +19,20 @@ import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
 import TableScroll from "./content/TableScroll.astro";
 import Tooltip from "./feedback/Tooltip.astro";
+import Figure from "./media/Figure.astro";
+import ImageGrid from "./media/ImageGrid.astro";
+import MarkdownImage from "./media/MarkdownImage.astro";
 
 export {
   Abbreviation,
   Admonition,
   CodeBlock,
+  Figure,
   FileTree,
   FileTreeNode,
+  ImageGrid,
   MarkdownCode,
+  MarkdownImage,
   MarkdownTable,
   Option,
   OptionGroup,
@@ -41,8 +47,10 @@ export const components = {
   Abbreviation,
   Admonition,
   CodeBlock,
+  Figure,
   FileTree,
   FileTreeNode,
+  ImageGrid,
   Option,
   OptionGroup,
   Spoiler,
@@ -50,6 +58,7 @@ export const components = {
   Steps,
   TableScroll,
   Tooltip,
+  img: MarkdownImage,
   pre: MarkdownCode,
   table: MarkdownTable
 };

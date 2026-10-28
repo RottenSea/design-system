@@ -69,7 +69,9 @@ export default defineConfig({
                   "code-block",
                   "table-scroll",
                   "option-group",
-                  "file-tree"
+                  "file-tree",
+                  "figure",
+                  "image-grid"
                 ].map((name) => ({
                   slug: `personal-website/components/${name}`
                 }))

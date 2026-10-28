@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TableScroll`, which lets a wide table scroll, and `MarkdownTable`, which puts a post's tables into it. The `components` map now also replaces `pre` and `table`.
 - `OptionGroup` with `Option`: one instruction in several flavours behind a segmented switch, where groups sharing a `syncKey` switch together. The `:::code-group` directive makes one from code fences and labels each option with the fence's `title`.
 - `FileTree` with `FileTreeNode`: part of a project's structure as a tree whose folders fold as native `<details>`, with change-state dots and hints. The `:::file-tree` directive makes one from a nested list.
+- `Figure`, one image with an optional caption. It enlarges on click or Enter with medium-zoom, into a larger copy made at build time, and shows a blurred 16px copy of itself, written into the HTML, while it loads. `MarkdownImage` puts a post's images into it; the `components` map now also replaces `img`. An image on a line of its own becomes a figure, with its Markdown title as the caption; an image inside a line of text stays inline.
+- `ImageGrid`, several images in fixed columns at a fixed ratio, with the striped placeholder for tiles that have no image yet. The `:::gallery` directive makes one from the images inside it.
+- `sharp` is a peer dependency, for the image placeholders. Astro uses it too; with pnpm, a site adds it to its own dependencies.
 - `shikiTransformers()` from `markdown`, for a site's `shikiConfig`: line highlights in a fence's meta, Shiki's `[!code ...]` notations, and the fence's `title`.
 - The Tabler icons the components use, in `src/icons/`.
 

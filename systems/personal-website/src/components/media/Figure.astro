@@ -1,0 +1,195 @@
+---
+/**
+ * One image in a post: full measure, --radius-lg corners, an optional one-line caption in muted
+ * body-sm below. Clicking it, or pressing Enter on it, opens it over the page with medium-zoom,
+ * from where it sits to as large as the window allows; Escape, a click or a scroll closes it.
+ * There is no stepping to the next image. While a local image loads, a 16px copy of it made at
+ * build time shows behind it, blurred.
+ *
+ * The handoff has no single-image component; this follows its Prose styles for img and
+ * figcaption, and the scrim of its Dialog and Lightbox, so every overlay in the system darkens
+ * the page by the same amount. The zoomed image is a larger WebP made at build time.
+ */
+import type { ImageMetadata } from "astro";
+import { getImage, Image } from "astro:assets";
+import { placeholderOf } from "./placeholder";
+
+interface Props {
+  /** An imported image, which gets the placeholder and a larger copy to zoom into, or a URL. */
+  src: ImageMetadata | string;
+  /** Describes the image. Empty only for a decorative image. */
+  alt: string;
+  /** One line under the image. */
+  caption?: string;
+  /** Opens the image larger on click. */
+  zoom?: boolean;
+  /** Shows the blurred copy while a local, opaque image loads. */
+  placeholder?: boolean;
+  /** Needed for a URL; an imported image knows its size. */
+  width?: number;
+  height?: number;
+  /** Passed to Astro's <Image> for an imported image. */
+  widths?: number[];
+  sizes?: string;
+  loading?: "lazy" | "eager";
+  class?: string;
+}
+
+/** The longest side of the copy the zoom opens. */
+const ZOOM_WIDTH = 2400;
+
+const {
+  src,
+  alt,
+  caption,
+  zoom = true,
+  placeholder = true,
+  width,
+  height,
+  widths,
+  sizes,
+  loading = "lazy",
+  class: className
+} = Astro.props;
+
+const local = typeof src !== "string";
+const stand = local && placeholder ? await placeholderOf(src) : undefined;
+const zoomSrc =
+  local && zoom && src.format !== "svg"
+    ? (await getImage({ src, width: Math.min(src.width, ZOOM_WIDTH), format: "webp" })).src
+    : undefined;
+const frameStyle = stand ? `--ds-placeholder: url("${stand}")` : undefined;
+const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
+---
+
+<ds-figure>
+  <figure class:list={["ds-figure", className]}>
+    {
+      zoom ? (
+        <button type="button" class="ds-figure__frame ds-figure__frame--zoom" style={frameStyle} aria-label={label}>
+          {local ? (
+            <Image
+              src={src}
+              alt={alt}
+              widths={widths}
+              sizes={sizes}
+              loading={loading}
+              class="ds-figure__img"
+              data-zoom-src={zoomSrc}
+            />
+          ) : (
+            <img src={src} alt={alt} width={width} height={height} loading={loading} class="ds-figure__img" />
+          )}
+        </button>
+      ) : (
+        <span class="ds-figure__frame" style={frameStyle}>
+          {local ? (
+            <Image src={src} alt={alt} widths={widths} sizes={sizes} loading={loading} class="ds-figure__img" />
+          ) : (
+            <img src={src} alt={alt} width={width} height={height} loading={loading} class="ds-figure__img" />
+          )}
+        </span>
+      )
+    }
+    {caption && <figcaption class="ds-figure__caption">{caption}</figcaption>}
+  </figure>
+</ds-figure>
+
+<script>
+  import mediumZoom from "medium-zoom";
+
+  // One zoom for the whole page, so opening one image closes any other. The scrim is the
+  // handoff's Dialog scrim.
+  const zoom = mediumZoom({ background: "rgba(20, 20, 19, 0.72)", margin: 24 });
+
+  class DsFigure extends HTMLElement {
+    #img: HTMLImageElement | null = null;
+
+    connectedCallback() {
+      const button = this.querySelector<HTMLButtonElement>(".ds-figure__frame--zoom");
+      this.#img = button?.querySelector("img") ?? null;
+      if (!button || !this.#img) return;
+      const img = this.#img;
+      zoom.attach(img);
+      button.addEventListener("click", (event) => {
+        // A pointer lands on the image, which medium-zoom handles from the document. Enter and
+        // Space land on the button itself; stopping there keeps medium-zoom from reading the
+        // click as one outside the image, which would close it again.
+        if (event.target !== button) return;
+        event.stopPropagation();
+        zoom.open({ target: img });
+      });
+    }
+
+    disconnectedCallback() {
+      if (this.#img) zoom.detach(this.#img);
+    }
+  }
+
+  if (!customElements.get("ds-figure")) customElements.define("ds-figure", DsFigure);
+</script>
+
+<style>
+  ds-figure {
+    display: block;
+  }
+
+  .ds-figure {
+    margin: var(--space-lg) 0;
+    max-width: var(--container-reading);
+  }
+
+  .ds-figure__frame {
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-lg);
+    display: block;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .ds-figure__frame--zoom {
+    cursor: zoom-in;
+  }
+
+  /* The 16px copy, stretched and blurred; scaled up a little so the blur has no pale edge. */
+  .ds-figure__frame[style]::before {
+    background: var(--ds-placeholder) center / cover no-repeat;
+    content: "";
+    filter: blur(12px);
+    inset: 0;
+    position: absolute;
+    transform: scale(1.1);
+  }
+
+  .ds-figure__img {
+    display: block;
+    height: auto;
+    position: relative;
+    width: 100%;
+  }
+
+  .ds-figure__caption {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin-top: var(--space-xs);
+  }
+
+  /*
+   * medium-zoom moves a copy of the image to the end of <body>, in the box the image had. A tile
+   * cropped to a fixed ratio would stay cropped, so the open copy shows the whole image. The
+   * overlay and the copy sit above a sticky header.
+   */
+  :global(.ds-figure__img.medium-zoom-image--opened) {
+    object-fit: contain;
+  }
+
+  :global(.medium-zoom-overlay),
+  :global(.medium-zoom-image--opened) {
+    z-index: 100;
+  }
+</style>

@@ -143,3 +143,45 @@ test(":::file-tree turns a nested list into FileTreeNodes", () => {
     ]
   );
 });
+
+/** The figure mark the plugin puts on an image, or undefined. */
+const figureMark = (node) => node.data?.hProperties?.dataDsFigure;
+
+test("an image on a line of its own leaves its paragraph and is marked as a figure", () => {
+  const { tree } = run('![A cat](./cat.png "On the sofa")\n\nText with ![an icon](./i.png) inside.\n');
+  const [image, paragraph] = tree.children;
+  assert.equal(image.type, "image");
+  assert.equal(image.title, "On the sofa");
+  assert.equal(figureMark(image), true);
+  // An image inside a line of text stays inline and unmarked.
+  const inline = paragraph.children.find((n) => n.type === "image");
+  assert.equal(figureMark(inline), undefined);
+});
+
+test(":::gallery turns its images into an ImageGrid of figures", () => {
+  const source = [
+    ':::gallery{columns=2 ratio="1/1"}',
+    '![First](./a.png "Caption")',
+    "![Second](./b.png)",
+    ":::",
+    ""
+  ].join("\n");
+  const { tree, messages } = run(source);
+  const [grid] = tree.children;
+  assert.equal(grid.name, "ImageGrid");
+  assert.deepEqual(attrs(grid), { columns: "2", ratio: "1/1" });
+  assert.deepEqual(
+    grid.children.map((image) => [image.type, image.alt, figureMark(image)]),
+    [
+      ["image", "First", true],
+      ["image", "Second", true]
+    ]
+  );
+  assert.deepEqual(messages, []);
+});
+
+test(":::gallery leaves out text, with a warning", () => {
+  const { tree, messages } = run(":::gallery\n![A](./a.png)\n\nNot an image.\n:::\n");
+  assert.equal(tree.children[0].children.length, 1);
+  assert.match(messages[0], /holds only images/);
+});

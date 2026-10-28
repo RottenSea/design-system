@@ -17,3 +17,5 @@ sidebar:
 | [TableScroll 表格滚动](./table-scroll/) | Markdown 表格 | 让宽表格横向滚动 |
 | [OptionGroup 选项组](./option-group/) | `:::code-group` | 同一操作的几种写法，选一种显示 |
 | [FileTree 文件树](./file-tree/) | `:::file-tree` | 显示项目结构的一部分 |
+| [Figure 图片](./figure/) | 单独一行的图片 | 带图注、点击放大和模糊占位的图片 |
+| [ImageGrid 多图网格](./image-grid/) | `:::gallery` | 把几张图排成网格 |

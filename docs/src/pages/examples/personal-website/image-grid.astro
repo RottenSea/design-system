@@ -1,0 +1,26 @@
+---
+import { ImageGrid } from "@rottensea/ds-personal-website/components";
+import dusk from "../../../assets/examples/dusk.jpg";
+import night from "../../../assets/examples/night.jpg";
+import shore from "../../../assets/examples/shore.jpg";
+import tower from "../../../assets/examples/tower.jpg";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const photos = [
+  { src: dusk, alt: "Hills under a low sun", caption: "Dusk" },
+  { src: shore, alt: "A pale shore under a bright sky", caption: "Shore" },
+  { src: night, alt: "Dark hills under a small moon", caption: "Night" }
+];
+---
+
+<ExampleLayout title="ImageGrid">
+  <ImageGrid items={photos} />
+  <ImageGrid
+    columns={2}
+    ratio="1/1"
+    items={[
+      { src: tower, alt: "A tall view of hills under a large sun", caption: "A portrait image, cropped to a square" },
+      { alt: "product shot, 1/1", caption: "No src yet: the striped placeholder" }
+    ]}
+  />
+</ExampleLayout>
