@@ -1,0 +1,34 @@
+---
+title: 主题
+description: 个人网站系统的浅色和深色主题，以及页面怎样在两者之间切换。
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+系统只有一套调色板，有两种读法。深色主题只改语义 token 指向调色板里的哪个颜色，别的都不动；调色板本身永远不变。
+
+<Example system="personal-website" name="theme-page" title="同一个页面的浅色和深色主题" />
+
+## 怎么实现的
+
+`tokens.css` 把浅色的值写在 `:root` 和 `[data-theme="light"]` 上，深色主题是一个 `[data-theme="dark"]` 块，只写它改动的 token。属性上的浅色块让深色页面里也能放一段浅色内容。在 token 文件里，深色主题是 `theme-dark.tokens.json`，由 resolver 的 `theme` 修饰符应用。
+
+两条规则让深色主题保持一致：
+
+- **深色底仍然是强调色。** 深色主题里 `--surface-dark` 比画布高一级，而不是和画布一样，所以深色卡片、深色的一段和所有 `tone="dark"` 的组件仍然和页面分得开。
+- **珊瑚色不动。** `--color-primary`、`--color-on-primary` 和 `--focus-ring` 在两种主题里都一样。品牌色是主题唯一不能重新解释的东西。
+
+## 主题和 tone
+
+这是两回事。组件的 `tone` 指页面里的某一块底色，比如一张深色卡片；主题指整个页面的底。组件从不接收主题参数：它读 token，token 跟着主题变。
+
+## 切换
+
+CSS 只看 `data-theme` 属性，没有 `prefers-color-scheme` 查询。页面在 `<head>` 里用一小段脚本，在第一次绘制前给 `<html>` 设好 `data-theme="light"` 或 `data-theme="dark"`，所以不会先闪一下错误的主题。“跟随系统”是存起来的一个偏好，脚本用 `matchMedia` 把它换算成 `light` 或 `dark`，这样页面也能在深色的系统里强制用浅色。切换本身没有过渡：渐变会让页面上所有底色同时动起来。
+
+## 深色主题改了哪些
+
+<TokenTable system="personal-website" darkOnly />

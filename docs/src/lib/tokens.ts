@@ -163,6 +163,38 @@ async function load(system: string): Promise<TokenInfo[]> {
   });
 }
 
+/** WCAG 2 relative luminance of an sRGB colour token's value. */
+function luminance(color: Color): number {
+  const channel = (c: number | "none") => {
+    const v = c === "none" ? 0 : c;
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const [r, g, b] = color.components.map(channel);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/**
+ * The WCAG 2 contrast ratio between two colour tokens, as resolved in one theme. A translucent
+ * foreground is laid over the background first.
+ */
+export function contrast(foreground: TokenNormalized, background: TokenNormalized): number {
+  const fg = foreground.$value as unknown as Color;
+  const bg = background.$value as unknown as Color;
+  const alpha = fg.alpha ?? 1;
+  const over: Color =
+    alpha === 1
+      ? fg
+      : {
+          colorSpace: "srgb",
+          components: fg.components.map((c, i) => {
+            const b = bg.components[i];
+            return (c === "none" ? 0 : c) * alpha + (b === "none" ? 0 : b) * (1 - alpha);
+          })
+        };
+  const [light, dark] = [luminance(over), luminance(bg)].sort((a, b) => b - a);
+  return (light + 0.05) / (dark + 0.05);
+}
+
 /**
  * The tokens a table lists: "text.*" is every token in the text group, anything else an exact
  * path. Tokens keep the order of the token files.

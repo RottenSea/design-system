@@ -50,15 +50,23 @@ const { Content } = await render(post);
 
 Figure 用 sharp 生成模糊占位图，Astro 处理图片用的也是它。用 pnpm 的网站要把 `sharp` 加进自己的依赖，因为 pnpm 不会把 Astro 装的那份暴露给网站。
 
-文章用 `:::tip` 这类指令写组件。把这个系统的 remark 插件加到 unified 处理器里，指令才会变成组件；再加上它的 Shiki 转换器，代码块才能写标题和高亮行：
+文章用 `:::tip` 这类指令写组件。把这个系统的 remark 插件加到 unified 处理器里，指令才会变成组件；加上它的 rehype 插件，标题才有锚点、外部链接才有标记；再加上它的 Shiki 转换器，代码块才能写标题和高亮行：
 
 ```ts
 import { unified } from "@astrojs/markdown-remark";
-import { remarkDsDirectives, shikiTransformers } from "@rottensea/ds-personal-website/markdown";
+import {
+  rehypeDsExternalLinks,
+  rehypeDsHeadingAnchors,
+  remarkDsDirectives,
+  shikiTransformers
+} from "@rottensea/ds-personal-website/markdown";
 
 export default defineConfig({
   markdown: {
-    processor: unified({ remarkPlugins: [remarkDsDirectives] }),
+    processor: unified({
+      remarkPlugins: [remarkDsDirectives],
+      rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://example.com" }]]
+    }),
     shikiConfig: {
       themes: { light: "github-light", dark: "github-dark" },
       defaultColor: false,
@@ -68,10 +76,20 @@ export default defineConfig({
 });
 ```
 
+## 基础
+
+- [颜色](colors/)：底色、文字、珊瑚色、点缀色和细线
+- [文字](typography/)：三种字体和字号阶梯
+- [间距与圆角](spacing-radius/)：间距阶梯、页面宽度、断点和圆角
+- [阴影与边框](shadows-borders/)：底色、细线和两种阴影
+- [动效](motion/)：时长、曲线和三种基本动效
+- [主题](themes/)：浅色和深色主题，以及页面怎样切换
+- [无障碍](accessibility/)：对比度和其他规则
+
 ## 主题
 
-token 有浅色和深色两套主题。CSS 只看 `data-theme` 属性，所以页面要在绘制前给 `<html>` 设好 `data-theme="light"` 或 `data-theme="dark"`。
+token 有浅色和深色两套主题。CSS 只看 `data-theme` 属性，所以页面要在绘制前给 `<html>` 设好 `data-theme="light"` 或 `data-theme="dark"`。见[主题](themes/)。
 
 ## 版本
 
-每个版本改了什么，见[更新日志](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/CHANGELOG.md)。
+每个版本改了什么，见[更新日志](changelog/)。

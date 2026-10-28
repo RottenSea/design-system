@@ -1,0 +1,38 @@
+---
+title: Home
+description: "The design systems in this repository, and how they are documented."
+template: splash
+hero:
+  title: Design Systems
+  tagline: "The design systems in this repository, and how they are documented."
+  actions:
+    - text: "Personal website"
+      link: ./personal-website/
+      icon: right-arrow
+    - text: "Read the docs spec"
+      link: ./spec/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+## Design systems
+
+Each system has its own section: what it is for and how to install it, its foundations with values read from its token files, and its components.
+
+<CardGrid>
+  <LinkCard
+    title="Personal website"
+    description="The system behind The Key of Urala, a personal blog: warm cream surfaces, one brand colour, and the components its posts use."
+    href="./personal-website/"
+  />
+</CardGrid>
+
+## Docs spec
+
+How a design system in this repository is documented: the entries and sections its docs are made of, what a token, theme or component page says, the accessibility rules it meets, and how versions and writing are handled. It is a summary of the [Design System Doc Spec (DSDS)](https://designsystemdocspec.org/) and the other standards it links.
+
+<CardGrid>
+  <LinkCard title="Docs spec" description="Structure, tokens, themes, components, guidelines, accessibility, versioning and writing." href="./spec/" />
+</CardGrid>

@@ -1,0 +1,50 @@
+---
+title: Accessibility
+description: Contrast, focus, touch targets, motion and the other accessibility rules of the personal website system, with contrast ratios worked out from the tokens.
+sidebar:
+  order: 7
+---
+
+import ContrastTable from "../../../../components/ContrastTable.astro";
+
+The system aims at WCAG 2.2 AA. The rules below are built into the tokens and components; each component's page says what it does on top.
+
+## Contrast
+
+The tables below are worked out from the token files when this site builds, in both themes. Body text needs 4.5:1; large text, and the parts of controls such as a status dot, need 3:1.
+
+In the light theme several pairs fall short, and the tables mark each one: coral links, white text on the coral button, the softest muted text, muted text on the cream card, and the teal, amber and status marks. The dark theme passes almost everywhere. The light colours are kept as the brand handoff drew them, for now. Until they change, use the softest muted text only for hints and labels that repeat something said elsewhere, keep a link's meaning in its words, not in its colour, and give every mark a word beside it.
+
+### Text on cream surfaces
+
+<ContrastTable system="personal-website" foreground={["text.ink", "text.body-strong", "text.body", "text.muted", "text.muted-soft", "text.link"]} background={["surface.canvas", "surface.card"]} />
+
+### Text on dark surfaces
+
+<ContrastTable system="personal-website" foreground={["text.on-dark", "text.on-dark-soft"]} background={["surface.dark", "surface.dark-soft", "surface.dark-elevated"]} />
+
+### Text on coral
+
+<ContrastTable system="personal-website" foreground={["color.on-primary"]} background={["color.primary", "color.primary-active"]} />
+
+### Marks on the canvas
+
+Status dots and accent marks are not text, so the line for them is 3:1. In the light theme most of them fall below it, so a dot must not carry meaning by colour alone: put a visible word beside it.
+
+<ContrastTable system="personal-website" foreground={["status.*", "accent.*"]} background={["surface.canvas"]} nonText />
+
+## Focus
+
+Every link and button shows a 2px coral outline, offset by 2px, when it has keyboard focus (`:focus-visible`), so a keyboard user can always see where they are. Inputs draw their own `--focus-ring` halo instead.
+
+## Touch targets
+
+Below 768px, every element marked `data-ds-tap` grows to `--tap-min`, 44px, which a finger needs: rows in a list grow taller, and cells such as icon buttons grow in both directions. A link inside running text is the one exception, because a 44px box would break the line spacing around it.
+
+## Motion
+
+Motion drops to 1ms under the system's reduced-motion setting and under the site's own switch, so it never carries information on its own. See [Motion](../motion/#reduced-motion).
+
+## Structure
+
+Components use native elements wherever one exists: a real `<button>`, `<details>` for anything that folds, `<dl>` for name and value pairs, `<figure>` with `<figcaption>`. A state shown by a colour or a dot is also written out for screen readers. The fixed words in components, such as "Copy code" and "Required", are in English.

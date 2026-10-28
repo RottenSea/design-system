@@ -1,0 +1,99 @@
+---
+// A small page in both themes: the same markup, the same tokens, two readings of one palette.
+import ThemePair from "../../../components/ThemePair.astro";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="One page, two themes">
+  <ThemePair>
+    <div class="page">
+      <p class="ds-caption-upper eyebrow">Journal</p>
+      <h2 class="ds-display-sm heading">Notes on a quiet palette</h2>
+      <p class="ds-body-sm body">
+        The surfaces, text and hairlines change with the theme. <span class="link">Coral does not.</span>
+      </p>
+      <div class="cards">
+        <div class="card">
+          <span class="ds-title-sm card__title">Cream card</span>
+          <span class="ds-caption card__note">Set apart by its fill</span>
+        </div>
+        <div class="card card--dark">
+          <span class="ds-title-sm card__title">Dark card</span>
+          <span class="ds-caption card__note">Still one step above the canvas</span>
+        </div>
+      </div>
+      <span class="button">Subscribe</span>
+    </div>
+  </ThemePair>
+</ExampleLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .eyebrow {
+    color: var(--text-muted-soft);
+    margin: 0;
+  }
+
+  .heading {
+    color: var(--text-ink);
+    margin: 0;
+  }
+
+  .body {
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  .link {
+    color: var(--text-link);
+  }
+
+  .cards {
+    display: grid;
+    gap: var(--space-xs);
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card {
+    background: var(--surface-card);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: var(--space-xxs);
+    padding: var(--space-sm);
+  }
+
+  .card__title {
+    color: var(--text-ink);
+  }
+
+  .card__note {
+    color: var(--text-muted);
+  }
+
+  .card--dark {
+    background: var(--surface-dark);
+  }
+
+  .card--dark .card__title {
+    color: var(--text-on-dark);
+  }
+
+  .card--dark .card__note {
+    color: var(--text-on-dark-soft);
+  }
+
+  .button {
+    background: var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-on-primary);
+    font-family: var(--font-sans);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    justify-self: start;
+    padding: var(--space-xs) var(--space-md);
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+title: Themes
+description: The light and dark themes of the personal website system, and how a page switches between them.
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../components/Example.astro";
+import TokenTable from "../../../../components/TokenTable.astro";
+
+The system has one palette and two readings of it. The dark theme changes which palette colours the semantic tokens point at, and nothing else; the palette itself never changes.
+
+<Example system="personal-website" name="theme-page" title="The same page in the light and the dark theme" />
+
+## How it works
+
+`tokens.css` writes the light values on `:root` and on `[data-theme="light"]`, and the dark theme as one `[data-theme="dark"]` block that holds only the tokens it changes. The light block on the attribute lets a light section sit inside a dark page. In the token files, the dark theme is `theme-dark.tokens.json`, applied by the resolver's `theme` modifier.
+
+Two rules keep the dark theme coherent:
+
+- **The dark surface stays emphasis.** In the dark theme `--surface-dark` is one step above the canvas rather than equal to it, so a dark card, a dark band and every `tone="dark"` component still stand apart from the page.
+- **Coral does not move.** `--color-primary`, `--color-on-primary` and `--focus-ring` are the same in both themes. The brand colour is the one thing a theme may not reinterpret.
+
+## Theme and tone
+
+They are separate. A component's `tone` names a surface within the page, such as a dark card; the theme names the page's own floor. A component never takes a theme prop: it reads the tokens, and the tokens follow the theme.
+
+## Switching
+
+The CSS reads only the `data-theme` attribute; there is no `prefers-color-scheme` query. A page sets `data-theme="light"` or `data-theme="dark"` on `<html>` with a short script in `<head>`, before the first paint, so a page never flashes the wrong theme. "Follow the system" is a stored preference that the script turns into `light` or `dark` with `matchMedia`, which is what lets a page force light against a dark operating system. The switch itself has no transition: a crossfade would put every surface in motion at once.
+
+## What the dark theme changes
+
+<TokenTable system="personal-website" darkOnly />

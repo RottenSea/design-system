@@ -1,0 +1,22 @@
+---
+/**
+ * A system's CHANGELOG.md, rendered into a docs page when the docs build, so the page cannot fall
+ * behind the file. The file's own "# Changelog" heading is dropped; the page has its title.
+ */
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+
+interface Props {
+  system: string;
+}
+
+const { system } = Astro.props;
+// The docs build runs in docs/, next to systems/.
+const source = readFileSync(resolve(process.cwd(), "..", "systems", system, "CHANGELOG.md"), "utf8");
+const markdown = source.replace(/^# .*\n/, "");
+const processor = await createMarkdownProcessor({ syntaxHighlight: false, smartypants: false });
+const { code } = await processor.render(markdown);
+---
+
+<Fragment set:html={code} />

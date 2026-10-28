@@ -12,12 +12,15 @@ import { loadTokens, select } from "../lib/tokens";
 
 interface Props {
   system: string;
-  /** "text.*" for a whole group, or exact paths. */
-  tokens: string[];
+  /** "text.*" for a whole group, or exact paths. Every token when left out. */
+  tokens?: string[];
+  /** Lists only the tokens whose value the dark theme changes. */
+  darkOnly?: boolean;
 }
 
-const { system, tokens: patterns } = Astro.props;
-const rows = select(await loadTokens(system), patterns);
+const { system, tokens: patterns, darkOnly = false } = Astro.props;
+const all = await loadTokens(system);
+const rows = (patterns ? select(all, patterns) : all).filter((row) => !darkOnly || row.value.dark);
 const zh = Astro.locals.starlightRoute.lang.startsWith("zh");
 const t = zh
   ? { token: "Token", value: "值", description: "说明", light: "浅色", dark: "深色", narrow: "窄屏", copy: "复制", copied: "已复制", to: "指向" }

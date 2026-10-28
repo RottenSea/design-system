@@ -1,0 +1,50 @@
+---
+title: 无障碍
+description: 个人网站系统的对比度、焦点、触控目标、动效等无障碍规则，对比度从 token 算出。
+sidebar:
+  order: 7
+---
+
+import ContrastTable from "../../../../components/ContrastTable.astro";
+
+系统以 WCAG 2.2 AA 为目标。下面这些规则已经做进 token 和组件里；每个组件额外做了什么，见各自的页面。
+
+## 对比度
+
+下面的表格是这个网站构建时从 token 文件算出来的，两种主题都有。正文需要 4.5:1；大字，以及控件的组成部分（比如状态圆点）需要 3:1。
+
+浅色主题里有好几组不达标，表格里逐一标出：珊瑚色的链接、珊瑚色按钮上的白字、最浅的次要文字、卡片上的次要文字，以及青色、琥珀色和状态色的标记。深色主题几乎全部达标。浅色暂时按品牌交付包原样保留。在改之前：最浅的次要文字只用于提示和重复别处信息的标签；链接的意思要写在文字里，不要只靠颜色；每个标记旁边都配上文字。
+
+### 奶油色底上的文字
+
+<ContrastTable system="personal-website" foreground={["text.ink", "text.body-strong", "text.body", "text.muted", "text.muted-soft", "text.link"]} background={["surface.canvas", "surface.card"]} />
+
+### 深色底上的文字
+
+<ContrastTable system="personal-website" foreground={["text.on-dark", "text.on-dark-soft"]} background={["surface.dark", "surface.dark-soft", "surface.dark-elevated"]} />
+
+### 珊瑚色上的文字
+
+<ContrastTable system="personal-website" foreground={["color.on-primary"]} background={["color.primary", "color.primary-active"]} />
+
+### 画布上的标记
+
+状态圆点和点缀标记不是文字，标准是 3:1。浅色主题里大多数低于这条线，所以圆点不能只靠颜色表达意思：旁边要有看得见的文字。
+
+<ContrastTable system="personal-website" foreground={["status.*", "accent.*"]} background={["surface.canvas"]} nonText />
+
+## 焦点
+
+每个链接和按钮在键盘聚焦时（`:focus-visible`）显示 2px 的珊瑚色外框，外移 2px，键盘用户随时知道自己在哪。输入框改为画自己的 `--focus-ring` 光圈。
+
+## 触控目标
+
+屏幕窄于 768px 时，所有标了 `data-ds-tap` 的元素都放大到 `--tap-min`，也就是手指需要的 44px：列表里的行变高，图标按钮这类单元格长宽都变大。正文里的链接是唯一的例外，44px 的框会打乱它周围的行距。
+
+## 动效
+
+系统设置了减少动效，或者网站自己的开关打开时，动效都缩短到 1ms，所以动效从不单独传达信息。见[动效](../motion/#减少动效)。
+
+## 结构
+
+只要有原生元素，组件就用原生元素：真正的 `<button>`，能折叠的用 `<details>`，名称和值成对的用 `<dl>`，图片用 `<figure>` 和 `<figcaption>`。用颜色或圆点表示的状态，也会写成文字给读屏软件。组件里固定的文字（例如 “Copy code”“Required”）用英文。

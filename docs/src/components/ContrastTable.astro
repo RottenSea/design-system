@@ -1,0 +1,112 @@
+---
+/**
+ * The contrast ratio of every foreground colour on every background colour given, in both themes,
+ * worked out from the token files when the docs build. Each ratio is marked against WCAG 2 AA:
+ * 4.5:1 for body text and 3:1 for large text, or, with `nonText`, 3:1 for marks and the parts of
+ * controls, which have no large-text allowance.
+ *
+ * <ContrastTable system="personal-website" foreground={["text.*"]} background={["surface.canvas"]} />
+ */
+import { contrast, loadTokens, select } from "../lib/tokens";
+
+interface Props {
+  system: string;
+  foreground: string[];
+  background: string[];
+  /** The foregrounds are marks, not text: one 3:1 line, as for the parts of controls. */
+  nonText?: boolean;
+}
+
+const { system, foreground, background, nonText = false } = Astro.props;
+const tokens = await loadTokens(system);
+const fgs = select(tokens, foreground);
+const bgs = select(tokens, background);
+const zh = Astro.locals.starlightRoute.lang.startsWith("zh");
+const t = zh
+  ? { text: "前景", on: "背景", light: "浅色", dark: "深色", aa: "AA", large: "仅大字", fail: "不足", mark: "3:1" }
+  : { text: "Foreground", on: "Background", light: "Light", dark: "Dark", aa: "AA", large: "Large only", fail: "Below", mark: "3:1" };
+
+const verdict = (ratio: number) =>
+  nonText ? (ratio >= 3 ? "mark" : "fail") : ratio >= 4.5 ? "aa" : ratio >= 3 ? "large" : "fail";
+const rows = bgs.flatMap((bg) =>
+  fgs.map((fg) => {
+    const light = contrast(fg.raw.light, bg.raw.light);
+    const dark = contrast(fg.raw.dark ?? fg.raw.light, bg.raw.dark ?? bg.raw.light);
+    return { fg, bg, light, dark };
+  })
+);
+---
+
+<div class="contrast">
+  <table class="contrast-table">
+    <thead>
+      <tr>
+        <th scope="col">{t.text}</th>
+        <th scope="col">{t.on}</th>
+        <th scope="col">{t.light}</th>
+        <th scope="col">{t.dark}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map(({ fg, bg, light, dark }) => (
+          <tr>
+            <td>
+              <code>{fg.cssVar}</code>
+            </td>
+            <td>
+              <code>{bg.cssVar}</code>
+            </td>
+            {[light, dark].map((ratio) => (
+              <td class="contrast-table__ratio">
+                <span>{ratio.toFixed(2)}:1</span>
+                <span class:list={["contrast-table__verdict", `contrast-table__verdict--${verdict(ratio)}`]}>
+                  {t[verdict(ratio)]}
+                </span>
+              </td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .contrast {
+    overflow-x: auto;
+  }
+
+  .contrast-table {
+    font-size: var(--sl-text-sm);
+    width: 100%;
+  }
+
+  .contrast-table__ratio {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .contrast-table__verdict {
+    border-radius: 0.25rem;
+    font-size: var(--sl-text-xs);
+    margin-left: 0.5rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  .contrast-table__verdict--aa,
+  .contrast-table__verdict--mark {
+    background: var(--sl-color-green-low);
+    color: var(--sl-color-green-high);
+  }
+
+  .contrast-table__verdict--large {
+    background: var(--sl-color-orange-low);
+    color: var(--sl-color-orange-high);
+  }
+
+  .contrast-table__verdict--fail {
+    background: var(--sl-color-red-low);
+    color: var(--sl-color-red-high);
+  }
+</style>

@@ -50,15 +50,23 @@ const { Content } = await render(post);
 
 Figure makes its placeholders with sharp, which Astro uses for its own images. With pnpm, add `sharp` to the site's own dependencies, because pnpm does not expose the copy Astro installs.
 
-Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, and its Shiki transformers so code fences can have a title and highlighted lines:
+Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, its rehype plugins for heading anchors and links to other sites, and its Shiki transformers so code fences can have a title and highlighted lines:
 
 ```ts
 import { unified } from "@astrojs/markdown-remark";
-import { remarkDsDirectives, shikiTransformers } from "@rottensea/ds-personal-website/markdown";
+import {
+  rehypeDsExternalLinks,
+  rehypeDsHeadingAnchors,
+  remarkDsDirectives,
+  shikiTransformers
+} from "@rottensea/ds-personal-website/markdown";
 
 export default defineConfig({
   markdown: {
-    processor: unified({ remarkPlugins: [remarkDsDirectives] }),
+    processor: unified({
+      remarkPlugins: [remarkDsDirectives],
+      rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://example.com" }]]
+    }),
     shikiConfig: {
       themes: { light: "github-light", dark: "github-dark" },
       defaultColor: false,
@@ -68,10 +76,20 @@ export default defineConfig({
 });
 ```
 
+## Foundations
+
+- [Colors](colors/): surfaces, text, coral, accents and hairlines
+- [Typography](typography/): the three faces and the type scale
+- [Spacing and radius](spacing-radius/): the spacing scale, page widths, breakpoints and corners
+- [Shadows and borders](shadows-borders/): fill, hairline and the two shadows
+- [Motion](motion/): durations, curves and the three primitives
+- [Themes](themes/): the light and dark themes and how a page switches
+- [Accessibility](accessibility/): contrast ratios and the other rules
+
 ## Themes
 
-The tokens have a light and a dark theme. The CSS reads only the `data-theme` attribute, so the page sets `data-theme="light"` or `data-theme="dark"` on `<html>` before it paints.
+The tokens have a light and a dark theme. The CSS reads only the `data-theme` attribute, so the page sets `data-theme="light"` or `data-theme="dark"` on `<html>` before it paints. See [Themes](themes/).
 
 ## Version
 
-See the [changelog](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/CHANGELOG.md) for what changed in each version.
+See the [changelog](changelog/) for what changed in each version.

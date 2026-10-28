@@ -1,0 +1,38 @@
+---
+title: 首页
+description: "本仓库中的 design system，以及它们怎样写文档。"
+template: splash
+hero:
+  title: Design Systems
+  tagline: "本仓库中的 design system，以及它们怎样写文档。"
+  actions:
+    - text: "个人网站"
+      link: ./personal-website/
+      icon: right-arrow
+    - text: "阅读文档规范"
+      link: ./spec/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+## Design system
+
+每个系统有自己的栏目：它做什么、怎样安装，它的基础（数值从 token 文件读出），以及它的组件。
+
+<CardGrid>
+  <LinkCard
+    title="个人网站"
+    description="个人博客 The Key of Urala 背后的系统：暖色的奶油底、一种品牌色，以及文章里用到的组件。"
+    href="./personal-website/"
+  />
+</CardGrid>
+
+## 文档规范
+
+本仓库中的 design system 怎样写文档：文档由哪些条目和小节组成，token、主题、组件页面写什么，要满足哪些无障碍规则，版本和写作怎么处理。它是 [Design System Doc Spec（DSDS）](https://designsystemdocspec.org/) 和它链接的其他标准的概要。
+
+<CardGrid>
+  <LinkCard title="文档规范" description="结构、token、主题、组件、准则、无障碍、版本和写作。" href="./spec/" />
+</CardGrid>
