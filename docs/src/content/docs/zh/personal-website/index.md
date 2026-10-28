@@ -27,7 +27,18 @@ import "@rottensea/ds-personal-website/index.css";
 ---
 ```
 
-组件是 Astro 组件。可以按名字单独引入，也可以一次全部传给 MDX 页面，文章里就不用写 import。同一张对照表还会把文章里的代码块和表格换成 CodeBlock 和 TableScroll：
+CSS 里不加载字体：用 CSS 引入的字体样式表会让整页等 Google Fonts 或 jsDelivr 响应。改为在布局的 `<head>` 里放 Fonts 组件，它不阻塞地加载同样的样式表，字体到之前先用备用字体显示。普通 HTML 页面可以直接链接 `fonts.css`，用阻塞的方式加载。
+
+```astro
+---
+import { Fonts } from "@rottensea/ds-personal-website/components";
+---
+<head>
+  <Fonts />
+</head>
+```
+
+组件是 Astro 组件。可以按名字单独引入，也可以一次全部传给 MDX 页面，文章里就不用写 import。同一张对照表还会把文章里的代码块、表格和图片换成 CodeBlock、TableScroll 和 Figure：
 
 ```astro
 ---
@@ -36,6 +47,8 @@ const { Content } = await render(post);
 ---
 <Content components={components} />
 ```
+
+Figure 用 sharp 生成模糊占位图，Astro 处理图片用的也是它。用 pnpm 的网站要把 `sharp` 加进自己的依赖，因为 pnpm 不会把 Astro 装的那份暴露给网站。
 
 文章用 `:::tip` 这类指令写组件。把这个系统的 remark 插件加到 unified 处理器里，指令才会变成组件；再加上它的 Shiki 转换器，代码块才能写标题和高亮行：
 

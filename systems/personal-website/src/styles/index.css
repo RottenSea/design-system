@@ -1,6 +1,7 @@
 /*
  * The design system with the Tailwind Preflight reset, for a site built with a bundler, which
- * resolves the bare @unocss/reset import. The reset sits in the lowest layer.
+ * resolves the bare @unocss/reset import. The reset sits in the lowest layer. Fonts load
+ * separately, through the Fonts component in the page's <head>.
  */
 @layer reset, base;
 @import "@unocss/reset/tailwind-v4.css" layer(reset);

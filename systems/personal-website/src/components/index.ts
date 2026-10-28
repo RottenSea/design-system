@@ -19,6 +19,7 @@ import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
 import TableScroll from "./content/TableScroll.astro";
 import Tooltip from "./feedback/Tooltip.astro";
+import Fonts from "./head/Fonts.astro";
 import Figure from "./media/Figure.astro";
 import ImageGrid from "./media/ImageGrid.astro";
 import MarkdownImage from "./media/MarkdownImage.astro";
@@ -31,6 +32,7 @@ export {
   Figure,
   FileTree,
   FileTreeNode,
+  Fonts,
   ImageGrid,
   MarkdownCode,
   MarkdownImage,

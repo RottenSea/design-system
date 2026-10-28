@@ -1,0 +1,20 @@
+---
+/**
+ * Loads the system's fonts without holding up the page. Put it in the page's <head>, next to the
+ * system's CSS, which no longer loads fonts itself.
+ *
+ * A stylesheet pulled in with CSS @import blocks rendering until it arrives, so when Google Fonts
+ * or jsDelivr is slow or unreachable, the whole page stays unstyled until the request gives up.
+ * Here each stylesheet starts as media="print", which a screen does not wait for, and switches
+ * to all once it has loaded. Until then the text shows in the fallback fonts that each --font-*
+ * token lists, and the fonts swap in when they arrive. Without script, <noscript> loads them the
+ * blocking way.
+ */
+import { fontOrigins, fontStylesheets } from "../../styles/fonts.js";
+---
+
+{fontOrigins.map(({ href, cors }) => <link rel="preconnect" href={href} crossorigin={cors ? "" : undefined} />)}
+{fontStylesheets.map((href) => <link rel="stylesheet" href={href} media="print" onload="this.media='all'" />)}
+<noscript>
+  {fontStylesheets.map((href) => <link rel="stylesheet" href={href} />)}
+</noscript>

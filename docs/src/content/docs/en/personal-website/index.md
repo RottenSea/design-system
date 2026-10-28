@@ -27,7 +27,18 @@ import "@rottensea/ds-personal-website/index.css";
 ---
 ```
 
-The components are Astro components. Import one by name, or pass all of them to an MDX page so posts can use them without imports. The same map turns a post's code fences and tables into CodeBlock and TableScroll:
+The CSS loads no fonts, because a font stylesheet pulled in by CSS would hold up the whole page while Google Fonts or jsDelivr answers. Put the Fonts component in the layout's `<head>` instead. It loads the same stylesheets without blocking, and the text shows in fallback fonts until they arrive. A plain HTML page can link `fonts.css`, which loads them the blocking way.
+
+```astro
+---
+import { Fonts } from "@rottensea/ds-personal-website/components";
+---
+<head>
+  <Fonts />
+</head>
+```
+
+The components are Astro components. Import one by name, or pass all of them to an MDX page so posts can use them without imports. The same map turns a post's code fences, tables and images into CodeBlock, TableScroll and Figure:
 
 ```astro
 ---
@@ -36,6 +47,8 @@ const { Content } = await render(post);
 ---
 <Content components={components} />
 ```
+
+Figure makes its placeholders with sharp, which Astro uses for its own images. With pnpm, add `sharp` to the site's own dependencies, because pnpm does not expose the copy Astro installs.
 
 Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, and its Shiki transformers so code fences can have a title and highlighted lines:
 
