@@ -5,13 +5,26 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 <ExampleLayout title="SkipLink">
   <SkipLink href="#content" />
-  <p class="text">Click inside this frame and press Tab: the link appears at the top left.</p>
-  <p id="content" class="text">The main content starts here.</p>
+  <p class="text">The link stays hidden until it has the keyboard focus. Show it <a href="#" data-show-skip>here</a>.</p>
+  <p id="content" class="text" tabindex="-1">The main content starts here.</p>
 </ExampleLayout>
+
+<script>
+  // Moves the focus to the skip link, as the first Tab on a page would.
+  document.querySelector("[data-show-skip]")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    document.querySelector<HTMLAnchorElement>(".ds-skip-link")?.focus();
+  });
+</script>
 
 <style>
   .text {
     font-size: var(--body-sm-size);
     margin: 0;
+  }
+
+  /* Room above the text for the link, which shows at the top left. */
+  .text:first-of-type {
+    margin-top: var(--space-xl);
   }
 </style>
