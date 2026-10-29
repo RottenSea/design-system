@@ -292,14 +292,18 @@ const panels = html.replace(
     line-height: var(--body-sm-lh);
   }
 
-  /* The panel's first and last blocks sit flush, including a code block's framed figure. */
-  .ds-option-group > :global(.ds-option-group__panel > :first-child),
-  .ds-option-group > :global(.ds-option-group__panel > :first-child > figure) {
+  /*
+   * The panel's first and last blocks sit flush, including a code block's framed figure. Scripts
+   * are skipped when counting: Astro writes a component's <script> once a page, right after its
+   * first use, so the first panel with a CodeBlock ends in that script.
+   */
+  .ds-option-group > :global(.ds-option-group__panel > :nth-child(1 of :not(script))),
+  .ds-option-group > :global(.ds-option-group__panel > :nth-child(1 of :not(script)) > figure) {
     margin-top: 0;
   }
 
-  .ds-option-group > :global(.ds-option-group__panel > :last-child),
-  .ds-option-group > :global(.ds-option-group__panel > :last-child > figure) {
+  .ds-option-group > :global(.ds-option-group__panel > :nth-last-child(1 of :not(script))),
+  .ds-option-group > :global(.ds-option-group__panel > :nth-last-child(1 of :not(script)) > figure) {
     margin-bottom: 0;
   }
 

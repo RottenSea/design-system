@@ -200,7 +200,9 @@ const hasBar = Boolean(filename || lang || copy);
     --ds-code-wash: var(--surface-soft);
     --ds-code-bar: var(--surface-card);
     --ds-code-fill: var(--surface-canvas);
-    color-scheme: light;
+    /* The cream surfaces turn dark in the dark theme, so the tokens follow the page's theme,
+       whose block in tokens.css sets color-scheme. */
+    color-scheme: inherit;
   }
 
   .ds-code--framed {
