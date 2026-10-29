@@ -36,7 +36,7 @@ Once per post, under the copyright card.
 
 ## Anatomy
 
-The poster is 1080 by 1440 on the canvas of the light theme, whatever the page's theme: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code in ink at the right. It is SharePoster, which PostShare draws when the dialog first opens, after its fonts have loaded; on its own it draws at once, and its element has `draw()` and `blob()`.
+The poster is 1080 by 1440 in the colours of the theme it sits in, drawn again when the theme changes: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code at the right, always dark on a light tile, since not every scanner reads a light code on a dark ground. It is SharePoster, which PostShare draws when the dialog first opens, after its fonts have loaded; on its own it draws at once, and its element has `draw()` and `blob()`.
 
 Dialog is a centred card that swings in from the diagonal. Snackbar is one line at the bottom, on the inverse surface.
 

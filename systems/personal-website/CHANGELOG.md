@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `SharePoster`, the poster from PostShare's dialog as a component of its own, which draws at once or, with `lazy`, when its `draw()` is called.
+- `SharePoster`, the poster from PostShare's dialog as a component of its own, which draws at once or, with `lazy`, when its `draw()` is called. It now takes the colours of the theme it sits in, and draws again when the theme changes; the QR code stays dark on a light tile.
 - `PostLicense` has a large Creative Commons mark behind its text at the right, as the Shirone theme's card does, with the Tabler icon `creative-commons`.
 
 ### Fixed

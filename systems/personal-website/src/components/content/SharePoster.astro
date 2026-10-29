@@ -3,8 +3,10 @@
  * A poster of a post, drawn on a 1080 by 1440 canvas: the cover over the top 9:16 of the width, or
  * the cream card without one; the title in the display serif, up to three lines; the description;
  * then a hairline, the site's name, the date, a short coral rule, and a QR code of the address in
- * ink at the right. It is always in the light theme, so it looks the same whoever made it, and it
- * is drawn after the fonts it uses have loaded.
+ * ink at the right. Its colours are the theme it sits in, read from the tokens, and it is drawn
+ * again when the theme changes, so a reader in the dark theme gets a dark poster. The QR code is
+ * always dark on a light tile: not every scanner reads a light code on a dark ground. It is drawn
+ * after the fonts it uses have loaded.
  *
  * The handoff has no poster. PostShare shows this one in its dialog and draws it when the dialog
  * first opens (`lazy`); on its own it draws at once. The element has `draw()`, which draws once and
@@ -57,14 +59,15 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
   const H = 1440;
   const PAD = 96;
 
-  /** The light theme's colours and fonts, read from the tokens. */
-  function palette() {
+  /** The colours and fonts of the theme the poster sits in, and the light theme's for the QR code. */
+  function palette(element: HTMLElement) {
+    const style = getComputedStyle(element);
+    const get = (name: string) => style.getPropertyValue(name).trim();
     const probe = document.createElement("div");
     probe.dataset.theme = "light";
     probe.hidden = true;
     document.body.append(probe);
-    const style = getComputedStyle(probe);
-    const get = (name: string) => style.getPropertyValue(name).trim();
+    const light = getComputedStyle(probe);
     const colors = {
       canvas: get("--surface-canvas"),
       card: get("--surface-card"),
@@ -74,7 +77,9 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
       hairline: get("--hairline"),
       coral: get("--color-primary"),
       serif: get("--font-display"),
-      sans: get("--font-sans")
+      sans: get("--font-sans"),
+      qrGround: light.getPropertyValue("--surface-canvas").trim(),
+      qrInk: light.getPropertyValue("--text-ink").trim()
     };
     probe.remove();
     return colors;
@@ -112,10 +117,10 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
     });
   }
 
-  async function draw(canvas: HTMLCanvasElement, poster: Poster) {
+  async function draw(canvas: HTMLCanvasElement, poster: Poster, element: HTMLElement) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const c = palette();
+    const c = palette(element);
     const serif = (size: number) => `400 ${size}px ${c.serif}`;
     const sans = (size: number, weight = 400) => `${weight} ${size}px ${c.sans}`;
     // Canvas text uses whatever has loaded; wait for the faces this poster needs.
@@ -188,7 +193,13 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
     const size = qr.modules.size;
     const cell = qrSize / size;
     const left = W - PAD - qrSize;
-    ctx.fillStyle = c.ink;
+    // A light tile with a quiet zone around the code, in either theme.
+    const quiet = 16;
+    ctx.fillStyle = c.qrGround;
+    ctx.beginPath();
+    ctx.roundRect(left - quiet, footerTop - quiet, qrSize + quiet * 2, qrSize + quiet * 2, 12);
+    ctx.fill();
+    ctx.fillStyle = c.qrInk;
     for (let row = 0; row < size; row++) {
       for (let col = 0; col < size; col++) {
         if (qr.modules.get(row, col)) {
@@ -206,12 +217,25 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
     connectedCallback() {
       if (!this.hasAttribute("data-lazy")) this.draw();
+      // A poster already drawn follows the theme: the reader's choice on <html>, or the OS.
+      const again = () => {
+        if (!this.#drawn) return;
+        this.#drawn = undefined;
+        this.draw();
+      };
+      new MutationObserver(again).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"]
+      });
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", again);
     }
 
     /** Draws the poster once; later calls wait for the same drawing. */
     draw() {
       const canvas = this.querySelector("canvas");
-      this.#drawn ??= canvas ? draw(canvas, JSON.parse(this.dataset.poster ?? "{}") as Poster) : Promise.resolve();
+      this.#drawn ??= canvas
+        ? draw(canvas, JSON.parse(this.dataset.poster ?? "{}") as Poster, this)
+        : Promise.resolve();
       return this.#drawn;
     }
 
