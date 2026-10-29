@@ -17,7 +17,7 @@ import Example from "../../../../../components/Example.astro";
 
 ## 文章里怎么写
 
-照常写 Markdown 表格。网站把这个系统的组件传给文章，文章里的每个表格都会放进 TableScroll。
+照常写 Markdown 表格。网站把这个系统的组件传给文章，文章里的每个表格都会放进打开了 `wrap` 的 TableScroll：文章里的表格多是句子，换行更好读。每列至少 8rem，还放不下才横向滚动。
 
 ```md
 | 字段 | 类型 |

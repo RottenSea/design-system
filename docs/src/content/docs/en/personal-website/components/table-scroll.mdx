@@ -17,7 +17,7 @@ Every table in a post gets it. Use a table for data the reader compares across r
 
 ## In a post
 
-Write an ordinary Markdown table. The site passes the system's components to its posts, and they put every table inside a TableScroll.
+Write an ordinary Markdown table. The site passes the system's components to its posts, and they put every table inside a TableScroll with `wrap` on: a post's tables mostly hold sentences, which read better wrapped. Each column keeps at least 8rem, and a table that still cannot fit scrolls.
 
 ```md
 | Field | Type |

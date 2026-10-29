@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-29
+
+### Changed
+
+- A post's tables wrap their cells. `MarkdownTable` turns on `TableScroll`'s `wrap`, so a column of sentences no longer runs off to the right; each column keeps at least 8rem, and a table that still cannot fit scrolls. `TableScroll` used on its own still does not wrap by default.
+
 ## [0.3.0] - 2026-10-29
 
 This release adds the components and Markdown plugins for posts. Two changes need a site to act when it upgrades: the CSS no longer loads the fonts, so put the `Fonts` component in the page's `<head>` (or link `fonts.css` on a plain HTML page), and the `guidelines/` specimen pages are gone.
@@ -95,7 +101,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.1...HEAD
+[0.3.1]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.0...personal-website-v0.3.1
 [0.3.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.2.0...personal-website-v0.3.0
 [0.2.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.1.0...personal-website-v0.2.0
 [0.1.0]: https://github.com/RottenSea/design-system/releases/tag/personal-website-v0.1.0

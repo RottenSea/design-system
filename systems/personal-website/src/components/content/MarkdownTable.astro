@@ -3,12 +3,16 @@
  * Stands in for a Markdown table in an MDX post, through the `components` map
  * (`table: MarkdownTable`). The map replaces the <table> element itself, while TableScroll wraps
  * a whole table, so this puts the table back together inside one.
+ *
+ * A post's table wraps its cells, unlike TableScroll's default: posts' tables mostly hold
+ * sentences, often Chinese, which read better wrapped. Each column keeps at least 8rem, and a
+ * table that still cannot fit scrolls.
  */
 import TableScroll from "./TableScroll.astro";
 
 type Props = Record<string, unknown>;
 ---
 
-<TableScroll>
+<TableScroll wrap>
   <table {...Astro.props}><slot /></table>
 </TableScroll>
