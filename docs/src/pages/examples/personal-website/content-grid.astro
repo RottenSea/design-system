@@ -18,8 +18,9 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
     padding: var(--space-lg);
   }
 
+  /* Labels on one line at the top, whatever each box's height. */
   .block {
-    align-items: center;
+    align-items: flex-start;
     border: 1px dashed var(--hairline);
     border-radius: var(--radius-md);
     color: var(--text-muted);
@@ -28,6 +29,7 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
     font-size: var(--caption-size);
     justify-content: center;
     min-height: 160px;
+    padding-top: var(--space-md);
   }
 
   .block--main {

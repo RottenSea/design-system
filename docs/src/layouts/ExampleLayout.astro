@@ -38,10 +38,26 @@ const Wrapper = bare ? "div" : "main";
     */}
     <script is:inline>
       const root = document.documentElement;
-      try {
-        root.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-      } catch {
-        root.dataset.theme = "light";
+      if (window.parent !== window) {
+        try {
+          root.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+        } catch {
+          root.dataset.theme = "light";
+        }
+      } else {
+        // Opened on its own ("Open at 1280px"): the theme picked on the docs site, which Starlight
+        // keeps in localStorage, or else the OS setting, followed as either changes.
+        const system = matchMedia("(prefers-color-scheme: dark)");
+        const apply = () => {
+          let picked = "";
+          try {
+            picked = localStorage.getItem("starlight-theme") ?? "";
+          } catch {}
+          root.dataset.theme = picked === "light" || picked === "dark" ? picked : system.matches ? "dark" : "light";
+        };
+        apply();
+        system.addEventListener("change", apply);
+        window.addEventListener("storage", apply);
       }
       // The iframe element belongs to the docs page, so instanceof against this page's classes fails.
       const frame = window.frameElement;
