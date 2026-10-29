@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-29
+
+This release adds the components and Markdown plugins for posts. Two changes need a site to act when it upgrades: the CSS no longer loads the fonts, so put the `Fonts` component in the page's `<head>` (or link `fonts.css` on a plain HTML page), and the `guidelines/` specimen pages are gone.
+
 ### Added
 
 - Astro components, ported from the brand design handoff with the same props: `Admonition` (note, tip, important, warning, caution and a foldable details variant), `Spoiler` (inline and block), `Abbreviation` with `Tooltip`, and `Steps` with `Step`. Import them from `components`, which also exports all of them as `components` for an MDX page.
@@ -26,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `sharp` is a peer dependency, for the image placeholders. Astro uses it too; with pnpm, a site adds it to its own dependencies.
 - `shikiTransformers()` from `markdown`, for a site's `shikiConfig`: line highlights in a fence's meta, Shiki's `[!code ...]` notations, and the fence's `title`.
 - The Tabler icons the components use, in `src/icons/`.
+- The licence text, `LICENSE`, in the package.
 
 ### Changed
 
@@ -90,6 +95,7 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.2.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.0...HEAD
+[0.3.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.2.0...personal-website-v0.3.0
 [0.2.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.1.0...personal-website-v0.2.0
 [0.1.0]: https://github.com/RottenSea/design-system/releases/tag/personal-website-v0.1.0
