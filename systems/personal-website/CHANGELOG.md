@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-29
+
+This release adds the parts of a home page: the quote band, the post list with its filters and pager, and the rail's statistics and calendar. Nothing a site already uses changes.
+
 ### Added
 
 - The home page's parts, ported from the handoff: `QuoteBand`, a quote that fills the first screen; `ArticleListCard`, one post in a list, and `PostMeta`, the post's meta line; `FilterList`, the rail's categories, and `TagList`, a cloud of tags; `Pagination`; `StatList`, statistics in a rail; and `MiniCalendar`, a month grid with the days that have posts.
@@ -121,7 +125,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.4.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.5.0...HEAD
+[0.5.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.4.0...personal-website-v0.5.0
 [0.4.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.1...personal-website-v0.4.0
 [0.3.1]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.0...personal-website-v0.3.1
 [0.3.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.2.0...personal-website-v0.3.0
