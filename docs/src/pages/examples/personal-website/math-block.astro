@@ -15,5 +15,14 @@ const inline = String.raw`a^2 + b^2 = c^2`;
     A right triangle keeps <MathBlock display={false} html={typesetMath(inline, false)} tex={inline} /> on one
     line.
   </p>
+  <p class="note">This formula is broken on purpose, a fraction left open. KaTeX cannot read it, so the source shows:</p>
   <MathBlock tex={String.raw`\frac{1}{`} />
 </ExampleLayout>
+
+<style>
+  .note {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+  }
+</style>

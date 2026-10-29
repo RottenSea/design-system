@@ -38,7 +38,7 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
         <th scope="col">{t.token}</th>
         <th scope="col">{hasDark ? t.light : t.value}</th>
         {hasDark && <th scope="col">{t.dark}</th>}
-        <th scope="col">{t.description}</th>
+        <th scope="col" class="token-table__description">{t.description}</th>
       </tr>
     </thead>
     <tbody>
@@ -97,7 +97,7 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
                 )}
               </td>
             )}
-            <td>{description(row)}</td>
+            <td class="token-table__description">{description(row)}</td>
           </tr>
         ))
       }
@@ -139,6 +139,11 @@ const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN
 
   .token-table td {
     vertical-align: top;
+  }
+
+  /* The description is a sentence or two; below this width it breaks after every word. */
+  .token-table .token-table__description {
+    min-width: 16rem;
   }
 
   .token-table__name {

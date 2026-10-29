@@ -24,12 +24,32 @@ const { title } = Astro.props;
     {/*
       Takes the docs page's theme before the first paint. The docs page and the example share an
       origin, so the parent's data-theme can be read directly; Example.astro keeps it in sync.
+
+      It also sizes the iframe to the content from here, starting while the page is still being
+      parsed, instead of waiting for the load event, which in development comes only after every
+      module, font and image has arrived. The <html> element's own height is the content height;
+      scrollHeight never reports less than the iframe, so it could only grow. The iframe's
+      borders are added on top. With the iframe always as tall as the content, the page never
+      needs a vertical scrollbar, so it has none, and none flashes while the height catches up.
     */}
     <script is:inline>
+      const root = document.documentElement;
       try {
-        document.documentElement.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+        root.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
       } catch {
-        document.documentElement.dataset.theme = "light";
+        root.dataset.theme = "light";
+      }
+      // The iframe element belongs to the docs page, so instanceof against this page's classes fails.
+      const frame = window.frameElement;
+      if (frame) {
+        root.style.overflowY = "hidden";
+        const fit = () => {
+          const borders = frame.offsetHeight - frame.clientHeight;
+          frame.style.height = `${Math.ceil(root.getBoundingClientRect().height) + borders}px`;
+        };
+        new ResizeObserver(fit).observe(root);
+        document.addEventListener("DOMContentLoaded", fit);
+        document.fonts.ready.then(fit);
       }
     </script>
   </head>
@@ -43,6 +63,11 @@ const { title } = Astro.props;
 <style>
   .example {
     padding: var(--space-lg);
+  }
+
+  /* In development, Astro's toolbar belongs on the docs page, not in every example. */
+  :global(astro-dev-toolbar) {
+    display: none !important;
   }
 
   /* Examples stack their parts with the same gap, whatever the components' own margins are. */

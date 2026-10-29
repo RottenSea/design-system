@@ -1,7 +1,8 @@
 ---
 /**
  * Shows a component example page in an iframe, so the example uses only the system's CSS. The
- * iframe follows the docs page's light or dark theme and grows or shrinks to its content.
+ * iframe follows the docs page's light or dark theme; the example page itself (ExampleLayout)
+ * makes the iframe as tall as its content.
  *
  *   <Example system="personal-website" name="admonition" title="Admonition variants" />
  *
@@ -27,31 +28,11 @@ const src = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/examples/${system}/$
     connectedCallback() {
       const frame = this.querySelector("iframe");
       if (!frame) return;
-      let fit = () => {};
-
       const syncTheme = () => {
         const root = frame.contentDocument?.documentElement;
         if (root) root.dataset.theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-        fit();
       };
 
-      const setUp = () => {
-        const doc = frame.contentDocument;
-        const win = frame.contentWindow as (Window & typeof globalThis) | null;
-        if (!doc || !win || doc.URL === "about:blank") return;
-        // The <html> element's own height is the content height; scrollHeight never reports
-        // less than the iframe, so it could only grow. The iframe's borders are added on top.
-        fit = () => {
-          const borders = frame.offsetHeight - frame.clientHeight;
-          frame.style.height = `${Math.ceil(doc.documentElement.getBoundingClientRect().height) + borders}px`;
-        };
-        syncTheme();
-        doc.fonts.ready.then(() => fit());
-        new win.ResizeObserver(() => fit()).observe(doc.documentElement);
-      };
-
-      frame.addEventListener("load", setUp);
-      if (frame.contentDocument?.readyState === "complete") setUp();
       new MutationObserver(syncTheme).observe(document.documentElement, {
         attributes: true,
         attributeFilter: ["data-theme"]

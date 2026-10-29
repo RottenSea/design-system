@@ -31,7 +31,13 @@ interface Props {
   /** Passed to Astro's <Image> for an imported image. */
   widths?: number[];
   sizes?: string;
+  /** Defaults to "lazy", or "eager" with `priority`. */
   loading?: "lazy" | "eager";
+  /**
+   * For the image near the top of a page, which the reader sees first: it loads at once and ahead
+   * of other images. One per page at most.
+   */
+  priority?: boolean;
   class?: string;
 }
 
@@ -48,7 +54,8 @@ const {
   height,
   widths,
   sizes,
-  loading = "lazy",
+  loading,
+  priority = false,
   class: className
 } = Astro.props;
 
@@ -59,6 +66,9 @@ const zoomSrc =
     ? (await getImage({ src, width: Math.min(src.width, ZOOM_WIDTH), format: "webp" })).src
     : undefined;
 const frameStyle = stand ? `--ds-placeholder: url("${stand}")` : undefined;
+// Astro's <Image> works out loading, decoding and fetchpriority from `priority` itself.
+const urlLoading = loading ?? (priority ? "eager" : "lazy");
+const fetchpriority = priority ? "high" : undefined;
 const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
 ---
 
@@ -74,19 +84,44 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
               widths={widths}
               sizes={sizes}
               loading={loading}
+              priority={priority}
               class="ds-figure__img"
               data-zoom-src={zoomSrc}
             />
           ) : (
-            <img src={src} alt={alt} width={width} height={height} loading={loading} class="ds-figure__img" />
+            <img
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              loading={urlLoading}
+              fetchpriority={fetchpriority}
+              class="ds-figure__img"
+            />
           )}
         </button>
       ) : (
         <span class="ds-figure__frame" style={frameStyle}>
           {local ? (
-            <Image src={src} alt={alt} widths={widths} sizes={sizes} loading={loading} class="ds-figure__img" />
+            <Image
+              src={src}
+              alt={alt}
+              widths={widths}
+              sizes={sizes}
+              loading={loading}
+              priority={priority}
+              class="ds-figure__img"
+            />
           ) : (
-            <img src={src} alt={alt} width={width} height={height} loading={loading} class="ds-figure__img" />
+            <img
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              loading={urlLoading}
+              fetchpriority={fetchpriority}
+              class="ds-figure__img"
+            />
           )}
         </span>
       )

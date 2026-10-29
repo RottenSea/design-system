@@ -93,7 +93,9 @@ const {
     color: var(--text-ink);
   }
 
+  /* Wrapped cells keep room for a few words; past that, the table scrolls instead of squeezing. */
   .ds-table-scroll[data-wrap="true"] :global(:is(th, td)) {
+    min-width: 8rem;
     white-space: normal;
   }
 

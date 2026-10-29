@@ -1,0 +1,8 @@
+/*
+ * A table wider than the article scrolls sideways (Starlight makes it a scroll box) instead of
+ * squeezing a column down to its longest word. Every cell keeps room for a few words; a cell that
+ * holds a sentence, such as a description, sets a wider minimum of its own.
+ */
+.sl-markdown-content :is(th, td) {
+  min-width: 8rem;
+}

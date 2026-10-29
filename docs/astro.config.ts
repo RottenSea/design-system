@@ -26,6 +26,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Design Systems",
+      customCss: ["./src/styles/custom.css"],
       defaultLocale: "en",
       locales: {
         en: { label: "English" },
