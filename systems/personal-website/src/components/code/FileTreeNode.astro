@@ -59,7 +59,7 @@ const style = `--ds-depth: ${depth}`;
   {
     folder && hasContents ? (
       <details open={open}>
-        <summary class="ds-file-tree__row" style={style} aria-current={selected ? "true" : undefined} data-ds-tap="row">
+        <summary class="ds-file-tree__row" style={style} aria-current={selected ? "true" : undefined}>
           <span class="ds-file-tree__icon" aria-hidden="true">
             <Folder class="ds-file-tree__closed" width={16} height={16} />
             <FolderOpen class="ds-file-tree__open" width={16} height={16} />

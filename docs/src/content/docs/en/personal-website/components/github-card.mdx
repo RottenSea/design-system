@@ -39,7 +39,7 @@ The GitHub mark in a 32px card-colour square, then `owner/name`, the description
 | State | What changes |
 | --- | --- |
 | Hover | The card lifts with `--shadow-hover` |
-| Archived | A muted dot before the name |
+| Archived | A muted archive icon before the name, told by its shape rather than a colour |
 | Not fetched | Only the name and link |
 
 ## Accessibility
@@ -48,7 +48,7 @@ The whole card is one link, named by its text. Screen readers hear "Archived" be
 
 ## API
 
-[`GitHubCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/GitHubCard.astro), with the request in [`github.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/github.js). Not in the handoff; it follows the handoff's ProjectCard: the boxed mark, the status dot and Badge pills on an outline Surface.
+[`GitHubCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/GitHubCard.astro), with the request in [`github.js`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/github.js). Not in the handoff; it follows the handoff's ProjectCard: the boxed mark and Badge pills on an outline Surface. Where ProjectCard marks a state with a coloured dot, this card uses an icon.
 
 ## Related
 

@@ -2,15 +2,17 @@
 /**
  * A GitHub repository as a card that links to it: the GitHub mark in a 32px card-colour square,
  * owner/name, the description, a row with the main language, stars, forks and licence, and the
- * topics as pills. An archived repository takes a muted 6px dot. The details are fetched from
+ * topics as pills. An archived repository takes a muted archive icon before its name, a shape
+ * rather than a colour, so it reads without telling colours apart. The details are fetched from
  * GitHub when the site builds and written into the page, so readers never contact GitHub; if the
  * request fails, the card shows the name and link only.
  *
  * Not in the handoff. It follows the handoff's ProjectCard: an outline Surface that lifts on
- * hover, the boxed mark, the status dot and Badge pills. The language dot is the muted text
+ * hover, the boxed mark and Badge pills. The language dot is the muted text
  * colour, since in this system a dot's colour means a state. Like a link to another site in a
  * post, it opens in a new tab, with an arrow and a hidden note.
  */
+import Archive from "../../icons/archive.svg";
 import Fork from "../../icons/git-fork.svg";
 import GitHubMark from "../../icons/brand-github.svg";
 import License from "../../icons/license.svg";
@@ -47,7 +49,7 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
       {
         data?.archived && (
           <>
-            <span class="ds-repo__dot" aria-hidden="true" />
+            <Archive class="ds-repo__archived" width={16} height={16} aria-hidden="true" />
             <span class="ds-repo__hidden">Archived:</span>
           </>
         )
@@ -144,12 +146,9 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
     gap: var(--space-xs);
   }
 
-  .ds-repo__dot {
-    background: var(--text-muted-soft);
-    border-radius: var(--radius-full);
+  .ds-repo__archived {
+    color: var(--text-muted);
     flex: 0 0 auto;
-    height: 6px;
-    width: 6px;
   }
 
   .ds-repo__name {
@@ -253,7 +252,8 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
 
   .ds-repo--dark .ds-repo__description,
   .ds-repo--dark .ds-repo__stats,
-  .ds-repo--dark .ds-repo__arrow {
+  .ds-repo--dark .ds-repo__arrow,
+  .ds-repo--dark .ds-repo__archived {
     color: var(--text-on-dark-soft);
   }
 
