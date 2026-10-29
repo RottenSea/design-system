@@ -1,0 +1,109 @@
+---
+import {
+  ArticleListCard,
+  ContentGrid,
+  FilterList,
+  Footer,
+  MiniCalendar,
+  Pagination,
+  QuoteBand,
+  SidebarCard,
+  StatList,
+  TagList,
+  TopNav
+} from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+// A made-up site, so the example shows the parts and not a real one's content.
+const links = [
+  { label: "Blog", href: "#posts" },
+  { label: "About", href: "#posts" }
+];
+const quotes = [
+  { text: "Make the small decisions once, then stop deciding.", attribution: "From the 2026 notes" },
+  { text: "A hairline is a promise that two things belong apart.", attribution: "Notebook, March" }
+];
+---
+
+<ExampleLayout title="Home page" bare>
+  <TopNav brand="Field Notes" links={links} active="Blog" overlay />
+  <QuoteBand eyebrow="Writing since 2019" quotes={quotes} pullNext />
+  <main id="posts" class="page">
+    <ContentGrid>
+      <Fragment slot="left">
+        <FilterList
+          label="Categories"
+          items={[
+            { label: "Notes", count: 6 },
+            { label: "Essays", count: 9 },
+            { label: "Build log", count: 3 }
+          ]}
+        />
+        <TagList
+          items={[
+            { label: "type", count: 12 },
+            { label: "systems", count: 8 },
+            { label: "craft", count: 5 }
+          ]}
+        />
+      </Fragment>
+      <div class="posts">
+        <ArticleListCard
+          href="#posts"
+          title="Hairlines carry more than they look like they do"
+          date="2026-03-04"
+          category="Notes"
+          readTime="6 min"
+          tags={["type", "systems"]}
+          pinned
+        >
+          A one-pixel line in the right colour separates two things without drawing attention to itself.
+        </ArticleListCard>
+        <ArticleListCard
+          href="#posts"
+          title="Writing for a page nobody scrolls twice"
+          date="2026-02-19"
+          category="Essays"
+          readTime="11 min"
+          tags={["craft"]}
+        >
+          The first screen is the only one most readers see.
+        </ArticleListCard>
+        <Pagination page={1} pageCount={3} />
+      </div>
+      <Fragment slot="right">
+        <SidebarCard title="Stats">
+          <StatList
+            items={[
+              { label: "Posts", value: 18 },
+              { label: "Words", value: 41250 },
+              { label: "Uptime", value: "162 days" }
+            ]}
+          />
+        </SidebarCard>
+        <SidebarCard title="Calendar">
+          <MiniCalendar
+            year={2026}
+            month={3}
+            counts={{ "2026-03-04": 1, "2026-03-12": 2, "2026-03-25": 1 }}
+            weekStart="sun"
+            navigable
+          />
+        </SidebarCard>
+      </Fragment>
+    </ContentGrid>
+  </main>
+  <Footer brand="Field Notes" note="© 2026 Field Notes." />
+</ExampleLayout>
+
+<style>
+  .page {
+    padding: var(--space-xxl) var(--space-lg) var(--space-section);
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+</style>

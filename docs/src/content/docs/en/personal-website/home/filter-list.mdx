@@ -1,0 +1,52 @@
+---
+title: FilterList
+description: The rail's list of categories, and TagList, the tags.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+FilterList is the rail's list of categories, with counts. TagList is a cloud of tag pills. Both can be links to pages, or toggles that tell the page what the reader picked.
+
+<Example system="personal-website" name="filter-list" title="A category list and tags you can press" />
+
+## When to use
+
+FilterList for categories or sections, one at a time. TagList for tags, wherever tags are listed: in a rail, above a list, on a post.
+
+## On a page
+
+```astro
+<FilterList label="Categories" items={[{ label: "AI", count: 3 }]} />
+<TagList items={[{ label: "agent", count: 3 }]} />
+
+<script>
+  document.addEventListener("ds-select", (event) => filter(event.target, event.detail));
+</script>
+```
+
+An item with `href` is a link. Without it, it is a toggle button: pressing it selects it, pressing it again clears it, and the list sends a `ds-select` event whose detail is the label, or `null`. A TagList with `multiple` sends the list of labels. Each list also has a `select()` method, for a page that sets the selection itself.
+
+## Anatomy
+
+FilterList: an optional micro-label, then rows in body-small text with their counts at the right in tabular figures. TagList: cream pills in a wrapping row, the count after the label in muted type.
+
+## States
+
+| State | FilterList | TagList |
+| --- | --- | --- |
+| Selected | A coral mark at the left and coral text | The pill turns to the dark surface |
+| Hover | The text turns ink | — |
+
+## Accessibility
+
+The toggles are buttons with `aria-pressed`, so a screen reader says whether each is selected. The selected category also has its coral mark, so the state does not rest on colour alone. Below 768px rows and pills grow to the 44px touch target.
+
+## API
+
+[`FilterList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/FilterList.astro) and [`TagList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/tags/TagList.astro). Ported from the handoff; the `ds-select` event takes the place of `onSelect`.
+
+## Related
+
+[ArticleListCard](../article-list-card/), [Pagination](../pagination/).

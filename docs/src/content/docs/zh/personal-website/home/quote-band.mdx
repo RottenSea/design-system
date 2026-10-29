@@ -1,0 +1,55 @@
+---
+title: QuoteBand 引言横幅
+description: 占满页面第一屏的一句话，从几句里随机选。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+占满窗口的开场：一行大写小字、一句大号衬线字、出处，底部一个往下滚的提示。
+
+<Example system="personal-website" name="quote-band" title="画布上的一句短引言和深色底上的一句长引言" viewport={1280} />
+
+## 什么时候用
+
+一页一个，放在最上面，代替大横幅。不要当文章里的引文用。
+
+## 页面里怎么写
+
+```astro
+<TopNav … overlay />
+<QuoteBand eyebrow="Writing since 2019" quotes={quotes} pullNext />
+<main>…</main>
+```
+
+`quotes` 是 `{ text, attribution }` 的列表，每次打开随机显示一句；没有 JS 的页面显示第一句。只有一句时也可以写进插槽，出处用 `attribution`。和导航的 `overlay` 一起用：导航不占高度，横幅正好一整屏。
+
+打开 `pullNext` 后，横幅后面的元素一开始比页面滚得快，在前 60% 个窗口高度里逐渐放慢，盖上横幅，滚两下就到。这个元素会加上画布色的背景，它的高度要超过一个窗口。
+
+## 结构
+
+大写小字，用展示衬线体、按 `measure`（默认 34 个字符）换行的引言，次要色的出处，底边的提示：一行大写小字加一个向下的箭头。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone` | `cream`（默认）、`dark`，或 `bare`：不画背景，用在自己有背景的页面上 |
+| `overlayTone` | 配合 `bare`：文字颜色用 `on-dark`（默认）或 `ink` |
+| `autoSize` | 默认开：90 个字符以内用 display-lg，180 以内 display-md，再长用 display-sm |
+| `hintLabel` | `text`（默认），或 `none`：只有箭头，文字作为它的名字 |
+| `scrollHint` | 提示的文字；`false` 去掉提示 |
+| `minHeight` | 默认 `100svh` |
+
+## 无障碍
+
+引言是 `<figure>` 里的 `<blockquote>`，出处是 `<figcaption>`。提示是一个按钮，按下滚到内容；只有箭头时仍有 44px 的点按范围和名字。`pullNext` 的快速上升是滚动驱动的动画，开了“减少动效”的读者不会看到。
+
+## API
+
+[`QuoteBand.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/QuoteBand.astro)。从交付包移植。`quotes` 和 `pullNext` 是新加的；交付包的 `background` 背景层没有移植。
+
+## 相关
+
+[TopNav 顶部导航](../../shell/top-nav/)，它的 `overlay` 模式压在横幅上。

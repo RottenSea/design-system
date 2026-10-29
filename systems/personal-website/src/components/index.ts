@@ -7,6 +7,7 @@
 // no use for it. The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
 // so pages get the components' prop types; pages are compiled by Vite, which handles it.
 import IconButton from "./buttons/IconButton.astro";
+import ArticleListCard from "./cards/ArticleListCard.astro";
 import SidebarCard from "./cards/SidebarCard.astro";
 import Surface from "./cards/Surface.astro";
 import CodeBlock from "./code/CodeBlock.astro";
@@ -18,12 +19,17 @@ import Admonition from "./content/Admonition.astro";
 import DiagramFrame from "./content/DiagramFrame.astro";
 import Field from "./content/Field.astro";
 import Fields from "./content/Fields.astro";
+import FilterList from "./content/FilterList.astro";
 import MarkdownTable from "./content/MarkdownTable.astro";
 import MathBlock from "./content/MathBlock.astro";
 import Mermaid from "./content/Mermaid.astro";
+import MiniCalendar from "./content/MiniCalendar.astro";
 import Option from "./content/Option.astro";
 import OptionGroup from "./content/OptionGroup.astro";
+import Pagination from "./content/Pagination.astro";
+import PostMeta from "./content/PostMeta.astro";
 import Spoiler from "./content/Spoiler.astro";
+import StatList from "./content/StatList.astro";
 import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
 import TableScroll from "./content/TableScroll.astro";
@@ -35,9 +41,11 @@ import FloatingControls from "./layout/FloatingControls.astro";
 import Footer from "./layout/Footer.astro";
 import MenuPanel from "./layout/MenuPanel.astro";
 import NavDrawer from "./layout/NavDrawer.astro";
+import QuoteBand from "./layout/QuoteBand.astro";
 import SkipLink from "./layout/SkipLink.astro";
 import ThemeToggle from "./layout/ThemeToggle.astro";
 import TopNav from "./layout/TopNav.astro";
+import TagList from "./tags/TagList.astro";
 import Figure from "./media/Figure.astro";
 import GitHubCard from "./media/GitHubCard.astro";
 import ImageGrid from "./media/ImageGrid.astro";
@@ -47,6 +55,7 @@ import VideoEmbed from "./media/VideoEmbed.astro";
 export {
   Abbreviation,
   Admonition,
+  ArticleListCard,
   CodeBlock,
   ContentGrid,
   DiagramFrame,
@@ -55,6 +64,7 @@ export {
   Figure,
   FileTree,
   FileTreeNode,
+  FilterList,
   FloatingControls,
   Fonts,
   Footer,
@@ -67,16 +77,22 @@ export {
   MathBlock,
   MenuPanel,
   Mermaid,
+  MiniCalendar,
   NavDrawer,
   Option,
   OptionGroup,
+  Pagination,
+  PostMeta,
+  QuoteBand,
   SidebarCard,
   SkipLink,
   Spoiler,
+  StatList,
   Step,
   Steps,
   Surface,
   TableScroll,
+  TagList,
   ThemeScript,
   ThemeToggle,
   Tooltip,

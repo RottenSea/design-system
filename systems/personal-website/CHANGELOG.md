@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The home page's parts, ported from the handoff: `QuoteBand`, a quote that fills the first screen; `ArticleListCard`, one post in a list, and `PostMeta`, the post's meta line; `FilterList`, the rail's categories, and `TagList`, a cloud of tags; `Pagination`; `StatList`, statistics in a rail; and `MiniCalendar`, a month grid with the days that have posts.
+- `QuoteBand` takes `quotes` and shows one at random on each visit, and with `pullNext` lets the element after it rise over it faster than the page scrolls at first, as a scroll-driven animation.
+- `FilterList`, `TagList`, `Pagination` and `MiniCalendar` report the reader's choice with `ds-select` and `ds-page` events, for a page that filters or pages a list in the browser. `Pagination` with `href` writes plain links instead.
+- `MiniCalendar` takes `counts` keyed by date, draws the reader's current month and today in their own time zone, and can move between months (`navigable`) and select a day (`selectable`).
+- `TopNav` has the handoff's `overlay` mode: fixed and see-through over a full-height band, with its surface coming up as the page scrolls.
+- The Tabler icons `arrow-left`, `arrow-right`, `calendar-event`, `chevron-down`, `clock-hour-3`, `folder`, `text-size` and the filled `pinned`.
+
 ## [0.4.0] - 2026-10-29
 
 This release adds the parts every page shares, for the site's new layout. Nothing a site already uses changes.

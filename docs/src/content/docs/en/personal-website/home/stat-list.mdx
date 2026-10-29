@@ -1,0 +1,49 @@
+---
+title: StatList
+description: The site's statistics in a rail card.
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Label and value pairs for a rail: posts, words, uptime, the last update.
+
+<Example system="personal-website" name="stat-list" title="Statistics in one column and in two" />
+
+## When to use
+
+In a SidebarCard in the rail. Numbers that belong in the text of a page go in the text.
+
+## On a page
+
+```astro
+<SidebarCard title="Stats">
+  <StatList items={[{ label: "Posts", value: 5 }, { label: "Uptime", value: "--", id: "uptime" }]} />
+</SidebarCard>
+```
+
+A number gets thousands separators. An item's `id` goes on its value, for a value a script keeps up to date.
+
+## Anatomy
+
+One column: rows divided by soft hairlines, the label muted at the left and the value in ink at the right. Two or three columns: each value over its label, with `span` for a long value.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `columns` | `1` (default), `2` or `3` |
+| `tone` | `cream` (default) or `dark` |
+
+## Accessibility
+
+The list is a `<dl>`: each label is a term and each value its description, so a screen reader reads them in pairs.
+
+## API
+
+[`StatList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/StatList.astro). Ported from the handoff.
+
+## Related
+
+[SidebarCard](../../shell/sidebar-card/), [MiniCalendar](../mini-calendar/).

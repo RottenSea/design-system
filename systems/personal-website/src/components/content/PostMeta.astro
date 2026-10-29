@@ -1,0 +1,135 @@
+---
+/**
+ * The one meta line for a post: date, category, length, muted and 14px. Every place that shows a
+ * post (a card in a list, the post's own header) uses it, so the line never drifts between pages.
+ * Plain parts are joined with middots. Parts with an icon each get a 14px Tabler glyph on a 22px
+ * tile one step up from the surface, and the line switches to icon-led groups without middots.
+ *
+ * Ported from the handoff's PostMeta.jsx, except `avatar`, which arrives with Avatar, and
+ * `status`, whose coloured dot is not used on this site. A part can carry `datetime`, and is then
+ * a <time>.
+ *
+ *   <PostMeta items={[{ icon: "calendar-event", label: "2026-06-17", datetime: "2026-06-17T03:00:00Z" }, …]} />
+ *   <PostMeta date="2026-06-17" category="Notes" readTime="6 min" />
+ */
+import CalendarEvent from "../../icons/calendar-event.svg";
+import ClockHour3 from "../../icons/clock-hour-3.svg";
+import Folder from "../../icons/folder.svg";
+import TextSize from "../../icons/text-size.svg";
+
+const ICONS = {
+  "calendar-event": CalendarEvent,
+  "clock-hour-3": ClockHour3,
+  folder: Folder,
+  "text-size": TextSize
+};
+
+export type PostMetaIcon = keyof typeof ICONS;
+
+export interface PostMetaItem {
+  label: string;
+  icon?: PostMetaIcon;
+  /** Makes the part a <time> with this machine-readable value. */
+  datetime?: string;
+}
+
+interface Props {
+  date?: string;
+  category?: string;
+  readTime?: string;
+  author?: string;
+  /** The parts in order; replaces date, category, readTime and author. */
+  items?: (PostMetaItem | string)[];
+  tone?: "cream" | "dark";
+  size?: "sm" | "md";
+  class?: string;
+}
+
+const { date, category, readTime, author, items, tone = "cream", size = "sm", class: className } = Astro.props;
+const parts: PostMetaItem[] = (items?.length ? items : [date, category, readTime, author])
+  .filter((part): part is PostMetaItem | string => Boolean(part))
+  .map((part) => (typeof part === "string" ? { label: part } : part));
+const iconLed = parts.some((part) => part.icon);
+---
+
+<div
+  class:list={[
+    "ds-post-meta",
+    `ds-post-meta--${size}`,
+    { "ds-post-meta--icons": iconLed, "ds-post-meta--dark": tone === "dark" },
+    className
+  ]}
+>
+  {
+    parts.map((part, index) => {
+      const Icon = part.icon ? ICONS[part.icon] : undefined;
+      const Label = part.datetime ? "time" : "span";
+      return (
+        <span class="ds-post-meta__part">
+          {!iconLed && index > 0 && (
+            <span class="ds-post-meta__dot" aria-hidden="true">
+              ·
+            </span>
+          )}
+          {Icon && (
+            <span class="ds-post-meta__icon" aria-hidden="true">
+              <Icon width={14} height={14} />
+            </span>
+          )}
+          <Label datetime={part.datetime}>{part.label}</Label>
+        </span>
+      );
+    })
+  }
+</div>
+
+<style>
+  .ds-post-meta {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    gap: var(--space-xs);
+    line-height: var(--body-sm-lh);
+  }
+
+  .ds-post-meta--md {
+    font-size: var(--body-md-size);
+  }
+
+  .ds-post-meta--icons {
+    gap: var(--space-xxs) var(--space-md);
+  }
+
+  .ds-post-meta--dark {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-post-meta__part {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+
+  .ds-post-meta--icons .ds-post-meta__part {
+    gap: var(--space-xxs);
+  }
+
+  .ds-post-meta__icon {
+    align-items: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-xs);
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 22px;
+    justify-content: center;
+    width: 22px;
+  }
+
+  .ds-post-meta--dark .ds-post-meta__icon {
+    background: rgba(250, 249, 245, 0.08);
+  }
+</style>

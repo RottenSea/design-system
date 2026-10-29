@@ -1,0 +1,10 @@
+---
+import { Pagination } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Pagination">
+  <Pagination page={1} pageCount={4} />
+  <Pagination page={5} pageCount={12} />
+  <Pagination page={2} pageCount={3} href="#page-{n}" label="Pages, as links" />
+</ExampleLayout>

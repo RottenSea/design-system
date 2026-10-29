@@ -43,6 +43,8 @@ The menu sheet is a panel at the right of the window over a dim scrim: the site'
 | `linkStyle` | `sentence` (default) or `uppercase`, which draws the links as micro-labels |
 | `menu` | The id of a NavDrawer to open; without it the nav has its own sheet |
 | `menuGroups`, `menuNote` | Groups and a note for the nav's own sheet |
+| `overlay` | Fixed and see-through over a full-height band such as [QuoteBand](../../home/quote-band/); the wash, the blur and the hairline come up together over the first `ramp` pixels of scroll (120 by default) |
+| `overlayTone`, `scrolledTone` | The text over the band (`ink` or `on-dark`) and the bar's own surface once scrolled (`cream` or `dark`) |
 
 ## States
 
@@ -50,6 +52,7 @@ The menu sheet is a panel at the right of the window over a dim scrim: the site'
 | --- | --- |
 | Current page | Its link is ink and marked as the current page |
 | Menu open | The scrim fades in and the panel fades in while it travels 8px; the page behind it is inert |
+| Overlay, scrolled past halfway | The text takes the scrolled colours; with reduced motion the bar has only the two states |
 
 ## Accessibility
 
@@ -57,7 +60,7 @@ The links are a `<nav>` named "Site". The menu button says "Menu" and reports wh
 
 ## API
 
-[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro), [`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro), and [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro), the sheet both use. Ported from the handoff. The links are `{ label, href }`. The handoff's sign-in and call-to-action buttons are left out; a site's own buttons go in the `actions` slot. The overlay mode, for a page that opens on a full-height band, comes with QuoteBand.
+[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro), [`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro), and [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro), the sheet both use. Ported from the handoff. The links are `{ label, href }`. The handoff's sign-in and call-to-action buttons are left out; a site's own buttons go in the `actions` slot. The nav measures the scroll itself instead of taking `scrollProgress`.
 
 ## Related
 

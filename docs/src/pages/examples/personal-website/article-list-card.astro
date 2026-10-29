@@ -1,0 +1,31 @@
+---
+import { ArticleListCard, PostMeta } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+import cover from "../../../assets/examples/dusk.jpg";
+---
+
+<ExampleLayout title="ArticleListCard and PostMeta">
+  <ArticleListCard
+    href="#"
+    title="Hairlines carry more than they look like they do"
+    date="2026-03-04"
+    category="Notes"
+    readTime="6 min"
+    tags={["type", "systems"]}
+    pinned
+  >
+    A one-pixel line in the right colour separates two things without drawing attention to itself.
+  </ArticleListCard>
+  <ArticleListCard
+    href="#"
+    title="Three ridges at dusk"
+    date="2026-02-19"
+    ago="8 months ago"
+    category="Photos"
+    wordCount={420}
+    coverSrc={cover.src}
+  >
+    A short walk, a long light.
+  </ArticleListCard>
+  <PostMeta date="2026-03-04" category="Notes" readTime="6 min" />
+</ExampleLayout>

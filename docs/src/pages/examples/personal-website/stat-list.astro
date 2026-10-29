@@ -1,0 +1,32 @@
+---
+import { SidebarCard, StatList } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const items = [
+  { label: "Posts", value: 18 },
+  { label: "Categories", value: 4 },
+  { label: "Tags", value: 27 },
+  { label: "Words", value: 41250 },
+  { label: "Uptime", value: "162 days" },
+  { label: "Last updated", value: "6 days ago" }
+];
+---
+
+<ExampleLayout title="StatList">
+  <div class="row">
+    <SidebarCard title="Stats">
+      <StatList items={items} />
+    </SidebarCard>
+    <SidebarCard title="Stats, two columns">
+      <StatList items={items.map((item) => (item.label === "Last updated" ? { ...item, span: 2 } : item))} columns={2} />
+    </SidebarCard>
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+  }
+</style>

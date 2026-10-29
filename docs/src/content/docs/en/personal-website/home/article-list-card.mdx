@@ -1,0 +1,71 @@
+---
+title: ArticleListCard
+description: One post in a list, and PostMeta, the post's meta line.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+ArticleListCard is one post in a list: the title in the display serif, a meta line, the excerpt and the tags, with an optional cover. PostMeta is the meta line, the same wherever a post is shown.
+
+<Example system="personal-website" name="article-list-card" title="A pinned card, a card with a cover, and a meta line" />
+
+## When to use
+
+For each post in a list. PostMeta on its own under a post's title.
+
+## On a page
+
+```astro
+<ArticleListCard
+  href="/blog/windows"
+  title="安装干净稳定的 Windows"
+  date="2026-06-17"
+  datetime="2026-06-17T03:00:00Z"
+  category="System"
+  readTime="12 min"
+  tags={["windows", "tutorial"]}
+  level={2}
+>
+  Windows 太臃肿了？这是我如何优化 Windows 并让其更好用的方法。
+</ArticleListCard>
+
+<PostMeta date="2026-06-17" category="System" readTime="12 min" />
+```
+
+The excerpt is the slot. Other attributes, such as `data-*` for a page's filter, go on the card.
+
+## Anatomy
+
+An outline card with 24px of padding. The title, the meta line with an icon tile per part (date, category, length), the excerpt in body text, then the tags as small cream chips. A cover sits at the right at 4:3, 160px wide; below 768px it moves above the text.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `pinned` | A coral pin in the title's first line, in its own column, so the title does not move |
+| `coverSrc`, `cover` slot | A cover image |
+| `wordCount`, `readTime`, `ago` | More parts in the meta line; a number of words gets thousands separators |
+| `level` | The title's heading level, 3 by default; 2 for a list right under the page's `h1` |
+| `tone` | `cream` (default) or `dark` |
+
+PostMeta joins plain parts with middots, and switches to icon tiles when a part has an `icon`.
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Hover | The card lifts with `--shadow-hover`; on the dark tone, the hairline brightens |
+
+## Accessibility
+
+The whole card is one link, named by its text. The pin is an image named "Pinned". The tags are a list named "Tags". A date with `datetime` is a `<time>`.
+
+## API
+
+[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) and [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro). Ported from the handoff. PostMeta leaves out the avatar, which comes with Avatar, and the status dot.
+
+## Related
+
+[FilterList](../filter-list/), [Pagination](../pagination/).

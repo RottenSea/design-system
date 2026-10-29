@@ -1,0 +1,298 @@
+---
+/**
+ * A full-window opening statement: an uppercase micro-label, one large serif line, its source,
+ * and a hint at the bottom edge that scrolls on to what follows. One per page, at the top, in
+ * place of a hero. Length is handled rather than assumed: the line wraps at `measure`, and with
+ * `autoSize` the size steps down by length (up to 90 characters display-lg, up to 180
+ * display-md, then display-sm), so a quote from content cannot overflow.
+ *
+ * Ported from the handoff's QuoteBand.jsx with the same props, except `background` and
+ * `onScrollHint`: the hint scrolls to the element after the band. Two additions:
+ * - `quotes`: several quotes, one shown at random on each visit. The build writes the first, so
+ *   a page without script shows that one.
+ * - `pullNext`: the element after the band rises over it faster than the page scrolls for the
+ *   first part of the scroll (a scroll-driven animation, easing out), so a reader reaches it in a
+ *   couple of scrolls. Browsers without scroll-driven animations, and readers who asked for
+ *   reduced motion, get an ordinary scroll. That element gets the canvas as its background, so
+ *   it covers the band as it rises.
+ *
+ *   <QuoteBand eyebrow="Welcome" quotes={[{ text: "…", attribution: "…" }]} pullNext />
+ *   <main>…</main>
+ */
+import ChevronDown from "../../icons/chevron-down.svg";
+
+export interface Quote {
+  text: string;
+  attribution?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  /** The quote, when there is one; the slot takes it too. */
+  attribution?: string;
+  /** Several quotes, one shown at random on each visit. */
+  quotes?: Quote[];
+  /** `bare` paints no background, for a page that has its own behind the band. */
+  tone?: "cream" | "dark" | "bare";
+  /** With `bare`, the text colours: for a dark page behind, or a light one. */
+  overlayTone?: "ink" | "on-dark";
+  /** The quote's line length. */
+  measure?: string;
+  autoSize?: boolean;
+  /** The hint's text; false drops the hint. */
+  scrollHint?: string | false;
+  /** "none" draws the chevron alone, with the text as its accessible name. */
+  hintLabel?: "text" | "none";
+  minHeight?: string;
+  pullNext?: boolean;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  attribution,
+  quotes,
+  tone = "cream",
+  overlayTone = "on-dark",
+  measure = "34ch",
+  autoSize = true,
+  scrollHint = "Scroll",
+  hintLabel = "text",
+  minHeight = "100svh",
+  pullNext = false,
+  class: className
+} = Astro.props;
+
+const step = (length: number) => (!autoSize || length <= 90 ? "lg" : length <= 180 ? "md" : "sm");
+const first = quotes?.[0];
+const slotText = first ? "" : await Astro.slots.render("default");
+const length = first ? first.text.length : slotText.replace(/<[^>]*>/g, "").trim().length;
+const shownAttribution = first ? first.attribution : attribution;
+const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
+---
+
+<ds-quote-band
+  class:list={[
+    "ds-quote-band",
+    `ds-quote-band--${tone}`,
+    { "ds-quote-band--on-dark": dark },
+    className
+  ]}
+  style={`--ds-quote-min: ${minHeight}; --ds-quote-measure: ${measure}`}
+  data-pull-next={pullNext ? "" : undefined}
+  data-auto-size={autoSize ? "" : undefined}
+>
+  <section class="ds-quote-band__inner">
+    {eyebrow && <span class="ds-quote-band__eyebrow">{eyebrow}</span>}
+    <figure class="ds-quote-band__figure">
+      <blockquote class={`ds-quote-band__quote ds-quote-band__quote--${step(length)}`}>
+        {first ? first.text : <Fragment set:html={slotText} />}
+      </blockquote>
+      <figcaption class="ds-quote-band__source" hidden={!shownAttribution}>{shownAttribution}</figcaption>
+    </figure>
+  </section>
+  {
+    scrollHint && (
+      <button
+        type="button"
+        class="ds-quote-band__hint"
+        aria-label={hintLabel === "none" ? scrollHint : undefined}
+        data-ds-quote-hint
+      >
+        {hintLabel !== "none" && <span class="ds-quote-band__hint-text">{scrollHint}</span>}
+        <ChevronDown width={20} height={20} aria-hidden="true" />
+      </button>
+    )
+  }
+  {quotes && quotes.length > 1 && <script type="application/json" data-ds-quotes set:html={JSON.stringify(quotes)} />}
+</ds-quote-band>
+
+<script>
+  class DsQuoteBand extends HTMLElement {
+    connectedCallback() {
+      this.pick();
+      this.querySelector("[data-ds-quote-hint]")?.addEventListener("click", () => {
+        const next = this.nextElementSibling as HTMLElement | null;
+        if (!next) return;
+        const reduce =
+          matchMedia("(prefers-reduced-motion: reduce)").matches ||
+          document.documentElement.dataset.reduceMotion === "true";
+        // The element's place in the layout, not where a pull-in animation is drawing it now.
+        const top = this.offsetTop + this.offsetHeight;
+        window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+      });
+    }
+
+    /** Shows one of the quotes at random. */
+    pick() {
+      const data = this.querySelector("[data-ds-quotes]");
+      if (!data) return;
+      const quotes: { text: string; attribution?: string }[] = JSON.parse(data.textContent ?? "[]");
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
+      const text = this.querySelector(".ds-quote-band__quote");
+      const source = this.querySelector<HTMLElement>(".ds-quote-band__source");
+      if (!quote || !text || !source) return;
+      text.textContent = quote.text;
+      const length = quote.text.length;
+      const size = !this.hasAttribute("data-auto-size") || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
+      text.className = `ds-quote-band__quote ds-quote-band__quote--${size}`;
+      source.textContent = quote.attribution ?? "";
+      source.hidden = !quote.attribution;
+    }
+  }
+
+  if (!customElements.get("ds-quote-band")) customElements.define("ds-quote-band", DsQuoteBand);
+</script>
+
+<style>
+  .ds-quote-band {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: var(--ds-quote-min);
+    overflow: hidden;
+    padding: var(--space-section) var(--space-lg);
+    position: relative;
+    text-align: center;
+  }
+
+  .ds-quote-band--cream {
+    background: var(--surface-canvas);
+  }
+
+  .ds-quote-band--dark {
+    background: var(--surface-dark);
+  }
+
+  .ds-quote-band__inner {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: 100%;
+  }
+
+  .ds-quote-band__eyebrow {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-quote-band__figure {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin: 0;
+  }
+
+  .ds-quote-band__quote {
+    color: var(--text-ink);
+    font-family: var(--font-display);
+    font-weight: 400;
+    margin: 0;
+    max-width: var(--ds-quote-measure);
+    text-wrap: pretty;
+  }
+
+  .ds-quote-band__quote--lg {
+    font-size: var(--display-lg-size);
+    letter-spacing: var(--display-lg-ls);
+    line-height: var(--display-lg-lh);
+  }
+
+  .ds-quote-band__quote--md {
+    font-size: var(--display-md-size);
+    letter-spacing: var(--display-md-ls);
+    line-height: var(--display-md-lh);
+  }
+
+  .ds-quote-band__quote--sm {
+    font-size: var(--display-sm-size);
+    letter-spacing: var(--display-sm-ls);
+    line-height: var(--display-sm-lh);
+  }
+
+  .ds-quote-band__source {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-lh);
+  }
+
+  .ds-quote-band__hint {
+    align-items: center;
+    background: none;
+    border: 0;
+    bottom: var(--space-lg);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font: inherit;
+    gap: var(--space-xxs);
+    justify-content: center;
+    left: 50%;
+    min-height: calc(var(--space-xl) + var(--space-sm));
+    min-width: calc(var(--space-xl) + var(--space-sm));
+    padding: 0;
+    position: absolute;
+    transform: translateX(-50%);
+  }
+
+  .ds-quote-band__hint-text {
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-quote-band--on-dark .ds-quote-band__quote {
+    color: var(--text-on-dark);
+  }
+
+  .ds-quote-band--on-dark :is(.ds-quote-band__eyebrow, .ds-quote-band__source, .ds-quote-band__hint) {
+    color: var(--text-on-dark-soft);
+  }
+
+  /*
+   * pullNext. The next element starts 40svh up in the layout, overlapping the band, and is drawn
+   * 40svh lower, right under it. Over the first 60svh of scroll the offset eases out to nothing,
+   * so it rises faster than the page at first; at the end the layout and the drawing agree and
+   * nothing is left over at the bottom of the page.
+   */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(:root:not([data-reduce-motion="true"])) .ds-quote-band[data-pull-next] + :global(*) {
+        animation: ds-quote-pull linear both;
+        animation-range: 0 60svh;
+        animation-timeline: scroll(root block);
+        animation-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1);
+        background: var(--surface-canvas);
+        margin-top: -40svh;
+        position: relative;
+        /* Where the animation starts, for any moment its timeline is not active yet. */
+        transform: translateY(40svh);
+        z-index: 1;
+      }
+    }
+  }
+
+  @keyframes ds-quote-pull {
+    from {
+      transform: translateY(40svh);
+    }
+
+    to {
+      transform: none;
+    }
+  }
+</style>

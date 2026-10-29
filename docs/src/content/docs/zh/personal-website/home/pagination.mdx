@@ -1,0 +1,49 @@
+---
+title: Pagination 分页
+description: 列表下面的页码。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+列表下面的上一页、页码和下一页。
+
+<Example system="personal-website" name="pagination" title="四页、十二页和三页的分页" />
+
+## 什么时候用
+
+列表超过一页时放在列表下面。只有一页时不显示。
+
+## 页面里怎么写
+
+```astro
+<Pagination page={1} pageCount={4} />
+<Pagination page={2} pageCount={9} href="/page/{n}" />
+```
+
+带 `href` 时每个页码是链接，`{n}` 换成页码。不带时页码是按钮：按下发出 `ds-page` 事件，内容是新的页码，页面显示那一页。改元素的 `page` 或 `page-count` 属性会重画分页，所以它能跟着读者筛选后的列表变。
+
+## 结构
+
+36px 的格子，用导航链接的字体。当前页是奶油色卡片的底色。七页以内全部列出；更多时列出第一页、最后一页和当前页前后各一页，中间用省略号。
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 当前页 | 奶油色卡片底色，墨色文字 |
+| 第一页或最后一页 | 上一页或下一页变成 40% 透明度，按了没反应 |
+| 只有一页 | 不显示分页 |
+
+## 无障碍
+
+分页是名为 “Pages” 的 `<nav>`，当前页标为当前页。按下后焦点留在新的当前页上。
+
+## API
+
+[`Pagination.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Pagination.astro)。从交付包移植，`href` 代替 `hrefFor`，`ds-page` 事件代替 `onChange`。
+
+## 相关
+
+[ArticleListCard 文章卡片](../article-list-card/)。

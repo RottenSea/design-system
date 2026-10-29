@@ -1,0 +1,60 @@
+---
+import { FilterList, TagList } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="FilterList and TagList">
+  <div class="row">
+    <FilterList
+      label="Categories"
+      items={[
+        { label: "Notes", count: 6 },
+        { label: "Essays", count: 9 },
+        { label: "Build log", count: 3 }
+      ]}
+      value="Essays"
+      class="filters"
+    />
+    <div class="tags">
+      <TagList
+        items={[
+          { label: "type", count: 12 },
+          { label: "systems", count: 8 },
+          { label: "craft", count: 5 },
+          { label: "editing", count: 4 }
+        ]}
+        value="systems"
+      />
+      <p class="result" aria-live="polite">Press a category or a tag.</p>
+    </div>
+  </div>
+</ExampleLayout>
+
+<script>
+  // The lists only send events; a page decides what selecting does. Here it is written out.
+  const result = document.querySelector(".result");
+  document.addEventListener("ds-select", (event) => {
+    const detail = (event as CustomEvent<string | null>).detail;
+    if (result) result.textContent = detail === null ? "Selection cleared." : `Selected: ${detail}`;
+  });
+</script>
+
+<style>
+  .row {
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .tags {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .result {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+</style>

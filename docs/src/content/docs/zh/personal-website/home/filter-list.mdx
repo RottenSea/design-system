@@ -1,0 +1,52 @@
+---
+title: FilterList 筛选列表
+description: 侧栏里的分类列表，以及标签 TagList。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+FilterList 是侧栏里带篇数的分类列表。TagList 是一组标签胶囊。两者都可以是链到其他页面的链接，也可以是开关按钮，把读者选了什么告诉页面。
+
+<Example system="personal-website" name="filter-list" title="可以按的分类列表和标签" />
+
+## 什么时候用
+
+分类或栏目用 FilterList，一次选一个。标签用 TagList，列标签的地方都用它：侧栏里、列表上面、文章里。
+
+## 页面里怎么写
+
+```astro
+<FilterList label="Categories" items={[{ label: "AI", count: 3 }]} />
+<TagList items={[{ label: "agent", count: 3 }]} />
+
+<script>
+  document.addEventListener("ds-select", (event) => filter(event.target, event.detail));
+</script>
+```
+
+带 `href` 的项是链接。不带的是开关按钮：按一下选中，再按一下取消，列表发出 `ds-select` 事件，内容是这一项的名字，取消时是 `null`。带 `multiple` 的 TagList 发出的是名字的列表。两个列表都有 `select()` 方法，页面可以自己设定选中哪一项。
+
+## 结构
+
+FilterList：可选的一行大写小字，下面一行一项，用小号正文，篇数在右边，等宽数字。TagList：一排会换行的奶油色胶囊，篇数跟在名字后面，用次要色。
+
+## 状态
+
+| 状态 | FilterList | TagList |
+| --- | --- | --- |
+| 选中 | 左边一条珊瑚色竖线，文字变珊瑚色 | 胶囊变成深色底 |
+| 鼠标移上去 | 文字变墨色 | — |
+
+## 无障碍
+
+开关按钮带 `aria-pressed`，读屏软件会说出每一项是否选中。选中的分类还有那条珊瑚色竖线，不只靠颜色区分。窄于 768px 时每一行、每个胶囊都放大到 44px 的触屏尺寸。
+
+## API
+
+[`FilterList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/FilterList.astro) 和 [`TagList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/tags/TagList.astro)。从交付包移植，用 `ds-select` 事件代替 `onSelect`。
+
+## 相关
+
+[ArticleListCard 文章卡片](../article-list-card/)、[Pagination 分页](../pagination/)。

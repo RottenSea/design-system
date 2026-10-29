@@ -1,0 +1,138 @@
+---
+/**
+ * Site statistics in a rail, as label and value pairs: posts, words, uptime, last updated. One
+ * column reads as a small table, rows divided by soft hairlines; two or three columns read as a
+ * dashboard, each value over its label. Values are tabular figures so the column stays straight.
+ * A number gets thousands separators.
+ *
+ * Ported from the handoff's StatList.jsx with the same props, as a <dl>. An item's `id` goes on
+ * its value, for a value a script keeps up to date, such as an uptime.
+ *
+ *   <StatList items={[{ label: "Posts", value: 5 }, { label: "Uptime", value: "--", id: "uptime" }]} />
+ */
+export interface StatItem {
+  label: string;
+  value: number | string;
+  /** In a list of several columns, the columns this item spans, for a long value. */
+  span?: number;
+  /** An id for the value. */
+  id?: string;
+}
+
+interface Props {
+  items: StatItem[];
+  columns?: 1 | 2 | 3;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { items, columns = 1, tone = "cream", class: className } = Astro.props;
+const format = (value: number | string) => (typeof value === "number" ? value.toLocaleString("en-US") : value);
+---
+
+<dl
+  class:list={[
+    "ds-stats",
+    columns > 1 ? "ds-stats--grid" : "ds-stats--rows",
+    { "ds-stats--dark": tone === "dark" },
+    className
+  ]}
+  style={columns > 1 ? `--ds-stats-columns: ${columns}` : undefined}
+>
+  {
+    items.map((item) => (
+      <div class="ds-stats__item" style={item.span ? `grid-column: span ${item.span}` : undefined}>
+        <dt class="ds-stats__label">{item.label}</dt>
+        <dd class="ds-stats__value" id={item.id}>
+          {format(item.value)}
+        </dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .ds-stats {
+    font-family: var(--font-sans);
+    margin: 0;
+  }
+
+  .ds-stats__label,
+  .ds-stats__value {
+    margin: 0;
+  }
+
+  .ds-stats__label {
+    color: var(--text-muted);
+  }
+
+  .ds-stats__value {
+    color: var(--text-ink);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .ds-stats--rows {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ds-stats--rows .ds-stats__item {
+    align-items: baseline;
+    display: flex;
+    font-size: var(--body-sm-size);
+    gap: var(--space-sm);
+    justify-content: space-between;
+    line-height: var(--body-sm-lh);
+    padding: 7px 0;
+  }
+
+  .ds-stats--rows .ds-stats__item + .ds-stats__item {
+    border-top: 1px solid var(--hairline-soft);
+  }
+
+  .ds-stats--rows .ds-stats__label {
+    min-width: 0;
+  }
+
+  .ds-stats--rows .ds-stats__value {
+    white-space: nowrap;
+  }
+
+  .ds-stats--grid {
+    display: grid;
+    gap: var(--space-sm) var(--space-md);
+    grid-template-columns: repeat(var(--ds-stats-columns), minmax(0, 1fr));
+  }
+
+  /* Value over label: the dt comes first in the source, so the order is swapped for the eye. */
+  .ds-stats--grid .ds-stats__item {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .ds-stats--grid .ds-stats__value {
+    font-size: var(--body-md-size);
+    line-height: 1.3;
+  }
+
+  .ds-stats--grid .ds-stats__label {
+    font-size: var(--caption-size);
+    line-height: var(--caption-lh);
+  }
+
+  .ds-stats--dark .ds-stats__label {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-stats--dark .ds-stats__value {
+    color: var(--text-on-dark);
+  }
+
+  .ds-stats--dark .ds-stats__item + .ds-stats__item {
+    border-top-color: var(--hairline-on-dark);
+  }
+</style>

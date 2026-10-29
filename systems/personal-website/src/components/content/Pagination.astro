@@ -1,0 +1,265 @@
+---
+/**
+ * The numbered pager under a list: Previous, the page numbers, Next. The current page has the
+ * cream card fill, never a coral pill. With more than seven pages it shows the first, the last,
+ * and the current one with its neighbours. A pager with one page draws nothing.
+ *
+ * Ported from the handoff's Pagination.jsx with the same props, in two forms:
+ * - with `href`, a pattern such as "/page/{n}", every number is a link to its page;
+ * - without it, the numbers are buttons. A press sends a `ds-page` event whose detail is the new
+ *   page number, and the page shows that page. Setting the element's `page` or `page-count`
+ *   attribute redraws it, so it can follow a list the reader filters.
+ *
+ *   <Pagination page={1} pageCount={4} />
+ *   pager.addEventListener("ds-page", (event) => show(event.detail));
+ */
+import ArrowLeft from "../../icons/arrow-left.svg";
+import ArrowRight from "../../icons/arrow-right.svg";
+import { pageItems } from "./pagination";
+
+interface Props {
+  page?: number;
+  pageCount?: number;
+  /** A link per page: "{n}" becomes the number. */
+  href?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  /** The navigation landmark's name. */
+  label?: string;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const {
+  page = 1,
+  pageCount = 1,
+  href,
+  prevLabel = "Previous",
+  nextLabel = "Next",
+  label = "Pages",
+  tone = "cream",
+  class: className
+} = Astro.props;
+const link = (n: number) => href?.replace("{n}", String(n));
+---
+
+<ds-pagination
+  class:list={["ds-pagination", { "ds-pagination--dark": tone === "dark" }, className]}
+  page={page}
+  page-count={pageCount}
+  data-links={href ? "" : undefined}
+  data-prev={prevLabel}
+  data-next={nextLabel}
+>
+  <nav class="ds-pagination__nav" aria-label={label} hidden={pageCount <= 1}>
+    {
+      href ? (
+        <>
+          <a
+            class="ds-pagination__step"
+            href={page > 1 ? link(page - 1) : undefined}
+            aria-disabled={page <= 1 ? "true" : undefined}
+            data-ds-tap="cell"
+          >
+            <ArrowLeft width={16} height={16} aria-hidden="true" />
+            {prevLabel}
+          </a>
+          {pageItems(page, pageCount).map((item) =>
+            item === "gap" ? (
+              <span class="ds-pagination__gap" aria-hidden="true">
+                …
+              </span>
+            ) : (
+              <a
+                class="ds-pagination__page"
+                href={link(item)}
+                aria-current={item === page ? "page" : undefined}
+                data-ds-tap="cell"
+              >
+                {item}
+              </a>
+            )
+          )}
+          <a
+            class="ds-pagination__step"
+            href={page < pageCount ? link(page + 1) : undefined}
+            aria-disabled={page >= pageCount ? "true" : undefined}
+            data-ds-tap="cell"
+          >
+            {nextLabel}
+            <ArrowRight width={16} height={16} aria-hidden="true" />
+          </a>
+        </>
+      ) : (
+        <>
+          <button type="button" class="ds-pagination__step" data-step="-1" disabled={page <= 1} data-ds-tap="cell">
+            <ArrowLeft width={16} height={16} aria-hidden="true" />
+            {prevLabel}
+          </button>
+          <span class="ds-pagination__pages">
+            {pageItems(page, pageCount).map((item) =>
+              item === "gap" ? (
+                <span class="ds-pagination__gap" aria-hidden="true">
+                  …
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  class="ds-pagination__page"
+                  data-page={item}
+                  aria-current={item === page ? "page" : undefined}
+                  data-ds-tap="cell"
+                >
+                  {item}
+                </button>
+              )
+            )}
+          </span>
+          <button type="button" class="ds-pagination__step" data-step="1" disabled={page >= pageCount} data-ds-tap="cell">
+            {nextLabel}
+            <ArrowRight width={16} height={16} aria-hidden="true" />
+          </button>
+        </>
+      )
+    }
+  </nav>
+</ds-pagination>
+
+<script>
+  import { pageItems } from "./pagination";
+
+  class DsPagination extends HTMLElement {
+    static observedAttributes = ["page", "page-count"];
+
+    get page() {
+      return Number(this.getAttribute("page")) || 1;
+    }
+
+    get pageCount() {
+      return Number(this.getAttribute("page-count")) || 1;
+    }
+
+    connectedCallback() {
+      if (this.hasAttribute("data-links")) return;
+      this.addEventListener("click", (event) => {
+        const button = (event.target as Element).closest<HTMLButtonElement>("button");
+        if (!button || button.disabled) return;
+        const next = button.dataset.page ? Number(button.dataset.page) : this.page + Number(button.dataset.step);
+        if (next < 1 || next > this.pageCount || next === this.page) return;
+        this.setAttribute("page", String(next));
+        this.dispatchEvent(new CustomEvent("ds-page", { detail: next, bubbles: true }));
+        // The pressed number was redrawn; keep the keyboard focus on the current page.
+        this.querySelector<HTMLButtonElement>('[aria-current="page"]')?.focus();
+      });
+    }
+
+    attributeChangedCallback() {
+      if (this.hasAttribute("data-links") || !this.isConnected) return;
+      const nav = this.querySelector<HTMLElement>("nav");
+      const pages = this.querySelector<HTMLElement>(".ds-pagination__pages");
+      if (!nav || !pages) return;
+      const { page, pageCount } = this;
+      nav.hidden = pageCount <= 1;
+      this.querySelector<HTMLButtonElement>('[data-step="-1"]')!.disabled = page <= 1;
+      this.querySelector<HTMLButtonElement>('[data-step="1"]')!.disabled = page >= pageCount;
+      // Reuse the built buttons' classes and attributes, so the redraw matches the build.
+      const sample = pages.querySelector(".ds-pagination__page");
+      const gap = pages.querySelector(".ds-pagination__gap");
+      pages.replaceChildren(
+        ...pageItems(page, pageCount).map((item) => {
+          if (item === "gap") {
+            const span = (gap?.cloneNode(true) as HTMLElement) ?? document.createElement("span");
+            span.className = "ds-pagination__gap";
+            span.setAttribute("aria-hidden", "true");
+            span.textContent = "…";
+            return span;
+          }
+          const button = (sample?.cloneNode(true) as HTMLButtonElement) ?? document.createElement("button");
+          button.type = "button";
+          button.className = "ds-pagination__page";
+          button.dataset.page = String(item);
+          button.textContent = String(item);
+          button.toggleAttribute("aria-current", item === page);
+          if (item === page) button.setAttribute("aria-current", "page");
+          return button;
+        })
+      );
+    }
+  }
+
+  if (!customElements.get("ds-pagination")) customElements.define("ds-pagination", DsPagination);
+</script>
+
+<style>
+  .ds-pagination__nav {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xxs);
+  }
+
+  .ds-pagination__nav[hidden] {
+    display: none;
+  }
+
+  .ds-pagination__pages {
+    display: contents;
+  }
+
+  .ds-pagination__step,
+  .ds-pagination :global(.ds-pagination__page),
+  .ds-pagination :global(.ds-pagination__gap) {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: var(--nav-link-size);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--nav-link-weight);
+    gap: var(--space-xxs);
+    height: 36px;
+    justify-content: center;
+    line-height: 1;
+    min-width: 36px;
+    padding: 0 var(--space-xs);
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-pagination__step:hover:not(:disabled, [aria-disabled]),
+  .ds-pagination :global(.ds-pagination__page:hover) {
+    color: var(--text-ink);
+  }
+
+  .ds-pagination :global(.ds-pagination__page[aria-current="page"]) {
+    background: var(--surface-card);
+    color: var(--text-ink);
+  }
+
+  .ds-pagination :global(.ds-pagination__gap) {
+    color: var(--text-muted-soft);
+    cursor: default;
+  }
+
+  .ds-pagination__step:disabled,
+  .ds-pagination__step[aria-disabled] {
+    cursor: default;
+    opacity: 0.4;
+  }
+
+  .ds-pagination--dark .ds-pagination__step,
+  .ds-pagination--dark :global(.ds-pagination__page),
+  .ds-pagination--dark :global(.ds-pagination__gap) {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-pagination--dark :global(.ds-pagination__page[aria-current="page"]) {
+    background: rgba(250, 249, 245, 0.1);
+    color: var(--text-on-dark);
+  }
+</style>

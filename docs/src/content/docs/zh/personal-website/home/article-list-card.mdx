@@ -1,0 +1,71 @@
+---
+title: ArticleListCard 文章卡片
+description: 列表里的一篇文章，以及文章的信息行 PostMeta。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+ArticleListCard 是列表里的一篇文章：展示衬线体的标题、信息行、摘要和标签，可以带封面。PostMeta 是那一行信息，文章出现在哪里都一样。
+
+<Example system="personal-website" name="article-list-card" title="置顶的卡片、带封面的卡片和一行信息" />
+
+## 什么时候用
+
+列表里的每篇文章。文章标题下面单独用 PostMeta。
+
+## 页面里怎么写
+
+```astro
+<ArticleListCard
+  href="/blog/windows"
+  title="安装干净稳定的 Windows"
+  date="2026-06-17"
+  datetime="2026-06-17T03:00:00Z"
+  category="System"
+  readTime="12 min"
+  tags={["windows", "tutorial"]}
+  level={2}
+>
+  Windows 太臃肿了？这是我如何优化 Windows 并让其更好用的方法。
+</ArticleListCard>
+
+<PostMeta date="2026-06-17" category="System" readTime="12 min" />
+```
+
+摘要写在插槽里。别的属性（例如给页面筛选用的 `data-*`）加在卡片上。
+
+## 结构
+
+带细线的卡片，内边距 24px。标题；信息行，每一项（日期、分类、长度）前面一个图标方块；正文字号的摘要；奶油色的小标签。封面在右边，4:3，160px 宽；窄于 768px 时移到文字上面。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `pinned` | 标题第一行前面一个珊瑚色图钉，单独占一栏，标题不会因此移动 |
+| `coverSrc`、`cover` 插槽 | 封面图 |
+| `wordCount`、`readTime`、`ago` | 信息行里更多的项；字数会加千位分隔符 |
+| `level` | 标题的级别，默认 3；列表紧跟在页面的 `h1` 后面时用 2 |
+| `tone` | `cream`（默认）或 `dark` |
+
+PostMeta 的项不带图标时用中点连接，有一项带 `icon` 时就都换成图标方块。
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 鼠标移上去 | 卡片加 `--shadow-hover`；深色时细线变亮 |
+
+## 无障碍
+
+整张卡片是一个链接，名字取自卡片上的文字。图钉是一个名叫 “Pinned” 的图像。标签是名叫 “Tags” 的列表。带 `datetime` 的日期是 `<time>`。
+
+## API
+
+[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) 和 [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro)。从交付包移植。PostMeta 没有头像（和 Avatar 一起做），也没有状态圆点。
+
+## 相关
+
+[FilterList 筛选列表](../filter-list/)、[Pagination 分页](../pagination/)。

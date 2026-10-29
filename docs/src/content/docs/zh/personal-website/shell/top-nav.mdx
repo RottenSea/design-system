@@ -43,6 +43,8 @@ import Example from "../../../../../components/Example.astro";
 | `linkStyle` | `sentence`（默认），或 `uppercase`，链接写成大写小字 |
 | `menu` | 要打开的 NavDrawer 的 id；不传时导航用自己的面板 |
 | `menuGroups`、`menuNote` | 导航自带面板里的分组和说明 |
+| `overlay` | 固定在页面顶部，透明地压在整屏横幅（例如 [QuoteBand](../../home/quote-band/)）上；滚动的前 `ramp` 像素（默认 120）里，底色、模糊和细线一起渐渐出现 |
+| `overlayTone`、`scrolledTone` | 压在横幅上时的文字颜色（`ink` 或 `on-dark`），以及滚动后导航条自己的底色（`cream` 或 `dark`） |
 
 ## 状态
 
@@ -50,6 +52,7 @@ import Example from "../../../../../components/Example.astro";
 | --- | --- |
 | 当前页 | 链接是墨色，并标为当前页 |
 | 菜单打开 | 遮罩淡入，面板一边淡入一边移动 8px；后面的页面不能操作 |
+| 叠加模式下滚过一半 | 文字换成滚动后的颜色；开了“减少动效”时导航条只有两种状态 |
 
 ## 无障碍
 
@@ -57,7 +60,7 @@ import Example from "../../../../../components/Example.astro";
 
 ## API
 
-[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro)、[`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro)，以及两者共用的面板 [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro)。从交付包移植，链接写成 `{ label, href }`。交付包的登录和行动按钮没有移植，网站自己的按钮放进 `actions` 插槽。给“一打开就是整屏横幅”的页面用的叠加模式，和 QuoteBand 一起做。
+[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro)、[`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro)，以及两者共用的面板 [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro)。从交付包移植，链接写成 `{ label, href }`。交付包的登录和行动按钮没有移植，网站自己的按钮放进 `actions` 插槽。导航自己看滚动位置，不再接收 `scrollProgress`。
 
 ## 相关
 

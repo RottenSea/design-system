@@ -1,0 +1,49 @@
+---
+title: Pagination
+description: The numbered pager under a list.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Previous, the page numbers, and Next, under a list.
+
+<Example system="personal-website" name="pagination" title="Pagers with four, twelve and three pages" />
+
+## When to use
+
+Under a list that is longer than one page. A list of one page shows no pager.
+
+## On a page
+
+```astro
+<Pagination page={1} pageCount={4} />
+<Pagination page={2} pageCount={9} href="/page/{n}" />
+```
+
+With `href`, every number is a link, `{n}` replaced by the page. Without it, the numbers are buttons: a press sends a `ds-page` event with the new page number, and the page shows that page. Setting the element's `page` or `page-count` attribute redraws it, so it follows a list the reader filters.
+
+## Anatomy
+
+36px cells in the nav-link style. The current page has the cream card fill. Up to seven pages are all shown; beyond that, the first, the last, and the current page with its neighbours, with an ellipsis between.
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Current page | The cream card fill and ink text |
+| First or last page | Previous or Next fades to 40% and does nothing |
+| One page | No pager |
+
+## Accessibility
+
+The pager is a `<nav>` named "Pages". The current page is marked as the current page. After a press the focus stays on the new current page.
+
+## API
+
+[`Pagination.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Pagination.astro). Ported from the handoff; `href` takes the place of `hrefFor`, and the `ds-page` event of `onChange`.
+
+## Related
+
+[ArticleListCard](../article-list-card/).

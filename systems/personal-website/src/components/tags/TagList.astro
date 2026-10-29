@@ -1,0 +1,164 @@
+---
+/**
+ * A cloud of tag pills with optional counts: the rail's tag widget, a tag index, the filter row
+ * above a list. One component for all three, so a tag looks like a tag everywhere. A selected tag
+ * turns to the dark surface, because dark is this system's sign of selection.
+ *
+ * Ported from the handoff's TagList.jsx with the same props, except `onSelect`. Tags with `href`
+ * are links. Tags without are toggle buttons that send a `ds-select` event: its detail is the
+ * label or null for one selection (`value`, or nothing), and the list of labels with `multiple`.
+ * Pressing a selected tag clears it. The page does the filtering.
+ *
+ *   <TagList items={[{ label: "agent", count: 3 }]} />
+ */
+export interface TagItem {
+  label: string;
+  count?: number;
+  /** Makes the tag a link. */
+  href?: string;
+}
+
+interface Props {
+  items: (TagItem | string)[];
+  /** The selected tag, for one selection. */
+  value?: string;
+  /** The selected tags; allows several. */
+  values?: string[];
+  /** Lets several tags be selected at once. */
+  multiple?: boolean;
+  showCount?: boolean;
+  tone?: "cream" | "dark";
+  /** Space between the pills; a number is px. */
+  gap?: string | number;
+  class?: string;
+}
+
+const {
+  items,
+  value,
+  values,
+  multiple = values !== undefined,
+  showCount = true,
+  tone = "cream",
+  gap = "var(--space-xxs)",
+  class: className
+} = Astro.props;
+const selected = values ?? (value ? [value] : []);
+const tags = items.map((item) => (typeof item === "string" ? { label: item } : item));
+---
+
+<ds-tag-list
+  class:list={["ds-tag-list", { "ds-tag-list--dark": tone === "dark" }, className]}
+  style={`--ds-tag-gap: ${typeof gap === "number" ? `${gap}px` : gap}`}
+  data-multiple={multiple ? "" : undefined}
+>
+  {
+    tags.map((tag) => {
+      const on = selected.includes(tag.label);
+      const count = showCount && tag.count !== undefined && <span class="ds-tag-list__count">{tag.count}</span>;
+      return tag.href ? (
+        <a class="ds-tag-list__tag" href={tag.href} data-ds-tap="cell">
+          {tag.label}
+          {count}
+        </a>
+      ) : (
+        <button
+          type="button"
+          class="ds-tag-list__tag"
+          aria-pressed={on ? "true" : "false"}
+          data-value={tag.label}
+          data-ds-tap="cell"
+        >
+          {tag.label}
+          {count}
+        </button>
+      );
+    })
+  }
+</ds-tag-list>
+
+<script>
+  class DsTagList extends HTMLElement {
+    connectedCallback() {
+      const buttons = [...this.querySelectorAll<HTMLButtonElement>("button[data-value]")];
+      const multiple = this.hasAttribute("data-multiple");
+      for (const button of buttons) {
+        button.addEventListener("click", () => {
+          const on = button.getAttribute("aria-pressed") !== "true";
+          button.setAttribute("aria-pressed", String(on));
+          if (!multiple && on) {
+            for (const other of buttons) if (other !== button) other.setAttribute("aria-pressed", "false");
+          }
+          const chosen = buttons.filter((b) => b.getAttribute("aria-pressed") === "true").map((b) => b.dataset.value);
+          const detail = multiple ? chosen : (chosen[0] ?? null);
+          this.dispatchEvent(new CustomEvent("ds-select", { detail, bubbles: true }));
+        });
+      }
+    }
+
+    /** Sets the selection without sending an event: a label, a list of labels, or null. */
+    select(value: string | string[] | null) {
+      const chosen = Array.isArray(value) ? value : value === null ? [] : [value];
+      for (const button of this.querySelectorAll<HTMLButtonElement>("button[data-value]")) {
+        button.setAttribute("aria-pressed", String(chosen.includes(button.dataset.value ?? "")));
+      }
+    }
+  }
+
+  if (!customElements.get("ds-tag-list")) customElements.define("ds-tag-list", DsTagList);
+</script>
+
+<style>
+  .ds-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-tag-gap);
+  }
+
+  .ds-tag-list__tag {
+    align-items: center;
+    background: var(--surface-card);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    color: var(--text-ink);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-weight: 500;
+    gap: var(--space-xxs);
+    line-height: var(--caption-lh);
+    padding: 5px 12px;
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-tag-list__tag[aria-pressed="true"] {
+    background: var(--surface-dark);
+    color: var(--text-on-dark);
+  }
+
+  .ds-tag-list__count {
+    color: var(--text-muted-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ds-tag-list__tag[aria-pressed="true"] .ds-tag-list__count {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-tag-list--dark .ds-tag-list__tag {
+    background: rgba(250, 249, 245, 0.08);
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-tag-list--dark .ds-tag-list__tag[aria-pressed="true"] {
+    background: rgba(250, 249, 245, 0.1);
+    border-color: rgba(250, 249, 245, 0.18);
+    color: var(--text-on-dark);
+  }
+
+  .ds-tag-list--dark .ds-tag-list__count {
+    color: var(--text-on-dark-soft);
+  }
+</style>

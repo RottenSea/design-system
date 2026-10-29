@@ -1,0 +1,16 @@
+---
+import { QuoteBand } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const long =
+  "The second draft is where the piece finds out what it was about, and most of the work is cutting what the first draft needed in order to get there.";
+---
+
+<ExampleLayout title="QuoteBand" bare>
+  <QuoteBand eyebrow="Writing since 2019" attribution="From the 2026 notes" minHeight="420px">
+    Make the small decisions once, then stop deciding.
+  </QuoteBand>
+  <QuoteBand tone="dark" attribution="A longer quote steps down a size" minHeight="420px" hintLabel="none">
+    {long}
+  </QuoteBand>
+</ExampleLayout>

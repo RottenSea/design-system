@@ -1,0 +1,58 @@
+---
+title: MiniCalendar
+description: The month grid in the rail, with the days that have posts.
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A month grid for a rail that shows which days have posts.
+
+<Example system="personal-website" name="mini-calendar" title="A month with posts, this month softened, and the dark tone" />
+
+## When to use
+
+In a SidebarCard in the rail, as an index of when posts went up. It is not a date picker.
+
+## On a page
+
+```astro
+<MiniCalendar counts={{ "2026-05-18": 1, "2026-06-16": 1 }} weekStart="sun" navigable selectable />
+```
+
+`counts` has the posts per day, keyed by date. The grid shows the reader's current month and marks their today, in their own time zone; the build cannot know either, so the browser draws the grid again. `navigable` adds Previous and Next month. `selectable` makes the marked days buttons that send a `ds-select` event with the date, or `null` when the day is pressed again.
+
+## Anatomy
+
+The month and year, the arrows, a row of weekday letters, then square cells that are fractions of the column, so the grid fits a 200px or a 300px rail.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `weekStart` | `mon` (default) or `sun` |
+| `year`, `month` | A fixed month instead of the current one |
+| `emphasis` | `strong` (default) or `soft`: today becomes an outlined chip and marked days lose their fill |
+| `tone` | `cream` (default) or `dark`, where today is a cream chip with night type |
+
+## States
+
+| Day | Looks |
+| --- | --- |
+| With posts | The cream card fill and ink text |
+| Today | The dark surface |
+| Selected | A coral ring |
+| Other | Muted |
+
+## Accessibility
+
+A marked day carries a hidden note, "1 post", for screen readers, and today is marked as the current date. The month's name is a live region, so moving between months is announced. The weekday letters are hidden from screen readers, which read each day's number.
+
+## API
+
+[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro). Ported from the handoff. `counts` is keyed by date instead of the day of one month, so the grid can move between months; `navigable`, `selectable` and the `ds-select` event take the place of `onPrev`, `onNext` and `onSelect`.
+
+## Related
+
+[StatList](../stat-list/), [FilterList](../filter-list/).

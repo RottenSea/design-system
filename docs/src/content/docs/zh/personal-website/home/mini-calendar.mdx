@@ -1,0 +1,58 @@
+---
+title: MiniCalendar 迷你日历
+description: 侧栏里的月历，标出有文章的日子。
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+侧栏里的月历，标出哪些日子有文章。
+
+<Example system="personal-website" name="mini-calendar" title="有文章的一个月、淡一点的本月、深色" />
+
+## 什么时候用
+
+放在侧栏的 SidebarCard 里，作为文章发布时间的索引。它不是日期选择器。
+
+## 页面里怎么写
+
+```astro
+<MiniCalendar counts={{ "2026-05-18": 1, "2026-06-16": 1 }} weekStart="sun" navigable selectable />
+```
+
+`counts` 是每天的文章数，按日期列出。月历显示读者所在时区的当前月份，并标出读者的今天；构建时不知道这两样，所以浏览器里会重画一次。`navigable` 加上“上个月、下个月”按钮。`selectable` 让有文章的日子变成按钮，按下发出 `ds-select` 事件，内容是那天的日期，再按一次是 `null`。
+
+## 结构
+
+月份和年份、两个箭头、一行星期的首字母，下面是正方形的格子。格子按栏宽等分，所以 200px 和 300px 宽的侧栏都放得下。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `weekStart` | `mon`（默认）或 `sun` |
+| `year`、`month` | 固定显示某个月，而不是当前月 |
+| `emphasis` | `strong`（默认）或 `soft`：今天变成描边的方块，有文章的日子去掉底色 |
+| `tone` | `cream`（默认）或 `dark`，深色时今天是奶油色方块配深色字 |
+
+## 状态
+
+| 日子 | 样子 |
+| --- | --- |
+| 有文章 | 奶油色卡片底色，墨色文字 |
+| 今天 | 深色底 |
+| 选中 | 一圈珊瑚色 |
+| 其他 | 次要色 |
+
+## 无障碍
+
+有文章的日子带一句只给读屏软件的说明，例如 “1 post”；今天标为当前日期。月份名称是实时区域，切换月份时会读出来。星期的首字母对读屏软件隐藏，读的是每天的日期。
+
+## API
+
+[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro)。从交付包移植。`counts` 按日期而不是按某个月的第几天列出，所以能在月份之间切换；`navigable`、`selectable` 和 `ds-select` 事件代替 `onPrev`、`onNext` 和 `onSelect`。
+
+## 相关
+
+[StatList 统计列表](../stat-list/)、[FilterList 筛选列表](../filter-list/)。

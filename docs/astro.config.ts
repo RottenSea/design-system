@@ -117,6 +117,22 @@ export default defineConfig({
                   slug: `personal-website/shell/${name}`
                 }))
               ]
+            },
+            {
+              label: "Home page",
+              translations: { "zh-CN": "首页" },
+              items: [
+                {
+                  slug: "personal-website/home",
+                  label: "Overview",
+                  translations: { "zh-CN": "概览" }
+                },
+                ...["quote-band", "article-list-card", "filter-list", "pagination", "stat-list", "mini-calendar"].map(
+                  (name) => ({
+                    slug: `personal-website/home/${name}`
+                  })
+                )
+              ]
             }
           ]
         }

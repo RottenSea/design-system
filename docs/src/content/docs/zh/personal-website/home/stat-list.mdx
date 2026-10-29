@@ -1,0 +1,49 @@
+---
+title: StatList 统计列表
+description: 侧栏卡片里的网站统计。
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+侧栏里的一组名称和数值：文章数、字数、运行时间、最后更新。
+
+<Example system="personal-website" name="stat-list" title="一栏和两栏的统计" />
+
+## 什么时候用
+
+放在侧栏的 SidebarCard 里。属于正文的数字写在正文里。
+
+## 页面里怎么写
+
+```astro
+<SidebarCard title="Stats">
+  <StatList items={[{ label: "Posts", value: 5 }, { label: "Uptime", value: "--", id: "uptime" }]} />
+</SidebarCard>
+```
+
+数字会加千位分隔符。项的 `id` 加在它的数值上，给要用脚本更新的数值用。
+
+## 结构
+
+一栏：一行一项，行间是浅色细线，名称在左边用次要色，数值在右边用墨色。两栏或三栏：数值在上、名称在下，长的数值用 `span` 跨栏。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `columns` | `1`（默认）、`2` 或 `3` |
+| `tone` | `cream`（默认）或 `dark` |
+
+## 无障碍
+
+列表是 `<dl>`：名称是术语，数值是它的说明，读屏软件会成对地读。
+
+## API
+
+[`StatList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/StatList.astro)。从交付包移植。
+
+## 相关
+
+[SidebarCard 侧栏卡片](../../shell/sidebar-card/)、[MiniCalendar 迷你日历](../mini-calendar/)。

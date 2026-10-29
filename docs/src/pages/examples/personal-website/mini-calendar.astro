@@ -1,0 +1,28 @@
+---
+import { MiniCalendar, SidebarCard } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const counts = { "2026-03-04": 1, "2026-03-12": 2, "2026-03-25": 1, "2026-04-02": 1 };
+---
+
+<ExampleLayout title="MiniCalendar">
+  <div class="row">
+    <SidebarCard title="Calendar">
+      <MiniCalendar year={2026} month={3} counts={counts} weekStart="sun" navigable selectable />
+    </SidebarCard>
+    <SidebarCard title="This month, soft">
+      <MiniCalendar emphasis="soft" />
+    </SidebarCard>
+    <SidebarCard title="Dark" tone="dark">
+      <MiniCalendar year={2026} month={3} counts={counts} tone="dark" />
+    </SidebarCard>
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+  }
+</style>

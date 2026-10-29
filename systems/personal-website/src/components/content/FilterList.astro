@@ -1,0 +1,155 @@
+---
+/**
+ * The left rail's filter list: categories, sections, with counts. The selected row has a coral
+ * mark at its left and coral text, with no fill and no pill, because a rail is a list of links,
+ * not a set of tabs. Counts sit at the right in tabular figures.
+ *
+ * Ported from the handoff's FilterList.jsx with the same props, except `onSelect`. Rows with
+ * `href` are links, the current one marked as the page. Rows without are toggle buttons: pressing
+ * one selects it, pressing it again clears it, and the list sends a `ds-select` event whose
+ * detail is the label, or null when cleared. The page does the filtering.
+ *
+ *   <FilterList label="Categories" items={[{ label: "AI", count: 3 }]} />
+ *   list.addEventListener("ds-select", (event) => filter(event.detail));
+ */
+export interface FilterItem {
+  label: string;
+  count?: number;
+  /** Makes the row a link. */
+  href?: string;
+}
+
+interface Props {
+  /** Uppercase micro-label above the list, when it is not in a SidebarCard. */
+  label?: string;
+  items: (FilterItem | string)[];
+  /** The selected row's label. */
+  value?: string;
+  showCount?: boolean;
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { label, items, value, showCount = true, tone = "cream", class: className } = Astro.props;
+const rows = items.map((item) => (typeof item === "string" ? { label: item } : item));
+---
+
+<ds-filter-list class:list={["ds-filter-list", { "ds-filter-list--dark": tone === "dark" }, className]}>
+  {label && <span class="ds-filter-list__label">{label}</span>}
+  {
+    rows.map((row) => {
+      const on = row.label === value;
+      const count = showCount && row.count !== undefined && <span class="ds-filter-list__count">{row.count}</span>;
+      return row.href ? (
+        <a class="ds-filter-list__row" href={row.href} aria-current={on ? "page" : undefined} data-ds-tap="row">
+          <span class="ds-filter-list__text">{row.label}</span>
+          {count}
+        </a>
+      ) : (
+        <button
+          type="button"
+          class="ds-filter-list__row"
+          aria-pressed={on ? "true" : "false"}
+          data-value={row.label}
+          data-ds-tap="row"
+        >
+          <span class="ds-filter-list__text">{row.label}</span>
+          {count}
+        </button>
+      );
+    })
+  }
+</ds-filter-list>
+
+<script>
+  class DsFilterList extends HTMLElement {
+    connectedCallback() {
+      const buttons = [...this.querySelectorAll<HTMLButtonElement>("button[data-value]")];
+      for (const button of buttons) {
+        button.addEventListener("click", () => {
+          const on = button.getAttribute("aria-pressed") !== "true";
+          for (const other of buttons) other.setAttribute("aria-pressed", String(other === button && on));
+          this.dispatchEvent(
+            new CustomEvent("ds-select", { detail: on ? button.dataset.value : null, bubbles: true })
+          );
+        });
+      }
+    }
+
+    /** Selects a row by label, or clears the selection with null, without sending an event. */
+    select(value: string | null) {
+      for (const button of this.querySelectorAll<HTMLButtonElement>("button[data-value]")) {
+        button.setAttribute("aria-pressed", String(button.dataset.value === value));
+      }
+    }
+  }
+
+  if (!customElements.get("ds-filter-list")) customElements.define("ds-filter-list", DsFilterList);
+</script>
+
+<style>
+  .ds-filter-list {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .ds-filter-list__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    padding-bottom: var(--space-xs);
+    text-transform: uppercase;
+  }
+
+  .ds-filter-list__row {
+    align-items: baseline;
+    background: none;
+    border: 0;
+    border-left: 2px solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    gap: var(--space-xs);
+    line-height: var(--body-sm-lh);
+    padding: 5px 0 5px var(--space-xs);
+    text-align: left;
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-filter-list__row:hover {
+    color: var(--text-ink);
+  }
+
+  .ds-filter-list__row:is([aria-pressed="true"], [aria-current="page"]) {
+    border-left-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .ds-filter-list__text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ds-filter-list__count {
+    color: var(--text-muted-soft);
+    font-size: var(--caption-size);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ds-filter-list__row:is([aria-pressed="true"], [aria-current="page"]) .ds-filter-list__count {
+    color: var(--color-primary);
+  }
+
+  .ds-filter-list--dark .ds-filter-list__label,
+  .ds-filter-list--dark .ds-filter-list__row,
+  .ds-filter-list--dark .ds-filter-list__count {
+    color: var(--text-on-dark-soft);
+  }
+</style>

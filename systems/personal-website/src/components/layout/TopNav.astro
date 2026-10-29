@@ -6,10 +6,15 @@
  * that opens a sheet holding them, so a page with only a TopNav still has working small-screen
  * navigation. A page with grouped navigation mounts a NavDrawer and passes its id as `menu`.
  *
+ * `overlay` is for a page that opens on a full-height band such as QuoteBand: the nav is fixed,
+ * takes no height, and starts transparent over the band. Over the first `ramp` pixels of scroll
+ * the wash, the blur and the hairline come up together, written out at every step so nothing
+ * appears at a threshold; the text colours switch once, halfway. With reduced motion the ramp
+ * becomes two states. Without backdrop-filter the bar is near-opaque past halfway.
+ *
  * Ported from the handoff's TopNav.jsx, with links as { label, href } and the current one named
- * by `active`. Left out for now: `signInLabel` and `ctaLabel` (a site's own buttons go in the
- * `actions` slot), and the overlay mode for a page that opens on a full-height band, which
- * arrives with QuoteBand.
+ * by `active`. The nav measures the scroll itself instead of taking `scrollProgress`. Left out:
+ * `signInLabel` and `ctaLabel`; a site's own buttons go in the `actions` slot.
  *
  *   <TopNav brand="The Key of Urala" links={[{ label: "Blog", href: "/" }]} active="Blog">
  *     <ThemeToggle slot="actions" />
@@ -32,6 +37,14 @@ interface Props {
   menuGroups?: MenuGroup[];
   /** A line at the bottom of the nav's own sheet. */
   menuNote?: string;
+  /** Fixed and transparent over a full-height band until the page scrolls. */
+  overlay?: boolean;
+  /** The text colours over the band: `on-dark` for a dark band. */
+  overlayTone?: "ink" | "on-dark";
+  /** The bar's own surface once scrolled. */
+  scrolledTone?: "cream" | "dark";
+  /** The scroll, in px, over which the bar comes up. */
+  ramp?: number;
   class?: string;
 }
 
@@ -44,13 +57,31 @@ const {
   menu,
   menuGroups,
   menuNote,
+  overlay = false,
+  overlayTone = "ink",
+  scrolledTone = "cream",
+  ramp = 120,
   class: className
 } = Astro.props;
 const ownMenu = menu === undefined;
 const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
 ---
 
-<header class:list={["ds-nav", className]}>
+<ds-top-nav
+  class:list={[
+    "ds-nav",
+    {
+      "ds-nav--overlay": overlay,
+      "ds-nav--over-dark": overlay && overlayTone === "on-dark",
+      "ds-nav--dark": scrolledTone === "dark"
+    },
+    className
+  ]}
+  role="banner"
+  data-ramp={overlay ? ramp : undefined}
+  data-floating={overlay ? "" : undefined}
+  style={overlay ? "--ds-nav-p: 0" : undefined}
+>
   <a class="ds-nav__brand" href={brandHref}>
     <slot name="logo" />
     <span class="ds-nav__brand-name">{brand}</span>
@@ -77,12 +108,45 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
       </MenuPanel>
     )
   }
-</header>
+</ds-top-nav>
+
+<script>
+  class DsTopNav extends HTMLElement {
+    connectedCallback() {
+      const ramp = Number(this.dataset.ramp);
+      if (!ramp) return;
+      const reduced = () =>
+        matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        document.documentElement.dataset.reduceMotion === "true";
+      let frame = 0;
+      const update = () => {
+        frame = 0;
+        const raw = Math.min(Math.max(window.scrollY / ramp, 0), 1);
+        const progress = reduced() ? Math.round(raw) : raw;
+        this.style.setProperty("--ds-nav-p", progress.toFixed(3));
+        this.toggleAttribute("data-floating", progress <= 0.5);
+      };
+      update();
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!frame) frame = requestAnimationFrame(update);
+        },
+        { passive: true }
+      );
+    }
+  }
+
+  if (!customElements.get("ds-top-nav")) customElements.define("ds-top-nav", DsTopNav);
+</script>
 
 <style>
   .ds-nav {
     align-items: center;
     background: var(--surface-canvas);
+    --ds-nav-ink: var(--text-ink);
+    --ds-nav-muted: var(--text-muted);
+    color: var(--ds-nav-ink);
     box-sizing: border-box;
     display: flex;
     gap: var(--space-xl);
@@ -99,7 +163,8 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   }
 
   .ds-nav__brand-name {
-    color: var(--text-ink);
+    color: var(--ds-nav-ink);
+    transition: var(--transition-tint);
     font-family: var(--font-sans);
     font-size: var(--title-sm-size);
     font-weight: 500;
@@ -113,7 +178,7 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   }
 
   .ds-nav__link {
-    color: var(--text-muted);
+    color: var(--ds-nav-muted);
     font-family: var(--font-sans);
     font-size: var(--nav-link-size);
     font-weight: var(--nav-link-weight);
@@ -132,7 +197,42 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
 
   .ds-nav__link:hover,
   .ds-nav__link[aria-current="page"] {
-    color: var(--text-ink);
+    color: var(--ds-nav-ink);
+  }
+
+  /* Overlay: fixed over the band, its surface ramping with --ds-nav-p (0 to 1). */
+  .ds-nav--overlay {
+    -webkit-backdrop-filter: saturate(calc(100% + 60% * var(--ds-nav-p))) blur(calc(12px * var(--ds-nav-p)));
+    backdrop-filter: saturate(calc(100% + 60% * var(--ds-nav-p))) blur(calc(12px * var(--ds-nav-p)));
+    background: color-mix(in srgb, var(--surface-blur-cream) calc(var(--ds-nav-p) * 100%), transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--hairline) calc(var(--ds-nav-p) * 100%), transparent);
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 40;
+  }
+
+  .ds-nav--overlay.ds-nav--dark {
+    background: color-mix(in srgb, var(--surface-blur-dark) calc(var(--ds-nav-p) * 100%), transparent);
+    border-bottom-color: color-mix(in srgb, var(--hairline-on-dark) calc(var(--ds-nav-p) * 100%), transparent);
+  }
+
+  /* Text colours switch once: over a dark band while floating, and on a dark bar once scrolled. */
+  .ds-nav--over-dark[data-floating],
+  .ds-nav--overlay.ds-nav--dark:not([data-floating]) {
+    --ds-nav-ink: var(--text-on-dark);
+    --ds-nav-muted: var(--text-on-dark-soft);
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    .ds-nav--overlay:not([data-floating]) {
+      background: var(--surface-blur-cream-opaque);
+    }
+
+    .ds-nav--overlay.ds-nav--dark:not([data-floating]) {
+      background: var(--surface-blur-dark-opaque);
+    }
   }
 
   .ds-nav__actions {

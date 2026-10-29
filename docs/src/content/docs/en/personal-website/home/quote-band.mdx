@@ -1,0 +1,55 @@
+---
+title: QuoteBand
+description: A quote that fills the first screen of a page, one of several at random.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+An opening statement that fills the window: a micro-label, one large serif line, its source, and a hint at the bottom that scrolls on.
+
+<Example system="personal-website" name="quote-band" title="A short quote on the canvas and a long one on the dark surface" viewport={1280} />
+
+## When to use
+
+Once, at the top of a page, in place of a hero. Not as a pull-quote inside an article.
+
+## On a page
+
+```astro
+<TopNav … overlay />
+<QuoteBand eyebrow="Writing since 2019" quotes={quotes} pullNext />
+<main>…</main>
+```
+
+`quotes` is a list of `{ text, attribution }`; each visit shows one at random, and a page without script shows the first. A single quote can go in the slot with `attribution` instead. Pair it with the nav's `overlay`, so the nav takes no height and the band is a whole screen.
+
+With `pullNext`, the element after the band rises over it faster than the page scrolls at first, easing out over the first 60% of a window, so a couple of scrolls reach it. That element gets the canvas behind it, and should be taller than a window.
+
+## Anatomy
+
+The uppercase micro-label, the quote in the display serif wrapped at `measure` (34 characters by default), the source in muted body text, and the hint at the bottom edge: a micro-label over a chevron.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` | `cream` (default), `dark`, or `bare`, which paints no background over a page that has its own |
+| `overlayTone` | With `bare`: `on-dark` (default) or `ink`, for the text colours |
+| `autoSize` | On by default: up to 90 characters display-lg, up to 180 display-md, then display-sm |
+| `hintLabel` | `text` (default) or `none`, the chevron alone with the text as its name |
+| `scrollHint` | The hint's text; `false` drops the hint |
+| `minHeight` | `100svh` by default |
+
+## Accessibility
+
+The quote is a `<blockquote>` in a `<figure>`, with the source as its `<figcaption>`. The hint is a button that scrolls to the content; the arrow-only form keeps a 44px target and an accessible name. The quick rise of `pullNext` is a scroll-driven animation that a reader who asked for reduced motion does not get.
+
+## API
+
+[`QuoteBand.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/QuoteBand.astro). Ported from the handoff. `quotes` and `pullNext` are new; the handoff's `background` layer is left out.
+
+## Related
+
+[TopNav](../../shell/top-nav/), whose `overlay` mode sits over the band.

@@ -79,7 +79,7 @@ const Wrapper = bare ? "div" : "main";
   }
 
   /* Examples stack their parts with the same gap, whatever the components' own margins are. */
-  .example > :global(* + *) {
+  .example:not(.example--bare) > :global(* + *) {
     margin-top: var(--space-md);
   }
 

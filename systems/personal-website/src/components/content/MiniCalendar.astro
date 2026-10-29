@@ -1,0 +1,291 @@
+---
+/**
+ * The rail's month grid: which days have posts. Marked days take the cream card fill and today
+ * takes the dark surface, because dark is this system's sign of selection; other days stay muted.
+ * On a dark card today turns the other way round, a cream chip with night type. Cells are square
+ * fractions of the rail, so the grid fits a 200px or a 300px column. `emphasis="soft"` steps the
+ * grid down a notch: today becomes an outlined chip and marked days lose their fill.
+ *
+ * Ported from the handoff's MiniCalendar.jsx. Its `counts` are keyed by "YYYY-MM-DD" instead of
+ * the day of one month, so the grid can move between months. The build cannot know the reader's
+ * today, so the script draws the grid again in the browser: the reader's current month (unless
+ * `year` and `month` are given) with their today marked. `navigable` adds Previous and Next month
+ * buttons. `selectable` makes marked days buttons that send a `ds-select` event with the date, or
+ * null when the selected day is pressed again.
+ *
+ *   <MiniCalendar counts={{ "2026-05-18": 1, "2026-06-16": 1 }} weekStart="sun" navigable selectable />
+ */
+import { localToday, monthHtml, monthLabel } from "./calendar";
+
+interface Props {
+  /** The month shown; the reader's current month by default. */
+  year?: number;
+  month?: number;
+  /** Posts per day, keyed by "YYYY-MM-DD". */
+  counts?: Record<string, number>;
+  /** Days with posts, when there are no counts. */
+  marked?: string[];
+  weekStart?: "mon" | "sun";
+  navigable?: boolean;
+  selectable?: boolean;
+  tone?: "cream" | "dark";
+  emphasis?: "strong" | "soft";
+  class?: string;
+}
+
+const {
+  year,
+  month,
+  marked = [],
+  weekStart = "mon",
+  navigable = false,
+  selectable = false,
+  tone = "cream",
+  emphasis = "strong",
+  class: className
+} = Astro.props;
+const counts = Astro.props.counts ?? Object.fromEntries(marked.map((date) => [date, 1]));
+// At build time "today" is the build's; the browser redraws with the reader's.
+const [buildYear, buildMonth] = localToday().split("-").map(Number);
+const shownYear = year ?? buildYear;
+const shownMonth = month ?? buildMonth;
+const grid = monthHtml({
+  year: shownYear,
+  month: shownMonth,
+  counts,
+  today: null,
+  weekStart,
+  selectable,
+  selected: null
+});
+---
+
+<ds-mini-calendar
+  class:list={[
+    "ds-cal",
+    { "ds-cal--dark": tone === "dark", "ds-cal--soft": emphasis === "soft" },
+    className
+  ]}
+  data-counts={JSON.stringify(counts)}
+  data-year={year}
+  data-month={month}
+  data-week-start={weekStart}
+  data-selectable={selectable ? "" : undefined}
+>
+  <div class="ds-cal__top">
+    <span class="ds-cal__title" aria-live="polite">{monthLabel(shownYear, shownMonth)}</span>
+    {
+      navigable && (
+        <>
+          <button type="button" class="ds-cal__arrow" data-move="-1" aria-label="Previous month">
+            ‹
+          </button>
+          <button type="button" class="ds-cal__arrow" data-move="1" aria-label="Next month">
+            ›
+          </button>
+        </>
+      )
+    }
+  </div>
+  <div class="ds-cal__grid" set:html={grid} />
+</ds-mini-calendar>
+
+<script>
+  import { localToday, monthHtml, monthLabel } from "./calendar";
+
+  class DsMiniCalendar extends HTMLElement {
+    year = 0;
+    month = 0;
+    selected: string | null = null;
+
+    connectedCallback() {
+      const today = localToday();
+      const [todayYear, todayMonth] = today.split("-").map(Number);
+      this.year = Number(this.dataset.year) || todayYear;
+      this.month = Number(this.dataset.month) || todayMonth;
+      this.draw();
+      this.addEventListener("click", (event) => {
+        const target = event.target as Element;
+        const arrow = target.closest<HTMLButtonElement>("[data-move]");
+        if (arrow) {
+          const index = this.year * 12 + (this.month - 1) + Number(arrow.dataset.move);
+          this.year = Math.floor(index / 12);
+          this.month = (index % 12) + 1;
+          this.draw();
+          return;
+        }
+        const day = target.closest<HTMLButtonElement>("[data-date]");
+        if (!day) return;
+        this.selected = this.selected === day.dataset.date ? null : (day.dataset.date ?? null);
+        this.draw();
+        this.querySelector<HTMLButtonElement>(`[data-date="${day.dataset.date}"]`)?.focus();
+        this.dispatchEvent(new CustomEvent("ds-select", { detail: this.selected, bubbles: true }));
+      });
+    }
+
+    /** Selects a day, or clears the selection with null, without sending an event. */
+    select(date: string | null) {
+      this.selected = date;
+      this.draw();
+    }
+
+    draw() {
+      const title = this.querySelector(".ds-cal__title");
+      const grid = this.querySelector(".ds-cal__grid");
+      if (!title || !grid) return;
+      title.textContent = monthLabel(this.year, this.month);
+      grid.innerHTML = monthHtml({
+        year: this.year,
+        month: this.month,
+        counts: JSON.parse(this.dataset.counts ?? "{}"),
+        today: localToday(),
+        weekStart: this.dataset.weekStart === "sun" ? "sun" : "mon",
+        selectable: this.hasAttribute("data-selectable"),
+        selected: this.selected
+      });
+    }
+  }
+
+  if (!customElements.get("ds-mini-calendar")) customElements.define("ds-mini-calendar", DsMiniCalendar);
+</script>
+
+<style>
+  .ds-cal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+
+  .ds-cal__top {
+    align-items: center;
+    display: flex;
+    gap: var(--space-xxs);
+  }
+
+  .ds-cal__title {
+    color: var(--text-ink);
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    font-weight: 500;
+    line-height: var(--body-sm-lh);
+    min-width: 0;
+  }
+
+  .ds-cal__arrow {
+    align-items: center;
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted-soft);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    height: 22px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    transition: var(--transition-tint);
+    width: 22px;
+  }
+
+  .ds-cal__arrow:hover {
+    background: var(--surface-card);
+    color: var(--text-ink);
+  }
+
+  /* The grid is written as HTML (calendar.ts), so its cells are reached with :global. */
+  .ds-cal__grid {
+    display: grid;
+    gap: 2px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .ds-cal__grid > :global(*) {
+    align-items: center;
+    aspect-ratio: 1;
+    background: transparent;
+    border: 0 solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-muted-soft);
+    display: flex;
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-variant-numeric: tabular-nums;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-cal__grid > :global(.ds-cal__head) {
+    aspect-ratio: auto;
+    font-size: 11px;
+    font-weight: 500;
+    padding-bottom: 2px;
+  }
+
+  .ds-cal__grid > :global(.ds-cal__day--marked) {
+    background: var(--surface-card);
+    color: var(--text-ink);
+    font-weight: 500;
+  }
+
+  .ds-cal__grid > :global(button.ds-cal__day) {
+    cursor: pointer;
+  }
+
+  .ds-cal__grid > :global(button.ds-cal__day:hover) {
+    background: var(--surface-soft);
+  }
+
+  .ds-cal__grid > :global(.ds-cal__day[aria-pressed="true"]) {
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+  }
+
+  .ds-cal__grid > :global(.ds-cal__day--today) {
+    background: var(--surface-dark);
+    color: var(--text-on-dark);
+    font-weight: 500;
+  }
+
+  .ds-cal--soft .ds-cal__grid > :global(.ds-cal__day--marked) {
+    background: transparent;
+  }
+
+  .ds-cal--soft .ds-cal__grid > :global(.ds-cal__day--today) {
+    background: transparent;
+    border-width: 1px;
+    border-color: var(--hairline);
+    color: var(--text-ink);
+  }
+
+  .ds-cal--dark .ds-cal__title {
+    color: var(--text-on-dark);
+  }
+
+  .ds-cal--dark .ds-cal__arrow,
+  .ds-cal--dark .ds-cal__grid > :global(*) {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-cal--dark .ds-cal__grid > :global(.ds-cal__day--marked) {
+    background: rgba(250, 249, 245, 0.1);
+    color: var(--text-on-dark);
+  }
+
+  .ds-cal--dark .ds-cal__grid > :global(.ds-cal__day--today) {
+    background: var(--text-on-dark);
+    color: var(--surface-dark);
+  }
+
+  .ds-cal--dark.ds-cal--soft .ds-cal__grid > :global(.ds-cal__day--today) {
+    background: rgba(250, 249, 245, 0.1);
+    border-color: var(--hairline-on-dark);
+    color: var(--text-on-dark);
+  }
+</style>

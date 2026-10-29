@@ -1,0 +1,48 @@
+---
+title: Home page
+description: The parts of the personal website's home page, and how they fit together.
+sidebar:
+  order: 0
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The home page opens on a quote that fills the window, under a nav that is see-through until the page scrolls. Below it are three columns: categories and tags on the left, the posts and a pager in the middle, statistics and a calendar on the right.
+
+<Example system="personal-website" name="home-page" title="A home page: the quote band, the filters, the posts, the stats and the calendar" viewport={1280} />
+
+Open it at full size to scroll: the nav comes up as the page moves, and the posts rise over the quote faster than the page scrolls at first.
+
+## How the page is put together
+
+```astro
+<TopNav brand="Field Notes" links={links} active="Blog" overlay />
+<QuoteBand eyebrow="Writing since 2019" quotes={quotes} pullNext />
+<main id="main">
+  <ContentGrid>
+    <Fragment slot="left">
+      <FilterList label="Categories" items={categories} />
+      <TagList items={tags} />
+    </Fragment>
+    <ArticleListCard … />
+    <Pagination page={1} pageCount={3} />
+    <Fragment slot="right">
+      <SidebarCard title="Stats"><StatList items={stats} /></SidebarCard>
+      <SidebarCard title="Calendar"><MiniCalendar counts={days} navigable /></SidebarCard>
+    </Fragment>
+  </ContentGrid>
+</main>
+```
+
+The filters, the pager and the calendar only report what the reader chose, with `ds-select` and `ds-page` events; the page decides what to show.
+
+## The parts
+
+| Component | What it does |
+| --- | --- |
+| [QuoteBand](quote-band/) | The quote that fills the first screen, one of several at random |
+| [ArticleListCard](article-list-card/) | One post in the list; PostMeta, the post's meta line |
+| [FilterList](filter-list/) | The rail's categories; TagList, the tags |
+| [Pagination](pagination/) | The numbered pager under the list |
+| [StatList](stat-list/) | The site's statistics in a rail card |
+| [MiniCalendar](mini-calendar/) | The month grid with the days that have posts |

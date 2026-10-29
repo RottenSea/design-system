@@ -1,0 +1,247 @@
+---
+/**
+ * One post in a list: the title in the display serif, a meta line, the excerpt, and the tags,
+ * with an optional 4:3 cover on the right. The whole card is the link and lifts on hover. A
+ * pinned post has a coral pin in the title's first line, in a column of its own, so the title's
+ * left edge does not move.
+ *
+ * Ported from the handoff's ArticleListCard.jsx with the same props. The excerpt is the default
+ * slot and a cover can be the `cover` slot; `date` can come with `datetime` for its <time>. Other
+ * attributes (data-* for a page's filter) go on the card.
+ *
+ *   <ArticleListCard href="/blog/windows" title="安装干净稳定的 Windows" date="2026-06-17" category="System"
+ *     readTime="12 min" tags={["windows", "tutorial"]} pinned>Windows 太臃肿了？…</ArticleListCard>
+ */
+import type { HTMLAttributes } from "astro/types";
+import PinnedFilled from "../../icons/pinned-filled.svg";
+import PostMeta, { type PostMetaItem } from "../content/PostMeta.astro";
+import Surface from "./Surface.astro";
+
+type Props = Omit<HTMLAttributes<"a">, "title"> & {
+  title: string;
+  href?: string;
+  date?: string;
+  /** Machine-readable date for the date's <time>. */
+  datetime?: string;
+  /** Relative age, "6 days ago", joined to the date. */
+  ago?: string;
+  category?: string;
+  /** A number reads "1,240 words". */
+  wordCount?: number | string;
+  readTime?: string;
+  tags?: string[] | string;
+  /** A cover image URL, drawn 4:3 at the right. A `cover` slot takes its place. */
+  coverSrc?: string;
+  pinned?: boolean;
+  pinnedLabel?: string;
+  /** The title's heading level: 2 for a list under the page's h1. */
+  level?: 2 | 3;
+  tone?: "cream" | "dark";
+  class?: string;
+};
+
+const {
+  title,
+  href,
+  date,
+  datetime,
+  ago,
+  category,
+  wordCount,
+  readTime,
+  tags,
+  coverSrc,
+  pinned = false,
+  pinnedLabel = "Pinned",
+  level = 3,
+  tone = "cream",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const tagList = Array.isArray(tags)
+  ? tags
+  : (tags ?? "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+const words = typeof wordCount === "number" ? `${wordCount.toLocaleString("en-US")} words` : wordCount;
+const when = [date, ago].filter(Boolean).join(" · ");
+const meta: PostMetaItem[] = [
+  when ? { icon: "calendar-event" as const, label: when, datetime } : null,
+  category ? { icon: "folder" as const, label: category } : null,
+  words ? { icon: "text-size" as const, label: words } : null,
+  readTime ? { icon: "clock-hour-3" as const, label: readTime } : null
+].filter((part) => part !== null);
+const hasCover = Boolean(coverSrc) || Astro.slots.has("cover");
+const Heading = level === 2 ? "h2" : "h3";
+const dark = tone === "dark";
+---
+
+<Surface
+  variant="outline"
+  padding="md"
+  tone={tone}
+  hover={Boolean(href) && !dark}
+  href={href}
+  class:list={["ds-article-card", { "ds-article-card--cover": hasCover, "ds-article-card--dark": dark }, className]}
+  {...rest}
+>
+  <div class="ds-article-card__body">
+    <div class:list={["ds-article-card__head", { "ds-article-card__head--pinned": pinned }]}>
+      {
+        pinned && (
+          <span class="ds-article-card__pin" role="img" aria-label={pinnedLabel} title={pinnedLabel}>
+            <PinnedFilled width={20} height={20} aria-hidden="true" />
+          </span>
+        )
+      }
+      <Heading class="ds-article-card__title">{title}</Heading>
+    </div>
+    {meta.length > 0 && <PostMeta items={meta} tone={tone} />}
+    {
+      Astro.slots.has("default") && (
+        <p class="ds-article-card__excerpt">
+          <slot />
+        </p>
+      )
+    }
+    {
+      tagList.length > 0 && (
+        <ul class="ds-article-card__tags" aria-label="Tags">
+          {tagList.map((tag) => (
+            <li class="ds-article-card__tag">{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  {
+    hasCover && (
+      <div class="ds-article-card__cover">
+        <slot name="cover">
+          <img src={coverSrc} alt="" loading="lazy" />
+        </slot>
+      </div>
+    )
+  }
+</Surface>
+
+<style>
+  .ds-article-card {
+    align-items: start;
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ds-article-card--cover {
+    grid-template-columns: minmax(0, 1fr) 160px;
+  }
+
+  .ds-article-card--dark:hover {
+    border-color: rgba(250, 249, 245, 0.18);
+  }
+
+  .ds-article-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+
+  .ds-article-card__head {
+    align-items: start;
+    display: grid;
+    gap: var(--space-xs);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ds-article-card__head--pinned {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .ds-article-card__pin {
+    align-items: center;
+    color: var(--color-primary);
+    display: inline-flex;
+    height: calc(var(--display-sm-size) * var(--display-sm-lh));
+  }
+
+  .ds-article-card__title {
+    color: var(--text-ink);
+    font-family: var(--font-display);
+    font-size: var(--display-sm-size);
+    font-weight: 400;
+    letter-spacing: var(--display-sm-ls);
+    line-height: var(--display-sm-lh);
+    margin: 0;
+    min-width: 0;
+    text-wrap: pretty;
+  }
+
+  .ds-article-card--dark .ds-article-card__title {
+    color: var(--text-on-dark);
+  }
+
+  .ds-article-card__excerpt {
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-lh);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .ds-article-card--dark .ds-article-card__excerpt {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-article-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xxs);
+    list-style: none;
+    margin: var(--space-xxs) 0 0;
+    padding: 0;
+  }
+
+  .ds-article-card__tag {
+    background: var(--surface-card);
+    border-radius: var(--radius-xs);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-size);
+    font-weight: 500;
+    padding: 2px 8px;
+  }
+
+  .ds-article-card--dark .ds-article-card__tag {
+    background: rgba(250, 249, 245, 0.08);
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-article-card__cover {
+    aspect-ratio: 4 / 3;
+    background: var(--surface-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .ds-article-card__cover > :global(img) {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .ds-article-card--cover {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ds-article-card__cover {
+      grid-row: 1;
+    }
+  }
+</style>
