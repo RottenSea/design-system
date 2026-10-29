@@ -5,8 +5,7 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 <ExampleLayout title="SkipLink">
   <SkipLink href="#content" />
-  <p class="text">The link stays hidden until it has the keyboard focus. Show it <a href="#" data-show-skip>here</a>.</p>
-  <p id="content" class="text" tabindex="-1">The main content starts here.</p>
+  <p id="content" class="text" tabindex="-1">Show it <a href="#" data-show-skip>here</a>.</p>
 </ExampleLayout>
 
 <script>
@@ -18,13 +17,9 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 </script>
 
 <style>
+  /* Room above the line for the link, which shows at the top left. */
   .text {
     font-size: var(--body-sm-size);
-    margin: 0;
-  }
-
-  /* Room above the text for the link, which shows at the top left. */
-  .text:first-of-type {
-    margin-top: var(--space-xl);
+    margin: var(--space-xl) 0 0;
   }
 </style>
