@@ -1,0 +1,32 @@
+---
+title: Page transitions
+description: The fade between pages and the scrollbar, in CSS alone.
+sidebar:
+  order: 4
+---
+
+Two things every page has without a component.
+
+## Page transitions
+
+```astro
+---
+import "@rottensea/ds-personal-website/page-transitions.css";
+---
+```
+
+Changing page fades the old page out and the new one in over `--motion-base`, while the nav stays where it is. These are the browser's own cross-document view transitions: every page still loads in full and runs its scripts, and Back and Forward return to where the reader was. A browser without them changes page at once, and so does a reader who asked for reduced motion, in the OS or with SettingsMenu.
+
+The stylesheet is separate so a site chooses it; the docs site does not use it.
+
+## The scrollbar
+
+`base.css` makes the page's scrollbar thin, in the soft muted text colour on the page's own ground, and keeps its space whether the page scrolls or not, so a short page and a long one centre the same. Only the right side is kept: keeping both would leave a strip of canvas beside every full-width dark band, such as the footer. Browsers that ignore `scrollbar-color` and `scrollbar-width` draw their own, and macOS draws overlay scrollbars that take no space.
+
+## API
+
+[`page-transitions.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/page-transitions.css) and [`base.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/base.css).
+
+## Related
+
+[Motion](../../motion/), [SettingsMenu](../settings-menu/).

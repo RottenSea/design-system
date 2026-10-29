@@ -1,0 +1,65 @@
+---
+title: SearchPanel 搜索面板
+description: 浮在页面上的搜索面板，索引由页面提供。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+导航线下面、遮罩上方的一个面板：搜索框，下面是结果，每条是标题、信息行和命中的那一句。
+
+<Example system="personal-website" name="search-panel" title="搜索按钮和面板，用一个编出来的索引" />
+
+## 什么时候用
+
+整个网站放一个，从导航里的搜索按钮打开。面板自己不查询：每次输入由页面用自己的索引回答，例如 Pagefind。
+
+## 页面里怎么写
+
+```astro
+<IconButton icon="search" label="Search" data-ds-search-open="site-search" />
+<SearchPanel id="site-search" />
+
+<script>
+  const panel = document.querySelector("ds-search-panel");
+  panel.addEventListener("ds-open", () => loadIndex());
+  panel.addEventListener("ds-query", async (event) => {
+    panel.setLoading(true);
+    panel.setResults(await find(event.detail));
+  });
+</script>
+```
+
+一条结果是 `{ title, href, meta, excerpt, group }`。`excerpt` 里的 `<mark>` 保留，别的标记当文字显示。`setResults([], message)` 改为显示一句话，例如说明为什么没有索引。
+
+## 结构
+
+560px 宽的卡片，在导航线下面 24px。56px 高的一行：搜索图标、输入框、关闭按钮；下面是结果，在卡片里滚动；最下面一行按键提示，窄于 768px 时不显示。标出的那一行是奶油色底。加载时三条骨架线闪动。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `placeholder`、`emptyLabel`、`hint` | 输入框的占位文字、“No matches”、按键提示 |
+| `shortcuts` | `true`（默认）：按 “/” 或 Ctrl+K、⌘K 打开 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 打开 | 后面的页面不能操作，焦点在输入框 |
+| 加载中 | 结果的位置显示骨架线 |
+| 没有结果 | “No matches” |
+
+## 无障碍
+
+名为 “Search” 的原生模态 `<dialog>`。输入框是 combobox；方向键用 `aria-activedescendant` 标出一条结果，焦点留在输入框，回车打开。Escape 和点遮罩关闭面板。状态行是实时区域。
+
+## API
+
+[`SearchPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SearchPanel.astro)。从交付包移植，用事件和方法代替它的 props 和回调。
+
+## 相关
+
+[TopNav 顶部导航](../../shell/top-nav/)。

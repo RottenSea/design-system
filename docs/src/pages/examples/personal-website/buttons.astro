@@ -1,0 +1,33 @@
+---
+import { Button } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Button">
+  <div class="row">
+    <Button>Download</Button>
+    <Button variant="secondary" iconLeft="link">Copy link</Button>
+    <Button variant="secondary" size="sm" iconLeft="share">Share poster</Button>
+    <Button variant="text" iconRight="arrow-right">Read more</Button>
+    <Button disabled>Download</Button>
+  </div>
+  <div class="row dark" data-theme="dark">
+    <Button variant="secondary-on-dark">Keep editing</Button>
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .dark {
+    background: var(--surface-dark);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    width: fit-content;
+  }
+</style>

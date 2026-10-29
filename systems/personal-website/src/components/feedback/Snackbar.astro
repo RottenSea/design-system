@@ -1,0 +1,82 @@
+---
+/**
+ * Says that something happened, then leaves: one line at the bottom of the window on the inverse
+ * surface, a dark bar on a cream page and a cream bar on a dark one, as Tooltip is. One bar at a
+ * time; a second message replaces the first. Never for anything the reader must act on (that is
+ * Dialog) or for form errors.
+ *
+ * Ported from the handoff's Snackbar.jsx, without its action button, close button and status
+ * dot, which nothing on this site uses. The handoff leaves the timer to the page; here
+ * `show(message)` shows the bar for `duration` milliseconds. It is a polite live region, so
+ * screen readers read the message without moving the focus.
+ *
+ *   <Snackbar id="toast" />
+ *   document.getElementById("toast").show("Link copied");
+ */
+interface Props {
+  id: string;
+  /** How long a message stays, in milliseconds. */
+  duration?: number;
+  class?: string;
+}
+
+const { id, duration = 4000, class: className } = Astro.props;
+---
+
+<ds-snackbar id={id} class:list={["ds-snackbar", className]} data-duration={duration} role="status" aria-live="polite">
+  <span class="ds-snackbar__message"></span>
+</ds-snackbar>
+
+<script>
+  class DsSnackbar extends HTMLElement {
+    #timer = 0;
+
+    /** Shows the message, replacing any shown now. */
+    show(message: string) {
+      const text = this.querySelector(".ds-snackbar__message");
+      if (!text) return;
+      clearTimeout(this.#timer);
+      text.textContent = message;
+      this.toggleAttribute("data-shown", true);
+      this.#timer = window.setTimeout(() => this.hide(), Number(this.dataset.duration) || 4000);
+    }
+
+    hide() {
+      clearTimeout(this.#timer);
+      this.removeAttribute("data-shown");
+    }
+  }
+
+  if (!customElements.get("ds-snackbar")) customElements.define("ds-snackbar", DsSnackbar);
+</script>
+
+<style>
+  .ds-snackbar {
+    background: var(--text-ink);
+    border-radius: var(--radius-md);
+    bottom: var(--space-lg);
+    box-shadow: var(--shadow-float);
+    box-sizing: border-box;
+    color: var(--surface-canvas);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    left: 50%;
+    line-height: var(--body-sm-lh);
+    max-width: calc(100vw - 2 * var(--space-lg));
+    opacity: 0;
+    padding: var(--space-sm) var(--space-md);
+    pointer-events: none;
+    position: fixed;
+    transform: translateX(-50%);
+    transition:
+      var(--transition-fade),
+      visibility var(--motion-base);
+    visibility: hidden;
+    z-index: 70;
+  }
+
+  .ds-snackbar[data-shown] {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>

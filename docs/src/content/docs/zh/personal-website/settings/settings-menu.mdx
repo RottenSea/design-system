@@ -1,0 +1,65 @@
+---
+title: SettingsMenu 显示设置
+description: 一个圆按钮后面的显示设置：主题和减少动效。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+一个圆按钮，点开是一个小面板：主题三选一（Light、Dark、System），一个 Reduce motion 开关。改了立即生效，并且记住。
+
+<Example system="personal-website" name="settings-menu" title="设置按钮，以及单独的两个控件：SegmentedControl 和 Switch" />
+
+## 什么时候用
+
+放一次，在导航最右边。网站想要“跟随系统”和减少动效时，用它代替 ThemeToggle。
+
+## 页面里怎么写
+
+```astro
+<head>
+  <ThemeScript storageKey="theme-preference" motionKey="reduce-motion" />
+</head>
+<TopNav …>
+  <SettingsMenu slot="actions" storageKey="theme-preference" motionKey="reduce-motion" />
+</TopNav>
+```
+
+SegmentedControl 和 Switch 也能单独用。两个都在改变时发出 `ds-change`，带上新的值；不发事件地设值用 `select(value)` 和 `checked` 属性。
+
+## 结构
+
+36px 的 IconButton，图标是 `adjustments`。面板宽 280px，画布底色、细线边框、`--shadow-float`，在按钮下方，右边缘和按钮对齐，不超出窗口。里面是大写小标签 “Theme”、SegmentedControl、一条浅色细线，再是带一行说明的 Switch。
+
+SegmentedControl 是奶油色卡片上的一条轨道，选中的那格凸起成画布底色加细线。Switch 是 44 × 24 的轨道，开着是珊瑚色，画布色的圆钮在 `--motion-base` 内滑过去。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `storageKey`、`motionKey` | localStorage 的键名，ThemeScript 要读同样的 |
+| `label` | 按钮和面板的名字，“Display settings” |
+| `size`（SegmentedControl） | `md`（默认）或 `sm` |
+| `tone` | `cream` 或 `canvas`（默认），或 `dark` |
+| `description`、`disabled`（Switch） | 标签下的一行说明；不能改的开关 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| System | 跟随系统，页面开着时系统改了也跟着变；什么都不存 |
+| 打开减少动效 | `<html>` 上有 `data-reduce-motion="true"`：过渡和动画立刻结束，换页不再淡入淡出 |
+| 系统要求减少动效 | 开关显示为开，在这里关不掉 |
+
+## 无障碍
+
+面板是名为 “Display settings” 的原生 popover：点外面或按 Escape 关闭，按钮的 `aria-expanded` 跟着变。SegmentedControl 是单选组，不是标签页，因为选了是设一个值，不是显示另一块内容；方向键同时移动选择和焦点。Switch 是放在标签里的 `role="switch"` 按钮。
+
+## API
+
+[`SettingsMenu.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SettingsMenu.astro)、[`SegmentedControl.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/SegmentedControl.astro)、[`Switch.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/Switch.astro)。SegmentedControl 和 Switch 从交付包移植；交付包没有设置面板，这里把它们放进一个和 DropdownMenu 一样大的 popover。
+
+## 相关
+
+[ThemeToggle 主题切换](../../shell/theme-toggle/)、[动效](../../motion/)。

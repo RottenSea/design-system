@@ -1,0 +1,206 @@
+---
+/**
+ * The display settings behind one round button: the theme, as Light, Dark or System, and Reduce
+ * motion. A choice applies at once and is remembered in localStorage. It owns data-theme and
+ * data-reduce-motion on <html>; every colour and every motion rule follows from those. Put
+ * ThemeScript, with the same keys, in the <head> so both are set before the first paint.
+ *
+ * The handoff has ThemeToggle and a site-level reduced-motion switch but no panel; this one is
+ * made of its SegmentedControl and Switch under a small popover, the size of DropdownMenu's.
+ * The panel is a native popover: a click outside or Escape closes it, and the focus goes back to
+ * the button. System follows the OS as it changes. When the OS already asks for reduced motion,
+ * the switch shows on and cannot be turned off here.
+ *
+ *   <TopNav …><SettingsMenu slot="actions" storageKey="theme-preference" /></TopNav>
+ */
+import IconButton from "../buttons/IconButton.astro";
+import SegmentedControl from "../forms/SegmentedControl.astro";
+import Switch from "../forms/Switch.astro";
+
+interface Props {
+  /** The localStorage key for the theme; ThemeScript reads the same one. */
+  storageKey?: string;
+  /** The localStorage key for Reduce motion; ThemeScript reads the same one. */
+  motionKey?: string;
+  /** The panel's id, unique on the page. */
+  id?: string;
+  /** The button's and the panel's accessible name. */
+  label?: string;
+  tone?: "canvas" | "dark";
+  class?: string;
+}
+
+const {
+  storageKey = "ds-theme",
+  motionKey = "ds-reduce-motion",
+  id = "ds-settings",
+  label = "Display settings",
+  tone = "canvas",
+  class: className
+} = Astro.props;
+---
+
+<ds-settings
+  class:list={["ds-settings", className]}
+  data-storage-key={storageKey}
+  data-motion-key={motionKey}
+>
+  <IconButton icon="adjustments" label={label} tone={tone} popovertarget={id} aria-haspopup="dialog" />
+  <div id={id} popover class="ds-settings__panel" role="dialog" aria-label={label}>
+    <p class="ds-settings__heading">Theme</p>
+    <SegmentedControl
+      label="Theme"
+      value="system"
+      options={[
+        { value: "light", label: "Light" },
+        { value: "dark", label: "Dark" },
+        { value: "system", label: "System" }
+      ]}
+      class="ds-settings__theme"
+    />
+    <Switch label="Reduce motion" description="Fades and slides finish at once." class="ds-settings__motion" />
+  </div>
+</ds-settings>
+
+<script>
+  type Selectable = HTMLElement & { select(value: string | null): void };
+  type Toggle = HTMLElement & { checked: boolean; disabled: boolean };
+
+  const read = (key: string) => {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  };
+  const write = (key: string, value: string | null) => {
+    try {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    } catch {
+      // Private browsing can refuse storage; the setting still applies to this page.
+    }
+  };
+
+  class DsSettings extends HTMLElement {
+    connectedCallback() {
+      const themeKey = this.dataset.storageKey ?? "ds-theme";
+      const motionKey = this.dataset.motionKey ?? "ds-reduce-motion";
+      const root = document.documentElement;
+      const dark = matchMedia("(prefers-color-scheme: dark)");
+      const calm = matchMedia("(prefers-reduced-motion: reduce)");
+      const theme = this.querySelector<Selectable>(".ds-settings__theme");
+      const motion = this.querySelector<Toggle>(".ds-settings__motion");
+      const button = this.querySelector<HTMLButtonElement>("button[popovertarget]");
+      const panel = this.querySelector<HTMLElement>("[popover]");
+
+      const chosenTheme = () => {
+        const saved = read(themeKey);
+        return saved === "light" || saved === "dark" ? saved : "system";
+      };
+      const applyTheme = () => {
+        const choice = chosenTheme();
+        root.dataset.theme = choice === "system" ? (dark.matches ? "dark" : "light") : choice;
+      };
+      const showMotion = () => {
+        if (!motion) return;
+        motion.disabled = calm.matches;
+        motion.checked = calm.matches || read(motionKey) === "true";
+      };
+
+      theme?.select(chosenTheme());
+      showMotion();
+      theme?.addEventListener("ds-change", (event) => {
+        const value = (event as CustomEvent<string>).detail;
+        write(themeKey, value === "system" ? null : value);
+        applyTheme();
+      });
+      motion?.addEventListener("ds-change", (event) => {
+        const on = (event as CustomEvent<boolean>).detail;
+        write(motionKey, on ? "true" : null);
+        if (on) root.dataset.reduceMotion = "true";
+        else delete root.dataset.reduceMotion;
+      });
+      dark.addEventListener("change", () => {
+        if (chosenTheme() === "system") applyTheme();
+      });
+      calm.addEventListener("change", showMotion);
+
+      // The panel opens in the top layer: its right edge under the button's, kept 8px inside the
+      // window. Its width is fixed in CSS, so it can be read before the panel shows.
+      panel?.addEventListener("beforetoggle", (event) => {
+        if ((event as ToggleEvent).newState !== "open" || !button) return;
+        const box = button.getBoundingClientRect();
+        const room = document.documentElement.clientWidth;
+        const width = Math.min(Number.parseFloat(getComputedStyle(panel).width) || 280, room - 16);
+        panel.style.top = `${box.bottom + 8}px`;
+        panel.style.left = `${Math.min(Math.max(8, box.right - width), room - width - 8)}px`;
+      });
+      panel?.addEventListener("toggle", (event) => {
+        button?.setAttribute("aria-expanded", String((event as ToggleEvent).newState === "open"));
+      });
+      window.addEventListener("resize", () => panel?.hidePopover(), { passive: true });
+    }
+  }
+
+  if (!customElements.get("ds-settings")) customElements.define("ds-settings", DsSettings);
+</script>
+
+<style>
+  .ds-settings {
+    display: inline-flex;
+  }
+
+  .ds-settings__panel {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-float);
+    box-sizing: border-box;
+    color: var(--text-body);
+    flex-direction: column;
+    gap: var(--space-md);
+    inset: auto;
+    margin: 0;
+    max-width: calc(100vw - 16px);
+    opacity: 0;
+    padding: var(--space-md);
+    position: fixed;
+    transition:
+      opacity var(--motion-fast) var(--ease-enter),
+      overlay var(--motion-fast) allow-discrete,
+      display var(--motion-fast) allow-discrete;
+    width: 280px;
+  }
+
+  .ds-settings__panel:popover-open {
+    display: flex;
+    opacity: 1;
+  }
+
+  @starting-style {
+    .ds-settings__panel:popover-open {
+      opacity: 0;
+    }
+  }
+
+  .ds-settings__heading {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    margin: 0 0 calc(-1 * var(--space-xs));
+    text-transform: uppercase;
+  }
+
+  .ds-settings__panel > :global(.ds-settings__theme) {
+    display: flex;
+  }
+
+  .ds-settings__panel > :global(.ds-settings__motion) {
+    border-top: 1px solid var(--hairline-soft);
+    padding-top: var(--space-md);
+  }
+</style>

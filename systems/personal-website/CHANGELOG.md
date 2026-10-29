@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `SettingsMenu`, the display settings behind one round button: the theme as Light, Dark or System, and Reduce motion, which sets `data-reduce-motion` on `<html>`. Both apply at once and are remembered. It is made of `SegmentedControl` and `Switch`, ported from the handoff, which work on their own too. `ThemeScript` takes `motionKey` and sets Reduce motion before the first paint.
+- `SearchPanel`, ported from the handoff: search in a panel over the page. It never fetches; the page answers its `ds-query` events with `setResults()`. "/" and Ctrl+K or ⌘K open it.
+- `PostShare`: Copy link, and a poster of a post with a QR code to download or share. It is made of `Button`, `Dialog` and `Snackbar`, ported from the handoff. The `qrcode` package is a new dependency.
+- `page-transitions.css`, a stylesheet a site can import for a fade between pages, with the browser's own cross-document view transitions.
+- The Tabler icons `adjustments`, `download`, `link`, `search` and `share`.
+
+### Changed
+
+- The page's scrollbar is thin, in the soft muted text colour, and its space is kept on every page, so pages centre the same whether they scroll or not.
+
 ## [0.6.0] - 2026-10-29
 
 This release adds the parts of a post page: the table of contents, the copyright card, the links to the previous and next posts, and the avatar for an about page. Nothing a site already uses changes.

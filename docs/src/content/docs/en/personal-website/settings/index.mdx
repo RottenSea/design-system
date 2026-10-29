@@ -1,0 +1,31 @@
+---
+title: Settings and search
+description: The display settings, search, sharing, the scrollbar and page transitions.
+sidebar:
+  order: 0
+---
+
+The parts a reader reaches from anywhere on the site: the display settings and search in the nav, sharing at the end of a post, and two things every page has without a component, the scrollbar and the fade between pages.
+
+## How the page is put together
+
+```astro
+<TopNav brand="Field Notes" links={links}>
+  <IconButton slot="actions" icon="search" label="Search" data-ds-search-open="site-search" />
+  <SettingsMenu slot="actions" storageKey="theme-preference" />
+</TopNav>
+<SearchPanel id="site-search" />
+…
+<PostShare title={title} url={url} site="Field Notes" date={date} cover={cover} />
+```
+
+ThemeScript in the `<head>` takes the same `storageKey` and `motionKey` as SettingsMenu, so the theme and Reduce motion are set before the first paint.
+
+## The parts
+
+| Component | What it does |
+| --- | --- |
+| [SettingsMenu](settings-menu/) | The theme and Reduce motion behind one button; SegmentedControl and Switch, the controls in it |
+| [SearchPanel](search-panel/) | Search in a panel over the page; the page brings the index |
+| [PostShare](post-share/) | Copy link and a poster with a QR code; Button, Dialog and Snackbar, its parts |
+| [Page transitions](page-transitions/) | The fade between pages, and the scrollbar |

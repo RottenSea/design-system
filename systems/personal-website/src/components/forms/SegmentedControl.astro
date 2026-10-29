@@ -1,0 +1,167 @@
+---
+/**
+ * Two to four short options for how the reader sees the same thing: the theme, list or grid. The
+ * container is the track on the cream card, and the chosen option is raised to the canvas with a
+ * hairline, so it reads on the canvas and on a card alike.
+ *
+ * Ported from the handoff's SegmentedControl.jsx with the same props, except `onChange`. The
+ * handoff marks it up as tabs; this is a radio group, since choosing an option sets a value
+ * rather than showing a panel. The arrow keys move the choice and the focus together, and the
+ * control sends a `ds-change` event whose detail is the new value. `select(value)` sets it
+ * without an event.
+ *
+ *   <SegmentedControl label="Theme" value="system" options={["Light", "Dark", "System"]} />
+ */
+export interface SegmentOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+interface Props {
+  options: (SegmentOption | string)[];
+  value?: string;
+  /** The group's accessible name. */
+  label: string;
+  size?: "sm" | "md";
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { options, value, label, size = "md", tone = "cream", class: className } = Astro.props;
+const items = options.map((option) =>
+  typeof option === "string" ? { value: option.toLowerCase(), label: option } : option
+);
+const chosen = items.some((item) => item.value === value) ? value : items[0]?.value;
+---
+
+<ds-segmented
+  class:list={["ds-segmented", `ds-segmented--${size}`, { "ds-segmented--dark": tone === "dark" }, className]}
+  role="radiogroup"
+  aria-label={label}
+>
+  {
+    items.map((item) => {
+      const on = item.value === chosen;
+      return (
+        <button
+          type="button"
+          role="radio"
+          class="ds-segmented__option"
+          aria-checked={on ? "true" : "false"}
+          tabindex={on ? 0 : -1}
+          disabled={item.disabled}
+          data-value={item.value}
+          data-ds-tap="cell"
+        >
+          {item.label}
+        </button>
+      );
+    })
+  }
+</ds-segmented>
+
+<script>
+  class DsSegmented extends HTMLElement {
+    connectedCallback() {
+      const options = () => [...this.querySelectorAll<HTMLButtonElement>("button[data-value]:not(:disabled)")];
+      const choose = (button: HTMLButtonElement) => {
+        if (button.getAttribute("aria-checked") === "true") return;
+        this.select(button.dataset.value ?? null);
+        this.dispatchEvent(new CustomEvent("ds-change", { detail: button.dataset.value, bubbles: true }));
+      };
+      this.addEventListener("click", (event) => {
+        const button = (event.target as Element).closest<HTMLButtonElement>("button[data-value]");
+        if (button && !button.disabled) choose(button);
+      });
+      this.addEventListener("keydown", (event) => {
+        const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+        if (!step) return;
+        event.preventDefault();
+        const list = options();
+        const current = list.findIndex((button) => button.getAttribute("aria-checked") === "true");
+        const next = list[(current + step + list.length) % list.length];
+        if (!next) return;
+        choose(next);
+        next.focus();
+      });
+    }
+
+    /** Sets the chosen value without sending an event. */
+    select(value: string | null) {
+      for (const button of this.querySelectorAll<HTMLButtonElement>("button[data-value]")) {
+        const on = button.dataset.value === value;
+        button.setAttribute("aria-checked", String(on));
+        button.tabIndex = on ? 0 : -1;
+      }
+    }
+  }
+
+  if (!customElements.get("ds-segmented")) customElements.define("ds-segmented", DsSegmented);
+</script>
+
+<style>
+  .ds-segmented {
+    align-items: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    display: inline-flex;
+    gap: var(--space-xxs);
+    padding: var(--space-xxs);
+  }
+
+  .ds-segmented__option {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 1 1 auto;
+    font-family: var(--font-sans);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    gap: var(--space-xs);
+    height: 32px;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 var(--space-md);
+    transition: var(--transition-tint);
+    white-space: nowrap;
+  }
+
+  .ds-segmented--sm .ds-segmented__option {
+    height: 24px;
+  }
+
+  .ds-segmented__option:hover:not(:disabled) {
+    color: var(--text-ink);
+  }
+
+  .ds-segmented__option[aria-checked="true"] {
+    background: var(--surface-canvas);
+    border-color: var(--hairline);
+    color: var(--text-ink);
+  }
+
+  .ds-segmented__option:disabled {
+    cursor: not-allowed;
+  }
+
+  .ds-segmented--dark {
+    background: var(--surface-dark-elevated);
+  }
+
+  .ds-segmented--dark .ds-segmented__option {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-segmented--dark .ds-segmented__option[aria-checked="true"] {
+    background: rgba(250, 249, 245, 0.14);
+    border-color: transparent;
+    color: var(--text-on-dark);
+  }
+</style>

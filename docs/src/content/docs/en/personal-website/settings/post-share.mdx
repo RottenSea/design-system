@@ -1,0 +1,66 @@
+---
+title: PostShare
+description: Copy link and a poster with a QR code, at the end of a post.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Two buttons at the end of a post. Copy link copies the address and says so. Share poster opens a dialog with a poster of the post: the cover, the title, the description, the site and the date, and a QR code of the address, to download or hand to the system's share sheet.
+
+<Example system="personal-website" name="post-share" title="The two buttons; Share poster opens the poster" />
+
+It is made of three parts that work on their own:
+
+<Example system="personal-website" name="buttons" title="Button: primary, secondary, small, text, disabled, and on the dark surface" />
+
+## When to use
+
+Once per post, under the copyright card.
+
+## On a page
+
+```astro
+<PostShare title={title} description={description} url={url} site="Field Notes"
+  date="2026-03-04" cover={coverUrl} filename="hairlines" />
+
+<Button variant="secondary" iconLeft="link">Copy link</Button>
+<Dialog id="note" title="A title">…<Fragment slot="actions">…</Fragment></Dialog>
+<Snackbar id="toast" />   <!-- toast.show("Saved") -->
+```
+
+## Anatomy
+
+The poster is 1080 by 1440 on the canvas of the light theme, whatever the page's theme: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code in ink at the right. It is drawn when the dialog first opens, after its fonts have loaded.
+
+Dialog is a centred card that swings in from the diagonal. Snackbar is one line at the bottom, on the inverse surface.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `cover` | The cover's URL; without it, the cream card |
+| `filename` | The PNG's name |
+| `variant` (Button) | `primary`, `secondary`, `secondary-on-dark` or `text` |
+| `size` (Dialog) | `sm` (420px), `md` (560px) or `lg` (720px) |
+| `depth` (Dialog) | `tilt`, `lift` or `none` |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Link copied | "Link copied" for four seconds; "Couldn't copy the link" if the browser refuses |
+| Sharing files possible | The dialog also has Share, for the system's share sheet |
+
+## Accessibility
+
+The poster's canvas is an image named after the post. The dialog is a native modal with its title as its name; Escape, the scrim and the close button close it. The snackbar is a polite live region.
+
+## API
+
+[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro), [`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro), [`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro) and [`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro). Button, Dialog and Snackbar are ported from the handoff; the handoff has no share component. The QR code comes from the `qrcode` package.
+
+## Related
+
+[PostLicense](../../post/post-license/).

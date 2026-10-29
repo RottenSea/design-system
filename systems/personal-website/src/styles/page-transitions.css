@@ -1,0 +1,30 @@
+/*
+ * Page transitions, for a site to import once: a change of page fades the old page out and the
+ * new one in over --motion-base, while the nav stays where it is. They are the browser's own
+ * cross-document view transitions, so every page still loads in full and its scripts run as
+ * usual, and Back and Forward return to where the reader was. A browser without them changes
+ * page at once, and so does a reader who asked for reduced motion, in the OS or with
+ * data-reduce-motion="true".
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+/* Every page has one TopNav; with its own name it is not part of the fade. */
+.ds-nav {
+  view-transition-name: ds-nav;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--ease-enter);
+}
+
+html[data-reduce-motion="true"]::view-transition-group(*),
+html[data-reduce-motion="true"]::view-transition-old(*),
+html[data-reduce-motion="true"]::view-transition-new(*) {
+  animation: none;
+}

@@ -11,6 +11,15 @@
     -moz-osx-font-smoothing: grayscale;
     /* Show only the weights and styles fonts.css loads instead of faking bold or italic. */
     font-synthesis: none;
+    /*
+     * The page's scrollbar: thin, in the soft muted text colour on the page's own ground. Its
+     * space is kept whether the page scrolls or not, so a short page and a long one centre the
+     * same. Only the right side is kept: keeping both would leave a strip of canvas beside every
+     * full-width dark band. Browsers that ignore these properties draw their own.
+     */
+    scrollbar-color: var(--text-muted-soft) transparent;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
   }
 
   body {

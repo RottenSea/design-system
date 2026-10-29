@@ -1,0 +1,31 @@
+---
+title: 设置和搜索
+description: 显示设置、搜索、分享、滚动条和页面切换。
+sidebar:
+  order: 0
+---
+
+读者在网站任何地方都能用到的部分：导航里的显示设置和搜索，文章末尾的分享，以及每一页都有、不需要组件的两样：滚动条和换页时的淡入淡出。
+
+## 一页怎么拼起来
+
+```astro
+<TopNav brand="Field Notes" links={links}>
+  <IconButton slot="actions" icon="search" label="Search" data-ds-search-open="site-search" />
+  <SettingsMenu slot="actions" storageKey="theme-preference" />
+</TopNav>
+<SearchPanel id="site-search" />
+…
+<PostShare title={title} url={url} site="Field Notes" date={date} cover={cover} />
+```
+
+`<head>` 里的 ThemeScript 用和 SettingsMenu 相同的 `storageKey`、`motionKey`，主题和减少动效在第一次绘制前就设好。
+
+## 组成
+
+| 组件 | 做什么 |
+| --- | --- |
+| [SettingsMenu 显示设置](settings-menu/) | 一个按钮后面的主题和减少动效；SegmentedControl、Switch 是里面的控件 |
+| [SearchPanel 搜索面板](search-panel/) | 浮在页面上的搜索面板，索引由页面提供 |
+| [PostShare 分享](post-share/) | 复制链接，以及带二维码的海报；Button、Dialog、Snackbar 是它的部件 |
+| [页面切换](page-transitions/) | 换页时的淡入淡出，以及滚动条 |

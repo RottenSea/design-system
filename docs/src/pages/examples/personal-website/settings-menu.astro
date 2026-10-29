@@ -1,0 +1,44 @@
+---
+import { SegmentedControl, SettingsMenu, Switch } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="SettingsMenu">
+  <div class="row">
+    <SettingsMenu storageKey="ds-docs-example-theme" motionKey="ds-docs-example-motion" />
+    <span class="note">Press the button for the panel. A choice changes this example only.</span>
+  </div>
+  <div class="parts">
+    <SegmentedControl
+      label="Theme"
+      value="system"
+      options={[
+        { value: "light", label: "Light" },
+        { value: "dark", label: "Dark" },
+        { value: "system", label: "System" }
+      ]}
+    />
+    <Switch label="Reduce motion" description="Fades and slides finish at once." />
+    <Switch label="Reduce motion" checked />
+    <Switch label="Reduce motion" description="On in your system settings." checked disabled />
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .note {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+  }
+
+  .parts {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: start;
+  }
+</style>

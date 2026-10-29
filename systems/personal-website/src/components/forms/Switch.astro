@@ -1,0 +1,187 @@
+---
+/**
+ * A setting that applies the moment it is flipped, never one inside a form to submit (that is a
+ * checkbox). Coral track when on, a hairline track when off, a canvas knob. The 44 by 24 track is
+ * the touch minimum already, so it needs no data-ds-tap. The label states the on condition in
+ * sentence case, without "Enable".
+ *
+ * Ported from the handoff's Switch.jsx with the same props, except `onChange`: the switch sends a
+ * `ds-change` event whose detail is the new state, and `checked` can be set later as a property.
+ * The knob moves with `left` over --motion-base, as in the handoff.
+ *
+ *   <Switch label="Reduce motion" description="Fades and slides finish at once." />
+ */
+interface Props {
+  label?: string;
+  description?: string;
+  checked?: boolean;
+  disabled?: boolean;
+  tone?: "cream" | "dark";
+  id?: string;
+  class?: string;
+}
+
+const { label, description, checked = false, disabled = false, tone = "cream", id, class: className } = Astro.props;
+const Tag = label || description ? "label" : "span";
+---
+
+<ds-switch class:list={["ds-switch", { "ds-switch--dark": tone === "dark" }, className]}>
+  <Tag class="ds-switch__row">
+    <button
+      type="button"
+      role="switch"
+      class="ds-switch__track"
+      id={id}
+      aria-checked={checked ? "true" : "false"}
+      disabled={disabled}
+    >
+      <span class="ds-switch__knob"></span>
+    </button>
+    {
+      (label || description) && (
+        <span class="ds-switch__text">
+          {label && <span class="ds-switch__label">{label}</span>}
+          {description && <span class="ds-switch__description">{description}</span>}
+        </span>
+      )
+    }
+  </Tag>
+</ds-switch>
+
+<script>
+  class DsSwitch extends HTMLElement {
+    connectedCallback() {
+      this.button?.addEventListener("click", () => {
+        this.checked = !this.checked;
+        this.dispatchEvent(new CustomEvent("ds-change", { detail: this.checked, bubbles: true }));
+      });
+    }
+
+    get button() {
+      return this.querySelector<HTMLButtonElement>("button[role=switch]");
+    }
+
+    get checked() {
+      return this.button?.getAttribute("aria-checked") === "true";
+    }
+
+    /** Sets the state without sending an event. */
+    set checked(value: boolean) {
+      this.button?.setAttribute("aria-checked", String(value));
+    }
+
+    get disabled() {
+      return Boolean(this.button?.disabled);
+    }
+
+    set disabled(value: boolean) {
+      if (this.button) this.button.disabled = value;
+    }
+  }
+
+  if (!customElements.get("ds-switch")) customElements.define("ds-switch", DsSwitch);
+</script>
+
+<style>
+  .ds-switch {
+    display: block;
+  }
+
+  .ds-switch__row {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    font-family: var(--font-sans);
+    gap: var(--space-sm);
+  }
+
+  .ds-switch__row:has(.ds-switch__description) {
+    align-items: flex-start;
+  }
+
+  .ds-switch__track {
+    background: var(--hairline);
+    border: 0;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    flex: 0 0 auto;
+    height: 24px;
+    padding: 0;
+    position: relative;
+    transition: var(--transition-tint);
+    width: 44px;
+  }
+
+  .ds-switch__track[aria-checked="true"] {
+    background: var(--color-primary);
+  }
+
+  .ds-switch__track:disabled {
+    background: var(--color-primary-disabled);
+    cursor: not-allowed;
+  }
+
+  .ds-switch__knob {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-hover);
+    box-sizing: border-box;
+    height: 20px;
+    left: 2px;
+    position: absolute;
+    top: 2px;
+    transition: left var(--motion-base) var(--ease-move);
+    width: 20px;
+  }
+
+  .ds-switch__track[aria-checked="true"] .ds-switch__knob {
+    border-color: transparent;
+    left: 22px;
+  }
+
+  .ds-switch__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    min-width: 0;
+  }
+
+  .ds-switch__label {
+    color: var(--text-ink);
+    font-size: var(--title-sm-size);
+    font-weight: var(--title-sm-weight);
+    line-height: var(--title-sm-lh);
+  }
+
+  .ds-switch__row:has(:disabled) {
+    cursor: not-allowed;
+  }
+
+  .ds-switch__row:has(:disabled) .ds-switch__label {
+    color: var(--text-muted);
+  }
+
+  .ds-switch__description {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+  }
+
+  .ds-switch--dark .ds-switch__track:not([aria-checked="true"]) {
+    background: rgba(250, 249, 245, 0.18);
+  }
+
+  .ds-switch--dark .ds-switch__track:not([aria-checked="true"]) .ds-switch__knob {
+    background: var(--text-on-dark);
+    border-color: transparent;
+  }
+
+  .ds-switch--dark .ds-switch__label {
+    color: var(--text-on-dark);
+  }
+
+  .ds-switch--dark .ds-switch__description {
+    color: var(--text-on-dark-soft);
+  }
+</style>

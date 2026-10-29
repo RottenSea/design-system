@@ -1,0 +1,159 @@
+---
+/**
+ * A labelled button. `primary`, coral, for the one main action in a place; `secondary`, the
+ * canvas with a hairline, beside it; `secondary-on-dark` on the night surface; `text` for a bare
+ * action in a line of type. 40px high, or 32px at `size="sm"`; below 768px it grows to the 44px
+ * touch target, except `text`. Labels are verbs in sentence case, one to three words. The
+ * pressed fill is the only state; there is no hover style.
+ *
+ * Ported from the handoff's Button.jsx with the same props, except `onClick` and `as`. The
+ * pressed state is :active instead of React pointer state, `href` makes it a link, and the icons
+ * are the system's Tabler outlines by name.
+ *
+ *   <Button variant="secondary" iconLeft="link">Copy link</Button>
+ */
+import type { HTMLAttributes } from "astro/types";
+import ArrowRight from "../../icons/arrow-right.svg";
+import Download from "../../icons/download.svg";
+import Link from "../../icons/link.svg";
+import Share from "../../icons/share.svg";
+
+const ICONS = { "arrow-right": ArrowRight, download: Download, link: Link, share: Share };
+
+export type ButtonIcon = keyof typeof ICONS;
+
+type Props = Omit<HTMLAttributes<"button">, "type"> & {
+  variant?: "primary" | "secondary" | "secondary-on-dark" | "text";
+  size?: "sm" | "md";
+  iconLeft?: ButtonIcon;
+  iconRight?: ButtonIcon;
+  disabled?: boolean;
+  /** Makes it a link. */
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+};
+
+const {
+  variant = "primary",
+  size = "md",
+  iconLeft,
+  iconRight,
+  disabled = false,
+  href,
+  type = "button",
+  class: className,
+  ...rest
+} = Astro.props;
+const Left = iconLeft ? ICONS[iconLeft] : undefined;
+const Right = iconRight ? ICONS[iconRight] : undefined;
+const classes = ["ds-button", `ds-button--${variant}`, `ds-button--${size}`, className];
+const tap = variant === "text" ? undefined : "cell";
+---
+
+{
+  href ? (
+    <a class:list={classes} href={href} data-ds-tap={tap} {...(rest as HTMLAttributes<"a">)}>
+      {Left && <Left width={18} height={18} aria-hidden="true" />}
+      <slot />
+      {Right && <Right width={18} height={18} aria-hidden="true" />}
+    </a>
+  ) : (
+    <button class:list={classes} type={type} disabled={disabled} data-ds-tap={tap} {...rest}>
+      {Left && <Left width={18} height={18} aria-hidden="true" />}
+      <slot />
+      {Right && <Right width={18} height={18} aria-hidden="true" />}
+    </button>
+  )
+}
+
+<style>
+  .ds-button {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-sans);
+    font-size: var(--button-size);
+    font-weight: var(--button-weight);
+    gap: var(--space-xs);
+    height: var(--control-height);
+    justify-content: center;
+    letter-spacing: 0;
+    line-height: var(--button-lh);
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: var(--transition-tint);
+    white-space: nowrap;
+  }
+
+  .ds-button:hover {
+    text-decoration: none;
+  }
+
+  .ds-button--sm {
+    border-radius: var(--radius-sm);
+    height: 32px;
+    padding: 8px 14px;
+  }
+
+  .ds-button--primary {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+
+  .ds-button--primary:hover {
+    color: var(--color-on-primary);
+  }
+
+  .ds-button--primary:active:not(:disabled) {
+    background: var(--color-primary-active);
+  }
+
+  .ds-button--secondary {
+    background: var(--surface-canvas);
+    border-color: var(--hairline);
+    color: var(--text-ink);
+  }
+
+  .ds-button--secondary:hover {
+    color: var(--text-ink);
+  }
+
+  .ds-button--secondary:active:not(:disabled) {
+    background: var(--surface-soft);
+  }
+
+  .ds-button--secondary-on-dark {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .ds-button--secondary-on-dark:active:not(:disabled) {
+    background: var(--surface-dark-soft);
+  }
+
+  .ds-button--text {
+    background: transparent;
+    color: var(--text-ink);
+    height: auto;
+    padding: 0;
+  }
+
+  .ds-button--text:active:not(:disabled) {
+    color: var(--text-muted);
+  }
+
+  .ds-button:disabled {
+    background: var(--color-primary-disabled);
+    border-color: transparent;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  .ds-button--text:disabled {
+    background: transparent;
+  }
+</style>

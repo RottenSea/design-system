@@ -1,0 +1,32 @@
+---
+title: 页面切换
+description: 只用 CSS 的换页淡入淡出和滚动条。
+sidebar:
+  order: 4
+---
+
+每一页都有、不需要组件的两样。
+
+## 页面切换
+
+```astro
+---
+import "@rottensea/ds-personal-website/page-transitions.css";
+---
+```
+
+换页时旧页面淡出、新页面淡入，用时 `--motion-base`，导航不动。用的是浏览器自带的跨页面视图过渡：每一页照样完整加载、运行自己的脚本，前进后退回到原来的位置。不支持的浏览器直接换页；系统设置了减少动效，或在 SettingsMenu 里打开了减少动效，也直接换页。
+
+这个样式表单独放，由网站自己选；文档站不用它。
+
+## 滚动条
+
+`base.css` 把页面的滚动条改细，颜色是最浅的次要文字色，底是页面自己的底色；不管页面滚不滚动都留出它的位置，所以短页面和长页面的中心一样。只留右边：两边都留的话，页脚这类占满宽度的深色带子旁边会多出一条画布色。不认 `scrollbar-color`、`scrollbar-width` 的浏览器画自己的，macOS 的浮动滚动条不占位置。
+
+## API
+
+[`page-transitions.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/page-transitions.css)、[`base.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/styles/base.css)。
+
+## 相关
+
+[动效](../../motion/)、[SettingsMenu 显示设置](../settings-menu/)。

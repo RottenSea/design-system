@@ -1,0 +1,55 @@
+---
+import { IconButton, SearchPanel } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="SearchPanel">
+  <div class="row">
+    <IconButton icon="search" label="Search" data-ds-search-open="example-search" />
+    <span class="note">Press the button, or / or Ctrl+K, and type “hair” or “grid”.</span>
+  </div>
+  <SearchPanel id="example-search" />
+</ExampleLayout>
+
+<script>
+  // A made-up index; on a site the page asks its own, such as Pagefind.
+  const posts = [
+    { title: "Hairlines carry more than they look like they do", meta: "2026-03-04 · Notes", href: "#", text: "A border at one pixel is an elevation step, not an ink line." },
+    { title: "Writing for a page nobody scrolls twice", meta: "2026-02-19 · Essays", href: "#", text: "The first screen is the only one most readers see." },
+    { title: "Notes on editorial grids", meta: "2026-01-12 · Notes", href: "#", text: "A grid is a promise about where the next thing will be." }
+  ];
+  type Panel = HTMLElement & {
+    setLoading(loading: boolean): void;
+    setResults(results: { title: string; href: string; meta?: string; excerpt?: string }[]): void;
+  };
+  const panel = document.querySelector<Panel>("ds-search-panel");
+  panel?.addEventListener("ds-query", (event) => {
+    const query = (event as CustomEvent<string>).detail.toLowerCase();
+    if (!query) return panel.setResults([]);
+    panel.setLoading(true);
+    setTimeout(() => {
+      const found = posts.filter((post) => `${post.title} ${post.text}`.toLowerCase().includes(query));
+      panel.setResults(
+        found.map((post) => ({
+          ...post,
+          excerpt: post.text.replace(new RegExp(query, "i"), (match) => `<mark>${match}</mark>`)
+        }))
+      );
+    }, 300);
+  });
+</script>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    gap: var(--space-md);
+    min-height: 360px;
+    align-content: start;
+  }
+
+  .note {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+  }
+</style>

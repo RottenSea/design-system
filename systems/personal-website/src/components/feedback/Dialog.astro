@@ -1,0 +1,250 @@
+---
+/**
+ * The system's one modal surface: a centred card over a dimmed scrim. A top-level dialog swings
+ * in edge-on from the (1, 1, 0) diagonal, past flat by 6° and back, over 350ms; a dialog opened
+ * from another uses `lift`, a 200ms settle from 1.04; `none` is for one that opens without the
+ * reader asking. It is the one component allowed a transform on entrance. Canvas fill, 16px
+ * radius, a hairline, 32px padding and --shadow-float; 420, 560 or 720px wide, scrolling inside
+ * rather than growing past the window.
+ *
+ * Ported from the handoff's Dialog.jsx, except `open`, `onClose`, `onConfirm` and the built-in
+ * confirm and cancel buttons: the content and the buttons are slots, the default and `actions`.
+ * It is a native modal <dialog>, which keeps the focus inside, makes the page behind it inert,
+ * and closes on Escape; a click on the scrim and the close button close it too. Any element with
+ * data-ds-dialog-open set to its id opens it.
+ *
+ *   <Button data-ds-dialog-open="poster">Share poster</Button>
+ *   <Dialog id="poster" title="Share poster">…<Fragment slot="actions">…</Fragment></Dialog>
+ */
+import IconButton from "../buttons/IconButton.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  description?: string;
+  size?: "sm" | "md" | "lg";
+  depth?: "tilt" | "lift" | "none";
+  tone?: "cream" | "dark";
+  /** Shows the round close button at the top right. */
+  showClose?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  title,
+  description,
+  size = "md",
+  depth = "tilt",
+  tone = "cream",
+  showClose = true,
+  class: className
+} = Astro.props;
+---
+
+<ds-dialog>
+  <dialog
+    id={id}
+    class:list={["ds-dialog", `ds-dialog--${size}`, `ds-dialog--${depth}`, { "ds-dialog--dark": tone === "dark" }, className]}
+    aria-labelledby={`${id}-title`}
+    aria-describedby={description ? `${id}-description` : undefined}
+  >
+    <div class="ds-dialog__card">
+      <div class="ds-dialog__head">
+        <div class="ds-dialog__heading">
+          <h2 class="ds-dialog__title" id={`${id}-title`}>{title}</h2>
+          {description && <p class="ds-dialog__description" id={`${id}-description`}>{description}</p>}
+        </div>
+        {showClose && <IconButton icon="x" label="Close" tone={tone === "dark" ? "dark" : "canvas"} data-ds-dialog-close />}
+      </div>
+      {
+        Astro.slots.has("default") && (
+          <div class="ds-dialog__body">
+            <slot />
+          </div>
+        )
+      }
+      {
+        Astro.slots.has("actions") && (
+          <div class="ds-dialog__actions">
+            <slot name="actions" />
+          </div>
+        )
+      }
+    </div>
+  </dialog>
+</ds-dialog>
+
+<script>
+  class DsDialog extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector("dialog");
+      if (!dialog) return;
+      // The dialog fills the window and is the scrim, so a click on the dialog itself, not
+      // inside the card, is a click on the scrim.
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.querySelector("[data-ds-dialog-close]")?.addEventListener("click", () => dialog.close());
+    }
+  }
+
+  if (!customElements.get("ds-dialog")) customElements.define("ds-dialog", DsDialog);
+
+  document.addEventListener("click", (event) => {
+    const opener = (event.target as Element).closest<HTMLElement>("[data-ds-dialog-open]");
+    const dialog = opener && document.getElementById(opener.dataset.dsDialogOpen ?? "");
+    if (dialog instanceof HTMLDialogElement && !dialog.open) dialog.showModal();
+  });
+</script>
+
+<style>
+  .ds-dialog {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    box-sizing: border-box;
+    height: 100%;
+    justify-content: center;
+    margin: 0;
+    max-height: none;
+    max-width: none;
+    padding: var(--space-lg);
+    perspective: 1000px;
+    width: 100%;
+  }
+
+  .ds-dialog[open] {
+    display: flex;
+  }
+
+  .ds-dialog::backdrop {
+    animation: ds-dialog-scrim-in var(--motion-base) var(--ease-enter) both;
+    background: rgba(20, 20, 19, 0.35);
+  }
+
+  .ds-dialog__card {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-float);
+    box-sizing: border-box;
+    color: var(--text-body);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-height: 100%;
+    max-width: 100%;
+    overflow: auto;
+    padding: var(--space-xl);
+    width: 560px;
+  }
+
+  .ds-dialog--sm .ds-dialog__card {
+    width: 420px;
+  }
+
+  .ds-dialog--lg .ds-dialog__card {
+    width: 720px;
+  }
+
+  .ds-dialog--tilt[open] .ds-dialog__card {
+    animation: ds-dialog-tilt-in 350ms ease both;
+  }
+
+  .ds-dialog--lift[open] .ds-dialog__card {
+    animation: ds-dialog-lift-in 200ms ease-out both;
+  }
+
+  .ds-dialog__head {
+    align-items: flex-start;
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .ds-dialog__heading {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    min-width: 0;
+  }
+
+  .ds-dialog__title {
+    color: var(--text-ink);
+    font-family: var(--font-display);
+    font-size: var(--display-sm-size);
+    font-weight: 400;
+    letter-spacing: var(--display-sm-ls);
+    line-height: var(--display-sm-lh);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .ds-dialog__description {
+    color: var(--text-body);
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-lh);
+    margin: 0;
+  }
+
+  .ds-dialog__body {
+    min-width: 0;
+  }
+
+  .ds-dialog__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    justify-content: flex-end;
+    margin-top: var(--space-xxs);
+  }
+
+  .ds-dialog--dark .ds-dialog__card {
+    background: var(--surface-dark-elevated);
+    border-color: var(--hairline-on-dark);
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-dialog--dark .ds-dialog__title {
+    color: var(--text-on-dark);
+  }
+
+  .ds-dialog--dark .ds-dialog__description {
+    color: var(--text-on-dark-soft);
+  }
+
+  @keyframes ds-dialog-scrim-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes ds-dialog-tilt-in {
+    0% {
+      opacity: 0;
+      transform: rotate3d(1, 1, 0, 90deg);
+    }
+
+    50% {
+      transform: rotate3d(1, 1, 0, -6deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-dialog-lift-in {
+    0% {
+      opacity: 0;
+      transform: scale(1.04);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

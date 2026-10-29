@@ -1,0 +1,65 @@
+---
+title: SearchPanel
+description: Search in a panel over the page. The page brings the index.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A panel under the nav line, over a scrim: a search field, then the results, each a title, a meta line and the matching sentence.
+
+<Example system="personal-website" name="search-panel" title="A search button and the panel, with a made-up index" />
+
+## When to use
+
+Once per site, opened from a search button in the nav. The panel never fetches: the page answers each query from its own index, such as Pagefind's.
+
+## On a page
+
+```astro
+<IconButton icon="search" label="Search" data-ds-search-open="site-search" />
+<SearchPanel id="site-search" />
+
+<script>
+  const panel = document.querySelector("ds-search-panel");
+  panel.addEventListener("ds-open", () => loadIndex());
+  panel.addEventListener("ds-query", async (event) => {
+    panel.setLoading(true);
+    panel.setResults(await find(event.detail));
+  });
+</script>
+```
+
+A result is `{ title, href, meta, excerpt, group }`. The excerpt keeps its `<mark>` elements and shows any other markup as text. `setResults([], message)` shows a sentence instead, such as why there is no index.
+
+## Anatomy
+
+A 560px card, 24px under the nav line. A 56px row with the search icon, the field and a close button; the results, scrolling inside; a line of key hints, hidden below 768px. The marked row sits on the cream card. While results load, three skeleton lines pulse.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `placeholder`, `emptyLabel`, `hint` | The field's placeholder, "No matches", the key hints |
+| `shortcuts` | `true` (default): "/" and Ctrl+K or ⌘K open it |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Open | The page behind is inert; the focus is in the field |
+| Loading | Skeleton lines in place of the results |
+| Nothing found | "No matches" |
+
+## Accessibility
+
+A native modal `<dialog>` named "Search". The field is a combobox; the arrow keys mark a result with `aria-activedescendant` while the focus stays in the field, and Enter opens it. Escape and a click on the scrim close the panel. The status line is a live region.
+
+## API
+
+[`SearchPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SearchPanel.astro). Ported from the handoff; events and methods take the place of its props and callbacks.
+
+## Related
+
+[TopNav](../../shell/top-nav/).

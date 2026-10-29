@@ -1,0 +1,20 @@
+---
+import { getImage } from "astro:assets";
+import { PostShare } from "@rottensea/ds-personal-website/components";
+import cover from "../../../assets/examples/tower.jpg";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const coverUrl = (await getImage({ src: cover, width: 1080 })).src;
+---
+
+<ExampleLayout title="PostShare">
+  <PostShare
+    title="Hairlines carry more than they look like they do"
+    description="A one-pixel line in the right colour separates two things without drawing attention to itself."
+    url="https://example.com/blog/hairlines"
+    site="Field Notes"
+    date="2026-03-04"
+    cover={coverUrl}
+    filename="hairlines"
+  />
+</ExampleLayout>

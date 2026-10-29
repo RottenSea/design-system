@@ -6,6 +6,7 @@
 // The page shell (TopNav, ContentGrid, Footer and the rest) is exported by name only: a post has
 // no use for it. The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
 // so pages get the components' prop types; pages are compiled by Vite, which handles it.
+import Button from "./buttons/Button.astro";
 import IconButton from "./buttons/IconButton.astro";
 import ArticleListCard from "./cards/ArticleListCard.astro";
 import SidebarCard from "./cards/SidebarCard.astro";
@@ -34,9 +35,14 @@ import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
 import PostLicense from "./content/PostLicense.astro";
 import PostNav from "./content/PostNav.astro";
+import PostShare from "./content/PostShare.astro";
 import TableScroll from "./content/TableScroll.astro";
 import TocList from "./content/TocList.astro";
+import Dialog from "./feedback/Dialog.astro";
+import Snackbar from "./feedback/Snackbar.astro";
 import Tooltip from "./feedback/Tooltip.astro";
+import SegmentedControl from "./forms/SegmentedControl.astro";
+import Switch from "./forms/Switch.astro";
 import Fonts from "./head/Fonts.astro";
 import ThemeScript from "./head/ThemeScript.astro";
 import ContentGrid from "./layout/ContentGrid.astro";
@@ -45,6 +51,8 @@ import Footer from "./layout/Footer.astro";
 import MenuPanel from "./layout/MenuPanel.astro";
 import NavDrawer from "./layout/NavDrawer.astro";
 import QuoteBand from "./layout/QuoteBand.astro";
+import SearchPanel from "./layout/SearchPanel.astro";
+import SettingsMenu from "./layout/SettingsMenu.astro";
 import SkipLink from "./layout/SkipLink.astro";
 import ThemeToggle from "./layout/ThemeToggle.astro";
 import TocButton from "./layout/TocButton.astro";
@@ -62,9 +70,11 @@ export {
   Admonition,
   ArticleListCard,
   Avatar,
+  Button,
   CodeBlock,
   ContentGrid,
   DiagramFrame,
+  Dialog,
   Field,
   Fields,
   Figure,
@@ -91,14 +101,20 @@ export {
   PostLicense,
   PostMeta,
   PostNav,
+  PostShare,
   QuoteBand,
+  SearchPanel,
+  SegmentedControl,
+  SettingsMenu,
   SidebarCard,
   SkipLink,
+  Snackbar,
   Spoiler,
   StatList,
   Step,
   Steps,
   Surface,
+  Switch,
   TableScroll,
   TagList,
   ThemeScript,

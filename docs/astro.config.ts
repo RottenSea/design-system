@@ -147,6 +147,20 @@ export default defineConfig({
                   slug: `personal-website/post/${name}`
                 }))
               ]
+            },
+            {
+              label: "Settings and search",
+              translations: { "zh-CN": "设置和搜索" },
+              items: [
+                {
+                  slug: "personal-website/settings",
+                  label: "Overview",
+                  translations: { "zh-CN": "概览" }
+                },
+                ...["settings-menu", "search-panel", "post-share", "page-transitions"].map((name) => ({
+                  slug: `personal-website/settings/${name}`
+                }))
+              ]
             }
           ]
         }

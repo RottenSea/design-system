@@ -1,25 +1,31 @@
 ---
 /**
  * Sets data-theme on <html> before the first paint: the theme the reader picked with
- * ThemeToggle, or else the OS setting. Without it the light theme shows for a moment before a
+ * ThemeToggle or SettingsMenu, or else the OS setting. With SettingsMenu's Reduce motion on, it
+ * sets data-reduce-motion="true" too. Without it the light theme shows for a moment before a
  * dark reader's page turns dark. Put it in the <head>, before the stylesheets.
  *
  * The handoff gives this as a snippet to paste, because a React component mounts after the first
  * paint; an Astro component can write the script into the HTML as it is, so it is a component.
  */
 interface Props {
-  /** The localStorage key ThemeToggle writes. */
+  /** The localStorage key ThemeToggle or SettingsMenu writes the theme to. */
   storageKey?: string;
+  /** The localStorage key SettingsMenu writes Reduce motion to. */
+  motionKey?: string;
 }
 
-const { storageKey = "ds-theme" } = Astro.props;
+const { storageKey = "ds-theme", motionKey = "ds-reduce-motion" } = Astro.props;
 ---
 
-<script is:inline define:vars={{ key: storageKey }}>
+<script is:inline define:vars={{ key: storageKey, motionKey }}>
   let theme;
+  let calm;
   try {
     theme = localStorage.getItem(key);
+    calm = localStorage.getItem(motionKey);
   } catch {}
   if (theme !== "light" && theme !== "dark") theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.dataset.theme = theme;
+  if (calm === "true") document.documentElement.dataset.reduceMotion = "true";
 </script>

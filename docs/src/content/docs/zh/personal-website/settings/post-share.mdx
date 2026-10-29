@@ -1,0 +1,66 @@
+---
+title: PostShare 分享
+description: 文章末尾的复制链接和带二维码的海报。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+文章末尾的两个按钮。Copy link 复制网址并提示一句。Share poster 打开一个对话框，里面是这篇文章的海报：封面、标题、摘要、网站名和日期，以及网址的二维码，可以下载，也可以交给系统的分享。
+
+<Example system="personal-website" name="post-share" title="两个按钮；Share poster 打开海报" />
+
+它由三个能单独用的部件组成：
+
+<Example system="personal-website" name="buttons" title="Button：主按钮、次按钮、小号、文字按钮、禁用，以及深色底上的" />
+
+## 什么时候用
+
+每篇文章一次，在版权卡片下面。
+
+## 页面里怎么写
+
+```astro
+<PostShare title={title} description={description} url={url} site="Field Notes"
+  date="2026-03-04" cover={coverUrl} filename="hairlines" />
+
+<Button variant="secondary" iconLeft="link">Copy link</Button>
+<Dialog id="note" title="A title">…<Fragment slot="actions">…</Fragment></Dialog>
+<Snackbar id="toast" />   <!-- toast.show("Saved") -->
+```
+
+## 结构
+
+海报 1080 × 1440，不管页面是什么主题，都用浅色主题的画布底色：上面按宽度 9:16 放封面，没有封面就是奶油色卡片；标题用衬线字，最多三行；摘要用无衬线字；再是一条细线、网站名、日期、一小段珊瑚色，右边是墨色的二维码。第一次打开对话框、字体加载好之后才画。
+
+Dialog 是从对角线翻转进来的居中卡片。Snackbar 是底部一行字，用反色底。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `cover` | 封面的网址；没有就用奶油色卡片 |
+| `filename` | PNG 的文件名 |
+| `variant`（Button） | `primary`、`secondary`、`secondary-on-dark` 或 `text` |
+| `size`（Dialog） | `sm`（420px）、`md`（560px）或 `lg`（720px） |
+| `depth`（Dialog） | `tilt`、`lift` 或 `none` |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 复制了链接 | “Link copied” 显示四秒；浏览器拒绝时是 “Couldn't copy the link” |
+| 能分享文件 | 对话框里多一个 Share，打开系统的分享 |
+
+## 无障碍
+
+海报的 canvas 是一张以文章命名的图片。对话框是原生模态，名字是它的标题；Escape、遮罩和关闭按钮都能关。提示条是礼貌的实时区域。
+
+## API
+
+[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro)、[`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro)、[`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro)、[`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro)。Button、Dialog、Snackbar 从交付包移植；交付包没有分享组件。二维码用 `qrcode` 包生成。
+
+## 相关
+
+[PostLicense 版权卡片](../../post/post-license/)。

@@ -9,14 +9,16 @@
  * are the Tabler outlines in src/icons/ that the system's components use, by name.
  */
 import type { HTMLAttributes } from "astro/types";
+import Adjustments from "../../icons/adjustments.svg";
 import ArrowUp from "../../icons/arrow-up.svg";
 import List from "../../icons/list.svg";
 import Menu from "../../icons/menu.svg";
 import Moon from "../../icons/moon.svg";
+import Search from "../../icons/search.svg";
 import Sun from "../../icons/sun.svg";
 import X from "../../icons/x.svg";
 
-const ICONS = { "arrow-up": ArrowUp, list: List, menu: Menu, moon: Moon, sun: Sun, x: X };
+const ICONS = { adjustments: Adjustments, "arrow-up": ArrowUp, list: List, menu: Menu, moon: Moon, search: Search, sun: Sun, x: X };
 
 export type IconName = keyof typeof ICONS;
 
