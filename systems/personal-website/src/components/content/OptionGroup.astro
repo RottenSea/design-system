@@ -31,16 +31,18 @@ const { syncKey, label, size = "sm", tone = "cream", class: className, ...rest }
 
 const id = `ds-options-${crypto.randomUUID().slice(0, 8)}`;
 const html = await Astro.slots.render("default");
-// Astro has already escaped both values, so they can go back into the HTML as they are.
+// Astro has already escaped both values, so they can go back into the HTML as they are. The
+// tag can carry more attributes after the markers (in development Astro adds
+// data-astro-source-file and -loc to every element); they are kept.
 const options: { label: string; value: string }[] = [];
 const panels = html.replace(
-  /<div data-ds-option-label="([^"]*)" data-ds-option-value="([^"]*)">/g,
-  (_, optionLabel: string, value: string) => {
+  /<div data-ds-option-label="([^"]*)" data-ds-option-value="([^"]*)"([^>]*)>/g,
+  (_, optionLabel: string, value: string, more: string) => {
     const index = options.push({ label: optionLabel, value }) - 1;
     return (
       `<div class="ds-option-group__panel" role="tabpanel" id="${id}-panel-${index}"` +
       ` aria-labelledby="${id}-tab-${index}" tabindex="0" data-value="${value}"` +
-      `${index === 0 ? "" : " hidden"}>`
+      `${index === 0 ? "" : " hidden"}${more}>`
     );
   }
 );
