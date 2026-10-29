@@ -133,6 +133,20 @@ export default defineConfig({
                   })
                 )
               ]
+            },
+            {
+              label: "Post page",
+              translations: { "zh-CN": "文章页" },
+              items: [
+                {
+                  slug: "personal-website/post",
+                  label: "Overview",
+                  translations: { "zh-CN": "概览" }
+                },
+                ...["toc-list", "post-license", "post-nav", "avatar"].map((name) => ({
+                  slug: `personal-website/post/${name}`
+                }))
+              ]
             }
           ]
         }

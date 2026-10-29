@@ -1,0 +1,141 @@
+---
+import {
+  ContentGrid,
+  Figure,
+  FloatingControls,
+  Footer,
+  PostLicense,
+  PostMeta,
+  PostNav,
+  SidebarCard,
+  TagList,
+  TocButton,
+  TocList,
+  TopNav
+} from "@rottensea/ds-personal-website/components";
+import cover from "../../../assets/examples/tower.jpg";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+// A made-up site, so the example shows the parts and not a real one's content.
+const links = [
+  { label: "Blog", href: "#post" },
+  { label: "About", href: "#post" }
+];
+const sections = [
+  { id: "one-hex", text: "One hex, two jobs", level: 2 },
+  { id: "inside-a-band", text: "Inside a band", level: 3 },
+  { id: "where-it-goes-wrong", text: "Where it goes wrong", level: 2 },
+  { id: "the-pacing-rule", text: "The pacing rule", level: 2 },
+  { id: "what-to-do-instead", text: "What to do instead", level: 2 }
+];
+---
+
+<ExampleLayout title="Post page" bare>
+  <TopNav brand="Field Notes" links={links} active="Blog" />
+  <main id="post" class="page">
+    <ContentGrid stackRails="none">
+      <article class="post">
+        <header class="post__header">
+          <PostMeta
+            size="md"
+            items={[
+              { label: "2026-03-04", datetime: "2026-03-04T03:00:00Z" },
+              { label: "Notes", href: "#post" },
+              "6 min"
+            ]}
+          />
+          <h1 class="post__title">Hairlines carry more than they look like they do</h1>
+        </header>
+        <Figure src={cover} alt="A tower against the evening sky" />
+        <div class="post__body">
+          {
+            sections.map((section) => {
+              const Heading = section.level === 2 ? "h2" : "h3";
+              return (
+                <>
+                  <Heading id={section.id}>{section.text}</Heading>
+                  <p>
+                    A border at one pixel is an elevation step, not an ink line. Where the two get confused, a page
+                    starts to look wired together instead of built: every element outlined, nothing grouped.
+                  </p>
+                  <p>
+                    Reach for a surface change before a line, and for a line before a shadow. A page built that way
+                    stays quiet at small sizes, which is where most reading happens.
+                  </p>
+                </>
+              );
+            })
+          }
+        </div>
+        <TagList items={[{ label: "type", href: "#post" }, { label: "systems", href: "#post" }]} />
+        <PostLicense
+          title="Hairlines carry more than they look like they do"
+          href="https://example.com/blog/hairlines"
+          author="Field Notes"
+          published={{ label: "2026-03-04", datetime: "2026-03-04T03:00:00Z" }}
+          license={{ name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" }}
+        />
+        <PostNav
+          prev={{ title: "Notes on reading less, slower", href: "#post" }}
+          next={{ title: "Writing for a page nobody scrolls twice", href: "#post" }}
+        />
+      </article>
+      <Fragment slot="right">
+        <SidebarCard title="On this page">
+          <TocList items={sections} />
+        </SidebarCard>
+      </Fragment>
+    </ContentGrid>
+  </main>
+  <Footer brand="Field Notes" note="© 2026 Field Notes." />
+  <FloatingControls>
+    <TocButton items={sections} />
+  </FloatingControls>
+</ExampleLayout>
+
+<style>
+  .page {
+    padding: var(--space-xxl) var(--space-lg) var(--space-section);
+  }
+
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: var(--container-reading);
+  }
+
+  .post__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .post__title {
+    color: var(--text-ink);
+    font-family: var(--display-lg-family);
+    font-size: var(--display-lg-size);
+    font-weight: var(--display-lg-weight);
+    letter-spacing: var(--display-lg-ls);
+    line-height: var(--display-lg-lh);
+    text-wrap: pretty;
+  }
+
+  .post__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .post__body h2 {
+    font-family: var(--font-display);
+    font-size: var(--display-sm-size);
+    font-weight: 400;
+    margin-top: var(--space-md);
+  }
+
+  .post__body h3 {
+    font-size: var(--title-md-size);
+    font-weight: 500;
+  }
+</style>

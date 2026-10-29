@@ -1,0 +1,92 @@
+---
+/**
+ * A circular portrait. The system shows photographs of people in one shape, a circle, at three
+ * sizes: 28px beside a meta line, 40px in a profile widget, 64px at the top of an about page.
+ * Without a photograph it shows the name's initials on a cream card; never a generated
+ * illustration, a gradient or a person glyph. Nothing goes on the avatar itself: no ring, badge or
+ * status dot.
+ *
+ * Ported from the handoff's Avatar.jsx with the same props. An imported image is resized by
+ * astro:assets to the avatar's size at 1x and 2x; a URL is used as it is.
+ *
+ *   <Avatar src={portrait} name="RottenTh" size="lg" />
+ *   <Avatar name="RottenTh" size="sm" />
+ */
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+const SIZES = { sm: 28, md: 40, lg: 64 };
+
+interface Props {
+  /** The photograph, cropped to a circle. */
+  src?: ImageMetadata | string;
+  alt?: string;
+  /** Gives the initials when there is no photograph. */
+  name?: string;
+  /** 28, 40 or 64px, or a number of pixels. */
+  size?: keyof typeof SIZES | number;
+  /** The surface it sits on, which sets the initials' fill. */
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { src, alt = "", name = "", size = "md", tone = "cream", class: className } = Astro.props;
+const px = typeof size === "number" ? size : SIZES[size];
+const initials = name
+  .trim()
+  .split(/\s+/)
+  .slice(0, 2)
+  .map((word) => [...word][0] ?? "")
+  .join("")
+  .toUpperCase();
+---
+
+<span
+  class:list={["ds-avatar", { "ds-avatar--dark": tone === "dark" }, className]}
+  style={`--ds-avatar-size: ${px}px`}
+  role={src ? undefined : "img"}
+  aria-label={src ? undefined : name || undefined}
+>
+  {
+    src ? (
+      typeof src === "string" ? (
+        <img src={src} alt={alt} width={px} height={px} />
+      ) : (
+        <Image src={src} alt={alt} width={px} height={px} densities={[1, 2]} fit="cover" />
+      )
+    ) : (
+      <span aria-hidden="true">{initials}</span>
+    )
+  }
+</span>
+
+<style>
+  .ds-avatar {
+    align-items: center;
+    background: var(--surface-card);
+    border-radius: var(--radius-full);
+    color: var(--text-ink);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-family: var(--font-sans);
+    font-size: calc(var(--ds-avatar-size) * 0.36);
+    font-weight: 500;
+    height: var(--ds-avatar-size);
+    justify-content: center;
+    line-height: 1;
+    overflow: hidden;
+    width: var(--ds-avatar-size);
+  }
+
+  .ds-avatar--dark {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .ds-avatar img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+  }
+</style>

@@ -13,7 +13,7 @@ ArticleListCard is one post in a list: the title in the display serif, a meta li
 
 ## When to use
 
-For each post in a list. PostMeta on its own under a post's title.
+For each post in a list. PostMeta on its own next to a post's title.
 
 ## On a page
 
@@ -50,7 +50,7 @@ An outline card with 24px of padding. The title, the meta line with an icon tile
 | `level` | The title's heading level, 3 by default; 2 for a list right under the page's `h1` |
 | `tone` | `cream` (default) or `dark` |
 
-PostMeta joins plain parts with middots, and switches to icon tiles when a part has an `icon`.
+PostMeta joins plain parts with middots, and switches to icon tiles when a part has an `icon`. A part with `href` is a link in the line's muted colour, underlined on hover, such as a category that leads to the posts filed under it.
 
 ## States
 
@@ -64,7 +64,7 @@ The whole card is one link, named by its text. The pin is an image named "Pinned
 
 ## API
 
-[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) and [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro). Ported from the handoff. PostMeta leaves out the avatar, which comes with Avatar, and the status dot.
+[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) and [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro). Ported from the handoff. PostMeta leaves out the avatar and the status dot, which this site does not use.
 
 ## Related
 

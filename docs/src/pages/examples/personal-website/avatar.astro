@@ -1,0 +1,35 @@
+---
+import { Avatar } from "@rottensea/ds-personal-website/components";
+import portrait from "../../../assets/examples/shore.jpg";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Avatar">
+  <div class="row">
+    <Avatar src={portrait} name="Field Notes" size="sm" />
+    <Avatar src={portrait} name="Field Notes" size="md" />
+    <Avatar src={portrait} name="Field Notes" size="lg" />
+    <Avatar name="Field Notes" size="sm" />
+    <Avatar name="Field Notes" size="md" />
+    <Avatar name="Field Notes" size="lg" />
+  </div>
+  <div class="row dark" data-theme="dark">
+    <Avatar name="Field Notes" size="lg" tone="dark" />
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  .dark {
+    background: var(--surface-dark);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    width: fit-content;
+  }
+</style>

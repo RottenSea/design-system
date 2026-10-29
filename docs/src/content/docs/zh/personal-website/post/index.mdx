@@ -1,0 +1,52 @@
+---
+title: 文章页
+description: 个人网站文章页的组成，以及它们怎么拼在一起。
+sidebar:
+  order: 0
+---
+
+import Example from "../../../../../components/Example.astro";
+
+文章页分两栏：左边是文章，右边是目录。文章开头是信息行和标题，然后是封面和正文。正文后面依次是标签、版权卡片和上一篇下一篇。
+
+<Example system="personal-website" name="post-page" title="一个文章页：信息行、标题、封面、正文、文末和目录" viewport={1280} />
+
+按原宽打开后可以滚动看：目录会标出正在读的那一节。窄于 1080px 时右栏不见了，右下角的目录按钮会在一个面板里打开同一份目录。
+
+## 一页怎么拼起来
+
+```astro
+<TopNav brand="Field Notes" links={links} active="Blog" />
+<main id="main">
+  <ContentGrid stackRails="none">
+    <article>
+      <PostMeta size="md" items={[date, category, readTime]} />
+      <h1>…</h1>
+      <Figure src={cover} alt="" />
+      <Content />
+      <TagList items={tags} />
+      <PostLicense … />
+      <PostNav prev={older} next={newer} />
+    </article>
+    <Fragment slot="right">
+      <SidebarCard title="On this page"><TocList items={toc} /></SidebarCard>
+    </Fragment>
+  </ContentGrid>
+</main>
+<FloatingControls>
+  <TocButton items={toc} />
+</FloatingControls>
+```
+
+`stackRails="none"` 让手机上的目录不排到正文下面：读到最后一段的人用不上目录。那个宽度交给 TocButton。
+
+## 组成
+
+| 组件 | 做什么 |
+| --- | --- |
+| [TocList 目录](toc-list/) | 右栏的目录，跟着读者走；TocButton 是装在面板里的同一份目录 |
+| [PostLicense 版权卡片](post-license/) | 标题、网址、作者、日期和许可 |
+| [PostNav 上一篇下一篇](post-nav/) | 前一篇和后一篇文章 |
+| [Avatar 头像](avatar/) | 圆形照片，没有照片时显示首字母，用在关于页 |
+
+标题上面的信息行 PostMeta 在 [ArticleListCard 文章卡片](../home/article-list-card/) 那一页。

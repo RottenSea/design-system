@@ -32,7 +32,10 @@ import Spoiler from "./content/Spoiler.astro";
 import StatList from "./content/StatList.astro";
 import Step from "./content/Step.astro";
 import Steps from "./content/Steps.astro";
+import PostLicense from "./content/PostLicense.astro";
+import PostNav from "./content/PostNav.astro";
 import TableScroll from "./content/TableScroll.astro";
+import TocList from "./content/TocList.astro";
 import Tooltip from "./feedback/Tooltip.astro";
 import Fonts from "./head/Fonts.astro";
 import ThemeScript from "./head/ThemeScript.astro";
@@ -44,8 +47,10 @@ import NavDrawer from "./layout/NavDrawer.astro";
 import QuoteBand from "./layout/QuoteBand.astro";
 import SkipLink from "./layout/SkipLink.astro";
 import ThemeToggle from "./layout/ThemeToggle.astro";
+import TocButton from "./layout/TocButton.astro";
 import TopNav from "./layout/TopNav.astro";
 import TagList from "./tags/TagList.astro";
+import Avatar from "./media/Avatar.astro";
 import Figure from "./media/Figure.astro";
 import GitHubCard from "./media/GitHubCard.astro";
 import ImageGrid from "./media/ImageGrid.astro";
@@ -56,6 +61,7 @@ export {
   Abbreviation,
   Admonition,
   ArticleListCard,
+  Avatar,
   CodeBlock,
   ContentGrid,
   DiagramFrame,
@@ -82,7 +88,9 @@ export {
   Option,
   OptionGroup,
   Pagination,
+  PostLicense,
   PostMeta,
+  PostNav,
   QuoteBand,
   SidebarCard,
   SkipLink,
@@ -95,6 +103,8 @@ export {
   TagList,
   ThemeScript,
   ThemeToggle,
+  TocButton,
+  TocList,
   Tooltip,
   TopNav,
   VideoEmbed

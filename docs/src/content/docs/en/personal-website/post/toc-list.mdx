@@ -1,0 +1,69 @@
+---
+title: TocList
+description: The table of contents in a post's rail, and TocButton, the same list in a sheet on a narrow screen.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+TocList lists a post's h2 and h3 headings as links, and marks the one being read. TocButton is the round Contents button that opens the list in a sheet where the rail is hidden.
+
+<Example system="personal-website" name="toc-list" title="A table of contents in a rail beside the text" />
+
+## When to use
+
+On a post with at least one h2 or h3. Leave it out when there are none: an empty contents list is noise.
+
+## On a page
+
+```astro
+---
+const { Content, headings } = await render(post);
+const toc = headings.map((h) => ({ id: h.slug, text: h.text, level: h.depth }));
+---
+<SidebarCard title="On this page">
+  <TocList items={toc} />
+</SidebarCard>
+
+<FloatingControls>
+  <TocButton items={toc} />
+</FloatingControls>
+```
+
+Levels other than 2 and 3 are dropped, so the headings from `render()` can go in as they are. `maxHeight` caps a long list in a sticky rail; the list then scrolls itself, never the page, to keep the current link in view.
+
+## Anatomy
+
+Links in a column, muted, 14px. An h3 is indented. The current link is coral, with a 2px coral mark in the left gutter.
+
+TocButton is an IconButton with the `list` icon. It opens a MenuPanel from the right with "On this page" at the top.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `tone` (TocList) | `cream` (default) or `dark` |
+| `maxHeight` (TocList) | A length; the list scrolls past it |
+| `devices` (TocButton) | The screens that show the button, `["mobile", "tablet"]` by default: below 1080px, where ContentGrid hides the right rail |
+| `label`, `title` (TocButton) | The button's name, "Contents", and the sheet's heading, "On this page" |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Current | The last heading within 96px of the window's top, the nav's height and 32px more; the first before any is; the last at the end of the page |
+| Hover | The link turns ink |
+| A link in the sheet followed | The sheet closes and the page goes to the heading |
+
+## Accessibility
+
+The list is a `<nav>` named "On this page", and the current link has `aria-current="location"`. The links are plain fragment links, so the list works without its script. TocButton's sheet is a modal `<dialog>` named "Contents": the focus stays inside it, Escape closes it, and the button's `aria-expanded` follows it.
+
+## API
+
+[`TocList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/TocList.astro) and [`TocButton.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TocButton.astro). TocList is ported from the handoff, but tracks the scroll itself instead of taking `activeId`. The handoff has no TocButton: its FloatingControls takes an IconButton that the page wires to a sheet, and TocButton is the two in one. For it, MenuPanel gained `label`, which names the dialog and its close button.
+
+## Related
+
+[FloatingControls](../../shell/floating-controls/), [ContentGrid](../../shell/content-grid/), [SidebarCard](../../shell/sidebar-card/).

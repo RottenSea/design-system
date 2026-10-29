@@ -1,0 +1,17 @@
+---
+import { PostLicense } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const license = { name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" };
+---
+
+<ExampleLayout title="PostLicense">
+  <PostLicense
+    title="Hairlines carry more than they look like they do"
+    href="https://example.com/blog/hairlines"
+    author="Field Notes"
+    published={{ label: "2026-03-04", datetime: "2026-03-04T03:00:00Z" }}
+    updated={{ label: "2026-03-12", datetime: "2026-03-12T03:00:00Z" }}
+    license={license}
+  />
+</ExampleLayout>

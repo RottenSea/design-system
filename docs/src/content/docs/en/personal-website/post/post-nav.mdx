@@ -1,0 +1,53 @@
+---
+title: PostNav
+description: The links to the previous and next posts at the end of a post.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Two links side by side under a soft hairline: the previous post on the left, the next on the right.
+
+<Example system="personal-website" name="post-nav" title="Both links, and only the next one" />
+
+## When to use
+
+At the very end of a post. The page decides the order; on this site Previous is the older post and Next the newer one, by publication time.
+
+## On a page
+
+```astro
+<PostNav prev={{ title: "Vibe Coding", href: "/blog/vibe-coding" }} next={{ title: "…", href: "…" }} />
+```
+
+With neither, it renders nothing.
+
+## Anatomy
+
+A two-column grid under a soft hairline. Each link is an uppercase micro-label, Previous or Next, over the post's title in the display serif at 18px. Next is right-aligned. A missing side leaves its cell empty, so Next stays on the right. Below 560px the links stack.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `prev`, `next` | `{ title, href, lang }` |
+| `label`, `prevLabel`, `nextLabel` | The nav's name, "More posts", and the two labels |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Hover | The title turns coral |
+
+## Accessibility
+
+A `<nav>` named "More posts". Each link's name is its label and title, and the links have `rel="prev"` and `rel="next"`.
+
+## API
+
+[`PostNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostNav.astro). The handoff draws this inline in its personal-site template; this is that markup as a component.
+
+## Related
+
+[PostLicense](../post-license/).

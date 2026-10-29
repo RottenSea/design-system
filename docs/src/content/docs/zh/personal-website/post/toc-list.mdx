@@ -1,0 +1,69 @@
+---
+title: TocList 目录
+description: 文章右栏的目录，以及窄屏上把它装进面板的 TocButton。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+TocList 把文章的 h2、h3 列成链接，并标出正在读的那一节。TocButton 是一个圆形的目录按钮，在右栏隐藏时把目录装进面板里打开。
+
+<Example system="personal-website" name="toc-list" title="正文旁边右栏里的目录" />
+
+## 什么时候用
+
+文章里至少有一个 h2 或 h3 时用。没有就不放：空的目录只是干扰。
+
+## 页面里怎么写
+
+```astro
+---
+const { Content, headings } = await render(post);
+const toc = headings.map((h) => ({ id: h.slug, text: h.text, level: h.depth }));
+---
+<SidebarCard title="On this page">
+  <TocList items={toc} />
+</SidebarCard>
+
+<FloatingControls>
+  <TocButton items={toc} />
+</FloatingControls>
+```
+
+2、3 级以外的标题会被去掉，所以 `render()` 给的标题可以直接传进来。`maxHeight` 给固定在侧栏的长目录限高；超出时目录自己滚动，让当前那一项留在视野里，不会滚动页面。
+
+## 结构
+
+一列链接，次要色，14px。h3 缩进。当前那一项是珊瑚色，左边有一条 2px 的珊瑚色竖线。
+
+TocButton 是带 `list` 图标的 IconButton，从右边打开一个 MenuPanel，顶上写 “On this page”。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `tone`（TocList） | `cream`（默认）或 `dark` |
+| `maxHeight`（TocList） | 一个长度，超出时目录滚动 |
+| `devices`（TocButton） | 显示按钮的屏幕，默认 `["mobile", "tablet"]`：窄于 1080px，也就是 ContentGrid 隐藏右栏的宽度 |
+| `label`、`title`（TocButton） | 按钮的名字 “Contents”，面板顶上的 “On this page” |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 当前 | 离窗口顶端 96px（导航的高度再加 32px）以内的最后一个标题；还没有标题到那里时是第一个；滚到页面底部时是最后一个 |
+| 悬停 | 链接变成墨色 |
+| 点了面板里的链接 | 面板关上，页面跳到那个标题 |
+
+## 无障碍
+
+目录是名为 “On this page” 的 `<nav>`，当前那一项带 `aria-current="location"`。链接都是普通的页内链接，没有脚本也能用。TocButton 的面板是名为 “Contents” 的模态 `<dialog>`：焦点留在里面，按 Escape 关闭，按钮的 `aria-expanded` 跟着变。
+
+## API
+
+[`TocList.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/TocList.astro) 和 [`TocButton.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TocButton.astro)。TocList 从交付包移植，但自己跟踪滚动，不接收 `activeId`。交付包没有 TocButton：它的 FloatingControls 接收一个 IconButton，由页面自己接上面板；TocButton 把这两样合成一个。为此 MenuPanel 加了 `label`，给对话框和关闭按钮命名。
+
+## 相关
+
+[FloatingControls 浮动按钮](../../shell/floating-controls/)、[ContentGrid 内容网格](../../shell/content-grid/)、[SidebarCard 侧栏卡片](../../shell/sidebar-card/)。

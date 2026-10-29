@@ -1,0 +1,52 @@
+---
+title: Post page
+description: The parts of a post page on the personal website, and how they fit together.
+sidebar:
+  order: 0
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A post page has two columns: the post, and a right rail with its table of contents. The post opens with its meta line over the title, then the cover, then the text. After the text come the tags, the copyright card and the links to the previous and next posts.
+
+<Example system="personal-website" name="post-page" title="A post page: the meta line, the title, the cover, the text, the end matter and the table of contents" viewport={1280} />
+
+Open it at full size to scroll: the table of contents marks the section being read. Narrower than 1080px, the rail is gone and a Contents button in the bottom right corner opens the same list in a sheet.
+
+## How the page is put together
+
+```astro
+<TopNav brand="Field Notes" links={links} active="Blog" />
+<main id="main">
+  <ContentGrid stackRails="none">
+    <article>
+      <PostMeta size="md" items={[date, category, readTime]} />
+      <h1>…</h1>
+      <Figure src={cover} alt="" />
+      <Content />
+      <TagList items={tags} />
+      <PostLicense … />
+      <PostNav prev={older} next={newer} />
+    </article>
+    <Fragment slot="right">
+      <SidebarCard title="On this page"><TocList items={toc} /></SidebarCard>
+    </Fragment>
+  </ContentGrid>
+</main>
+<FloatingControls>
+  <TocButton items={toc} />
+</FloatingControls>
+```
+
+`stackRails="none"` keeps the table of contents out of the single column on a phone: a list under the last paragraph is no use to a reader who got there. TocButton covers that width instead.
+
+## The parts
+
+| Component | What it does |
+| --- | --- |
+| [TocList](toc-list/) | The table of contents in the rail, following the reader; TocButton, the same list in a sheet |
+| [PostLicense](post-license/) | The copyright card: the title, the address, the author, the dates and the licence |
+| [PostNav](post-nav/) | The previous and next posts |
+| [Avatar](avatar/) | A round portrait, or initials without one, for an about page |
+
+PostMeta, the meta line over the title, is on the [ArticleListCard](../home/article-list-card/) page.

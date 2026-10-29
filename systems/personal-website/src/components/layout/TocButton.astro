@@ -1,0 +1,94 @@
+---
+/**
+ * The table of contents for a screen too narrow for the right rail: a round Contents button for
+ * FloatingControls that opens the TocList in a MenuPanel sheet. Following a link closes the sheet.
+ * By default the button shows below 1080px, where ContentGrid hides the right rail; which screens
+ * show it is a media query at ContentGrid's breakpoints, like FloatingControls' own `devices`.
+ *
+ * The handoff has no component for this: its FloatingControls takes an IconButton with an onClick
+ * that the page wires to its own sheet. This is that IconButton and sheet in one.
+ *
+ *   <FloatingControls>
+ *     <TocButton items={toc} />
+ *   </FloatingControls>
+ */
+import type { ComponentProps } from "astro/types";
+import IconButton from "../buttons/IconButton.astro";
+import TocList from "../content/TocList.astro";
+import MenuPanel from "./MenuPanel.astro";
+
+type Device = "mobile" | "tablet" | "desktop";
+
+interface Props {
+  items: ComponentProps<typeof TocList>["items"];
+  /** The sheet's id, unique on the page. */
+  id?: string;
+  /** The button's accessible name and the sheet's. */
+  label?: string;
+  /** The heading at the top of the sheet. */
+  title?: string;
+  /** The screens that show the button: below 768px, 768 to 1080px, above 1080px. */
+  devices?: Device[];
+  tone?: "canvas" | "dark";
+  class?: string;
+}
+
+const {
+  items,
+  id = "ds-toc-sheet",
+  label = "Contents",
+  title = "On this page",
+  devices = ["mobile", "tablet"],
+  tone = "canvas",
+  class: className
+} = Astro.props;
+const shows = (device: Device) => (devices.includes(device) ? "1" : "0");
+---
+
+<span
+  class:list={["ds-toc-button", className]}
+  data-mobile={shows("mobile")}
+  data-tablet={shows("tablet")}
+  data-desktop={shows("desktop")}
+>
+  <IconButton
+    icon="list"
+    label={label}
+    tone={tone}
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls={id}
+    data-ds-menu-open={id}
+  />
+  <MenuPanel id={id} brand={title} groups={[]} label={label}>
+    <TocList items={items} label={title} />
+  </MenuPanel>
+</span>
+
+<style>
+  .ds-toc-button {
+    display: inline-flex;
+  }
+
+  .ds-toc-button > :global(.ds-icon-button) {
+    box-shadow: var(--shadow-float);
+  }
+
+  @media (max-width: 768px) {
+    .ds-toc-button[data-mobile="0"] {
+      display: none;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1080px) {
+    .ds-toc-button[data-tablet="0"] {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1081px) {
+    .ds-toc-button[data-desktop="0"] {
+      display: none;
+    }
+  }
+</style>

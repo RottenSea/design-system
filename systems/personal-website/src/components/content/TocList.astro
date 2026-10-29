@@ -1,0 +1,153 @@
+---
+/**
+ * On-this-page navigation for a post: the headings as links, h2 flush and h3 indented. The
+ * heading being read is coral text with a 2px coral mark in the gutter, the one place coral marks
+ * position rather than action. Everything else is muted. No fills, no pills: a contents list is a
+ * list of links, and a filled current item would read as a selected tab.
+ *
+ * Ported from the handoff's TocList.jsx with the same props, except `activeId` and `onSelect`. The
+ * handoff left scroll tracking to the page; here the list does it: the current heading is the last
+ * one whose top is within 96px of the window's top (the nav's height and 32px more), the first
+ * before any is, and the last when the page has scrolled to its end. A line any lower would mark
+ * the next heading of a short section the reader has just jumped to. The current link carries aria-current="location". The
+ * links are plain anchors, so the list works without its script. Deeper levels are dropped.
+ *
+ * Put it in a SidebarCard in the right rail, and give narrow screens a TocButton.
+ *
+ *   <SidebarCard title="On this page">
+ *     <TocList items={headings.map((h) => ({ id: h.slug, text: h.text, level: h.depth }))} />
+ *   </SidebarCard>
+ */
+export interface TocItem {
+  /** The heading's id, used as the link's fragment. */
+  id: string;
+  text: string;
+  /** 2 is flush, 3 is indented. Other levels are not shown. */
+  level?: number;
+}
+
+interface Props {
+  items: (TocItem | string)[];
+  /** Accessible name of the list's <nav>. */
+  label?: string;
+  tone?: "cream" | "dark";
+  /** Caps the list's height and lets it scroll, keeping the current link in view. A number is px. */
+  maxHeight?: string | number;
+  class?: string;
+}
+
+const { items, label = "On this page", tone = "cream", maxHeight, class: className } = Astro.props;
+const links = items
+  .map((item) => (typeof item === "string" ? { id: item, text: item, level: 2 } : { level: 2, ...item }))
+  .filter((item) => item.level === 2 || item.level === 3);
+const height = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
+---
+
+<ds-toc-list>
+  <nav
+    class:list={["ds-toc", { "ds-toc--dark": tone === "dark" }, className]}
+    aria-label={label}
+    style={height ? `--ds-toc-max-height: ${height}` : undefined}
+  >
+    {
+      links.map((item) => (
+        <a
+          class:list={["ds-toc__link", { "ds-toc__link--sub": item.level === 3 }]}
+          href={`#${encodeURIComponent(item.id)}`}
+          data-id={item.id}
+          data-ds-tap="row"
+        >
+          {item.text}
+        </a>
+      ))
+    }
+  </nav>
+</ds-toc-list>
+
+<script>
+  /** How far from the window's top a heading becomes the current one, in px. */
+  const LINE = 96;
+
+  class DsTocList extends HTMLElement {
+    connectedCallback() {
+      const nav = this.querySelector("nav");
+      const links = [...this.querySelectorAll<HTMLAnchorElement>("a[data-id]")];
+      const entries = links.flatMap((link) => {
+        const heading = document.getElementById(link.dataset.id ?? "");
+        return heading ? [{ link, heading }] : [];
+      });
+      if (!nav || !entries.length) return;
+      let current: HTMLAnchorElement | undefined;
+      const update = () => {
+        const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+        const passed = entries.filter(({ heading }) => heading.getBoundingClientRect().top <= LINE);
+        const next = (atEnd && window.scrollY > 0 ? entries.at(-1) : (passed.at(-1) ?? entries[0]))?.link;
+        if (next === current) return;
+        current?.removeAttribute("aria-current");
+        next?.setAttribute("aria-current", "location");
+        current = next;
+        // Scroll the list itself, never the page, when it is capped and the link is out of view.
+        if (next && nav.scrollHeight > nav.clientHeight) {
+          const top = next.offsetTop - nav.offsetTop;
+          if (top < nav.scrollTop || top + next.offsetHeight > nav.scrollTop + nav.clientHeight) {
+            nav.scrollTop = top - nav.clientHeight / 2;
+          }
+        }
+      };
+      update();
+      window.addEventListener("scroll", update, { passive: true });
+      window.addEventListener("resize", update, { passive: true });
+    }
+  }
+
+  if (!customElements.get("ds-toc-list")) customElements.define("ds-toc-list", DsTocList);
+</script>
+
+<style>
+  .ds-toc {
+    display: flex;
+    flex-direction: column;
+    max-height: var(--ds-toc-max-height, none);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    position: relative;
+  }
+
+  .ds-toc__link {
+    border-left: 2px solid transparent;
+    color: var(--text-muted);
+    display: block;
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    padding: 5px 0 5px var(--space-xs);
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-toc__link--sub {
+    padding-left: var(--space-md);
+  }
+
+  .ds-toc__link:hover {
+    color: var(--text-ink);
+    text-decoration: none;
+  }
+
+  .ds-toc__link[aria-current] {
+    border-left-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .ds-toc--dark .ds-toc__link {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-toc--dark .ds-toc__link:hover {
+    color: var(--text-on-dark);
+  }
+
+  .ds-toc--dark .ds-toc__link[aria-current] {
+    color: var(--color-primary);
+  }
+</style>

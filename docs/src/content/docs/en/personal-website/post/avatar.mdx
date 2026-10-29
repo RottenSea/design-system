@@ -1,0 +1,49 @@
+---
+title: Avatar
+description: A round portrait, or the initials without one.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A photograph cropped to a circle, at 28, 40 or 64px. Without a photograph it shows the name's initials on a cream card.
+
+<Example system="personal-website" name="avatar" title="Photographs and initials at the three sizes, and initials on the dark surface" />
+
+## When to use
+
+Where a person is named: 28px beside a meta line, 40px in a profile widget, 64px at the top of an about page. The fallback is always the initials, never a generated picture, a gradient or a person icon. Nothing goes on the avatar itself: no ring, badge or status dot.
+
+## On a page
+
+```astro
+---
+import portrait from "../assets/avatar.png";
+---
+<Avatar src={portrait} name="RottenTh" size="lg" />
+```
+
+## Anatomy
+
+A circle of the given size. A photograph fills it with `object-fit: cover`. The initials are the first letters of the first two words of `name`, in the sans at weight 500 and 36% of the size.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `size` | `sm` (28px), `md` (40px, default), `lg` (64px), or a number of pixels |
+| `src` | An imported image, resized to the avatar's size at 1x and 2x, or a URL used as it is |
+| `tone` | `cream` (default) or `dark`, the surface it sits on |
+
+## Accessibility
+
+A photograph takes `alt`, empty by default, since the name is usually written beside it. The initials are hidden from screen readers; the avatar is then an image named by `name`.
+
+## API
+
+[`Avatar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Avatar.astro). Ported from the handoff.
+
+## Related
+
+[PostMeta](../../home/article-list-card/).

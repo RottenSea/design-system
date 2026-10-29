@@ -1,0 +1,53 @@
+---
+title: PostLicense 版权卡片
+description: 文章末尾的版权卡片。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+文章末尾说明这篇归谁、能怎么分享的卡片：标题和网址，下面是作者、日期和许可。
+
+<Example system="personal-website" name="post-license" title="带发布日期和更新日期的版权卡片" />
+
+## 什么时候用
+
+每篇文章末尾放一次，在标签后面。别的页面不放，网站自己的版权写在页脚。
+
+## 页面里怎么写
+
+```astro
+<PostLicense
+  title={post.data.title}
+  href={new URL(path, Astro.site).href}
+  author="RottenTh"
+  published={{ label: publishedDate, datetime: published }}
+  license={{ name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" }}
+/>
+```
+
+## 结构
+
+奶油色卡片，内边距 24px。标题是 16px 墨色的无衬线小标题，下面是次要色 14px 的网址，放不下时在任意位置断行。再下面一行列出几项信息，每项是大写小标签加它的值：Author、Published、有更新日期时的 Updated、License。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `updated` | 加上 Updated 一项 |
+| `published`、`updated` | 字符串，或 `{ label, datetime }`，输出 `<time>` |
+| `lang` | 文章的语言，加在标题上 |
+| `newTabNote` | 读屏软件在许可链接后面读的提示 |
+
+## 无障碍
+
+卡片是名为 “Copyright” 的 `<aside>`，几项信息是 `<dl>`，读屏软件会把标签和值一起读。许可链接带 `rel="license"`，在新标签页打开，并告诉读屏软件。
+
+## API
+
+[`PostLicense.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostLicense.astro)。交付包里没有版权卡片；这张用 Shirone 主题的几项信息，外观是设计系统的卡片。
+
+## 相关
+
+[PostNav 上一篇下一篇](../post-nav/)、[Footer 页脚](../../shell/footer/)。

@@ -1,0 +1,49 @@
+---
+title: Avatar 头像
+description: 圆形照片，没有照片时显示首字母。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+裁成圆形的照片，28、40 或 64px。没有照片时在奶油色底上显示名字的首字母。
+
+<Example system="personal-website" name="avatar" title="三种大小的照片和首字母，以及深色底上的首字母" />
+
+## 什么时候用
+
+提到一个人的地方：信息行旁边用 28px，资料小卡片用 40px，关于页顶上用 64px。没有照片时一律用首字母，不用生成的图、渐变或人形图标。头像上不加任何东西：没有描边、徽章或状态点。
+
+## 页面里怎么写
+
+```astro
+---
+import portrait from "../assets/avatar.png";
+---
+<Avatar src={portrait} name="RottenTh" size="lg" />
+```
+
+## 结构
+
+指定大小的圆。照片用 `object-fit: cover` 填满。首字母取 `name` 前两个词的第一个字，无衬线字体，字重 500，字号是头像大小的 36%。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `size` | `sm`（28px）、`md`（40px，默认）、`lg`（64px），或像素数 |
+| `src` | 导入的图片，按头像大小生成 1x 和 2x；或者网址，原样使用 |
+| `tone` | `cream`（默认）或 `dark`，头像所在的底色 |
+
+## 无障碍
+
+照片用 `alt`，默认为空，因为名字通常就写在旁边。首字母对读屏软件隐藏，这时头像是一张以 `name` 命名的图片。
+
+## API
+
+[`Avatar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Avatar.astro)。从交付包移植。
+
+## 相关
+
+[PostMeta 信息行](../../home/article-list-card/)。

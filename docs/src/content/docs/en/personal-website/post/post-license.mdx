@@ -1,0 +1,53 @@
+---
+title: PostLicense
+description: The copyright card at the end of a post.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The card at the end of a post that says whose it is and how it may be shared: the title and address, then the author, the dates and the licence.
+
+<Example system="personal-website" name="post-license" title="A copyright card with a published and an updated date" />
+
+## When to use
+
+Once, at the end of every post, after the tags. Other pages do without it; the footer carries the site's own copyright line.
+
+## On a page
+
+```astro
+<PostLicense
+  title={post.data.title}
+  href={new URL(path, Astro.site).href}
+  author="RottenTh"
+  published={{ label: publishedDate, datetime: published }}
+  license={{ name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" }}
+/>
+```
+
+## Anatomy
+
+A cream card with 24px padding. The title is a 16px sans title in ink, with the address under it in muted 14px text, broken anywhere to fit. Then a row of facts, each an uppercase micro-label over its value: Author, Published, Updated when given, and License.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `updated` | Adds the Updated fact |
+| `published`, `updated` | A string, or `{ label, datetime }` for a `<time>` |
+| `lang` | The post's language, for the title |
+| `newTabNote` | What screen readers hear after the licence link |
+
+## Accessibility
+
+The card is an `<aside>` named "Copyright", and the facts are a `<dl>`, so a screen reader reads each label with its value. The licence link has `rel="license"` and opens a new tab, which it tells screen readers.
+
+## API
+
+[`PostLicense.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostLicense.astro). The handoff has no copyright card; this one has the Shirone theme's fields on the system's card body.
+
+## Related
+
+[PostNav](../post-nav/), [Footer](../../shell/footer/).

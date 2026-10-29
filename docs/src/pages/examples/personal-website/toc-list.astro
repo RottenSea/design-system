@@ -1,0 +1,71 @@
+---
+import { SidebarCard, TocList } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const items = [
+  { id: "one-hex", text: "One hex, two jobs", level: 2 },
+  { id: "inside-a-band", text: "Inside a band", level: 3 },
+  { id: "where-it-goes-wrong", text: "Where it goes wrong", level: 2 },
+  { id: "the-pacing-rule", text: "The pacing rule", level: 2 },
+  { id: "what-to-do-instead", text: "What to do instead", level: 2 }
+];
+---
+
+<ExampleLayout title="TocList">
+  <div class="layout">
+    <article class="text">
+      {
+        items.map((item) => {
+          const Heading = item.level === 2 ? "h2" : "h3";
+          return (
+            <section>
+              <Heading id={item.id}>{item.text}</Heading>
+              <p>
+                A border at one pixel is an elevation step, not an ink line. Where the two get confused, a page starts
+                to look wired together instead of built.
+              </p>
+            </section>
+          );
+        })
+      }
+    </article>
+    <SidebarCard title="On this page" class="rail">
+      <TocList items={items} />
+    </SidebarCard>
+  </div>
+</ExampleLayout>
+
+<style>
+  .layout {
+    align-items: start;
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: minmax(0, 1fr) 220px;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .text h2 {
+    font-family: var(--font-display);
+    font-size: var(--display-sm-size);
+    font-weight: 400;
+  }
+
+  .text h3 {
+    font-size: var(--title-md-size);
+    font-weight: 500;
+  }
+
+  .text p {
+    margin-top: var(--space-xs);
+  }
+
+  .layout > :global(.rail) {
+    position: sticky;
+    top: var(--space-md);
+  }
+</style>

@@ -13,7 +13,7 @@ ArticleListCard 是列表里的一篇文章：展示衬线体的标题、信息�
 
 ## 什么时候用
 
-列表里的每篇文章。文章标题下面单独用 PostMeta。
+列表里的每篇文章。文章标题旁边单独用 PostMeta。
 
 ## 页面里怎么写
 
@@ -50,7 +50,7 @@ ArticleListCard 是列表里的一篇文章：展示衬线体的标题、信息�
 | `level` | 标题的级别，默认 3；列表紧跟在页面的 `h1` 后面时用 2 |
 | `tone` | `cream`（默认）或 `dark` |
 
-PostMeta 的项不带图标时用中点连接，有一项带 `icon` 时就都换成图标方块。
+PostMeta 的项不带图标时用中点连接，有一项带 `icon` 时就都换成图标方块。带 `href` 的项是链接，颜色和这一行一样，悬停时加下划线，例如点了能看到同一分类文章的分类。
 
 ## 状态
 
@@ -64,7 +64,7 @@ PostMeta 的项不带图标时用中点连接，有一项带 `icon` 时就都换
 
 ## API
 
-[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) 和 [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro)。从交付包移植。PostMeta 没有头像（和 Avatar 一起做），也没有状态圆点。
+[`ArticleListCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/ArticleListCard.astro) 和 [`PostMeta.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostMeta.astro)。从交付包移植。PostMeta 没有头像和状态圆点，这个网站用不上。
 
 ## 相关
 

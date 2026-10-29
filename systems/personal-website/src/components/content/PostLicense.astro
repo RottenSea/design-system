@@ -1,0 +1,127 @@
+---
+/**
+ * The copyright card at the end of a post: the post's title and address, then who wrote it, when,
+ * and the licence it is shared under. A cream card with no border, like every filled card; the
+ * facts are uppercase micro-labels over body text, so the card reads as a record rather than a
+ * call to action.
+ *
+ * The handoff has no copyright card. This one takes its fields from the Shirone theme's: title,
+ * URL, author, published date and licence; `updated` adds the last edit. The licence link opens in
+ * a new tab and carries rel="license".
+ *
+ *   <PostLicense title="Hello world!" href="https://…/blog/hello" author="RottenTh"
+ *     published="2026-05-18" license={{ name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" }} />
+ */
+import Surface from "../cards/Surface.astro";
+
+export interface PostDate {
+  label: string;
+  /** The machine-readable value for the <time>. */
+  datetime?: string;
+}
+
+interface Props {
+  title: string;
+  /** The post's full address, shown and linked. */
+  href: string;
+  author: string;
+  published: PostDate | string;
+  updated?: PostDate | string;
+  license: { name: string; href: string };
+  /** The post's language, for the title. */
+  lang?: string;
+  /** Read by screen readers after the licence link, which opens in a new tab. */
+  newTabNote?: string;
+  class?: string;
+}
+
+const {
+  title,
+  href,
+  author,
+  published,
+  updated,
+  license,
+  lang,
+  newTabNote = " (opens in a new tab)",
+  class: className
+} = Astro.props;
+const date = (value: PostDate | string) => (typeof value === "string" ? { label: value } : value);
+const dates = [
+  { term: "Published", ...date(published) },
+  ...(updated ? [{ term: "Updated", ...date(updated) }] : [])
+];
+---
+
+<Surface as="aside" padding="md" aria-label="Copyright" class:list={["ds-post-license", className]}>
+  <p class="ds-post-license__title" lang={lang}>{title}</p>
+  <a class="ds-post-license__url" href={href}>{href}</a>
+  <dl class="ds-post-license__facts">
+    <div>
+      <dt>Author</dt>
+      <dd>{author}</dd>
+    </div>
+    {
+      dates.map(({ term, label, datetime }) => (
+        <div>
+          <dt>{term}</dt>
+          <dd>{datetime ? <time datetime={datetime}>{label}</time> : label}</dd>
+        </div>
+      ))
+    }
+    <div>
+      <dt>License</dt>
+      <dd>
+        <a class="ds-external" href={license.href} target="_blank" rel="license noreferrer"
+          >{license.name}<span class="ds-visually-hidden">{newTabNote}</span></a
+        >
+      </dd>
+    </div>
+  </dl>
+</Surface>
+
+<style>
+  .ds-post-license {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+  }
+
+  .ds-post-license__title {
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    font-size: var(--title-sm-size);
+    font-weight: var(--title-sm-weight);
+    line-height: var(--title-sm-lh);
+  }
+
+  .ds-post-license__url {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    overflow-wrap: anywhere;
+  }
+
+  .ds-post-license__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-xl);
+    margin: var(--space-sm) 0 0;
+  }
+
+  .ds-post-license__facts dt {
+    color: var(--text-muted);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-post-license__facts dd {
+    color: var(--text-body);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: 0;
+  }
+</style>

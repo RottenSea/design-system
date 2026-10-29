@@ -1,0 +1,112 @@
+---
+/**
+ * The way on at the end of a post: the previous post on the left, the next on the right, each an
+ * uppercase micro-label over its serif title. A soft hairline above sets it apart from the post.
+ * A missing side leaves its cell empty, so Next stays on the right in the first post. Below 560px
+ * the two stack.
+ *
+ * The handoff draws this inline in its personal-site template; this is that markup as a
+ * component. Which post is previous is the page's call; the links carry rel="prev" and rel="next".
+ *
+ *   <PostNav prev={{ title: "Vibe Coding", href: "/blog/vibe-coding" }} next={{ title: "…", href: "…" }} />
+ */
+export interface PostLink {
+  title: string;
+  href: string;
+  /** The post's language, for its title. */
+  lang?: string;
+}
+
+interface Props {
+  prev?: PostLink;
+  next?: PostLink;
+  /** Accessible name of the <nav>. */
+  label?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  class?: string;
+}
+
+const { prev, next, label = "More posts", prevLabel = "Previous", nextLabel = "Next", class: className } = Astro.props;
+const sides = [
+  { post: prev, rel: "prev", text: prevLabel },
+  { post: next, rel: "next", text: nextLabel }
+] as const;
+---
+
+{
+  (prev || next) && (
+    <nav class:list={["ds-post-nav", className]} aria-label={label}>
+      {sides.map(({ post, rel, text }) =>
+        post ? (
+          <a class:list={["ds-post-nav__link", `ds-post-nav__link--${rel}`]} href={post.href} rel={rel}>
+            <span class="ds-post-nav__label">{text}</span>
+            <span class="ds-post-nav__title" lang={post.lang}>
+              {post.title}
+            </span>
+          </a>
+        ) : (
+          <span />
+        )
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .ds-post-nav {
+    border-top: 1px solid var(--hairline-soft);
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: 1fr 1fr;
+    padding-top: var(--space-lg);
+  }
+
+  .ds-post-nav__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxs);
+    text-decoration: none;
+  }
+
+  .ds-post-nav__link--next {
+    text-align: right;
+  }
+
+  .ds-post-nav__label {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-post-nav__title {
+    color: var(--text-ink);
+    font-family: var(--font-display);
+    font-size: var(--title-md-size);
+    line-height: 1.35;
+    text-wrap: pretty;
+    transition: var(--transition-tint);
+  }
+
+  .ds-post-nav__link:hover {
+    text-decoration: none;
+  }
+
+  .ds-post-nav__link:hover .ds-post-nav__title {
+    color: var(--color-primary-active);
+  }
+
+  @media (max-width: 560px) {
+    .ds-post-nav {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ds-post-nav > span:empty {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+title: PostNav 上一篇下一篇
+description: 文章末尾指向上一篇和下一篇的链接。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+浅色细线下面并排两个链接：左边上一篇，右边下一篇。
+
+<Example system="personal-website" name="post-nav" title="两边都有，以及只有下一篇" />
+
+## 什么时候用
+
+放在文章最末尾。顺序由页面决定；这个网站按发布时间，Previous 是更早的一篇，Next 是更新的一篇。
+
+## 页面里怎么写
+
+```astro
+<PostNav prev={{ title: "Vibe Coding", href: "/blog/vibe-coding" }} next={{ title: "…", href: "…" }} />
+```
+
+两边都没有时什么也不输出。
+
+## 结构
+
+浅色细线下面的两栏网格。每个链接是大写小标签 Previous 或 Next，下面是 18px 衬线字的文章标题。Next 靠右。缺一边时那一格留空，Next 仍然在右边。窄于 560px 时两个链接上下排。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `prev`、`next` | `{ title, href, lang }` |
+| `label`、`prevLabel`、`nextLabel` | 导航的名字 “More posts”，以及两个小标签 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 悬停 | 标题变成珊瑚色 |
+
+## 无障碍
+
+名为 “More posts” 的 `<nav>`。每个链接的名字是小标签加标题，分别带 `rel="prev"` 和 `rel="next"`。
+
+## API
+
+[`PostNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostNav.astro)。交付包在个人网站样板里直接写了这段，这里做成组件。
+
+## 相关
+
+[PostLicense 版权卡片](../post-license/)。

@@ -8,7 +8,8 @@
  * Ported from the handoff's MenuPanel.jsx with the same props, except `open`, `onClose` and
  * `onNavigate`: it is a native modal <dialog>, which keeps the focus inside, makes the page
  * behind it inert, and closes on Escape. A click on the scrim closes it too. Any element with
- * data-ds-menu-open set to the panel's id opens it.
+ * data-ds-menu-open set to the panel's id opens it. `label` names the dialog and its close button,
+ * for a sheet that holds something other than the menu, such as TocButton's table of contents.
  *
  *   <MenuPanel id="site-menu" brand="The Key of Urala" groups={[{ links: [{ label: "Blog", href: "/" }] }]} />
  *   <button data-ds-menu-open="site-menu">Menu</button>
@@ -38,10 +39,12 @@ interface Props {
   width?: string | number;
   /** A line at the bottom of the panel. */
   note?: string;
+  /** The dialog's accessible name; the close button is "Close" and this, in lower case. */
+  label?: string;
   class?: string;
 }
 
-const { id, brand, groups, active, side = "right", width = 320, note, class: className } = Astro.props;
+const { id, brand, groups, active, side = "right", width = 320, note, label = "Menu", class: className } = Astro.props;
 const panelWidth = typeof width === "number" ? `${width}px` : width;
 const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
 ---
@@ -50,14 +53,14 @@ const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
   <dialog
     id={id}
     class:list={["ds-menu", `ds-menu--${side}`, className]}
-    aria-label="Menu"
+    aria-label={label}
     style={`--ds-menu-width: ${panelWidth}`}
   >
     <div class="ds-menu__panel">
       <div class="ds-menu__head">
         <slot name="logo" />
         <span class="ds-menu__brand">{brand}</span>
-        <IconButton icon="x" label="Close menu" data-ds-menu-close />
+        <IconButton icon="x" label={`Close ${label.toLowerCase()}`} data-ds-menu-close />
       </div>
       {
         groups.map((group) => (

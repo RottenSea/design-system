@@ -1,0 +1,12 @@
+---
+import { PostNav } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="PostNav">
+  <PostNav
+    prev={{ title: "Notes on reading less, slower", href: "#" }}
+    next={{ title: "Writing for a page nobody scrolls twice", href: "#" }}
+  />
+  <PostNav next={{ title: "Writing for a page nobody scrolls twice", href: "#" }} />
+</ExampleLayout>

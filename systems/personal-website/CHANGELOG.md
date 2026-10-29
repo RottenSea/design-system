@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The post page's parts: `TocList`, the table of contents in the right rail, ported from the handoff, which marks the heading being read as the page scrolls; `TocButton`, a round Contents button for `FloatingControls` that opens the same list in a sheet below 1080px, where the right rail is hidden; `PostLicense`, the copyright card at the end of a post; `PostNav`, the links to the previous and next posts; and `Avatar`, a round portrait with the initials as its fallback, ported from the handoff.
+- A `PostMeta` part can carry `href`, and is then a link.
+- `MenuPanel` takes `label`, which names the dialog and its close button.
+- The Tabler icon `list`.
+
 ## [0.5.0] - 2026-10-29
 
 This release adds the parts of a home page: the quote band, the post list with its filters and pager, and the rail's statistics and calendar. Nothing a site already uses changes.
