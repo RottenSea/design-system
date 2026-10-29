@@ -23,6 +23,18 @@ export default defineConfig({
   // an address that ends in a slash. With "always", every link Starlight writes ends in one,
   // including the site title's link to /en/.
   trailingSlash: "always",
+  // The packages the system's components import in the browser. Bundled when the dev server
+  // starts, they are not found one page at a time; each late find makes Vite re-bundle and
+  // reload, and leaves Astro's dev toolbar script answering 504 until the cache is cleared.
+  vite: {
+    optimizeDeps: {
+      include: [
+        "@rottensea/ds-personal-website > medium-zoom",
+        "@rottensea/ds-personal-website > mermaid",
+        "@rottensea/ds-personal-website > qrcode"
+      ]
+    }
+  },
   integrations: [
     starlight({
       title: "Design Systems",
