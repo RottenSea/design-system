@@ -1,0 +1,26 @@
+---
+import { Button, Dialog } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Dialog">
+  <Button variant="secondary" data-ds-dialog-open="example-dialog">Open the dialog</Button>
+  <Dialog
+    id="example-dialog"
+    title="Discard this draft?"
+    description="The draft and its notes are removed from this device."
+    size="sm"
+  >
+    <Fragment slot="actions">
+      <Button variant="secondary" data-ds-dialog-close-example>Keep editing</Button>
+      <Button data-ds-dialog-close-example>Discard</Button>
+    </Fragment>
+  </Dialog>
+</ExampleLayout>
+
+<script>
+  // The example's buttons only close the dialog; a page would act on the choice first.
+  for (const button of document.querySelectorAll("[data-ds-dialog-close-example]")) {
+    button.addEventListener("click", () => document.querySelector<HTMLDialogElement>("#example-dialog")?.close());
+  }
+</script>

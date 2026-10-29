@@ -6,12 +6,15 @@
  * call to action.
  *
  * The handoff has no copyright card. This one takes its fields from the Shirone theme's: title,
- * URL, author, published date and licence; `updated` adds the last edit. The licence link opens in
- * a new tab and carries rel="license".
+ * URL, author, published date and licence; `updated` adds the last edit. Like Shirone's, it has a
+ * large Creative Commons mark behind the text at the right, in the hairline colour, cut off by the
+ * card's edge; here it is Tabler's `creative-commons`, like the system's other icons. The
+ * licence link opens in a new tab and carries rel="license".
  *
  *   <PostLicense title="Hello world!" href="https://…/blog/hello" author="RottenTh"
  *     published="2026-05-18" license={{ name: "CC BY-NC-SA 4.0", href: "https://creativecommons.org/licenses/by-nc-sa/4.0/" }} />
  */
+import CreativeCommons from "../../icons/creative-commons.svg";
 import Surface from "../cards/Surface.astro";
 
 export interface PostDate {
@@ -78,6 +81,7 @@ const dates = [
       </dd>
     </div>
   </dl>
+  <CreativeCommons class="ds-post-license__mark" aria-hidden="true" />
 </Surface>
 
 <style>
@@ -85,6 +89,26 @@ const dates = [
     display: flex;
     flex-direction: column;
     gap: var(--space-xxs);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* The text stays above the mark. */
+  .ds-post-license > :not(.ds-post-license__mark) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .ds-post-license__mark {
+    color: var(--hairline);
+    height: 15rem;
+    pointer-events: none;
+    position: absolute;
+    right: var(--space-lg);
+    stroke-width: 1.25;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15rem;
   }
 
   .ds-post-license__title {

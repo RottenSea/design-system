@@ -7,10 +7,8 @@
  * downloads as a PNG, and where the browser can share files (most phones), Share hands it to the
  * system's share sheet.
  *
- * The handoff has no share component; this one is made of its Button, Dialog and Snackbar. The
- * poster is always in the light theme, so it looks the same whoever made it. It is drawn when
- * the dialog first opens, after the fonts it uses have loaded. The QR code comes from the
- * `qrcode` package's module matrix, drawn square by square in ink.
+ * The handoff has no share component; this one is made of its Button, Dialog and Snackbar, with
+ * SharePoster in the dialog, drawn when the dialog first opens.
  *
  *   <PostShare title="Vibe Coding" description="…" url="https://…/blog/000001" site="The Key of Urala"
  *     date="2026-05-19" cover={coverUrl} filename="vibe-coding" />
@@ -18,6 +16,7 @@
 import Button from "../buttons/Button.astro";
 import Dialog from "../feedback/Dialog.astro";
 import Snackbar from "../feedback/Snackbar.astro";
+import SharePoster from "./SharePoster.astro";
 
 interface Props {
   title: string;
@@ -48,16 +47,15 @@ const {
   id = "ds-share",
   class: className
 } = Astro.props;
-const poster = { title, description, url, site, date, cover };
 ---
 
-<ds-post-share class:list={["ds-share", className]} data-poster={JSON.stringify(poster)} data-filename={filename}>
+<ds-post-share class:list={["ds-share", className]} data-url={url} data-title={title} data-filename={filename}>
   <div class="ds-share__actions">
     <Button variant="secondary" size="sm" iconLeft="link" data-ds-share-copy>Copy link</Button>
     <Button variant="secondary" size="sm" iconLeft="share" data-ds-dialog-open={`${id}-poster`}>Share poster</Button>
   </div>
   <Dialog id={`${id}-poster`} title="Share poster" size="sm">
-    <canvas class="ds-share__canvas" width="1080" height="1440" role="img" aria-label={`A poster of “${title}” with a QR code of its address`}></canvas>
+    <SharePoster title={title} description={description} url={url} site={site} date={date} cover={cover} lazy />
     <Fragment slot="actions">
       <Button variant="secondary" iconLeft="share" data-ds-share-send hidden>Share</Button>
       <Button iconLeft="download" data-ds-share-download>Download</Button>
@@ -67,189 +65,36 @@ const poster = { title, description, url, site, date, cover };
 </ds-post-share>
 
 <script>
-  import QRCode from "qrcode";
-
-  interface Poster {
-    title: string;
-    description?: string;
-    url: string;
-    site: string;
-    date?: string;
-    cover?: string;
-  }
-
-  const W = 1080;
-  const H = 1440;
-  const PAD = 96;
-
-  /** The light theme's colours and fonts, read from the tokens. */
-  function palette() {
-    const probe = document.createElement("div");
-    probe.dataset.theme = "light";
-    probe.hidden = true;
-    document.body.append(probe);
-    const style = getComputedStyle(probe);
-    const get = (name: string) => style.getPropertyValue(name).trim();
-    const colors = {
-      canvas: get("--surface-canvas"),
-      card: get("--surface-card"),
-      ink: get("--text-ink"),
-      body: get("--text-body"),
-      muted: get("--text-muted"),
-      hairline: get("--hairline"),
-      coral: get("--color-primary"),
-      serif: get("--font-display"),
-      sans: get("--font-sans")
-    };
-    probe.remove();
-    return colors;
-  }
-
-  /** Breaks text into lines that fit, between words and between Chinese characters. */
-  function lines(ctx: CanvasRenderingContext2D, text: string, width: number, max: number) {
-    const words = [...new Intl.Segmenter("zh", { granularity: "word" }).segment(text)].map((part) => part.segment);
-    const out: string[] = [];
-    let line = "";
-    for (const word of words) {
-      const next = line + word;
-      if (ctx.measureText(next).width <= width || !line) {
-        line = next;
-        continue;
-      }
-      out.push(line.trimEnd());
-      line = word.trimStart();
-    }
-    if (line) out.push(line.trimEnd());
-    if (out.length <= max) return out;
-    const kept = out.slice(0, max);
-    let last = kept[max - 1];
-    while (last && ctx.measureText(`${last}…`).width > width) last = last.slice(0, -1);
-    kept[max - 1] = `${last}…`;
-    return kept;
-  }
-
-  function loadImage(src: string) {
-    return new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = reject;
-      image.src = src;
-    });
-  }
-
-  async function draw(canvas: HTMLCanvasElement, poster: Poster) {
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const c = palette();
-    const serif = (size: number) => `400 ${size}px ${c.serif}`;
-    const sans = (size: number, weight = 400) => `${weight} ${size}px ${c.sans}`;
-    // Canvas text uses whatever has loaded; wait for the faces this poster needs.
-    await Promise.allSettled([
-      document.fonts.load(serif(72), poster.title),
-      document.fonts.load(sans(34), `${poster.description ?? ""}${poster.site}`),
-      document.fonts.load(sans(30, 500), poster.site)
-    ]);
-
-    ctx.fillStyle = c.canvas;
-    ctx.fillRect(0, 0, W, H);
-
-    // The cover fills the top 9:16 of the width, cropped to cover; without one, the cream card.
-    const coverHeight = Math.round((W * 9) / 16);
-    ctx.fillStyle = c.card;
-    ctx.fillRect(0, 0, W, coverHeight);
-    if (poster.cover) {
-      try {
-        const image = await loadImage(poster.cover);
-        const scale = Math.max(W / image.width, coverHeight / image.height);
-        const w = image.width * scale;
-        const h = image.height * scale;
-        ctx.drawImage(image, (W - w) / 2, (coverHeight - h) / 2, w, h);
-      } catch {
-        // A cover that fails to load leaves the cream card.
-      }
-    }
-
-    let y = coverHeight + PAD;
-    ctx.textBaseline = "top";
-    ctx.fillStyle = c.ink;
-    ctx.font = serif(72);
-    for (const line of lines(ctx, poster.title, W - PAD * 2, 3)) {
-      ctx.fillText(line, PAD, y);
-      y += 90;
-    }
-    if (poster.description) {
-      y += 16;
-      ctx.fillStyle = c.body;
-      ctx.font = sans(34);
-      for (const line of lines(ctx, poster.description, W - PAD * 2, 3)) {
-        ctx.fillText(line, PAD, y);
-        y += 52;
-      }
-    }
-
-    // The footer: a hairline, the site's name and the date, and the QR code at the right.
-    const qrSize = 200;
-    const footerTop = H - PAD - qrSize;
-    ctx.fillStyle = c.hairline;
-    ctx.fillRect(PAD, footerTop - 48, W - PAD * 2, 2);
-    ctx.fillStyle = c.ink;
-    ctx.font = sans(30, 500);
-    ctx.fillText(poster.site, PAD, footerTop + 40);
-    if (poster.date) {
-      ctx.fillStyle = c.muted;
-      ctx.font = sans(28);
-      ctx.fillText(poster.date, PAD, footerTop + 90);
-    }
-    ctx.fillStyle = c.coral;
-    ctx.fillRect(PAD, footerTop + 150, 48, 4);
-
-    const qr = QRCode.create(poster.url, { errorCorrectionLevel: "M" });
-    const size = qr.modules.size;
-    const cell = qrSize / size;
-    const left = W - PAD - qrSize;
-    ctx.fillStyle = c.ink;
-    for (let row = 0; row < size; row++) {
-      for (let col = 0; col < size; col++) {
-        if (qr.modules.get(row, col)) {
-          ctx.fillRect(left + col * cell, footerTop + row * cell, Math.ceil(cell), Math.ceil(cell));
-        }
-      }
-    }
-  }
-
-  const toBlob = (canvas: HTMLCanvasElement) =>
-    new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+  type Poster = HTMLElement & { draw(): Promise<void>; blob(): Promise<Blob | null> };
 
   class DsPostShare extends HTMLElement {
     connectedCallback() {
-      const poster = JSON.parse(this.dataset.poster ?? "{}") as Poster;
+      const url = this.dataset.url ?? location.href;
+      const title = this.dataset.title ?? document.title;
       const name = `${this.dataset.filename ?? "poster"}.png`;
-      const canvas = this.querySelector<HTMLCanvasElement>("canvas");
+      const poster = this.querySelector<Poster>("ds-share-poster");
       const dialog = this.querySelector("dialog");
       const toast = this.querySelector<HTMLElement & { show(message: string): void }>("ds-snackbar");
       const send = this.querySelector<HTMLButtonElement>("[data-ds-share-send]");
-      let drawn: Promise<void> | undefined;
 
       this.querySelector("[data-ds-share-copy]")?.addEventListener("click", async () => {
         try {
-          await navigator.clipboard.writeText(poster.url);
+          await navigator.clipboard.writeText(url);
           toast?.show("Link copied");
         } catch {
           toast?.show("Couldn't copy the link");
         }
       });
 
-      // Draw once, the first time the dialog opens.
-      if (dialog && canvas) {
+      // Draw the poster the first time the dialog opens.
+      if (dialog && poster) {
         new MutationObserver(() => {
-          if (dialog.open && !drawn) drawn = draw(canvas, poster);
+          if (dialog.open) poster.draw();
         }).observe(dialog, { attributes: true, attributeFilter: ["open"] });
       }
 
       const file = async () => {
-        if (!canvas) return null;
-        await drawn;
-        const blob = await toBlob(canvas);
+        const blob = await poster?.blob();
         return blob && new File([blob], name, { type: "image/png" });
       };
 
@@ -270,7 +115,7 @@ const poster = { title, description, url, site, date, cover };
           const png = await file();
           if (!png) return;
           try {
-            await navigator.share({ files: [png], title: poster.title, url: poster.url });
+            await navigator.share({ files: [png], title, url });
           } catch {
             // The reader closed the share sheet.
           }
@@ -283,22 +128,18 @@ const poster = { title, description, url, site, date, cover };
 </script>
 
 <style>
+  /* In the dialog the poster keeps within the window; a height in vh would track the window. */
+  .ds-share :global(.ds-poster canvas) {
+    max-height: 56vh;
+    width: auto;
+  }
+
   .ds-share__actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-xs);
   }
 
-  .ds-share__canvas {
-    aspect-ratio: 3 / 4;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-md);
-    display: block;
-    height: auto;
-    margin: 0 auto;
-    max-height: 56vh;
-    max-width: 100%;
-  }
 
   .ds-share :global([data-ds-share-send][hidden]) {
     display: none;

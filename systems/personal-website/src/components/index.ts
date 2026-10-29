@@ -36,6 +36,7 @@ import Steps from "./content/Steps.astro";
 import PostLicense from "./content/PostLicense.astro";
 import PostNav from "./content/PostNav.astro";
 import PostShare from "./content/PostShare.astro";
+import SharePoster from "./content/SharePoster.astro";
 import TableScroll from "./content/TableScroll.astro";
 import TocList from "./content/TocList.astro";
 import Dialog from "./feedback/Dialog.astro";
@@ -106,6 +107,7 @@ export {
   SearchPanel,
   SegmentedControl,
   SettingsMenu,
+  SharePoster,
   SidebarCard,
   SkipLink,
   Snackbar,

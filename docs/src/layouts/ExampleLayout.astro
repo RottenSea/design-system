@@ -45,7 +45,13 @@ const Wrapper = bare ? "div" : "main";
       }
       // The iframe element belongs to the docs page, so instanceof against this page's classes fails.
       const frame = window.frameElement;
-      if (frame) {
+      // A whole-page example has a fixed window height from Example's `height` and scrolls
+      // inside it, as a page does in a browser window: a full-height band such as QuoteBand would
+      // otherwise grow with the iframe it sizes, and the iframe with it.
+      const fixed = frame ? Number(frame.getAttribute("data-height")) : 0;
+      if (frame && fixed) {
+        frame.style.height = `${fixed}px`;
+      } else if (frame) {
         root.style.overflowY = "hidden";
         const fit = () => {
           const borders = frame.offsetHeight - frame.clientHeight;
@@ -71,6 +77,18 @@ const Wrapper = bare ? "div" : "main";
 
   .example--bare {
     padding: 0;
+  }
+
+  /* The system keeps the scrollbar's space on every page. An example that never scrolls would
+     keep an empty strip at the right instead, showing the docs page behind the iframe. */
+  :global(html) {
+    scrollbar-gutter: auto;
+  }
+
+  /* A whole-page example scrolls; its scrollbar's track is see-through, so the page's own ground
+     goes under it rather than the docs page behind the iframe. */
+  :global(html) {
+    background: var(--surface-canvas);
   }
 
   /* In development, Astro's toolbar belongs on the docs page, not in every example. */

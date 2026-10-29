@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `SharePoster`, the poster from PostShare's dialog as a component of its own, which draws at once or, with `lazy`, when its `draw()` is called.
+- `PostLicense` has a large Creative Commons mark behind its text at the right, as the Shirone theme's card does, with the Tabler icon `creative-commons`.
+
+### Fixed
+
+- `SearchPanel` no longer jumps to the left while it fades out.
+- `Switch`'s knob stays light in the dark theme, a shade softer, instead of taking the near-black canvas.
+- `MiniCalendar`'s days with posts show on a rail's cream card, with a wash of ink instead of the card's own fill, and today is a cream chip in the dark theme instead of a dark one on a dark card.
+
 ## [0.7.0] - 2026-10-29
 
 This release adds the display settings, search, sharing and page transitions. The scrollbar changes on every page; nothing else a site already uses does.

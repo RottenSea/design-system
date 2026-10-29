@@ -9,11 +9,15 @@ import Example from "../../../../../components/Example.astro";
 
 Two buttons at the end of a post. Copy link copies the address and says so. Share poster opens a dialog with a poster of the post: the cover, the title, the description, the site and the date, and a QR code of the address, to download or hand to the system's share sheet.
 
-<Example system="personal-website" name="post-share" title="The two buttons; Share poster opens the poster" />
+<Example system="personal-website" name="post-share" title="The two buttons, then SharePoster, the poster in the dialog, with a cover and without" />
 
-It is made of three parts that work on their own:
+Its parts work on their own:
 
-<Example system="personal-website" name="buttons" title="Button: primary, secondary, small, text, disabled, and on the dark surface" />
+<Example system="personal-website" name="buttons" title="Button: primary, secondary, text; small and disabled; on the dark surface" />
+
+<Example system="personal-website" name="dialog" title="Dialog, opened from a button" height={420} />
+
+<Example system="personal-website" name="snackbar" title="Snackbar, shown from a button" height={200} />
 
 ## When to use
 
@@ -32,7 +36,7 @@ Once per post, under the copyright card.
 
 ## Anatomy
 
-The poster is 1080 by 1440 on the canvas of the light theme, whatever the page's theme: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code in ink at the right. It is drawn when the dialog first opens, after its fonts have loaded.
+The poster is 1080 by 1440 on the canvas of the light theme, whatever the page's theme: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code in ink at the right. It is SharePoster, which PostShare draws when the dialog first opens, after its fonts have loaded; on its own it draws at once, and its element has `draw()` and `blob()`.
 
 Dialog is a centred card that swings in from the diagonal. Snackbar is one line at the bottom, on the inverse surface.
 
@@ -59,7 +63,7 @@ The poster's canvas is an image named after the post. The dialog is a native mod
 
 ## API
 
-[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro), [`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro), [`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro) and [`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro). Button, Dialog and Snackbar are ported from the handoff; the handoff has no share component. The QR code comes from the `qrcode` package.
+[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro), [`SharePoster.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/SharePoster.astro), [`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro), [`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro) and [`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro). Button, Dialog and Snackbar are ported from the handoff; the handoff has no share component. The QR code comes from the `qrcode` package.
 
 ## Related
 

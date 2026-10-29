@@ -1,0 +1,16 @@
+---
+import { Button, Snackbar } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Snackbar">
+  <Button variant="secondary" data-show-toast>Show a message</Button>
+  <Snackbar id="example-toast" />
+</ExampleLayout>
+
+<script>
+  type Toast = HTMLElement & { show(message: string): void };
+  document.querySelector("[data-show-toast]")?.addEventListener("click", () => {
+    document.querySelector<Toast>("#example-toast")?.show("Link copied");
+  });
+</script>

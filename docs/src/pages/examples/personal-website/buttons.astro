@@ -3,31 +3,42 @@ import { Button } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
-<ExampleLayout title="Button">
-  <div class="row">
-    <Button>Download</Button>
-    <Button variant="secondary" iconLeft="link">Copy link</Button>
-    <Button variant="secondary" size="sm" iconLeft="share">Share poster</Button>
-    <Button variant="text" iconRight="arrow-right">Read more</Button>
-    <Button disabled>Download</Button>
+<ExampleLayout title="Button" bare>
+  <div class="band">
+    <div class="row">
+      <Button>Download</Button>
+      <Button variant="secondary" iconLeft="link">Copy link</Button>
+      <Button variant="text" iconRight="arrow-right">Read more</Button>
+    </div>
+    <div class="row">
+      <Button size="sm">Download</Button>
+      <Button variant="secondary" size="sm" iconLeft="share">Share poster</Button>
+      <Button disabled>Download</Button>
+    </div>
   </div>
-  <div class="row dark" data-theme="dark">
-    <Button variant="secondary-on-dark">Keep editing</Button>
+  <div class="band band--dark" data-theme="dark">
+    <div class="row">
+      <Button>Discard</Button>
+      <Button variant="secondary-on-dark">Keep editing</Button>
+    </div>
   </div>
 </ExampleLayout>
 
 <style>
+  .band {
+    display: grid;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+  }
+
+  .band--dark {
+    background: var(--surface-dark);
+  }
+
   .row {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-sm);
-  }
-
-  .dark {
-    background: var(--surface-dark);
-    border-radius: var(--radius-lg);
-    padding: var(--space-md);
-    width: fit-content;
   }
 </style>

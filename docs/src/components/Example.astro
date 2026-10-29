@@ -10,7 +10,8 @@
  *
  * The iframe is as wide as the article column, under 768px, so a page layout would always show
  * its narrowest form. `viewport` lays the example out at that width instead and scales it down
- * to fit the column, with a link to open it at full size.
+ * to fit the column, with a link to open it at full size. `height` gives a whole-page example a
+ * fixed window height, at that width, to scroll inside, instead of growing to its content.
  */
 interface Props {
   system: string;
@@ -19,16 +20,24 @@ interface Props {
   title: string;
   /** The width, in px, to lay the example out at before scaling it to the column. */
   viewport?: number;
+  /** The window height, in px, for an example that scrolls inside the iframe. */
+  height?: number;
 }
 
-const { system, name, title, viewport } = Astro.props;
+const { system, name, title, viewport, height } = Astro.props;
 const src = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/examples/${system}/${name}/`;
 const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 ---
 
 <ds-example data-viewport={viewport}>
   <div class:list={["stage", { "stage--scaled": viewport }]}>
-    <iframe src={src} title={title} loading="lazy" style={viewport ? `width: ${viewport}px` : undefined}></iframe>
+    <iframe
+      src={src}
+      title={title}
+      loading="lazy"
+      data-height={height}
+      style={[viewport && `width: ${viewport}px`, height && `height: ${height}px`].filter(Boolean).join("; ") || undefined}
+    ></iframe>
   </div>
   {
     viewport && (

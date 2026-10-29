@@ -277,6 +277,8 @@ const {
     border: 0;
     box-sizing: border-box;
     height: 100%;
+    /* On the dialog itself, not only while [open]: the closing fade runs after [open] is gone. */
+    justify-content: center;
     margin: 0;
     max-height: none;
     max-width: none;
@@ -291,7 +293,6 @@ const {
 
   .ds-search[open] {
     display: flex;
-    justify-content: center;
     opacity: 1;
   }
 

@@ -1,12 +1,14 @@
 ---
 /**
- * The rail's month grid: which days have posts. Marked days take the cream card fill and today
- * takes the dark surface, because dark is this system's sign of selection; other days stay muted.
- * On a dark card today turns the other way round, a cream chip with night type. Cells are square
+ * The rail's month grid: which days have posts. Marked days take a wash of ink and today is ink
+ * with canvas type, because the darkest thing is this system's sign of selection; other days stay
+ * muted. In the dark theme, and on a dark card, today turns the other way round: a cream chip with
+ * night type. Cells are square
  * fractions of the rail, so the grid fits a 200px or a 300px column. `emphasis="soft"` steps the
  * grid down a notch: today becomes an outlined chip and marked days lose their fill.
  *
- * Ported from the handoff's MiniCalendar.jsx. Its `counts` are keyed by "YYYY-MM-DD" instead of
+ * Ported from the handoff's MiniCalendar.jsx, except the marked days' fill: the handoff's cream card
+ * fill vanishes on a rail's cream card, so the wash is ink at 8%. Its `counts` are keyed by "YYYY-MM-DD" instead of
  * the day of one month, so the grid can move between months. The build cannot know the reader's
  * today, so the script draws the grid again in the browser: the reader's current month (unless
  * `year` and `month` are given) with their today marked. `navigable` adds Previous and Next month
@@ -229,8 +231,13 @@ const grid = monthHtml({
     padding-bottom: 2px;
   }
 
+  /*
+   * A wash of ink rather than the handoff's cream card fill, which vanishes on the cream card a rail
+   * puts the calendar on. Today is ink with canvas type: dark in the light theme and cream in the
+   * dark one, the inversion the handoff gives a dark card.
+   */
   .ds-cal__grid > :global(.ds-cal__day--marked) {
-    background: var(--surface-card);
+    background: color-mix(in srgb, var(--text-ink) 8%, transparent);
     color: var(--text-ink);
     font-weight: 500;
   }
@@ -248,8 +255,8 @@ const grid = monthHtml({
   }
 
   .ds-cal__grid > :global(.ds-cal__day--today) {
-    background: var(--surface-dark);
-    color: var(--text-on-dark);
+    background: var(--text-ink);
+    color: var(--surface-canvas);
     font-weight: 500;
   }
 

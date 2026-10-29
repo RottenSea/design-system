@@ -7,7 +7,8 @@
  *
  * Ported from the handoff's Switch.jsx with the same props, except `onChange`: the switch sends a
  * `ds-change` event whose detail is the new state, and `checked` can be set later as a property.
- * The knob moves with `left` over --motion-base, as in the handoff.
+ * The knob moves with `left` over --motion-base, as in the handoff. It stays light in both themes,
+ * a shade softer in the dark one, where the canvas it took in the handoff would be near black.
  *
  *   <Switch label="Reduce motion" description="Fades and slides finish at once." />
  */
@@ -122,7 +123,8 @@ const Tag = label || description ? "label" : "span";
   }
 
   .ds-switch__knob {
-    background: var(--surface-canvas);
+    /* Follows the color-scheme each theme sets, so a subtree pinned to a theme is right too. */
+    background: light-dark(var(--cream-50), var(--cream-300));
     border: 1px solid var(--hairline);
     border-radius: var(--radius-full);
     box-shadow: var(--shadow-hover);

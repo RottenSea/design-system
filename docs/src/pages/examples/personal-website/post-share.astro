@@ -1,20 +1,31 @@
 ---
 import { getImage } from "astro:assets";
-import { PostShare } from "@rottensea/ds-personal-website/components";
+import { PostShare, SharePoster } from "@rottensea/ds-personal-website/components";
 import cover from "../../../assets/examples/tower.jpg";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const coverUrl = (await getImage({ src: cover, width: 1080 })).src;
+const post = {
+  title: "Hairlines carry more than they look like they do",
+  description: "A one-pixel line in the right colour separates two things without drawing attention to itself.",
+  url: "https://example.com/blog/hairlines",
+  site: "Field Notes",
+  date: "2026-03-04"
+};
 ---
 
 <ExampleLayout title="PostShare">
-  <PostShare
-    title="Hairlines carry more than they look like they do"
-    description="A one-pixel line in the right colour separates two things without drawing attention to itself."
-    url="https://example.com/blog/hairlines"
-    site="Field Notes"
-    date="2026-03-04"
-    cover={coverUrl}
-    filename="hairlines"
-  />
+  <PostShare {...post} cover={coverUrl} filename="hairlines" />
+  <div class="posters">
+    <SharePoster {...post} cover={coverUrl} />
+    <SharePoster {...post} />
+  </div>
 </ExampleLayout>
+
+<style>
+  .posters {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+  }
+</style>
