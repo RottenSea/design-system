@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-29
+
+This release adds the parts every page shares, for the site's new layout. Nothing a site already uses changes.
+
 ### Added
 
 - The page shell, ported from the handoff: `TopNav`, the nav bar, whose links become a menu button below 768px; `NavDrawer` and `MenuPanel`, the menu sheet, a native modal `<dialog>`; `ContentGrid`, the main column between a 200px and a 280px rail, which drops the right rail below 1080px and stacks below 768px; `SidebarCard`, a card in a rail, and `Surface`, the card body under every card; `Footer`, the dark band with columns of links and a copyright line; `FloatingControls`, back to top and up to two other round buttons in the bottom right corner; `IconButton`, the 36px round button with one icon; and `ThemeToggle`, the light and dark switch. They are exported by name and are not in the `components` map for posts.
@@ -108,7 +112,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.1...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.4.0...HEAD
+[0.4.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.1...personal-website-v0.4.0
 [0.3.1]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.0...personal-website-v0.3.1
 [0.3.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.2.0...personal-website-v0.3.0
 [0.2.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.1.0...personal-website-v0.2.0
