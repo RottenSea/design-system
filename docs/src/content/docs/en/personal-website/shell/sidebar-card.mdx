@@ -1,0 +1,51 @@
+---
+title: SidebarCard
+description: A card in a rail, and Surface, the card body under every card.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+SidebarCard is a card in a rail: an uppercase label, a soft hairline, and the widget under it. Surface is the card body that SidebarCard and every other card are made of.
+
+<Example system="personal-website" name="sidebar-card" title="Two sidebar cards and three surfaces" />
+
+## When to use
+
+SidebarCard for each widget in a rail: stats, a calendar, a list of links. Surface for a container the system does not name yet, instead of a styled `<div>`.
+
+## On a page
+
+```astro
+<SidebarCard title="Stats">…</SidebarCard>
+<Surface variant="outline" hover href="/notes/">…</Surface>
+```
+
+## Anatomy
+
+SidebarCard has 16px of padding, the label in the uppercase micro-label style, then a `--hairline-soft` rule. Rail cards stay smaller than the cards in the main column and never get a display-face heading.
+
+Surface is the radius, the fill and the padding. Its two bodies are the system's only card bodies: `fill`, the cream card, and `outline`, the canvas with a hairline.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `variant` | `fill` (default) or `outline`, for a rail that sits on a cream band |
+| `tone` | `cream` (default) or `dark`, inside a dark band |
+| `padding` (Surface) | `none`, `sm` (16px), `md` (24px, default) or `lg` (32px) |
+| `hover` (Surface) | Lifts the card with `--shadow-hover`; nothing moves |
+| `action` slot (SidebarCard) | A small link beside the label |
+
+## Accessibility
+
+SidebarCard is a `<section>` with its label as an `<h2>`, so the rail's cards appear in a screen reader's list of headings. A Surface with `href` is a link named by its text.
+
+## API
+
+[`SidebarCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/SidebarCard.astro) and [`Surface.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/Surface.astro). Ported from the handoff. SidebarCard leaves out `onDismiss`, because a rail card on this site is never temporary.
+
+## Related
+
+[ContentGrid](../content-grid/).

@@ -7,27 +7,45 @@
  *   <Example system="personal-website" name="admonition" title="Admonition variants" />
  *
  * loads src/pages/examples/personal-website/admonition.astro.
+ *
+ * The iframe is as wide as the article column, under 768px, so a page layout would always show
+ * its narrowest form. `viewport` lays the example out at that width instead and scales it down
+ * to fit the column, with a link to open it at full size.
  */
 interface Props {
   system: string;
   name: string;
   /** The iframe's accessible name. */
   title: string;
+  /** The width, in px, to lay the example out at before scaling it to the column. */
+  viewport?: number;
 }
 
-const { system, name, title } = Astro.props;
+const { system, name, title, viewport } = Astro.props;
 const src = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/examples/${system}/${name}/`;
+const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 ---
 
-<ds-example>
-  <iframe src={src} title={title} loading="lazy"></iframe>
+<ds-example data-viewport={viewport}>
+  <div class:list={["stage", { "stage--scaled": viewport }]}>
+    <iframe src={src} title={title} loading="lazy" style={viewport ? `width: ${viewport}px` : undefined}></iframe>
+  </div>
+  {
+    viewport && (
+      <a class="full" href={src} target="_blank" rel="noreferrer">
+        {zh ? `按 ${viewport}px 宽打开` : `Open at ${viewport}px`}
+        <span aria-hidden="true"> ↗</span>
+      </a>
+    )
+  }
 </ds-example>
 
 <script>
   class DsExample extends HTMLElement {
     connectedCallback() {
       const frame = this.querySelector("iframe");
-      if (!frame) return;
+      const stage = this.querySelector<HTMLElement>(".stage");
+      if (!frame || !stage) return;
       const syncTheme = () => {
         const root = frame.contentDocument?.documentElement;
         if (root) root.dataset.theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -37,6 +55,19 @@ const src = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/examples/${system}/$
         attributes: true,
         attributeFilter: ["data-theme"]
       });
+
+      const viewport = Number(this.dataset.viewport);
+      if (!viewport) return;
+      // The example page sets the iframe's height; the stage shrinks with the scale around it.
+      const scale = () => {
+        const factor = Math.min(1, stage.clientWidth / viewport);
+        frame.style.transform = `scale(${factor})`;
+        stage.style.height = `${frame.offsetHeight * factor}px`;
+      };
+      scale();
+      const observer = new ResizeObserver(scale);
+      observer.observe(stage);
+      observer.observe(frame);
     }
   }
 
@@ -49,11 +80,28 @@ const src = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/examples/${system}/$
     margin-block: 1.5rem;
   }
 
-  iframe {
+  .stage {
     border: 1px solid var(--sl-color-hairline);
     border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  iframe {
+    border: 0;
     display: block;
     height: 12rem;
     width: 100%;
+  }
+
+  /* Starlight caps media in an article at 100% of the column; a scaled example is laid out wider. */
+  .stage--scaled iframe {
+    max-width: none;
+    transform-origin: top left;
+  }
+
+  .full {
+    display: inline-block;
+    font-size: var(--sl-text-sm);
+    margin-top: 0.5rem;
   }
 </style>

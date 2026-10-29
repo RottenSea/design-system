@@ -1,0 +1,105 @@
+---
+/**
+ * The card atom: fill, radius, padding, and the one hover the system allows. `fill` is the cream
+ * card with no border; `outline` is the canvas with a hairline. Those are the system's two card
+ * bodies; a page does not invent a third by setting a background. Padding is 0, 16, 24 or 32px:
+ * 16px for rail widgets, 32px for feature-scale cards. `hover` lifts the card with
+ * --shadow-hover, and nothing else moves. With `href` the card is a link, in body ink, so its
+ * contents do not turn coral.
+ *
+ * Ported from the handoff's Surface.jsx with the same props. The hover is CSS instead of React
+ * state.
+ */
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+
+type Props = Omit<HTMLAttributes<"div">, "class"> & {
+  /** The element: `a` with `href`, `div` otherwise. `section` or `article` where it fits. */
+  as?: HTMLTag;
+  variant?: "fill" | "outline";
+  padding?: "none" | "sm" | "md" | "lg";
+  hover?: boolean;
+  tone?: "cream" | "dark";
+  href?: string;
+  class?: string;
+};
+
+const {
+  as,
+  variant = "fill",
+  padding = "md",
+  hover = false,
+  tone = "cream",
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
+const Tag = as ?? (href ? "a" : "div");
+---
+
+<Tag
+  class:list={[
+    "ds-surface",
+    `ds-surface--${variant}`,
+    `ds-surface--pad-${padding}`,
+    { "ds-surface--dark": tone === "dark", "ds-surface--hover": hover },
+    className
+  ]}
+  href={href}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+<style>
+  .ds-surface {
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+    color: var(--text-body);
+    display: block;
+    text-decoration: none;
+    transition: box-shadow var(--motion-fast) var(--ease-enter);
+  }
+
+  .ds-surface--fill {
+    background: var(--surface-card);
+  }
+
+  .ds-surface--outline {
+    background: var(--surface-canvas);
+    border-color: var(--hairline);
+  }
+
+  .ds-surface--dark {
+    color: var(--text-on-dark);
+  }
+
+  .ds-surface--dark.ds-surface--fill {
+    background: var(--surface-dark-elevated);
+  }
+
+  .ds-surface--dark.ds-surface--outline {
+    background: var(--surface-dark);
+    border-color: var(--hairline-on-dark);
+  }
+
+  .ds-surface--pad-none {
+    padding: 0;
+  }
+
+  .ds-surface--pad-sm {
+    padding: var(--space-md);
+  }
+
+  .ds-surface--pad-md {
+    padding: var(--space-lg);
+  }
+
+  .ds-surface--pad-lg {
+    padding: var(--space-xl);
+  }
+
+  .ds-surface--hover:hover {
+    box-shadow: var(--shadow-hover);
+  }
+</style>

@@ -1,0 +1,24 @@
+---
+import { ThemeToggle } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="ThemeToggle">
+  <div class="row">
+    <ThemeToggle storageKey="ds-docs-example-theme" />
+    <p class="text">Press it to switch this frame's theme. The docs around it keep theirs.</p>
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  .text {
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,281 @@
+---
+/**
+ * The menu sheet: a scrim, a panel at the side of the window with the site's name and a close
+ * button, the links in groups, and an optional note at the bottom. TopNav opens it from its menu
+ * button below 768px; NavDrawer is the same sheet for a page with grouped navigation. The scrim
+ * fades and the panel fades and travels --motion-shift; nothing slides across, nothing springs.
+ *
+ * Ported from the handoff's MenuPanel.jsx with the same props, except `open`, `onClose` and
+ * `onNavigate`: it is a native modal <dialog>, which keeps the focus inside, makes the page
+ * behind it inert, and closes on Escape. A click on the scrim closes it too. Any element with
+ * data-ds-menu-open set to the panel's id opens it.
+ *
+ *   <MenuPanel id="site-menu" brand="The Key of Urala" groups={[{ links: [{ label: "Blog", href: "/" }] }]} />
+ *   <button data-ds-menu-open="site-menu">Menu</button>
+ */
+import IconButton from "../buttons/IconButton.astro";
+
+export interface MenuLink {
+  label: string;
+  href: string;
+}
+
+export interface MenuGroup {
+  /** Uppercase micro-label above the group. The first group usually has none. */
+  title?: string;
+  links: MenuLink[];
+}
+
+interface Props {
+  id: string;
+  brand: string;
+  groups: MenuGroup[];
+  /** Label of the current page's link, which is marked as the current page. */
+  active?: string;
+  /** The side the panel comes from. */
+  side?: "left" | "right";
+  /** A length; a number is px. */
+  width?: string | number;
+  /** A line at the bottom of the panel. */
+  note?: string;
+  class?: string;
+}
+
+const { id, brand, groups, active, side = "right", width = 320, note, class: className } = Astro.props;
+const panelWidth = typeof width === "number" ? `${width}px` : width;
+const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
+---
+
+<ds-menu-panel>
+  <dialog
+    id={id}
+    class:list={["ds-menu", `ds-menu--${side}`, className]}
+    aria-label="Menu"
+    style={`--ds-menu-width: ${panelWidth}`}
+  >
+    <div class="ds-menu__panel">
+      <div class="ds-menu__head">
+        <slot name="logo" />
+        <span class="ds-menu__brand">{brand}</span>
+        <IconButton icon="x" label="Close menu" data-ds-menu-close />
+      </div>
+      {
+        groups.map((group) => (
+          <nav class="ds-menu__group" aria-label={group.title}>
+            {group.title && <span class="ds-menu__group-title">{group.title}</span>}
+            {group.links.map((link) =>
+              external(link.href) ? (
+                <a class="ds-menu__link" href={link.href} target="_blank" rel="noreferrer" data-ds-tap="row">
+                  {link.label}
+                  <span class="ds-menu__arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                  <span class="ds-visually-hidden"> (opens in a new tab)</span>
+                </a>
+              ) : (
+                <a
+                  class="ds-menu__link"
+                  href={link.href}
+                  aria-current={link.label === active ? "page" : undefined}
+                  data-ds-tap="row"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
+          </nav>
+        ))
+      }
+      <slot />
+      {note && <p class="ds-menu__note">{note}</p>}
+    </div>
+  </dialog>
+</ds-menu-panel>
+
+<script>
+  class DsMenuPanel extends HTMLElement {
+    connectedCallback() {
+      const dialog = this.querySelector("dialog");
+      if (!dialog) return;
+      const opener = () => document.querySelector<HTMLElement>(`[data-ds-menu-open="${dialog.id}"]`);
+      // The scrim is the dialog's own box around the panel, so a click that lands on the dialog
+      // itself, not inside the panel, is a click on the scrim.
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.querySelector("[data-ds-menu-close]")?.addEventListener("click", () => dialog.close());
+      // However the dialog closes (Escape, the scrim, a link, the button), its open attribute
+      // goes; the opener's state follows that rather than the close event.
+      new MutationObserver(() => opener()?.setAttribute("aria-expanded", String(dialog.open))).observe(dialog, {
+        attributes: true,
+        attributeFilter: ["open"]
+      });
+      // A link to a place on this page closes the menu, so the page is not left inert under it.
+      dialog.addEventListener("click", (event) => {
+        if ((event.target as Element).closest("a")) dialog.close();
+      });
+    }
+  }
+
+  if (!customElements.get("ds-menu-panel")) customElements.define("ds-menu-panel", DsMenuPanel);
+
+  // Openers can sit anywhere on the page, before or after the panel.
+  document.addEventListener("click", (event) => {
+    const button = (event.target as Element).closest<HTMLElement>("[data-ds-menu-open]");
+    const dialog = button && document.getElementById(button.dataset.dsMenuOpen ?? "");
+    if (dialog instanceof HTMLDialogElement) dialog.showModal();
+  });
+</script>
+
+<style>
+  /* The dialog fills the window and is the scrim; the panel inside it is the sheet. */
+  .ds-menu {
+    background: transparent;
+    border: 0;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    max-height: none;
+    max-width: none;
+    opacity: 0;
+    padding: 0;
+    transition:
+      opacity var(--motion-base) var(--ease-enter),
+      overlay var(--motion-base) allow-discrete,
+      display var(--motion-base) allow-discrete;
+    width: 100%;
+  }
+
+  .ds-menu[open] {
+    display: flex;
+    opacity: 1;
+  }
+
+  .ds-menu--right {
+    justify-content: flex-end;
+  }
+
+  .ds-menu::backdrop {
+    background: rgba(20, 20, 19, 0.35);
+    opacity: 0;
+    transition:
+      opacity var(--motion-base) var(--ease-enter),
+      overlay var(--motion-base) allow-discrete,
+      display var(--motion-base) allow-discrete;
+  }
+
+  .ds-menu[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .ds-menu[open],
+    .ds-menu[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  .ds-menu__panel {
+    background: var(--surface-canvas);
+    box-sizing: border-box;
+    color: var(--text-body);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    height: 100%;
+    max-width: 86vw;
+    overflow-y: auto;
+    padding: var(--space-lg);
+    transition: transform var(--motion-base) var(--ease-enter);
+    width: var(--ds-menu-width);
+  }
+
+  .ds-menu--right .ds-menu__panel {
+    border-left: 1px solid var(--hairline);
+  }
+
+  .ds-menu--left .ds-menu__panel {
+    border-right: 1px solid var(--hairline);
+  }
+
+  .ds-menu:not([open]) .ds-menu__panel {
+    transform: translateX(var(--motion-shift));
+  }
+
+  .ds-menu--left:not([open]) .ds-menu__panel {
+    transform: translateX(calc(-1 * var(--motion-shift)));
+  }
+
+  @starting-style {
+    .ds-menu--right[open] .ds-menu__panel {
+      transform: translateX(var(--motion-shift));
+    }
+
+    .ds-menu--left[open] .ds-menu__panel {
+      transform: translateX(calc(-1 * var(--motion-shift)));
+    }
+  }
+
+  .ds-menu__head {
+    align-items: center;
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .ds-menu__brand {
+    color: var(--text-ink);
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--title-sm-size);
+    font-weight: 500;
+    min-width: 0;
+  }
+
+  .ds-menu__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .ds-menu__group-title {
+    color: var(--text-muted-soft);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-menu__link {
+    align-items: center;
+    color: var(--text-body);
+    display: flex;
+    font-family: var(--font-sans);
+    font-size: var(--body-md-size);
+    gap: 0.125em;
+    line-height: var(--body-md-lh);
+    padding: 6px 0;
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-menu__link:hover,
+  .ds-menu__link[aria-current="page"] {
+    color: var(--text-ink);
+  }
+
+  .ds-menu__link[aria-current="page"] {
+    font-weight: 500;
+  }
+
+  .ds-menu__note {
+    border-top: 1px solid var(--hairline-soft);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: auto 0 0;
+    padding-top: var(--space-md);
+  }
+</style>

@@ -1,0 +1,60 @@
+---
+title: 页面外框
+description: 个人网站每一页共用的部分，以及它们怎么拼在一起。
+sidebar:
+  order: 0
+---
+
+import Example from "../../../../../components/Example.astro";
+
+页面外框是每一页内容外面的那一圈：顶部导航、带侧栏的网格、页脚、右下角的圆按钮，以及用键盘的读者最先碰到的跳到正文的链接。
+
+<Example system="personal-website" name="page-shell" title="一整页：导航、三栏、页脚和浮动按钮" viewport={1280} />
+
+## 一页怎么拼起来
+
+```astro
+---
+import {
+  ContentGrid, FloatingControls, Footer, SidebarCard, SkipLink, ThemeScript, ThemeToggle, TopNav
+} from "@rottensea/ds-personal-website/components";
+---
+<html>
+  <head>
+    <ThemeScript />
+  </head>
+  <body>
+    <SkipLink />
+    <TopNav brand="Field Notes" links={links} active="Blog" />
+    <main id="main">
+      <ContentGrid>
+        <Fragment slot="left">…</Fragment>
+        <article>…</article>
+        <Fragment slot="right">
+          <SidebarCard title="Stats">…</SidebarCard>
+        </Fragment>
+      </ContentGrid>
+    </main>
+    <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes." />
+    <FloatingControls>
+      <ThemeToggle />
+    </FloatingControls>
+  </body>
+</html>
+```
+
+## 宽度
+
+外框只用三个宽度。宽于 1080px 时一页可以有左右两个侧栏；768 到 1080px 之间右栏去掉；窄于 768px 时全部变成一栏，导航的链接收进菜单按钮，所有按钮放大到 44px 的触屏尺寸。
+
+## 组成
+
+| 组件 | 做什么 |
+| --- | --- |
+| [TopNav 顶部导航](top-nav/) | 导航条，窄屏时有菜单面板；分组的导航用 NavDrawer |
+| [ContentGrid 内容网格](content-grid/) | 左右两个侧栏中间的正文栏 |
+| [SidebarCard 侧栏卡片](sidebar-card/) | 侧栏里的卡片；Surface 是所有卡片的底 |
+| [Footer 页脚](footer/) | 收尾的深色一条 |
+| [FloatingControls 浮动按钮](floating-controls/) | 回到顶部，加最多两个圆按钮；IconButton |
+| [ThemeToggle 主题切换](theme-toggle/) | 浅色深色切换；ThemeScript 在第一次绘制前设好主题 |
+| [SkipLink 跳到正文](skip-link/) | 给用键盘的读者跳过导航的链接 |

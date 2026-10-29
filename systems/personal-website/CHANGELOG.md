@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The page shell, ported from the handoff: `TopNav`, the nav bar, whose links become a menu button below 768px; `NavDrawer` and `MenuPanel`, the menu sheet, a native modal `<dialog>`; `ContentGrid`, the main column between a 200px and a 280px rail, which drops the right rail below 1080px and stacks below 768px; `SidebarCard`, a card in a rail, and `Surface`, the card body under every card; `Footer`, the dark band with columns of links and a copyright line; `FloatingControls`, back to top and up to two other round buttons in the bottom right corner; `IconButton`, the 36px round button with one icon; and `ThemeToggle`, the light and dark switch. They are exported by name and are not in the `components` map for posts.
+- `ThemeScript`, which sets `data-theme` in the `<head>` before the first paint, from the reader's choice or the OS setting. The handoff gives it as a snippet to paste.
+- `SkipLink`, a link past the nav to the main content that shows when it has the keyboard focus. The handoff has none.
+- The Tabler icons `arrow-up`, `menu`, `moon`, `sun` and `x`.
+
 ## [0.3.1] - 2026-10-29
 
 ### Changed

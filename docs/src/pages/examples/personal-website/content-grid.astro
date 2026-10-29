@@ -1,0 +1,37 @@
+---
+import { ContentGrid } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="ContentGrid" bare>
+  <div class="band">
+    <ContentGrid sticky="none">
+      <div slot="left" class="block block--rail">Left rail · 200px</div>
+      <div class="block block--main">Main column · the rest</div>
+      <div slot="right" class="block block--rail">Right rail · 280px</div>
+    </ContentGrid>
+  </div>
+</ExampleLayout>
+
+<style>
+  .band {
+    padding: var(--space-lg);
+  }
+
+  .block {
+    align-items: center;
+    border: 1px dashed var(--hairline);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: var(--caption-size);
+    justify-content: center;
+    min-height: 160px;
+  }
+
+  .block--main {
+    background: var(--surface-card);
+    min-height: 240px;
+  }
+</style>

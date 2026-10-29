@@ -95,6 +95,28 @@ export default defineConfig({
                   slug: `personal-website/components/${name}`
                 }))
               ]
+            },
+            {
+              label: "Page shell",
+              translations: { "zh-CN": "页面外框" },
+              items: [
+                {
+                  slug: "personal-website/shell",
+                  label: "Overview",
+                  translations: { "zh-CN": "概览" }
+                },
+                ...[
+                  "top-nav",
+                  "content-grid",
+                  "sidebar-card",
+                  "footer",
+                  "floating-controls",
+                  "theme-toggle",
+                  "skip-link"
+                ].map((name) => ({
+                  slug: `personal-website/shell/${name}`
+                }))
+              ]
             }
           ]
         }

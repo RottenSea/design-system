@@ -1,0 +1,44 @@
+---
+title: SkipLink
+description: The first link a keyboard reader reaches, past the nav to the main content.
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A link past the nav to the main content. It stays hidden until it has the keyboard focus.
+
+<Example system="personal-website" name="skip-link" title="SkipLink" />
+
+## When to use
+
+On every page, first in the `<body>`.
+
+## On a page
+
+```astro
+<body>
+  <SkipLink />
+  <TopNav … />
+  <main id="main">…</main>
+</body>
+```
+
+`href` defaults to `#main`; give the main content that id.
+
+## Anatomy
+
+A canvas pill with a hairline at the top left, over the nav, with the focus ring around it.
+
+## Accessibility
+
+It meets WCAG 2.4.1, Bypass Blocks: without it a keyboard reader tabs through every nav link on every page before reaching the text.
+
+## API
+
+[`SkipLink.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SkipLink.astro). The handoff has no skip link; this one is drawn from its focus ring and canvas pill.
+
+## Related
+
+[TopNav](../top-nav/).

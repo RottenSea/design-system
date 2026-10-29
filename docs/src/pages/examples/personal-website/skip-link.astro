@@ -1,0 +1,17 @@
+---
+import { SkipLink } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="SkipLink">
+  <SkipLink href="#content" />
+  <p class="text">Click inside this frame and press Tab: the link appears at the top left.</p>
+  <p id="content" class="text">The main content starts here.</p>
+</ExampleLayout>
+
+<style>
+  .text {
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+</style>

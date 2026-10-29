@@ -1,0 +1,60 @@
+---
+title: Page shell
+description: The parts every page of the personal website shares, and how they fit together.
+sidebar:
+  order: 0
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The page shell is what every page has around its content: the nav at the top, the grid with its rails, the footer, the round buttons in the corner, and the skip link a keyboard reader meets first.
+
+<Example system="personal-website" name="page-shell" title="A whole page: nav, three columns, footer and the floating buttons" viewport={1280} />
+
+## How a page is put together
+
+```astro
+---
+import {
+  ContentGrid, FloatingControls, Footer, SidebarCard, SkipLink, ThemeScript, ThemeToggle, TopNav
+} from "@rottensea/ds-personal-website/components";
+---
+<html>
+  <head>
+    <ThemeScript />
+  </head>
+  <body>
+    <SkipLink />
+    <TopNav brand="Field Notes" links={links} active="Blog" />
+    <main id="main">
+      <ContentGrid>
+        <Fragment slot="left">…</Fragment>
+        <article>…</article>
+        <Fragment slot="right">
+          <SidebarCard title="Stats">…</SidebarCard>
+        </Fragment>
+      </ContentGrid>
+    </main>
+    <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes." />
+    <FloatingControls>
+      <ThemeToggle />
+    </FloatingControls>
+  </body>
+</html>
+```
+
+## Widths
+
+The shell uses three widths and no others. Above 1080px a page can have both rails. From 768px to 1080px the right rail is gone. Below 768px everything is one column, the nav's links become a menu button, and every button grows to the 44px touch target.
+
+## The parts
+
+| Component | What it does |
+| --- | --- |
+| [TopNav](top-nav/) | The nav bar, with a menu sheet on small screens; NavDrawer for grouped navigation |
+| [ContentGrid](content-grid/) | The main column between a left and a right rail |
+| [SidebarCard](sidebar-card/) | A card in a rail; Surface, the card body under every card |
+| [Footer](footer/) | The dark band that closes the page |
+| [FloatingControls](floating-controls/) | Back to top and up to two other round buttons; IconButton |
+| [ThemeToggle](theme-toggle/) | The light and dark switch; ThemeScript, which sets the theme before the first paint |
+| [SkipLink](skip-link/) | The link past the nav for keyboard readers |

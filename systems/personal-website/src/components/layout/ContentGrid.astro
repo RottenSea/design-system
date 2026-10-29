@@ -1,0 +1,155 @@
+---
+/**
+ * The content page grid: a fixed left rail, the main column, a fixed right rail, capped at the
+ * 1200px container. Rails stack their own children with `railGap` and stick below the nav while
+ * the main column scrolls. Give only one rail for a two-column page; the missing track is
+ * dropped, not left empty.
+ *
+ * Narrower screens lose columns rather than shrink them: below 1080px the right rail is hidden
+ * (so it holds nothing a reader needs), and below 768px everything is one column with the main
+ * content first and the rails unstuck under it. `stackRails` says which rails join that column;
+ * an article page sets "left" and gives its table of contents to FloatingControls, because a
+ * contents list under the last paragraph is no use to a reader who got there. `keepRails` keeps
+ * the right rail down to 768px. Pages declare these; they never write the media query.
+ *
+ * Ported from the handoff's ContentGrid.jsx with the same props. The rails are named slots:
+ *
+ *   <ContentGrid stackRails="left">
+ *     <Fragment slot="left">…</Fragment>
+ *     <article>…</article>
+ *     <Fragment slot="right">…</Fragment>
+ *   </ContentGrid>
+ */
+interface Props {
+  /** A length; a number is px. */
+  leftWidth?: string | number;
+  rightWidth?: string | number;
+  /** Which rails stick below the nav. "none" for rails taller than the window. */
+  sticky?: "both" | "left" | "right" | "none";
+  stickyTop?: string;
+  /** Space between the columns. */
+  gap?: string;
+  /** Space between the cards inside a rail. */
+  railGap?: string;
+  /** Keeps the right rail between 768px and 1080px. */
+  keepRails?: boolean;
+  /** Which rails stay, stacked under the main column, below 768px. */
+  stackRails?: "both" | "left" | "right" | "none";
+  maxWidth?: string | number;
+  class?: string;
+}
+
+const px = (value: string | number) => (typeof value === "number" ? `${value}px` : value);
+
+const {
+  leftWidth = "var(--rail-left)",
+  rightWidth = "var(--rail-right)",
+  sticky = "both",
+  stickyTop = "calc(var(--nav-height) + var(--space-lg))",
+  gap = "var(--space-xxl)",
+  railGap = "var(--space-md)",
+  keepRails = false,
+  stackRails = "both",
+  maxWidth = "var(--container-max)",
+  class: className
+} = Astro.props;
+
+const hasLeft = Astro.slots.has("left");
+const hasRight = Astro.slots.has("right");
+const columns = [hasLeft ? px(leftWidth) : null, "minmax(0, 1fr)", hasRight ? px(rightWidth) : null]
+  .filter(Boolean)
+  .join(" ");
+const style = [
+  `--ds-cgrid-columns: ${columns}`,
+  `--ds-cgrid-narrow: ${hasLeft ? `${px(leftWidth)} minmax(0, 1fr)` : "minmax(0, 1fr)"}`,
+  `--ds-cgrid-gap: ${gap}`,
+  `--ds-cgrid-rail-gap: ${railGap}`,
+  `--ds-cgrid-sticky-top: ${stickyTop}`,
+  `--ds-cgrid-max: ${px(maxWidth)}`
+].join("; ");
+const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
+---
+
+<div
+  class:list={["ds-cgrid", className]}
+  style={style}
+  data-keep-rails={keepRails ? "" : undefined}
+  data-stack-rails={stackRails === "both" ? undefined : stackRails}
+>
+  {
+    hasLeft && (
+      <aside class:list={["ds-cgrid__rail", { "ds-cgrid__rail--sticky": sticks("left") }]} data-rail="left">
+        <slot name="left" />
+      </aside>
+    )
+  }
+  <div class="ds-cgrid__main" data-main>
+    <slot />
+  </div>
+  {
+    hasRight && (
+      <aside class:list={["ds-cgrid__rail", { "ds-cgrid__rail--sticky": sticks("right") }]} data-rail="right">
+        <slot name="right" />
+      </aside>
+    )
+  }
+</div>
+
+<style>
+  .ds-cgrid {
+    align-items: start;
+    display: grid;
+    gap: var(--ds-cgrid-gap);
+    grid-template-columns: var(--ds-cgrid-columns);
+    margin-inline: auto;
+    max-width: var(--ds-cgrid-max);
+  }
+
+  .ds-cgrid__rail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-cgrid-rail-gap);
+    min-width: 0;
+  }
+
+  .ds-cgrid__rail--sticky {
+    position: sticky;
+    top: var(--ds-cgrid-sticky-top);
+  }
+
+  .ds-cgrid__main {
+    min-width: 0;
+  }
+
+  /* Only down to 769px: its :not() is more specific than the one-column rules below. */
+  @media (min-width: 769px) and (max-width: 1080px) {
+    .ds-cgrid:not([data-keep-rails]) {
+      grid-template-columns: var(--ds-cgrid-narrow);
+    }
+
+    .ds-cgrid:not([data-keep-rails]) > [data-rail="right"] {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ds-cgrid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ds-cgrid > .ds-cgrid__rail {
+      order: 2;
+      position: static;
+    }
+
+    .ds-cgrid > .ds-cgrid__main {
+      order: 1;
+    }
+
+    .ds-cgrid[data-stack-rails="left"] > [data-rail="right"],
+    .ds-cgrid[data-stack-rails="right"] > [data-rail="left"],
+    .ds-cgrid[data-stack-rails="none"] > .ds-cgrid__rail {
+      display: none;
+    }
+  }
+</style>

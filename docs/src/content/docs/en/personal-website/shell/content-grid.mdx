@@ -1,0 +1,61 @@
+---
+title: ContentGrid
+description: The main column between a left and a right rail, which loses columns on narrower screens.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The grid of a content page: a 200px left rail, the main column, and a 280px right rail, at most 1200px wide.
+
+<Example system="personal-website" name="content-grid" title="The three columns of ContentGrid" viewport={1280} />
+
+## When to use
+
+On every page with rails: the home page with both, a post or the about page with the right one only. A page without rails does not need it.
+
+## On a page
+
+```astro
+<ContentGrid stackRails="left">
+  <Fragment slot="left">…</Fragment>
+  <article>…</article>
+  <Fragment slot="right">…</Fragment>
+</ContentGrid>
+```
+
+Fill only the rails a page has; a missing rail's column is dropped. The rails stack their children with `railGap` and stick below the nav while the main column scrolls.
+
+## Anatomy
+
+Three columns with 48px between them. The grid sets no background and no padding above or below; the band around it does.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `sticky` | Which rails stick: `both` (default), `left`, `right`, or `none` for a rail taller than the window |
+| `stackRails` | Which rails stay below 768px, stacked under the main column: `both` (default), `left`, `right` or `none` |
+| `keepRails` | Keeps the right rail between 768px and 1080px |
+| `leftWidth`, `rightWidth`, `gap`, `railGap`, `maxWidth` | Lengths |
+
+## States
+
+| Width | Layout |
+| --- | --- |
+| Above 1080px | All three columns |
+| 768px to 1080px | The right rail is hidden, so it should hold nothing a reader needs |
+| Below 768px | One column, the main content first and the rails under it, not sticky |
+
+## Accessibility
+
+The rails are `<aside>` elements, so screen readers list them as complementary content. In the source the left rail comes before the main column; a skip link takes keyboard readers straight to the main column.
+
+## API
+
+[`ContentGrid.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/ContentGrid.astro). Ported from the handoff with the same props; the rails are named slots.
+
+## Related
+
+[SidebarCard](../sidebar-card/), the card a rail holds. [FloatingControls](../floating-controls/), which takes over a rail's table of contents on a phone.

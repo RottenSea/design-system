@@ -1,0 +1,43 @@
+---
+/**
+ * The first thing a keyboard reader reaches on a page: a link past the nav to the main content.
+ * It is hidden until it has the focus, then shows at the top left over the nav as a canvas pill
+ * with the focus ring. Put it first in the <body>, and give the main content the id it points to.
+ *
+ * Not in the handoff, which has no skip link; drawn here from its focus ring and canvas pill.
+ */
+interface Props {
+  /** The main content's id, with the #. */
+  href?: string;
+  label?: string;
+}
+
+const { href = "#main", label = "Skip to content" } = Astro.props;
+---
+
+<a class="ds-skip-link" href={href}>{label}</a>
+
+<style>
+  .ds-skip-link {
+    background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-full);
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    font-size: var(--nav-link-size);
+    font-weight: var(--nav-link-weight);
+    left: var(--space-md);
+    line-height: var(--nav-link-lh);
+    padding: var(--space-xs) var(--space-md);
+    position: fixed;
+    text-decoration: none;
+    top: var(--space-sm);
+    transform: translateY(calc(-100% - var(--space-md)));
+    z-index: 60;
+  }
+
+  .ds-skip-link:focus {
+    box-shadow: 0 0 0 4px var(--focus-ring);
+    transform: none;
+  }
+</style>

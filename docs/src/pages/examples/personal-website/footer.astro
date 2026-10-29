@@ -1,0 +1,25 @@
+---
+import { Footer } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const columns = [
+  {
+    title: "Site",
+    links: [
+      { label: "Blog", href: "#" },
+      { label: "About", href: "#" }
+    ]
+  },
+  {
+    title: "Elsewhere",
+    links: [
+      { label: "GitHub", href: "https://github.com/" },
+      { label: "Email", href: "mailto:hello@example.com" }
+    ]
+  }
+];
+---
+
+<ExampleLayout title="Footer" bare>
+  <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes. Posts are CC BY 4.0." />
+</ExampleLayout>

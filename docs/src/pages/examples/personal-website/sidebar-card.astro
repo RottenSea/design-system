@@ -1,0 +1,34 @@
+---
+import { SidebarCard, Surface } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="SidebarCard and Surface">
+  <div class="row">
+    <SidebarCard title="Stats">
+      <p class="text">12 posts · 18,400 words</p>
+    </SidebarCard>
+    <SidebarCard title="Calendar" variant="outline">
+      <p class="text">October 2026</p>
+    </SidebarCard>
+  </div>
+  <div class="row">
+    <Surface>Surface, fill</Surface>
+    <Surface variant="outline">Surface, outline</Surface>
+    <Surface variant="outline" hover href="#">Surface, a link that lifts on hover</Surface>
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .text {
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: 0;
+  }
+</style>

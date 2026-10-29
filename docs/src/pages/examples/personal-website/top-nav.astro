@@ -1,0 +1,30 @@
+---
+import { NavDrawer, TopNav } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const links = [
+  { label: "Blog", href: "#" },
+  { label: "About", href: "#" }
+];
+---
+
+<ExampleLayout title="TopNav" bare>
+  <TopNav brand="Field Notes" links={links} active="Blog" menu="example-menu" />
+  <NavDrawer
+    id="example-menu"
+    brand="Field Notes"
+    active="Blog"
+    groups={[{ links }, { title: "Elsewhere", links: [{ label: "GitHub", href: "https://github.com/" }] }]}
+    note="Written in the evenings."
+  />
+  <p class="hint">Make the window narrower than 768px and the links become a menu button.</p>
+</ExampleLayout>
+
+<style>
+  .hint {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    margin: 0;
+    padding: var(--space-md) var(--space-lg) var(--space-lg);
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+/**
+ * The shell for a rail widget: an uppercase label, a soft hairline, then the widget (stats, a
+ * calendar, a list of links). 16px padding and the small label keep rail cards below the main
+ * column, whose cards are larger; a rail card never gets a display-face heading. `fill` is the
+ * cream card; `outline` is for a rail that sits on a cream band, where the fill would vanish.
+ *
+ * Ported from the handoff's SidebarCard.jsx with the same props, except `onDismiss`: a rail card
+ * on this site is never temporary. `action` is a named slot, for a small link beside the label.
+ *
+ *   <SidebarCard title="Stats"><StatList … /></SidebarCard>
+ */
+import Surface from "./Surface.astro";
+
+interface Props {
+  title: string;
+  variant?: "fill" | "outline";
+  tone?: "cream" | "dark";
+  class?: string;
+}
+
+const { title, variant = "fill", tone = "cream", class: className } = Astro.props;
+const dark = tone === "dark";
+---
+
+<Surface
+  as="section"
+  variant={variant}
+  tone={tone}
+  padding="sm"
+  class:list={["ds-sidebar-card", { "ds-sidebar-card--dark": dark }, className]}
+>
+  <div class="ds-sidebar-card__head">
+    <h2 class="ds-sidebar-card__title">{title}</h2>
+    <slot name="action" />
+  </div>
+  <div class="ds-sidebar-card__body">
+    <slot />
+  </div>
+</Surface>
+
+<style>
+  .ds-sidebar-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ds-sidebar-card__head {
+    align-items: center;
+    display: flex;
+    gap: var(--space-xs);
+    padding-bottom: var(--space-sm);
+  }
+
+  /* An h2 for the outline of the page, drawn as the uppercase micro-label. */
+  .ds-sidebar-card__title {
+    color: var(--text-muted);
+    flex: 1;
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    margin: 0;
+    min-width: 0;
+    text-transform: uppercase;
+  }
+
+  .ds-sidebar-card__body {
+    border-top: 1px solid var(--hairline-soft);
+    min-width: 0;
+    padding-top: var(--space-sm);
+  }
+
+  .ds-sidebar-card--dark .ds-sidebar-card__title {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-sidebar-card--dark .ds-sidebar-card__body {
+    border-top-color: var(--hairline-on-dark);
+  }
+</style>

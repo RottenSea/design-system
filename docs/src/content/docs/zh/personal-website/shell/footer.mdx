@@ -1,0 +1,52 @@
+---
+title: Footer 页脚
+description: 每一页收尾的深色一条。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+每一页收尾的深色一条，两种主题下都是深色：网站名、几列链接、一行版权。
+
+<Example system="personal-website" name="footer" title="两列链接和一行版权的页脚" viewport={1280} />
+
+## 什么时候用
+
+每页一个，放在最后。
+
+## 页面里怎么写
+
+```astro
+<Footer
+  brand="Field Notes"
+  columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
+  note="© 2026 Field Notes."
+/>
+```
+
+那一行里要放链接时，改用 `note` 插槽。
+
+## 结构
+
+底色 `--surface-dark`，上下各 64px。网站名，下面最多四列链接，列名是大写小字，最下面一条细线上是那一行说明。
+
+## 状态
+
+| 宽度 | 列数 |
+| --- | --- |
+| 宽于 1080px | 四列 |
+| 768 到 1080px | 两列 |
+| 窄于 768px | 一列 |
+
+## 无障碍
+
+每一列是一个 `<nav>`，名字是列名。指向其他网站的链接在新标签页打开，带箭头，并给读屏软件一句说明。最下面那一行用 `--text-on-dark-soft`，在两种主题的页脚上对比度都在 4.5:1 以上。
+
+## API
+
+[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro)。从交付包移植，链接写成 `{ label, href }`。交付包在任何宽度下都是四列，这里按 ContentGrid 的断点减少列数。交付包那一行用的 `--text-muted-soft` 在深色主题的页脚上只有 3.5:1，所以换成了 `--text-on-dark-soft`。
+
+## 相关
+
+[页面外框](../)。

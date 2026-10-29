@@ -1,0 +1,44 @@
+---
+title: SkipLink 跳到正文
+description: 用键盘的读者最先碰到的链接，跳过导航直接到正文。
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+跳过导航、直接到正文的链接。它平时隐藏，拿到键盘焦点时才出现。
+
+<Example system="personal-website" name="skip-link" title="SkipLink" />
+
+## 什么时候用
+
+每一页都用，放在 `<body>` 的最前面。
+
+## 页面里怎么写
+
+```astro
+<body>
+  <SkipLink />
+  <TopNav … />
+  <main id="main">…</main>
+</body>
+```
+
+`href` 默认是 `#main`，给正文加上这个 id。
+
+## 结构
+
+左上角、压在导航上面的一个画布色胶囊，带一圈细线和焦点光圈。
+
+## 无障碍
+
+它满足 WCAG 2.4.1“绕过区块”：没有它的话，用键盘的读者每一页都要先按 Tab 走完导航里的每个链接，才到正文。
+
+## API
+
+[`SkipLink.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SkipLink.astro)。交付包没有跳到正文的链接，这个是照交付包的焦点光圈和画布色胶囊画的。
+
+## 相关
+
+[TopNav 顶部导航](../top-nav/)。

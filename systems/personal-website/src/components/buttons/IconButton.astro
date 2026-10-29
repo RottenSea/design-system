@@ -1,0 +1,90 @@
+---
+/**
+ * A 36px circular button with one icon: back to top, the menu, the theme. It grows to the 44px
+ * touch target below 768px through data-ds-tap="cell" (touch.css). `label` is its accessible
+ * name; there is no visible text, so it is required.
+ *
+ * Ported from the handoff's IconButton.jsx with the same props. The pressed fill is the :active
+ * state instead of React pointer state. With `href` it is a link drawn the same way. The icons
+ * are the Tabler outlines in src/icons/ that the system's components use, by name.
+ */
+import type { HTMLAttributes } from "astro/types";
+import ArrowUp from "../../icons/arrow-up.svg";
+import Menu from "../../icons/menu.svg";
+import Moon from "../../icons/moon.svg";
+import Sun from "../../icons/sun.svg";
+import X from "../../icons/x.svg";
+
+const ICONS = { "arrow-up": ArrowUp, menu: Menu, moon: Moon, sun: Sun, x: X };
+
+export type IconName = keyof typeof ICONS;
+
+type Props = Omit<HTMLAttributes<"button">, "type"> & {
+  icon: IconName;
+  label: string;
+  /** `canvas` is the page's own field with a hairline; `dark` is the night surface. */
+  tone?: "canvas" | "dark";
+  disabled?: boolean;
+  /** Makes it a link. */
+  href?: string;
+  class?: string;
+};
+
+const { icon, label, tone = "canvas", disabled = false, href, class: className, ...rest } = Astro.props;
+const Icon = ICONS[icon];
+const classes = ["ds-icon-button", `ds-icon-button--${tone}`, className];
+---
+
+{
+  href ? (
+    <a class:list={classes} href={href} aria-label={label} data-ds-tap="cell" {...(rest as HTMLAttributes<"a">)}>
+      <Icon width={18} height={18} aria-hidden="true" />
+    </a>
+  ) : (
+    <button type="button" class:list={classes} aria-label={label} disabled={disabled} data-ds-tap="cell" {...rest}>
+      <Icon width={18} height={18} aria-hidden="true" />
+    </button>
+  )
+}
+
+<style>
+  .ds-icon-button {
+    align-items: center;
+    border-radius: var(--radius-full);
+    border: 1px solid transparent;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: var(--icon-button-size);
+    justify-content: center;
+    padding: 0;
+    text-decoration: none;
+    transition: var(--transition-tint);
+    width: var(--icon-button-size);
+  }
+
+  .ds-icon-button--canvas {
+    background: var(--surface-canvas);
+    border-color: var(--hairline);
+    color: var(--text-ink);
+  }
+
+  .ds-icon-button--canvas:active:not(:disabled) {
+    background: var(--surface-soft);
+  }
+
+  .ds-icon-button--dark {
+    background: var(--surface-dark-elevated);
+    color: var(--text-on-dark);
+  }
+
+  .ds-icon-button--dark:active:not(:disabled) {
+    background: var(--surface-dark-soft);
+  }
+
+  .ds-icon-button:disabled {
+    color: var(--text-muted-soft);
+    cursor: not-allowed;
+  }
+</style>

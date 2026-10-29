@@ -1,0 +1,167 @@
+---
+/**
+ * The dark footer that closes every page, in both themes: the site's name, up to four columns of
+ * links under uppercase micro-labels, and a line at the bottom for the copyright. --surface-dark,
+ * 64px of padding above and below. The columns are four across, two below 1080px and one below
+ * 768px. A link to another site opens in a new tab with the arrow and the hidden note the
+ * system's other links to other sites have.
+ *
+ * Ported from the handoff's Footer.jsx with the same props, with links as { label, href } and
+ * `onNavigate` left out. The handoff fixes four columns at every width; the two narrower steps
+ * follow ContentGrid's breakpoints. `note` can also be a slot, for a line with links in it. The
+ * note is --text-on-dark-soft rather than the handoff's --text-muted-soft, which is 3.5:1 on the
+ * footer in the dark theme.
+ *
+ *   <Footer brand="The Key of Urala" columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
+ *     note="© 2026 …" />
+ */
+import type { MenuLink } from "./MenuPanel.astro";
+
+export interface FooterColumn {
+  title: string;
+  links: MenuLink[];
+}
+
+interface Props {
+  brand: string;
+  columns?: FooterColumn[];
+  /** The bottom line. A `note` slot takes its place. */
+  note?: string;
+  class?: string;
+}
+
+const { brand, columns = [], note, class: className } = Astro.props;
+const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href) && !href.startsWith("mailto:");
+const hasNote = note !== undefined || Astro.slots.has("note");
+---
+
+<footer class:list={["ds-footer", className]}>
+  <div class="ds-footer__inner">
+    <div class="ds-footer__brand">
+      <slot name="logo" />
+      <span class="ds-footer__brand-name">{brand}</span>
+    </div>
+    {
+      columns.length > 0 && (
+        <div class="ds-footer__grid">
+          {columns.map((column) => (
+            <nav class="ds-footer__column" aria-label={column.title}>
+              <span class="ds-footer__title">{column.title}</span>
+              {column.links.map((link) =>
+                external(link.href) ? (
+                  <a class="ds-footer__link" href={link.href} target="_blank" rel="noreferrer">
+                    {link.label}
+                    <span aria-hidden="true">↗</span>
+                    <span class="ds-visually-hidden"> (opens in a new tab)</span>
+                  </a>
+                ) : (
+                  <a class="ds-footer__link" href={link.href}>
+                    {link.label}
+                  </a>
+                )
+              )}
+            </nav>
+          ))}
+        </div>
+      )
+    }
+    {
+      hasNote && (
+        <p class="ds-footer__note">
+          <slot name="note">{note}</slot>
+        </p>
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  .ds-footer {
+    background: var(--surface-dark);
+    color: var(--text-on-dark-soft);
+    padding: 64px var(--space-lg);
+  }
+
+  .ds-footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xxl);
+    margin: 0 auto;
+    max-width: var(--container-max);
+  }
+
+  .ds-footer__brand {
+    align-items: center;
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .ds-footer__brand-name {
+    color: var(--text-on-dark);
+    font-family: var(--font-sans);
+    font-size: var(--title-sm-size);
+    font-weight: 500;
+  }
+
+  .ds-footer__grid {
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ds-footer__column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .ds-footer__title {
+    color: var(--text-on-dark);
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-footer__link {
+    align-self: flex-start;
+    color: var(--text-on-dark-soft);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-footer__link:hover {
+    color: var(--text-on-dark);
+  }
+
+  .ds-footer__note {
+    border-top: 1px solid var(--hairline-on-dark);
+    color: var(--text-on-dark-soft);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: 0;
+    padding-top: var(--space-lg);
+  }
+
+  .ds-footer__note :global(a) {
+    color: var(--text-on-dark);
+  }
+
+  @media (max-width: 1080px) {
+    .ds-footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ds-footer__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

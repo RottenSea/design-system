@@ -1,0 +1,51 @@
+---
+title: ThemeToggle
+description: The light and dark switch, and ThemeScript, which sets the theme before the first paint.
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A round button that switches the page between the light and the dark theme. ThemeScript goes in the `<head>` so the page has the right theme before it is drawn.
+
+<Example system="personal-website" name="theme-toggle" title="ThemeToggle" />
+
+## When to use
+
+Once per page, in FloatingControls or in the nav's `actions` slot.
+
+## On a page
+
+```astro
+<head>
+  <ThemeScript />
+</head>
+…
+<ThemeToggle />
+```
+
+Both use the localStorage key `ds-theme` unless told otherwise. A site with its own key passes it to both as `storageKey`.
+
+## Anatomy
+
+An IconButton with a moon in the light theme and a sun in the dark one: the icon names what pressing it will do.
+
+## States
+
+| State | What happens |
+| --- | --- |
+| No choice yet | The page follows the OS setting, also when it changes while the page is open |
+| Pressed | The page switches theme, and the choice is stored and used from then on |
+
+## Accessibility
+
+The button is named "Switch to dark theme" or "Switch to light theme". Both buttons are in the HTML and CSS shows the right one, so the icon is right from the first paint. After a press, the focus moves to the button that took its place.
+
+## API
+
+[`ThemeToggle.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/ThemeToggle.astro) and [`ThemeScript.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/head/ThemeScript.astro). Ported from the handoff's icon form. The handoff gives the head script as a snippet to paste; in Astro it can be a component. The segmented form, with a third "System" choice, comes with the settings panel.
+
+## Related
+
+[Themes](../../themes/), [FloatingControls](../floating-controls/).

@@ -1,0 +1,51 @@
+---
+title: SidebarCard 侧栏卡片
+description: 侧栏里的卡片，以及所有卡片的底 Surface。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+SidebarCard 是侧栏里的一张卡片：一行大写小字的标题，一条浅色细线，下面是这个小部件。Surface 是卡片的底，SidebarCard 和别的卡片都由它做成。
+
+<Example system="personal-website" name="sidebar-card" title="两张侧栏卡片和三个 Surface" />
+
+## 什么时候用
+
+侧栏里的每个小部件（统计、日历、一列链接）用 SidebarCard。系统还没有命名的容器用 Surface，不要自己给 `<div>` 加样式。
+
+## 页面里怎么写
+
+```astro
+<SidebarCard title="Stats">…</SidebarCard>
+<Surface variant="outline" hover href="/notes/">…</Surface>
+```
+
+## 结构
+
+SidebarCard 内边距 16px，标题是大写小字，下面一条 `--hairline-soft` 的线。侧栏卡片比正文里的卡片小，标题不用展示字体。
+
+Surface 负责圆角、底色和内边距。它的两种底是系统仅有的两种卡片：`fill` 是奶油色卡片，`outline` 是画布加一圈细线。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `variant` | `fill`（默认），侧栏放在奶油色背景上时用 `outline` |
+| `tone` | `cream`（默认），放在深色一条里时用 `dark` |
+| `padding`（Surface） | `none`、`sm`（16px）、`md`（24px，默认）、`lg`（32px） |
+| `hover`（Surface） | 鼠标移上去时加 `--shadow-hover`，位置不动 |
+| `action` 插槽（SidebarCard） | 标题旁边的一个小链接 |
+
+## 无障碍
+
+SidebarCard 是 `<section>`，标题是 `<h2>`，所以侧栏里的卡片会出现在读屏软件的标题列表里。带 `href` 的 Surface 是一个链接，名字取自里面的文字。
+
+## API
+
+[`SidebarCard.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/SidebarCard.astro) 和 [`Surface.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/cards/Surface.astro)。从交付包移植。SidebarCard 没有 `onDismiss`：这个网站的侧栏卡片不是临时的，不需要关闭。
+
+## 相关
+
+[ContentGrid 内容网格](../content-grid/)。

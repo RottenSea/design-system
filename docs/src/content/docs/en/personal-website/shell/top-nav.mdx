@@ -1,0 +1,64 @@
+---
+title: TopNav
+description: The nav bar at the top of every page, with a menu sheet on small screens.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The nav bar at the top of every page: the site's name, a few links, and actions on the right.
+
+<Example system="personal-website" name="top-nav" title="TopNav with a NavDrawer" viewport={1280} />
+
+## When to use
+
+Once on every page, first after the skip link. Keep it to three or four links. Anything more, such as social links or secondary pages, goes in a NavDrawer under a group title.
+
+## On a page
+
+```astro
+<TopNav brand="Field Notes" links={[{ label: "Blog", href: "/" }, { label: "About", href: "/about" }]} active="Blog">
+  <ThemeToggle slot="actions" />
+</TopNav>
+```
+
+`active` names the current page's link by its label. Without `menu`, the nav carries its own menu sheet with the same links. With grouped navigation, mount a NavDrawer and pass its id:
+
+```astro
+<TopNav … menu="site-menu" />
+<NavDrawer id="site-menu" brand="Field Notes" groups={[{ links }, { title: "Elsewhere", links: social }]} />
+```
+
+## Anatomy
+
+64px tall on the canvas, with no border and no shadow. The site's name in the sans at title size, then the links in the nav-link style: ink for the current page, muted for the rest. Actions sit at the right. Below 768px the links give way to a round menu button.
+
+The menu sheet is a panel at the right of the window over a dim scrim: the site's name and a close button, the links in groups under uppercase micro-labels, and an optional note at the bottom.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `linkStyle` | `sentence` (default) or `uppercase`, which draws the links as micro-labels |
+| `menu` | The id of a NavDrawer to open; without it the nav has its own sheet |
+| `menuGroups`, `menuNote` | Groups and a note for the nav's own sheet |
+
+## States
+
+| State | What changes |
+| --- | --- |
+| Current page | Its link is ink and marked as the current page |
+| Menu open | The scrim fades in and the panel fades in while it travels 8px; the page behind it is inert |
+
+## Accessibility
+
+The links are a `<nav>` named "Site". The menu button says "Menu" and reports whether the sheet is open. The sheet is a modal dialog: the focus moves into it and stays there, Escape or a click on the scrim closes it, and the focus returns to the menu button. A link to another site in the sheet says that it opens a new tab.
+
+## API
+
+[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro), [`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro), and [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro), the sheet both use. Ported from the handoff. The links are `{ label, href }`. The handoff's sign-in and call-to-action buttons are left out; a site's own buttons go in the `actions` slot. The overlay mode, for a page that opens on a full-height band, comes with QuoteBand.
+
+## Related
+
+[Page shell](../), [FloatingControls](../floating-controls/), [ThemeToggle](../theme-toggle/).

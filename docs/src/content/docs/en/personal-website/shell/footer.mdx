@@ -1,0 +1,52 @@
+---
+title: Footer
+description: The dark band that closes every page.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+The dark band that closes every page, in both themes: the site's name, columns of links, and a line for the copyright.
+
+<Example system="personal-website" name="footer" title="Footer with two columns and a copyright line" viewport={1280} />
+
+## When to use
+
+Once, at the end of every page.
+
+## On a page
+
+```astro
+<Footer
+  brand="Field Notes"
+  columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
+  note="© 2026 Field Notes."
+/>
+```
+
+A note with links in it goes in the `note` slot instead.
+
+## Anatomy
+
+`--surface-dark` with 64px above and below. The site's name, then up to four columns under uppercase micro-labels, then the note above a hairline.
+
+## States
+
+| Width | Columns |
+| --- | --- |
+| Above 1080px | Four |
+| 768px to 1080px | Two |
+| Below 768px | One |
+
+## Accessibility
+
+Each column is a `<nav>` named by its title. A link to another site opens a new tab, with the arrow and a note for screen readers. The note is in `--text-on-dark-soft`, which keeps 4.5:1 on the footer in both themes.
+
+## API
+
+[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro). Ported from the handoff, with links as `{ label, href }`. The handoff keeps four columns at every width; here they follow ContentGrid's breakpoints. The handoff's note colour, `--text-muted-soft`, is 3.5:1 on the footer in the dark theme, so the note uses `--text-on-dark-soft`.
+
+## Related
+
+[Page shell](../).

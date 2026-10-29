@@ -1,0 +1,51 @@
+---
+title: ThemeToggle 主题切换
+description: 浅色深色切换按钮，以及在第一次绘制前设好主题的 ThemeScript。
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+一个圆按钮，在浅色和深色主题之间切换。ThemeScript 放在 `<head>` 里，页面画出来之前主题就是对的。
+
+<Example system="personal-website" name="theme-toggle" title="ThemeToggle" />
+
+## 什么时候用
+
+每页一个，放在 FloatingControls 里，或者导航的 `actions` 插槽里。
+
+## 页面里怎么写
+
+```astro
+<head>
+  <ThemeScript />
+</head>
+…
+<ThemeToggle />
+```
+
+两者默认都用 localStorage 的 `ds-theme` 这个键。网站有自己的键时，用 `storageKey` 传给两者。
+
+## 结构
+
+一个 IconButton，浅色主题下是月亮，深色主题下是太阳：图标表示按下去会变成什么。
+
+## 状态
+
+| 状态 | 会怎样 |
+| --- | --- |
+| 读者还没选过 | 跟随系统设置，页面打开时系统设置变了也跟着变 |
+| 按下 | 切换主题，并记住这个选择，以后都用它 |
+
+## 无障碍
+
+按钮的名字是 “Switch to dark theme” 或 “Switch to light theme”。两个按钮都写在 HTML 里，由 CSS 显示对的那个，所以第一次绘制时图标就是对的。按下后焦点移到换上来的那个按钮。
+
+## API
+
+[`ThemeToggle.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/ThemeToggle.astro) 和 [`ThemeScript.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/head/ThemeScript.astro)。移植自交付包的图标形式。交付包给的 head 脚本是一段要自己贴进去的代码，Astro 里可以做成组件。带第三个选项“跟随系统”的分段形式，和设置面板一起做。
+
+## 相关
+
+[主题](../../themes/)、[FloatingControls 浮动按钮](../floating-controls/)。

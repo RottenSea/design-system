@@ -1,0 +1,89 @@
+---
+import {
+  ContentGrid,
+  FloatingControls,
+  Footer,
+  SidebarCard,
+  SkipLink,
+  ThemeToggle,
+  TopNav
+} from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+// A made-up site, so the example shows the parts and not a real one's content.
+const links = [
+  { label: "Blog", href: "#main" },
+  { label: "About", href: "#main" }
+];
+const columns = [
+  { title: "Site", links },
+  {
+    title: "Elsewhere",
+    links: [
+      { label: "GitHub", href: "https://github.com/" },
+      { label: "Email", href: "mailto:hello@example.com" }
+    ]
+  }
+];
+---
+
+<ExampleLayout title="Page shell" bare>
+  <SkipLink />
+  <TopNav brand="Field Notes" links={links} active="Blog" />
+  <main id="main" class="page">
+    <ContentGrid>
+      <Fragment slot="left">
+        <SidebarCard title="Categories">
+          <p class="rail-text">Notes · Essays · Build log</p>
+        </SidebarCard>
+      </Fragment>
+      <article class="post">
+        <h1>Hairlines carry more than they look like they do</h1>
+        <p>
+          The main column takes whatever the rails leave. Below 1080px the right rail goes, and below 768px the page
+          is one column with this text first.
+        </p>
+        <p>
+          A one-pixel line in the right colour separates two things without drawing attention to itself. Borders that
+          are any heavier start to read as boxes, and a page of boxes reads as a form.
+        </p>
+      </article>
+      <Fragment slot="right">
+        <SidebarCard title="Stats">
+          <p class="rail-text">12 posts · 18,400 words</p>
+        </SidebarCard>
+        <SidebarCard title="Calendar" variant="outline">
+          <p class="rail-text">October 2026</p>
+        </SidebarCard>
+      </Fragment>
+    </ContentGrid>
+  </main>
+  <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes." />
+  <FloatingControls>
+    <ThemeToggle />
+  </FloatingControls>
+</ExampleLayout>
+
+<style>
+  .page {
+    padding: var(--space-xl) var(--space-lg) var(--space-section);
+  }
+
+  .post h1 {
+    font-family: var(--display-sm-family);
+    font-size: var(--display-sm-size);
+    font-weight: var(--display-sm-weight);
+    line-height: var(--display-sm-lh);
+    margin: 0 0 var(--space-md);
+  }
+
+  .post p + p {
+    margin-top: var(--space-md);
+  }
+
+  .rail-text {
+    font-size: var(--body-sm-size);
+    line-height: var(--body-sm-lh);
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+title: TopNav 顶部导航
+description: 每一页顶部的导航条，窄屏时有菜单面板。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+每一页顶部的导航条：网站名、几个链接，右边放操作按钮。
+
+<Example system="personal-website" name="top-nav" title="带 NavDrawer 的 TopNav" viewport={1280} />
+
+## 什么时候用
+
+每页一个，紧跟在跳到正文的链接后面。链接保持三四个；再多的（社交链接、次要页面）放进 NavDrawer，按组列出。
+
+## 页面里怎么写
+
+```astro
+<TopNav brand="Field Notes" links={[{ label: "Blog", href: "/" }, { label: "About", href: "/about" }]} active="Blog">
+  <ThemeToggle slot="actions" />
+</TopNav>
+```
+
+`active` 用标签指出当前页的链接。不传 `menu` 时，导航自带一个放同样链接的菜单面板。导航要分组时，放一个 NavDrawer，把它的 id 传给 `menu`：
+
+```astro
+<TopNav … menu="site-menu" />
+<NavDrawer id="site-menu" brand="Field Notes" groups={[{ links }, { title: "Elsewhere", links: social }]} />
+```
+
+## 结构
+
+64px 高，底色是画布，没有边框和阴影。网站名用无衬线体的标题字号，后面是导航链接：当前页是墨色，其余是次要文字色。操作按钮在最右边。窄于 768px 时链接换成一个圆形的菜单按钮。
+
+菜单面板在窗口右边，背后压一层半透明遮罩：上面是网站名和关闭按钮，下面是分组的链接，组名用大写小字，最下面可以有一行说明。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `linkStyle` | `sentence`（默认），或 `uppercase`，链接写成大写小字 |
+| `menu` | 要打开的 NavDrawer 的 id；不传时导航用自己的面板 |
+| `menuGroups`、`menuNote` | 导航自带面板里的分组和说明 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 当前页 | 链接是墨色，并标为当前页 |
+| 菜单打开 | 遮罩淡入，面板一边淡入一边移动 8px；后面的页面不能操作 |
+
+## 无障碍
+
+链接放在名为 “Site” 的 `<nav>` 里。菜单按钮叫 “Menu”，并告诉读屏软件面板是否打开。面板是模态对话框：焦点移进去并留在里面，按 Esc 或点遮罩关闭，关闭后焦点回到菜单按钮。面板里指向其他网站的链接会说明它在新标签页打开。
+
+## API
+
+[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro)、[`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro)，以及两者共用的面板 [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro)。从交付包移植，链接写成 `{ label, href }`。交付包的登录和行动按钮没有移植，网站自己的按钮放进 `actions` 插槽。给“一打开就是整屏横幅”的页面用的叠加模式，和 QuoteBand 一起做。
+
+## 相关
+
+[页面外框](../)、[FloatingControls 浮动按钮](../floating-controls/)、[ThemeToggle 主题切换](../theme-toggle/)。

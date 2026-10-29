@@ -3,8 +3,12 @@
 //   <Content components={components} />
 // The map also replaces the <pre> of code fences, Markdown tables and images, so a post's plain
 // Markdown gets the system's code blocks, scrolling tables and figures too.
-// The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
+// The page shell (TopNav, ContentGrid, Footer and the rest) is exported by name only: a post has
+// no use for it. The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
 // so pages get the components' prop types; pages are compiled by Vite, which handles it.
+import IconButton from "./buttons/IconButton.astro";
+import SidebarCard from "./cards/SidebarCard.astro";
+import Surface from "./cards/Surface.astro";
 import CodeBlock from "./code/CodeBlock.astro";
 import FileTree from "./code/FileTree.astro";
 import FileTreeNode from "./code/FileTreeNode.astro";
@@ -25,6 +29,15 @@ import Steps from "./content/Steps.astro";
 import TableScroll from "./content/TableScroll.astro";
 import Tooltip from "./feedback/Tooltip.astro";
 import Fonts from "./head/Fonts.astro";
+import ThemeScript from "./head/ThemeScript.astro";
+import ContentGrid from "./layout/ContentGrid.astro";
+import FloatingControls from "./layout/FloatingControls.astro";
+import Footer from "./layout/Footer.astro";
+import MenuPanel from "./layout/MenuPanel.astro";
+import NavDrawer from "./layout/NavDrawer.astro";
+import SkipLink from "./layout/SkipLink.astro";
+import ThemeToggle from "./layout/ThemeToggle.astro";
+import TopNav from "./layout/TopNav.astro";
 import Figure from "./media/Figure.astro";
 import GitHubCard from "./media/GitHubCard.astro";
 import ImageGrid from "./media/ImageGrid.astro";
@@ -35,27 +48,39 @@ export {
   Abbreviation,
   Admonition,
   CodeBlock,
+  ContentGrid,
   DiagramFrame,
   Field,
   Fields,
   Figure,
   FileTree,
   FileTreeNode,
+  FloatingControls,
   Fonts,
+  Footer,
   GitHubCard,
+  IconButton,
   ImageGrid,
   MarkdownCode,
   MarkdownImage,
   MarkdownTable,
   MathBlock,
+  MenuPanel,
   Mermaid,
+  NavDrawer,
   Option,
   OptionGroup,
+  SidebarCard,
+  SkipLink,
   Spoiler,
   Step,
   Steps,
+  Surface,
   TableScroll,
+  ThemeScript,
+  ThemeToggle,
   Tooltip,
+  TopNav,
   VideoEmbed
 };
 

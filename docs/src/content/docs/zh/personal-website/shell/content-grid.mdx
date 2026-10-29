@@ -1,0 +1,61 @@
+---
+title: ContentGrid 内容网格
+description: 左右两个侧栏中间的正文栏，屏幕变窄时去掉栏。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+内容页的网格：200px 的左栏、正文栏、280px 的右栏，最宽 1200px。
+
+<Example system="personal-website" name="content-grid" title="ContentGrid 的三栏" viewport={1280} />
+
+## 什么时候用
+
+有侧栏的页面都用它：首页两边都有，文章页和关于页只有右栏。没有侧栏的页面不用。
+
+## 页面里怎么写
+
+```astro
+<ContentGrid stackRails="left">
+  <Fragment slot="left">…</Fragment>
+  <article>…</article>
+  <Fragment slot="right">…</Fragment>
+</ContentGrid>
+```
+
+只填这一页有的侧栏，缺的那一栏会去掉，不留空。侧栏里的东西按 `railGap` 竖着排；正文滚动时，侧栏停在导航下面。
+
+## 结构
+
+三栏，栏间距 48px。网格本身不设背景，上下也不留白，由外面那一条负责。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `sticky` | 哪个侧栏停住：`both`（默认）、`left`、`right`，侧栏比窗口高时用 `none` |
+| `stackRails` | 窄于 768px 时哪些侧栏留下、排在正文下面：`both`（默认）、`left`、`right`、`none` |
+| `keepRails` | 768 到 1080px 之间也保留右栏 |
+| `leftWidth`、`rightWidth`、`gap`、`railGap`、`maxWidth` | 长度 |
+
+## 状态
+
+| 宽度 | 布局 |
+| --- | --- |
+| 宽于 1080px | 三栏都在 |
+| 768 到 1080px | 右栏隐藏，所以右栏里不放读者必须看到的东西 |
+| 窄于 768px | 一栏，正文在最前，侧栏排在下面，不再停住 |
+
+## 无障碍
+
+侧栏是 `<aside>`，读屏软件把它们当作补充内容。源码里左栏在正文前面；跳到正文的链接让用键盘的读者直接到正文。
+
+## API
+
+[`ContentGrid.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/ContentGrid.astro)。从交付包移植，props 一样；侧栏是具名插槽。
+
+## 相关
+
+[SidebarCard 侧栏卡片](../sidebar-card/)，侧栏里放的卡片。[FloatingControls 浮动按钮](../floating-controls/)，在手机上接手侧栏里的目录。

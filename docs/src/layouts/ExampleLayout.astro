@@ -8,9 +8,13 @@ import "@rottensea/ds-personal-website/index.css";
 
 interface Props {
   title: string;
+  /** Drops the padding, for an example that is a whole page. */
+  bare?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, bare = false } = Astro.props;
+// A whole-page example has its own <main>.
+const Wrapper = bare ? "div" : "main";
 ---
 
 <!doctype html>
@@ -54,15 +58,19 @@ const { title } = Astro.props;
     </script>
   </head>
   <body>
-    <main class="example">
+    <Wrapper class:list={["example", { "example--bare": bare }]}>
       <slot />
-    </main>
+    </Wrapper>
   </body>
 </html>
 
 <style>
   .example {
     padding: var(--space-lg);
+  }
+
+  .example--bare {
+    padding: 0;
   }
 
   /* In development, Astro's toolbar belongs on the docs page, not in every example. */

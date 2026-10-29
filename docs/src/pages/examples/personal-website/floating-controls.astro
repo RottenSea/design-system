@@ -1,0 +1,35 @@
+---
+import { IconButton } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="FloatingControls and IconButton">
+  <div class="row">
+    <IconButton icon="arrow-up" label="Back to top" class="float" />
+    <IconButton icon="moon" label="Switch to dark theme" class="float" />
+    <IconButton icon="menu" label="Menu" />
+    <IconButton icon="x" label="Close" disabled />
+  </div>
+  <div class="row row--dark">
+    <IconButton icon="arrow-up" label="Back to top" tone="dark" />
+    <IconButton icon="sun" label="Switch to light theme" tone="dark" />
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+  }
+
+  .row--dark {
+    background: var(--surface-dark);
+    border-radius: var(--radius-lg);
+  }
+
+  .row > :global(.float) {
+    box-shadow: var(--shadow-float);
+  }
+</style>

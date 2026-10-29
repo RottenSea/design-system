@@ -1,0 +1,159 @@
+---
+/**
+ * The nav bar at the top of every page: the site's name on the left, a few links after it, and
+ * actions on the right. 64px tall on the canvas, with no border and no shadow; the current
+ * page's link is ink and the rest are muted. Below 768px the links give way to a menu button
+ * that opens a sheet holding them, so a page with only a TopNav still has working small-screen
+ * navigation. A page with grouped navigation mounts a NavDrawer and passes its id as `menu`.
+ *
+ * Ported from the handoff's TopNav.jsx, with links as { label, href } and the current one named
+ * by `active`. Left out for now: `signInLabel` and `ctaLabel` (a site's own buttons go in the
+ * `actions` slot), and the overlay mode for a page that opens on a full-height band, which
+ * arrives with QuoteBand.
+ *
+ *   <TopNav brand="The Key of Urala" links={[{ label: "Blog", href: "/" }]} active="Blog">
+ *     <ThemeToggle slot="actions" />
+ *   </TopNav>
+ */
+import IconButton from "../buttons/IconButton.astro";
+import MenuPanel, { type MenuGroup, type MenuLink } from "./MenuPanel.astro";
+
+interface Props {
+  brand: string;
+  brandHref?: string;
+  links: MenuLink[];
+  /** Label of the current page's link. */
+  active?: string;
+  /** "uppercase" draws the links as micro-labels. */
+  linkStyle?: "sentence" | "uppercase";
+  /** Id of a NavDrawer the menu button opens. Without it the nav carries its own sheet. */
+  menu?: string;
+  /** Groups for the nav's own sheet; by default one group of `links`. */
+  menuGroups?: MenuGroup[];
+  /** A line at the bottom of the nav's own sheet. */
+  menuNote?: string;
+  class?: string;
+}
+
+const {
+  brand,
+  brandHref = "/",
+  links,
+  active,
+  linkStyle = "sentence",
+  menu,
+  menuGroups,
+  menuNote,
+  class: className
+} = Astro.props;
+const ownMenu = menu === undefined;
+const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
+---
+
+<header class:list={["ds-nav", className]}>
+  <a class="ds-nav__brand" href={brandHref}>
+    <slot name="logo" />
+    <span class="ds-nav__brand-name">{brand}</span>
+  </a>
+  <nav class:list={["ds-nav__links", { "ds-nav__links--upper": linkStyle === "uppercase" }]} aria-label="Site">
+    {
+      links.map((link) => (
+        <a class="ds-nav__link" href={link.href} aria-current={link.label === active ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="ds-nav__actions">
+    <slot name="actions" />
+    <span class="ds-nav__burger">
+      <IconButton icon="menu" label="Menu" aria-haspopup="dialog" aria-expanded="false" data-ds-menu-open={menuId} />
+    </span>
+  </div>
+  {
+    ownMenu && (
+      <MenuPanel id={menuId} brand={brand} groups={menuGroups ?? [{ links }]} active={active} note={menuNote}>
+        <slot name="logo" slot="logo" />
+      </MenuPanel>
+    )
+  }
+</header>
+
+<style>
+  .ds-nav {
+    align-items: center;
+    background: var(--surface-canvas);
+    box-sizing: border-box;
+    display: flex;
+    gap: var(--space-xl);
+    height: var(--nav-height);
+    padding: 0 var(--space-lg);
+  }
+
+  .ds-nav__brand {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--space-xs);
+    text-decoration: none;
+  }
+
+  .ds-nav__brand-name {
+    color: var(--text-ink);
+    font-family: var(--font-sans);
+    font-size: var(--title-sm-size);
+    font-weight: 500;
+  }
+
+  .ds-nav__links {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    gap: var(--space-lg);
+  }
+
+  .ds-nav__link {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--nav-link-size);
+    font-weight: var(--nav-link-weight);
+    line-height: var(--nav-link-lh);
+    text-decoration: none;
+    transition: var(--transition-tint);
+  }
+
+  .ds-nav__links--upper .ds-nav__link {
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    text-transform: uppercase;
+  }
+
+  .ds-nav__link:hover,
+  .ds-nav__link[aria-current="page"] {
+    color: var(--text-ink);
+  }
+
+  .ds-nav__actions {
+    align-items: center;
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--space-xs);
+    margin-left: auto;
+  }
+
+  .ds-nav__burger {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .ds-nav__links {
+      display: none;
+    }
+
+    .ds-nav__burger {
+      display: inline-flex;
+    }
+  }
+</style>

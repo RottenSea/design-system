@@ -1,0 +1,60 @@
+---
+title: FloatingControls 浮动按钮
+description: 右下角的回到顶部按钮和最多两个别的圆按钮，由 IconButton 做成。
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+右下角竖着排的一列圆按钮：回到顶部，加最多两个别的，例如主题切换。每个按钮都是 IconButton，系统里 36px 的圆形图标按钮。
+
+<Example system="personal-website" name="floating-controls" title="画布上和深色底上的图标按钮" />
+
+## 什么时候用
+
+每页一个。除了回到顶部，还放窄屏时侧栏收起后丢掉的东西，一般是目录。最多三个按钮，它不是工具栏。
+
+## 页面里怎么写
+
+```astro
+<FloatingControls>
+  <ThemeToggle />
+</FloatingControls>
+
+<FloatingControls devices={["mobile", "tablet"]}>…</FloatingControls>
+```
+
+## 结构
+
+36px 的圆按钮竖着排，离右下角 24px，每个都带 `--shadow-float`。回到顶部在最下面。
+
+## 类型
+
+| 属性 | 取值 |
+| --- | --- |
+| `devices` | 在哪些屏幕上显示：`mobile`（窄于 768px）、`tablet`（768 到 1080px）、`desktop`（宽于 1080px） |
+| `tone` | 回到顶部按钮的底色：`canvas`（默认）或 `dark` |
+| `icon`（IconButton） | `arrow-up`、`menu`、`moon`、`sun`、`x` |
+| `href`（IconButton） | 让按钮变成链接 |
+
+## 状态
+
+| 状态 | 变化 |
+| --- | --- |
+| 在页面顶部 | 回到顶部按钮隐藏 |
+| 往下滚过一个窗口的高度 | 回到顶部按钮淡入 |
+| 按下 | 按钮填上浅一点的底色 |
+| 窄于 768px | 每个按钮放大到 44px |
+
+## 无障碍
+
+IconButton 不显示文字，名字来自 `label`。回到顶部平滑滚动，读者开了“减少动效”时直接跳过去；之后键盘焦点移到页面顶部，下一次按 Tab 从那里开始。
+
+## API
+
+[`FloatingControls.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/FloatingControls.astro) 和 [`IconButton.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/IconButton.astro)。从交付包移植；组件自己看滚动位置，不再接收 `showTop`。
+
+## 相关
+
+[ThemeToggle 主题切换](../theme-toggle/)、[ContentGrid 内容网格](../content-grid/)。
