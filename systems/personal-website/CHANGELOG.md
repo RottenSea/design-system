@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- `--font-display` falls back to Source Han Serif SC, then Georgia, then the Song faces Songti SC, STSong and SimSun. While Noto Serif SC is still loading, or when it cannot load, Chinese display text stayed in a serif only if the generic `serif` did, and on Windows that can be a sans.
-
 ## [0.5.0] - 2026-10-29
 
 This release adds the parts of a home page: the quote band, the post list with its filters and pager, and the rail's statistics and calendar. Nothing a site already uses changes.

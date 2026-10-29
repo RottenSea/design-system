@@ -7,18 +7,14 @@
       "$value": [
         "Noto Serif SC",
         "Noto Serif CJK SC",
-        "Source Han Serif SC",
         "Georgia",
-        "Songti SC",
-        "STSong",
-        "SimSun",
         "serif"
       ],
-      "$description": "Display headlines, at weight 400 only. Georgia sets Latin text until Noto Serif SC arrives; the Song faces after it keep Chinese text in a serif meanwhile, because the generic serif can resolve to a sans for Chinese.",
+      "$description": "Display headlines, at weight 400 only.",
       "$extensions": {
         "cafe.rottenth": {
           "description": {
-            "zh-CN": "大标题，只用 400 字重。Noto Serif SC 到之前，拉丁字母用 Georgia，中文用后面的宋体，因为通用的 serif 对中文可能是无衬线字体。"
+            "zh-CN": "大标题，只用 400 字重。"
           }
         }
       }
