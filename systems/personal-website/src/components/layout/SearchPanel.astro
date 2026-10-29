@@ -162,8 +162,8 @@ const {
       if (this.hasAttribute("data-shortcuts")) {
         document.addEventListener("keydown", (event) => {
           if (dialog.open) return;
-          const target = event.target as HTMLElement;
-          const typing = target.closest("input, textarea, select, [contenteditable]:not([contenteditable=false])");
+          const target = event.target instanceof Element ? event.target : null;
+          const typing = target?.closest("input, textarea, select, [contenteditable]:not([contenteditable=false])");
           const slash = event.key === "/" && !typing && !event.ctrlKey && !event.metaKey && !event.altKey;
           const k = event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey) && !event.altKey;
           if (slash || k) {

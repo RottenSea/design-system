@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-29
+
+This release adds the display settings, search, sharing and page transitions. The scrollbar changes on every page; nothing else a site already uses does.
+
 ### Added
 
 - `SettingsMenu`, the display settings behind one round button: the theme as Light, Dark or System, and Reduce motion, which sets `data-reduce-motion` on `<html>`. Both apply at once and are remembered. It is made of `SegmentedControl` and `Switch`, ported from the handoff, which work on their own too. `ThemeScript` takes `motionKey` and sets Reduce motion before the first paint.
@@ -148,7 +152,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.6.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.0...HEAD
+[0.7.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.6.0...personal-website-v0.7.0
 [0.6.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.5.0...personal-website-v0.6.0
 [0.5.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.4.0...personal-website-v0.5.0
 [0.4.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.3.1...personal-website-v0.4.0
