@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-30
+
+This release fades the page's colours when the theme changes, adds SharePoster and the PostLicense mark, and fixes three components. A site that changes the theme with its own script should call the new `setTheme`; nothing else a site uses changes.
+
 ### Added
 
 - A change of theme fades every colour on the page together over `--motion-entrance`, from ThemeToggle, SettingsMenu or the OS. `setTheme` and `fadeIn`, from the new `scripts/theme` export, do it for a site's own scripts; Mermaid diagrams and SharePoster fade their new drawing in over the old one. Components' own transitions, such as a button's hover tint, give way to the fade while it runs. With reduced motion the theme changes at once.
@@ -164,7 +168,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.1...HEAD
+[0.7.1]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.0...personal-website-v0.7.1
 [0.7.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.6.0...personal-website-v0.7.0
 [0.6.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.5.0...personal-website-v0.6.0
 [0.5.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.4.0...personal-website-v0.5.0
