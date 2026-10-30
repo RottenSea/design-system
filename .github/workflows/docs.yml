@@ -36,7 +36,9 @@ jobs:
           cache: pnpm
       - uses: actions/configure-pages@v6
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @rottensea/ds-docs build
+      # The docs and the systems they depend on, in order: the docs import each system's built
+      # tokens.css, which a fresh checkout does not have.
+      - run: pnpm --filter "@rottensea/ds-docs..." build
       - uses: actions/upload-pages-artifact@v5
         with:
           path: docs/dist
