@@ -31,6 +31,7 @@
     "./package.json": "./package.json",
     "./components": "./src/components/index.ts",
     "./components/*": "./src/components/*",
+    "./scripts/theme": "./src/scripts/theme.ts",
     "./markdown": {
       "types": "./src/markdown/index.d.ts",
       "default": "./src/markdown/index.js"

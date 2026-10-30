@@ -4,7 +4,8 @@
  * source, shown in the mono face, and mermaid is fetched, as a separate file, only on a page that
  * has a diagram; then the drawing replaces the source. The colours are read from the
  * system's tokens on the element, so the graph matches the page, and because Mermaid writes its
- * colours into the SVG, the diagram is drawn again when the page switches between light and dark.
+ * colours into the SVG, the diagram is drawn again when the page switches between light and dark;
+ * the new drawing fades in over the old one as the page's colours fade.
  *
  * Not in the handoff, which leaves drawing to the page (its DiagramFrame "Mermaid contract"); this
  * follows that contract's way 2 and its token mapping. Coral is not used: nodes stay on the cream
@@ -31,6 +32,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 </DiagramFrame>
 
 <script>
+  import { fadeIn } from "../../scripts/theme";
   type Mermaid = (typeof import("mermaid"))["default"];
 
   let library: Promise<Mermaid> | undefined;
@@ -98,8 +100,20 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       try {
         count += 1;
         const { svg } = await mermaid.render(`ds-mermaid-${count}`, this.#code);
-        this.innerHTML = svg;
-        this.dataset.drawn = "";
+        if (this.dataset.drawn === undefined) {
+          this.innerHTML = svg;
+          this.dataset.drawn = "";
+          return;
+        }
+        // Drawn again for a new theme: the new diagram fades in over the old one, then replaces it.
+        const old = [...this.children];
+        const template = document.createElement("template");
+        template.innerHTML = svg;
+        for (const element of old) element.setAttribute("aria-hidden", "true");
+        this.append(template.content);
+        const fresh = this.lastElementChild;
+        if (fresh) await fadeIn(fresh);
+        for (const element of old) element.remove();
       } catch (error) {
         // The source stays on the page, which is the frame's fallback.
         console.warn("Mermaid could not draw a diagram:", error);
@@ -117,9 +131,14 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     max-width: 100%;
   }
 
+  /* One cell, centred, so a new drawing can sit over the old one while it fades in. */
   ds-mermaid[data-drawn] {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    justify-items: center;
+  }
+
+  ds-mermaid[data-drawn] > :global(*) {
+    grid-area: 1 / 1;
   }
 
   ds-mermaid :global(svg) {

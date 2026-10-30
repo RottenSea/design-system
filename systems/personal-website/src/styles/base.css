@@ -115,6 +115,24 @@
   }
 
   /*
+   * A change of theme. setTheme (scripts/theme.ts) marks <html> with data-theme-fade for
+   * --motion-entrance, and meanwhile every element fades its colours over that time in place of
+   * its own transitions, so the whole page changes together: a hover tint would otherwise go at
+   * its own pace while the rest jumped. Reduced motion never sets the mark.
+   */
+  [data-theme-fade],
+  [data-theme-fade] *,
+  [data-theme-fade] *::before,
+  [data-theme-fade] *::after {
+    transition-delay: 0s !important;
+    transition-duration: var(--motion-entrance) !important;
+    transition-property:
+      background-color, border-color, box-shadow, caret-color, color, column-rule-color, fill,
+      outline-color, scrollbar-color, stroke, text-decoration-color !important;
+    transition-timing-function: var(--ease-move) !important;
+  }
+
+  /*
    * Reduced motion, at two levels: the OS setting, and a site switch a page can set on <html> as
    * data-reduce-motion="true". Transitions and animations finish in 1ms instead of 0 so transitionend
    * and animationend still fire, and run once so a looping animation cannot flicker. Loading

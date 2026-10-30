@@ -14,7 +14,7 @@ Motion is as quiet as the rest of the system. Colour and opacity change; things 
 
 ## Durations and curves
 
-Four durations: `--motion-fast` for a tint change on a control, `--motion-base` for a surface change, `--motion-slow` for geometry such as a section folding, and `--motion-entrance`, which belongs to the dialog's entrance and nothing else. Three curves: `--ease-enter` for things arriving, `--ease-exit` for things leaving, `--ease-move` for things changing size in place.
+Four durations: `--motion-fast` for a tint change on a control, `--motion-base` for a surface change, `--motion-slow` for geometry such as a section folding, and `--motion-entrance`, which belongs to the dialog's entrance and a change of theme and nothing else. Three curves: `--ease-enter` for things arriving, `--ease-exit` for things leaving, `--ease-move` for things changing size in place.
 
 `motion.css` combines them into four transitions, `--transition-tint`, `-surface`, `-fade` and `-collapse`. Use those before writing a duration by hand.
 
@@ -24,7 +24,13 @@ Four durations: `--motion-fast` for a tint change on a control, `--motion-base` 
 
 Every set that changes uses three classes: `.ds-reveal-in` (fade in from 8px below), `.ds-fade-out` (opacity only) and `.ds-collapse` (height). A list that gains and loses members runs them in one order: leaving items fade out, the rest move, arriving items reveal in. `--motion-shift` is the only distance anything travels, and reveal-in is the only place it is used.
 
-There is no scroll-triggered reveal, no parallax, no skeleton shimmer and no page transition. The one looping animation is the indeterminate progress bar, which always has a label.
+There is no scroll-triggered reveal, no parallax and no skeleton shimmer. A change of page fades with [page transitions](../settings/page-transitions/), which a site imports on its own. The one looping animation is the indeterminate progress bar, which always has a label.
+
+## Changing the theme
+
+Every change of theme fades every colour on the page together, over `--motion-entrance` with `--ease-move`: ThemeToggle, SettingsMenu, and the OS switching while a page follows it. `setTheme` from `@rottensea/ds-personal-website/scripts/theme` sets `data-theme` and marks `<html>` with `data-theme-fade` for that time; while the mark is there, `base.css` gives every element the same colour transition in place of its own, so a button's hover tint does not run at its own pace. A script that changes the theme some other way calls `setTheme` too.
+
+What a script draws is not a CSS colour. Mermaid diagrams and SharePoster draw again in the new theme and fade the new drawing in over the old one with `fadeIn`, from the same module.
 
 ## Reduced motion
 

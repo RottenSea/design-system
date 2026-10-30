@@ -4,7 +4,8 @@
  * attribute on <html> and one localStorage key. Every colour follows from the tokens, so no
  * other component needs to know the theme. The reader's choice is stored as "light" or "dark";
  * until there is one, the page follows the OS, including a change to it while the page is open.
- * Put ThemeScript in the <head> so the right theme is there before the first paint.
+ * Put ThemeScript in the <head> so the right theme is there before the first paint. A switch fades
+ * every colour over --motion-entrance (setTheme in scripts/theme.ts).
  *
  * Ported from the handoff's ThemeToggle.jsx, its icon form. The icon names what pressing it will
  * do: a sun in the dark theme, a moon in the light one. Both buttons are in the HTML and CSS
@@ -36,14 +37,15 @@ const {
 </ds-theme-toggle>
 
 <script>
+  import { setTheme } from "../../scripts/theme";
+
   class DsThemeToggle extends HTMLElement {
     connectedCallback() {
       const key = this.dataset.storageKey ?? "ds-theme";
-      const root = document.documentElement;
       for (const button of this.querySelectorAll<HTMLButtonElement>("[data-theme-to]")) {
         button.addEventListener("click", () => {
           const theme = button.dataset.themeTo === "dark" ? "dark" : "light";
-          root.dataset.theme = theme;
+          setTheme(theme);
           try {
             localStorage.setItem(key, theme);
           } catch {
@@ -59,7 +61,7 @@ const {
         try {
           saved = localStorage.getItem(key);
         } catch {}
-        if (saved !== "light" && saved !== "dark") root.dataset.theme = event.matches ? "dark" : "light";
+        if (saved !== "light" && saved !== "dark") setTheme(event.matches ? "dark" : "light");
       });
     }
   }

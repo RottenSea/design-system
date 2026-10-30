@@ -14,7 +14,7 @@ import TokenTable from "../../../../components/TokenTable.astro";
 
 ## 时长和曲线
 
-四种时长：`--motion-fast` 用于控件的颜色变化，`--motion-base` 用于底色变化，`--motion-slow` 用于形状变化（例如一段内容折叠），`--motion-entrance` 只属于对话框出现，别处不用。三条曲线：`--ease-enter` 用于出现，`--ease-exit` 用于消失，`--ease-move` 用于原地改变大小。
+四种时长：`--motion-fast` 用于控件的颜色变化，`--motion-base` 用于底色变化，`--motion-slow` 用于形状变化（例如一段内容折叠），`--motion-entrance` 只属于对话框出现和切换主题，别处不用。三条曲线：`--ease-enter` 用于出现，`--ease-exit` 用于消失，`--ease-move` 用于原地改变大小。
 
 `motion.css` 把它们组合成四种过渡：`--transition-tint`、`-surface`、`-fade` 和 `-collapse`。先用这几个，再考虑手写时长。
 
@@ -24,7 +24,13 @@ import TokenTable from "../../../../components/TokenTable.astro";
 
 所有会变的列表都用三个类：`.ds-reveal-in`（从下方 8px 淡入）、`.ds-fade-out`（只改透明度）和 `.ds-collapse`（改高度）。一个列表有增有减时按固定顺序：要走的先淡出，剩下的移动位置，新来的淡入。`--motion-shift` 是唯一的位移距离，只在淡入时用。
 
-没有滚动触发的出现、没有视差、没有骨架屏闪光，也没有页面切换动画。唯一循环的动画是不确定进度条，它总带着文字说明。
+没有滚动触发的出现、没有视差，也没有骨架屏闪光。换页时的淡入淡出见[页面切换](../settings/page-transitions/)，由网站自己引入。唯一循环的动画是不确定进度条，它总带着文字说明。
+
+## 切换主题
+
+不管从哪里切换主题，页面上所有颜色都一起过渡，用 `--motion-entrance` 和 `--ease-move`：ThemeToggle、SettingsMenu，还有页面跟随系统时系统自己切换。`@rottensea/ds-personal-website/scripts/theme` 里的 `setTheme` 设置 `data-theme`，同时在 `<html>` 上标记 `data-theme-fade`，持续这么久。标记在的时候，`base.css` 让每个元素都用同一个颜色过渡，替换它自己的，所以按钮悬停用的颜色过渡不会按自己的节奏走。用别的办法切换主题的脚本也要调用 `setTheme`。
+
+脚本画出来的东西不是 CSS 颜色。Mermaid 图和 SharePoster 会按新主题重画，再用同一个模块里的 `fadeIn` 让新图在旧图上淡入。
 
 ## 减少动效
 

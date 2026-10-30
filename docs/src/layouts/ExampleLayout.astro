@@ -46,18 +46,17 @@ const Wrapper = bare ? "div" : "main";
         }
       } else {
         // Opened on its own ("Open at 1280px"): the theme picked on the docs site, which Starlight
-        // keeps in localStorage, or else the OS setting, followed as either changes.
-        const system = matchMedia("(prefers-color-scheme: dark)");
-        const apply = () => {
-          let picked = "";
-          try {
-            picked = localStorage.getItem("starlight-theme") ?? "";
-          } catch {}
-          root.dataset.theme = picked === "light" || picked === "dark" ? picked : system.matches ? "dark" : "light";
-        };
-        apply();
-        system.addEventListener("change", apply);
-        window.addEventListener("storage", apply);
+        // keeps in localStorage, or else the OS setting. The script after </head> follows changes.
+        let picked = "";
+        try {
+          picked = localStorage.getItem("starlight-theme") ?? "";
+        } catch {}
+        root.dataset.theme =
+          picked === "light" || picked === "dark"
+            ? picked
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
       }
       // The iframe element belongs to the docs page, so instanceof against this page's classes fails.
       const frame = window.frameElement;
@@ -85,6 +84,25 @@ const Wrapper = bare ? "div" : "main";
     </Wrapper>
   </body>
 </html>
+
+<script>
+  import { setTheme } from "@rottensea/ds-personal-website/scripts/theme";
+
+  // Opened on its own, the page follows the docs site's choice and the OS as either changes, with
+  // the system's colour fade. In an iframe, Example.astro does this from the docs page.
+  if (window.parent === window) {
+    const system = matchMedia("(prefers-color-scheme: dark)");
+    const follow = () => {
+      let picked: string | null = null;
+      try {
+        picked = localStorage.getItem("starlight-theme");
+      } catch {}
+      setTheme(picked === "light" || picked === "dark" ? picked : system.matches ? "dark" : "light");
+    };
+    system.addEventListener("change", follow);
+    window.addEventListener("storage", follow);
+  }
+</script>
 
 <style>
   .example {

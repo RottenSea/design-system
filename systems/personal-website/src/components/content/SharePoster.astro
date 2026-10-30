@@ -4,7 +4,8 @@
  * the cream card without one; the title in the display serif, up to three lines; the description;
  * then a hairline, the site's name, the date, a short coral rule, and a QR code of the address in
  * ink at the right. Its colours are the theme it sits in, read from the tokens, and it is drawn
- * again when the theme changes, so a reader in the dark theme gets a dark poster. The QR code is
+ * again when the theme changes, the new poster fading in over the old one as the page's colours
+ * fade, so a reader in the dark theme gets a dark poster. The QR code is
  * always dark on a light tile: not every scanner reads a light code on a dark ground. It is drawn
  * after the fonts it uses have loaded.
  *
@@ -45,6 +46,7 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
 <script>
   import QRCode from "qrcode";
+  import { fadeIn } from "../../scripts/theme";
 
   interface Poster {
     title: string;
@@ -214,6 +216,8 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
   class DsSharePoster extends HTMLElement {
     #drawn: Promise<void> | undefined;
+    #queue: Promise<void> = Promise.resolve();
+    #painted = false;
 
     connectedCallback() {
       if (!this.hasAttribute("data-lazy")) this.draw();
@@ -232,11 +236,27 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
     /** Draws the poster once; later calls wait for the same drawing. */
     draw() {
-      const canvas = this.querySelector("canvas");
-      this.#drawn ??= canvas
-        ? draw(canvas, JSON.parse(this.dataset.poster ?? "{}") as Poster, this)
-        : Promise.resolve();
+      // Drawings run one after another, so a theme change in the middle of a fade waits for it.
+      this.#drawn ??= this.#queue = this.#queue.then(() => this.#paint()).catch(() => undefined);
       return this.#drawn;
+    }
+
+    /** The first drawing goes on the canvas; a later one on a new canvas that fades in over it. */
+    async #paint() {
+      const canvas = this.querySelector("canvas");
+      if (!canvas) return;
+      const poster = JSON.parse(this.dataset.poster ?? "{}") as Poster;
+      if (!this.#painted) {
+        await draw(canvas, poster, this);
+        this.#painted = true;
+        return;
+      }
+      const next = canvas.cloneNode(false) as HTMLCanvasElement;
+      await draw(next, poster, this);
+      canvas.setAttribute("aria-hidden", "true");
+      canvas.after(next);
+      await fadeIn(next);
+      canvas.remove();
     }
 
     /** The poster as a PNG, once drawn. */
@@ -251,11 +271,13 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 </script>
 
 <style>
+  /* One cell, so a new drawing can sit over the old one while it fades in. */
   .ds-poster {
-    display: block;
+    display: grid;
   }
 
   .ds-poster canvas {
+    grid-area: 1 / 1;
     aspect-ratio: 3 / 4;
     border: 1px solid var(--hairline);
     border-radius: var(--radius-md);

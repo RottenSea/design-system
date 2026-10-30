@@ -2,7 +2,8 @@
 /**
  * The display settings behind one round button: the theme, as Light, Dark or System, and Reduce
  * motion. A choice applies at once and is remembered in localStorage. It owns data-theme and
- * data-reduce-motion on <html>; every colour and every motion rule follows from those. Put
+ * data-reduce-motion on <html>; every colour and every motion rule follows from those. A change
+ * of theme fades every colour over --motion-entrance (setTheme in scripts/theme.ts). Put
  * ThemeScript, with the same keys, in the <head> so both are set before the first paint.
  *
  * The handoff has ThemeToggle and a site-level reduced-motion switch but no panel; this one is
@@ -63,6 +64,8 @@ const {
 </ds-settings>
 
 <script>
+  import { setTheme } from "../../scripts/theme";
+
   type Selectable = HTMLElement & { select(value: string | null): void };
   type Toggle = HTMLElement & { checked: boolean; disabled: boolean };
 
@@ -100,7 +103,7 @@ const {
       };
       const applyTheme = () => {
         const choice = chosenTheme();
-        root.dataset.theme = choice === "system" ? (dark.matches ? "dark" : "light") : choice;
+        setTheme(choice === "system" ? (dark.matches ? "dark" : "light") : choice);
       };
       const showMotion = () => {
         if (!motion) return;

@@ -1,6 +1,7 @@
 /*
  * Motion. Short and flat: color and opacity first. Nothing scales, bounces, springs or fires on
- * scroll. The one exception to "no transforms" is the dialog entrance, which owns --motion-entrance.
+ * scroll. The one exception to "no transforms" is the dialog entrance, which shares --motion-entrance
+ * with the colour fade of a theme change (base.css).
  */
 
 /* Composed transitions. They live here because a DTCG transition token cannot list CSS properties. */

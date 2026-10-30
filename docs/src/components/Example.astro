@@ -1,7 +1,8 @@
 ---
 /**
  * Shows a component example page in an iframe, so the example uses only the system's CSS. The
- * iframe follows the docs page's light or dark theme; the example page itself (ExampleLayout)
+ * iframe follows the docs page's light or dark theme, with the system's colour fade; the example
+ * page itself (ExampleLayout)
  * makes the iframe as tall as its content.
  *
  *   <Example system="personal-website" name="admonition" title="Admonition variants" />
@@ -50,6 +51,8 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 </ds-example>
 
 <script>
+  import { setTheme } from "@rottensea/ds-personal-website/scripts/theme";
+
   class DsExample extends HTMLElement {
     connectedCallback() {
       const frame = this.querySelector("iframe");
@@ -57,7 +60,7 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
       if (!frame || !stage) return;
       const syncTheme = () => {
         const root = frame.contentDocument?.documentElement;
-        if (root) root.dataset.theme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+        if (root) setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light", root);
       };
 
       new MutationObserver(syncTheme).observe(document.documentElement, {

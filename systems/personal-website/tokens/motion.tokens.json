@@ -58,11 +58,11 @@
         "value": 350,
         "unit": "ms"
       },
-      "$description": "The dialog entrance and nothing else.",
+      "$description": "The dialog entrance and the colour fade of a theme change, nothing else.",
       "$extensions": {
         "cafe.rottenth": {
           "description": {
-            "zh-CN": "只用于对话框出现。"
+            "zh-CN": "只用于对话框出现和切换主题时的颜色过渡。"
           }
         }
       }
