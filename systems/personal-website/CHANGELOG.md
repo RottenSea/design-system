@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- QuoteBand's hint scrolls the content to just below a fixed or sticky TopNav, instead of under it. With `pullNext` it no longer goes past the start of the content by the 40svh the content is pulled up.
+
 ## [0.7.1] - 2026-10-30
 
 This release fades the page's colours when the theme changes, adds SharePoster and the PostLicense mark, and fixes three components. A site that changes the theme with its own script should use the new theme store; nothing else a site uses changes.

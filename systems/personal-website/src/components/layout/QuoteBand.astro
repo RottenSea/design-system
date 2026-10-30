@@ -7,7 +7,8 @@
  * display-md, then display-sm), so a quote from content cannot overflow.
  *
  * Ported from the handoff's QuoteBand.jsx with the same props, except `background` and
- * `onScrollHint`: the hint scrolls to the element after the band. Two additions:
+ * `onScrollHint`: the hint scrolls to the element after the band, stopping below a fixed or sticky
+ * TopNav. Two additions:
  * - `quotes`: several quotes, one shown at random on each visit. The build writes the first, so
  *   a page without script shows that one.
  * - `pullNext`: the element after the band rises over it faster than the page scrolls for the
@@ -117,8 +118,17 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
         const reduce =
           matchMedia("(prefers-reduced-motion: reduce)").matches ||
           document.documentElement.dataset.reduceMotion === "true";
-        // The element's place in the layout, not where a pull-in animation is drawing it now.
-        const top = this.offsetTop + this.offsetHeight;
+        // The element's own place in the layout (with pullNext it starts 40svh up, over the band),
+        // not where the pull-in animation is drawing it now; by then that animation has all but
+        // finished. Less the TopNav that stays over the page (fixed in overlay mode), so the nav
+        // does not cover the start.
+        let top = 0;
+        for (let element: HTMLElement | null = next; element; element = element.offsetParent as HTMLElement | null) {
+          top += element.offsetTop;
+        }
+        const nav = document.querySelector<HTMLElement>(".ds-nav");
+        const position = nav ? getComputedStyle(nav).position : "";
+        if (nav && (position === "fixed" || position === "sticky")) top -= nav.offsetHeight;
         window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
       });
     }
