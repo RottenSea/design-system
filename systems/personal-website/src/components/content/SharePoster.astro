@@ -46,7 +46,7 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
 <script>
   import QRCode from "qrcode";
-  import { fadeIn } from "../../scripts/theme";
+  import { fadeIn, themeStore } from "../../scripts/theme";
 
   interface Poster {
     title: string;
@@ -218,20 +218,20 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
     #drawn: Promise<void> | undefined;
     #queue: Promise<void> = Promise.resolve();
     #painted = false;
+    #unsubscribe: (() => void) | undefined;
 
     connectedCallback() {
       if (!this.hasAttribute("data-lazy")) this.draw();
-      // A poster already drawn follows the theme: the reader's choice on <html>, or the OS.
-      const again = () => {
-        if (!this.#drawn) return;
+      // A poster already drawn follows the theme, once for each change of it.
+      this.#unsubscribe = themeStore().subscribe((state, previous) => {
+        if (state.theme === previous.theme || !this.#drawn) return;
         this.#drawn = undefined;
         this.draw();
-      };
-      new MutationObserver(again).observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-theme"]
       });
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", again);
+    }
+
+    disconnectedCallback() {
+      this.#unsubscribe?.();
     }
 
     /** Draws the poster once; later calls wait for the same drawing. */

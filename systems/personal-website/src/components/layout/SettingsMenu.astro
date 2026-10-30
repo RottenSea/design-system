@@ -1,9 +1,10 @@
 ---
 /**
  * The display settings behind one round button: the theme, as Light, Dark or System, and Reduce
- * motion. A choice applies at once and is remembered in localStorage. It owns data-theme and
- * data-reduce-motion on <html>; every colour and every motion rule follows from those. A change
- * of theme fades every colour over --motion-entrance (setTheme in scripts/theme.ts). Put
+ * motion. A choice applies at once and is remembered in localStorage. The theme goes through the
+ * page's theme store (scripts/theme.ts), which writes data-theme and fades every colour over
+ * --motion-entrance; the panel shows the store's choice, whoever changed it. The menu owns
+ * data-reduce-motion on <html>. Every colour and every motion rule follows from those two. Put
  * ThemeScript, with the same keys, in the <head> so both are set before the first paint.
  *
  * The handoff has ThemeToggle and a site-level reduced-motion switch but no panel; this one is
@@ -64,7 +65,7 @@ const {
 </ds-settings>
 
 <script>
-  import { setTheme } from "../../scripts/theme";
+  import { type ThemePreference, themeStore } from "../../scripts/theme";
 
   type Selectable = HTMLElement & { select(value: string | null): void };
   type Toggle = HTMLElement & { checked: boolean; disabled: boolean };
@@ -87,45 +88,33 @@ const {
 
   class DsSettings extends HTMLElement {
     connectedCallback() {
-      const themeKey = this.dataset.storageKey ?? "ds-theme";
+      const store = themeStore(this.dataset.storageKey);
       const motionKey = this.dataset.motionKey ?? "ds-reduce-motion";
       const root = document.documentElement;
-      const dark = matchMedia("(prefers-color-scheme: dark)");
       const calm = matchMedia("(prefers-reduced-motion: reduce)");
       const theme = this.querySelector<Selectable>(".ds-settings__theme");
       const motion = this.querySelector<Toggle>(".ds-settings__motion");
       const button = this.querySelector<HTMLButtonElement>("button[popovertarget]");
       const panel = this.querySelector<HTMLElement>("[popover]");
 
-      const chosenTheme = () => {
-        const saved = read(themeKey);
-        return saved === "light" || saved === "dark" ? saved : "system";
-      };
-      const applyTheme = () => {
-        const choice = chosenTheme();
-        setTheme(choice === "system" ? (dark.matches ? "dark" : "light") : choice);
-      };
       const showMotion = () => {
         if (!motion) return;
         motion.disabled = calm.matches;
         motion.checked = calm.matches || read(motionKey) === "true";
       };
 
-      theme?.select(chosenTheme());
+      theme?.select(store.get().preference);
       showMotion();
       theme?.addEventListener("ds-change", (event) => {
-        const value = (event as CustomEvent<string>).detail;
-        write(themeKey, value === "system" ? null : value);
-        applyTheme();
+        store.set((event as CustomEvent<ThemePreference>).detail);
       });
+      // A ThemeToggle, another tab or the OS can change the theme too.
+      store.subscribe((state) => theme?.select(state.preference));
       motion?.addEventListener("ds-change", (event) => {
         const on = (event as CustomEvent<boolean>).detail;
         write(motionKey, on ? "true" : null);
         if (on) root.dataset.reduceMotion = "true";
         else delete root.dataset.reduceMotion;
-      });
-      dark.addEventListener("change", () => {
-        if (chosenTheme() === "system") applyTheme();
       });
       calm.addEventListener("change", showMotion);
 

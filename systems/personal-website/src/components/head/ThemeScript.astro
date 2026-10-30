@@ -27,5 +27,7 @@ const { storageKey = "ds-theme", motionKey = "ds-reduce-motion" } = Astro.props;
   } catch {}
   if (theme !== "light" && theme !== "dark") theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.dataset.theme = theme;
+  // The theme store (scripts/theme.ts) keeps the choice under the same key.
+  document.documentElement.dataset.themeKey = key;
   if (calm === "true") document.documentElement.dataset.reduceMotion = "true";
 </script>

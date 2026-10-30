@@ -115,7 +115,7 @@
   }
 
   /*
-   * A change of theme. setTheme (scripts/theme.ts) marks <html> with data-theme-fade for
+   * A change of theme. The theme store (scripts/theme.ts) marks <html> with data-theme-fade for
    * --motion-entrance, and meanwhile every element fades its colours over that time in place of
    * its own transitions, so the whole page changes together: a hover tint would otherwise go at
    * its own pace while the rest jumped. Reduced motion never sets the mark.

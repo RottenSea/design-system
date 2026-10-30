@@ -28,9 +28,21 @@ There is no scroll-triggered reveal, no parallax and no skeleton shimmer. A chan
 
 ## Changing the theme
 
-Every change of theme fades every colour on the page together, over `--motion-entrance` with `--ease-move`: ThemeToggle, SettingsMenu, and the OS switching while a page follows it. `setTheme` from `@rottensea/ds-personal-website/scripts/theme` sets `data-theme` and marks `<html>` with `data-theme-fade` for that time; while the mark is there, `base.css` gives every element the same colour transition in place of its own, so a button's hover tint does not run at its own pace. A script that changes the theme some other way calls `setTheme` too.
+The theme is one store per page, `themeStore()` from `@rottensea/ds-personal-website/scripts/theme`, and only the store changes it. It holds the reader's choice (light, dark or system) and the theme in use, and it writes `data-theme`, the choice in localStorage, and the fade. It follows the OS while the choice is system, and other tabs of the site as they change the choice. ThemeToggle and SettingsMenu ask for a change with `set()`; SettingsMenu, Mermaid and SharePoster hear of one with `subscribe()`, so the panel always shows the current choice and a diagram draws again once for each real change.
 
-What a script draws is not a CSS colour. Mermaid diagrams and SharePoster draw again in the new theme and fade the new drawing in over the old one with `fadeIn`, from the same module.
+```ts
+import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
+
+const theme = themeStore();
+theme.set("dark");
+theme.subscribe((state, previous) => {
+  if (state.theme !== previous.theme) redraw();
+});
+```
+
+Every change fades every colour on the page together, over `--motion-entrance` with `--ease-move`. The store marks `<html>` with `data-theme-fade` for that time; while the mark is there, `base.css` gives every element the same colour transition in place of its own, so a button's hover tint does not run at its own pace. What a script draws is not a CSS colour: Mermaid diagrams and SharePoster draw again in the new theme and fade the new drawing in over the old one with `fadeIn`, from the same module.
+
+A script that writes `data-theme` itself is still taken as a change, faded and passed to the subscribers, with a warning in development. Its fade can come too late if it reads styles straight after writing, so `set()` is the way.
 
 ## Reduced motion
 

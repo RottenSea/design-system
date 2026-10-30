@@ -27,7 +27,8 @@ const Wrapper = bare ? "div" : "main";
     <Fonts />
     {/*
       Takes the docs page's theme before the first paint. The docs page and the example share an
-      origin, so the parent's data-theme can be read directly; Example.astro keeps it in sync.
+      origin, so the parent's data-theme can be read directly. Later changes come through the theme
+      store below, under Starlight's key.
 
       It also sizes the iframe to the content from here, starting while the page is still being
       parsed, instead of waiting for the load event, which in development comes only after every
@@ -38,6 +39,7 @@ const Wrapper = bare ? "div" : "main";
     */}
     <script is:inline>
       const root = document.documentElement;
+      root.dataset.themeKey = "starlight-theme";
       if (window.parent !== window) {
         try {
           root.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -46,7 +48,7 @@ const Wrapper = bare ? "div" : "main";
         }
       } else {
         // Opened on its own ("Open at 1280px"): the theme picked on the docs site, which Starlight
-        // keeps in localStorage, or else the OS setting. The script after </head> follows changes.
+        // keeps in localStorage, or else the OS setting.
         let picked = "";
         try {
           picked = localStorage.getItem("starlight-theme") ?? "";
@@ -86,22 +88,11 @@ const Wrapper = bare ? "div" : "main";
 </html>
 
 <script>
-  import { setTheme } from "@rottensea/ds-personal-website/scripts/theme";
+  import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
 
-  // Opened on its own, the page follows the docs site's choice and the OS as either changes, with
-  // the system's colour fade. In an iframe, Example.astro does this from the docs page.
-  if (window.parent === window) {
-    const system = matchMedia("(prefers-color-scheme: dark)");
-    const follow = () => {
-      let picked: string | null = null;
-      try {
-        picked = localStorage.getItem("starlight-theme");
-      } catch {}
-      setTheme(picked === "light" || picked === "dark" ? picked : system.matches ? "dark" : "light");
-    };
-    system.addEventListener("change", follow);
-    window.addEventListener("storage", follow);
-  }
+  // The example follows the docs site, in a frame or on its own: a choice made there arrives as a
+  // storage event under Starlight's key, and the OS is followed while the choice is Auto.
+  themeStore();
 </script>
 
 <style>

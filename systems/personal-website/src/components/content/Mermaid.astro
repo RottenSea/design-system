@@ -32,7 +32,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 </DiagramFrame>
 
 <script>
-  import { fadeIn } from "../../scripts/theme";
+  import { fadeIn, themeStore } from "../../scripts/theme";
   type Mermaid = (typeof import("mermaid"))["default"];
 
   let library: Promise<Mermaid> | undefined;
@@ -62,18 +62,19 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 
   class DsMermaid extends HTMLElement {
     #code = "";
-    #observer: MutationObserver | undefined;
+    #unsubscribe: (() => void) | undefined;
 
     connectedCallback() {
       this.#code = this.querySelector("pre")?.textContent ?? "";
       if (!this.#code.trim()) return;
       this.#draw();
-      this.#observer = new MutationObserver(() => this.#draw());
-      this.#observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      this.#unsubscribe = themeStore().subscribe((state, previous) => {
+        if (state.theme !== previous.theme) this.#draw();
+      });
     }
 
     disconnectedCallback() {
-      this.#observer?.disconnect();
+      this.#unsubscribe?.();
     }
 
     #draw() {

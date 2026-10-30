@@ -1,0 +1,37 @@
+---
+/**
+ * Starlight's theme select, handed to the personal-website system's theme store, so the docs site
+ * changes theme the way the system's pages do: one place writes data-theme and the choice, and
+ * every colour fades over the same 350ms (custom.css). The store keeps the choice under
+ * Starlight's own key, with Auto as "system", so Starlight's head script still sets the theme
+ * before the first paint, and the example iframes hear each change as a storage event.
+ *
+ * Starlight's script listens for change on its select; a listener on the document in the capture
+ * phase runs first and stops it, then the store applies the choice and the pickers show it.
+ */
+import Default from "@astrojs/starlight/components/ThemeSelect.astro";
+---
+
+<Default />
+
+<script>
+  import { type ThemePreference, themeStore } from "@rottensea/ds-personal-website/scripts/theme";
+
+  declare const StarlightThemeProvider: { updatePickers(theme?: string): void };
+
+  const store = themeStore("starlight-theme");
+  const picked = (value: string): ThemePreference => (value === "light" || value === "dark" ? value : "system");
+
+  document.addEventListener(
+    "change",
+    (event) => {
+      const select = event.target;
+      if (!(select instanceof HTMLSelectElement) || !select.closest("starlight-theme-select")) return;
+      event.stopImmediatePropagation();
+      store.set(picked(select.value));
+    },
+    { capture: true }
+  );
+  // Both pickers (the header's and the mobile menu's) show the choice, whoever made it.
+  store.subscribe((state) => StarlightThemeProvider.updatePickers(state.preference === "system" ? "auto" : state.preference));
+</script>

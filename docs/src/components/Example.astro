@@ -1,9 +1,9 @@
 ---
 /**
  * Shows a component example page in an iframe, so the example uses only the system's CSS. The
- * iframe follows the docs page's light or dark theme, with the system's colour fade; the example
- * page itself (ExampleLayout)
- * makes the iframe as tall as its content.
+ * example page (ExampleLayout) follows the docs site's theme through its own theme store, and
+ * makes the iframe as tall as its content. The browser tells the example of a change in
+ * localStorage only a moment later, so this page tells it at once, and both fade together.
  *
  *   <Example system="personal-website" name="admonition" title="Admonition variants" />
  *
@@ -51,23 +51,20 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 </ds-example>
 
 <script>
-  import { setTheme } from "@rottensea/ds-personal-website/scripts/theme";
+  import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
 
   class DsExample extends HTMLElement {
     connectedCallback() {
       const frame = this.querySelector("iframe");
       const stage = this.querySelector<HTMLElement>(".stage");
       if (!frame || !stage) return;
-      const syncTheme = () => {
-        const root = frame.contentDocument?.documentElement;
-        if (root) setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light", root);
-      };
-
-      new MutationObserver(syncTheme).observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-theme"]
+      // The store has already written the choice; the example's store reads it on a storage event.
+      // The browser's own event follows and finds nothing new.
+      const store = themeStore("starlight-theme");
+      store.subscribe(() => {
+        const view = frame.contentWindow as (Window & typeof globalThis) | null;
+        view?.dispatchEvent(new view.StorageEvent("storage", { key: store.key }));
       });
-
       const viewport = Number(this.dataset.viewport);
       if (!viewport) return;
       // The example page sets the iframe's height; the stage shrinks with the scale around it.

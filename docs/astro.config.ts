@@ -39,6 +39,8 @@ export default defineConfig({
     starlight({
       title: "Design Systems",
       customCss: ["./src/styles/custom.css"],
+      // The theme select goes through the system's theme store, so the docs site fades as its pages do.
+      components: { ThemeSelect: "./src/components/ThemeSelect.astro" },
       defaultLocale: "en",
       locales: {
         en: { label: "English" },

@@ -1,11 +1,10 @@
 ---
 /**
- * Switches the page between the light and the dark theme. It owns two things: the data-theme
- * attribute on <html> and one localStorage key. Every colour follows from the tokens, so no
- * other component needs to know the theme. The reader's choice is stored as "light" or "dark";
- * until there is one, the page follows the OS, including a change to it while the page is open.
- * Put ThemeScript in the <head> so the right theme is there before the first paint. A switch fades
- * every colour over --motion-entrance (setTheme in scripts/theme.ts).
+ * Switches the page between the light and the dark theme, through the page's theme store
+ * (scripts/theme.ts), which writes data-theme on <html>, remembers the choice as "light" or
+ * "dark", fades every colour over --motion-entrance, and until there is a choice follows the OS.
+ * Every colour follows from the tokens, so no other component needs to know the theme. Put
+ * ThemeScript in the <head> so the right theme is there before the first paint.
  *
  * Ported from the handoff's ThemeToggle.jsx, its icon form. The icon names what pressing it will
  * do: a sun in the dark theme, a moon in the light one. Both buttons are in the HTML and CSS
@@ -16,7 +15,7 @@
 import IconButton from "../buttons/IconButton.astro";
 
 interface Props {
-  /** The localStorage key; ThemeScript must read the same one. */
+  /** The localStorage key; ThemeScript must use the same one, and its key wins. */
   storageKey?: string;
   tone?: "canvas" | "dark";
   labels?: { light: string; dark: string };
@@ -37,32 +36,19 @@ const {
 </ds-theme-toggle>
 
 <script>
-  import { setTheme } from "../../scripts/theme";
+  import { themeStore } from "../../scripts/theme";
 
   class DsThemeToggle extends HTMLElement {
     connectedCallback() {
-      const key = this.dataset.storageKey ?? "ds-theme";
+      const store = themeStore(this.dataset.storageKey);
       for (const button of this.querySelectorAll<HTMLButtonElement>("[data-theme-to]")) {
         button.addEventListener("click", () => {
           const theme = button.dataset.themeTo === "dark" ? "dark" : "light";
-          setTheme(theme);
-          try {
-            localStorage.setItem(key, theme);
-          } catch {
-            // Private browsing can refuse storage; the theme still applies to this page.
-          }
+          store.set(theme);
           // The other button takes this one's place; keep the keyboard focus on it.
           this.querySelector<HTMLButtonElement>(`[data-theme-to="${theme === "dark" ? "light" : "dark"}"]`)?.focus();
         });
       }
-      // Until the reader picks a theme, follow the OS as it changes.
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
-        let saved: string | null = null;
-        try {
-          saved = localStorage.getItem(key);
-        } catch {}
-        if (saved !== "light" && saved !== "dark") setTheme(event.matches ? "dark" : "light");
-      });
     }
   }
 

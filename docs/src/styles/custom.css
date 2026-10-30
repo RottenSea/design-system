@@ -1,8 +1,40 @@
 /*
+ * The scrollbar's space is kept on every page, so a page does not shift sideways when the search
+ * dialog hides the scrollbar, or between a page that scrolls and one that does not.
+ */
+html {
+  scrollbar-gutter: stable;
+}
+
+/*
  * A table wider than the article scrolls sideways (Starlight makes it a scroll box) instead of
  * squeezing a column down to its longest word. Every cell keeps room for a few words; a cell that
  * holds a sentence, such as a description, sets a wider minimum of its own.
  */
 .sl-markdown-content :is(th, td) {
   min-width: 8rem;
+}
+
+/*
+ * A change of theme, as on the personal-website system's pages: the theme store (ThemeSelect.astro)
+ * marks <html> with data-theme-fade, and meanwhile every colour fades over the same time and curve.
+ * The two values are the system's --motion-entrance and --ease-move, which the store reads here.
+ */
+:root {
+  --motion-entrance: 350ms;
+  --ease-move: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-theme-fade],
+  [data-theme-fade] *,
+  [data-theme-fade] *::before,
+  [data-theme-fade] *::after {
+    transition-delay: 0s !important;
+    transition-duration: var(--motion-entrance) !important;
+    transition-property:
+      background-color, border-color, box-shadow, caret-color, color, column-rule-color, fill,
+      outline-color, scrollbar-color, stroke, text-decoration-color !important;
+    transition-timing-function: var(--ease-move) !important;
+  }
 }

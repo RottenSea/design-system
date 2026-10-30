@@ -28,9 +28,21 @@ import TokenTable from "../../../../components/TokenTable.astro";
 
 ## 切换主题
 
-不管从哪里切换主题，页面上所有颜色都一起过渡，用 `--motion-entrance` 和 `--ease-move`：ThemeToggle、SettingsMenu，还有页面跟随系统时系统自己切换。`@rottensea/ds-personal-website/scripts/theme` 里的 `setTheme` 设置 `data-theme`，同时在 `<html>` 上标记 `data-theme-fade`，持续这么久。标记在的时候，`base.css` 让每个元素都用同一个颜色过渡，替换它自己的，所以按钮悬停用的颜色过渡不会按自己的节奏走。用别的办法切换主题的脚本也要调用 `setTheme`。
+主题是每页一个的 store：`@rottensea/ds-personal-website/scripts/theme` 里的 `themeStore()`，只有它能改主题。它存着读者的选择（浅色、深色、跟随系统）和实际用的主题，由它写 `data-theme`、把选择存进 localStorage、加渐变。选择是跟随系统时它跟着系统变，网站的别的标签页改了选择时它也跟着变。ThemeToggle 和 SettingsMenu 用 `set()` 提出切换；SettingsMenu、Mermaid 和 SharePoster 用 `subscribe()` 订阅，所以面板上显示的总是当前的选择，主题真的变了图才重画，每次只画一次。
 
-脚本画出来的东西不是 CSS 颜色。Mermaid 图和 SharePoster 会按新主题重画，再用同一个模块里的 `fadeIn` 让新图在旧图上淡入。
+```ts
+import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
+
+const theme = themeStore();
+theme.set("dark");
+theme.subscribe((state, previous) => {
+  if (state.theme !== previous.theme) redraw();
+});
+```
+
+每次切换，页面上所有颜色都一起过渡，用 `--motion-entrance` 和 `--ease-move`。store 在 `<html>` 上标记 `data-theme-fade`，持续这么久。标记在的时候，`base.css` 让每个元素都用同一个颜色过渡，替换它自己的，所以按钮悬停用的颜色过渡不会按自己的节奏走。脚本画出来的东西不是 CSS 颜色：Mermaid 图和 SharePoster 会按新主题重画，再用同一个模块里的 `fadeIn` 让新图在旧图上淡入。
+
+脚本自己直接写 `data-theme` 时，store 照样当成一次切换，加渐变、通知订阅者，开发模式下在控制台提示。如果那段脚本写完马上读样式，渐变会来不及，所以正路是 `set()`。
 
 ## 减少动效
 

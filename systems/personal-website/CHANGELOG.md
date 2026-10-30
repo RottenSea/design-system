@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.1] - 2026-10-30
 
-This release fades the page's colours when the theme changes, adds SharePoster and the PostLicense mark, and fixes three components. A site that changes the theme with its own script should call the new `setTheme`; nothing else a site uses changes.
+This release fades the page's colours when the theme changes, adds SharePoster and the PostLicense mark, and fixes three components. A site that changes the theme with its own script should use the new theme store; nothing else a site uses changes.
 
 ### Added
 
-- A change of theme fades every colour on the page together over `--motion-entrance`, from ThemeToggle, SettingsMenu or the OS. `setTheme` and `fadeIn`, from the new `scripts/theme` export, do it for a site's own scripts; Mermaid diagrams and SharePoster fade their new drawing in over the old one. Components' own transitions, such as a button's hover tint, give way to the fade while it runs. With reduced motion the theme changes at once.
+- The theme store, `themeStore()` from the new `scripts/theme` export: one per page, and the only thing that changes the theme. It writes `data-theme` and the choice, follows the OS while the choice is system and other tabs as they change it, and components ask it with `set()` and hear from it with `subscribe()`. ThemeToggle, SettingsMenu, Mermaid and SharePoster use it, so SettingsMenu shows a choice made with ThemeToggle, and a diagram or poster draws again once for each real change. `ThemeScript` writes its key on `<html>` as `data-theme-key` for the store.
+- A change of theme fades every colour on the page together over `--motion-entrance`. Components' own transitions, such as a button's hover tint, give way to the fade while it runs; Mermaid diagrams and SharePoster fade their new drawing in over the old one with `fadeIn`. A script that writes `data-theme` itself still gets the fade, with a warning in development. With reduced motion the theme changes at once.
 - `SharePoster`, the poster from PostShare's dialog as a component of its own, which draws at once or, with `lazy`, when its `draw()` is called. It now takes the colours of the theme it sits in, and draws again when the theme changes; the QR code stays dark on a light tile.
 - `PostLicense` has a large Creative Commons mark behind its text at the right, as the Shirone theme's card does, with the Tabler icon `creative-commons`.
 
