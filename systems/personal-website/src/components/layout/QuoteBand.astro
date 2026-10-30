@@ -113,7 +113,9 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
     connectedCallback() {
       this.pick();
       this.querySelector("[data-ds-quote-hint]")?.addEventListener("click", () => {
-        const next = this.nextElementSibling as HTMLElement | null;
+        // Astro writes this component's script right after it in a built page; skip it.
+        let next = this.nextElementSibling as HTMLElement | null;
+        while (next?.matches("script, template, style")) next = next.nextElementSibling as HTMLElement | null;
         if (!next) return;
         const reduce =
           matchMedia("(prefers-reduced-motion: reduce)").matches ||
@@ -281,8 +283,13 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
    */
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
-      :global(:root:not([data-reduce-motion="true"])) .ds-quote-band[data-pull-next] + :global(*) {
-        animation: ds-quote-pull linear both;
+      /* The element after the band, or after the script Astro writes there in a built page. */
+      :global(:root:not([data-reduce-motion="true"])) .ds-quote-band[data-pull-next] + :global(:not(script)),
+      :global(:root:not([data-reduce-motion="true"])) .ds-quote-band[data-pull-next] + :global(script + *) {
+        /* Longhands only: given the `animation` shorthand, the build's minifier folds the timeline
+           into it, where browsers reject it, and the whole animation is lost. */
+        animation-fill-mode: both;
+        animation-name: ds-quote-pull;
         animation-range: 0 60svh;
         animation-timeline: scroll(root block);
         animation-timing-function: cubic-bezier(0.2, 0.8, 0.4, 1);

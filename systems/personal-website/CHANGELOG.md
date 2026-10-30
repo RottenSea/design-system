@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - QuoteBand's hint scrolls the content to just below a fixed or sticky TopNav, instead of under it. With `pullNext` it no longer goes past the start of the content by the 40svh the content is pulled up.
+- QuoteBand's `pullNext` works in a built page. The build's minifier folded the scroll timeline into the `animation` shorthand, where browsers reject it, so the content never rose; and in a built page the element after the band is the script Astro writes there, so the rise and the hint now skip a `<script>`.
 
 ## [0.7.1] - 2026-10-30
 
