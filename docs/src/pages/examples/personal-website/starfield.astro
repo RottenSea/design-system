@@ -1,0 +1,37 @@
+---
+import { Starfield } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Starfield" bare>
+  <section class="sky">
+    <Starfield position="absolute" />
+    <h1 class="ds-display-md">Field Notes</h1>
+    <p>The page's content sits over the sky and takes no part in it.</p>
+  </section>
+</ExampleLayout>
+
+<style>
+  .sky {
+    align-content: center;
+    background: var(--surface-canvas);
+    display: grid;
+    gap: var(--space-sm);
+    min-height: 360px;
+    padding: var(--space-xl);
+    position: relative;
+    text-align: center;
+  }
+
+  h1 {
+    color: var(--text-ink);
+    margin: 0;
+    position: relative;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin: 0;
+    position: relative;
+  }
+</style>

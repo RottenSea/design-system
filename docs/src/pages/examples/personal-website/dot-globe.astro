@@ -1,0 +1,30 @@
+---
+import { DotGlobe } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="DotGlobe" bare>
+  <section class="globe">
+    <DotGlobe position="absolute" />
+    <h1 class="ds-display-lg">Rainbow Stone</h1>
+  </section>
+</ExampleLayout>
+
+<style>
+  .globe {
+    background: var(--surface-canvas);
+    min-height: 560px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  h1 {
+    color: var(--text-ink);
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 34%;
+  }
+</style>

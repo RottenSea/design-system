@@ -1,0 +1,71 @@
+---
+title: DotGlobe
+description: A globe of dots that turns slowly, rising from the bottom of a page.
+sidebar:
+  order: 9
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A globe made of dots, one on every 1.7° of land, turning slowly on the Earth's tilt. Only its top rises above the bottom edge, with a soft glow at its rim, and stars drift around it.
+
+<Example system="personal-website" name="dot-globe" title="DotGlobe under a site's name" viewport={1280} />
+
+## When to use
+
+As the background of a page that is one screen and a way in, such as a landing page. It draws a lot more than Starfield, so not behind a page people read.
+
+## On a page
+
+```astro
+<body>
+  <DotGlobe />
+  <main>
+    <h1>Rainbow Stone</h1>
+    <nav>…</nav>
+  </main>
+</body>
+```
+
+Like Starfield, it is fixed to the window under everything else, or with `position="absolute"` fills its nearest positioned ancestor.
+
+## Anatomy
+
+One `<canvas>`: the stars, then the glow, then the dots. The globe's radius is 62% of the shorter side, and its centre is `drop` radii below the bottom edge. Dots on the near side are solid and fade to a fifth over the limb, so the far side shows through faintly. No stars are drawn over the globe's face.
+
+## Where the land comes from
+
+The page never loads a map. When the site is built, the component lays the dots on an even lattice over the whole sphere and tests each one against Natural Earth's 1:110m coastlines from [world-atlas](https://github.com/topojson/world-atlas). The page gets the lattice's size and one bit per dot, about 2 KB, and rebuilds the land dots from them. At the default spacing this takes a quarter of a second once per build, and a second globe with the same spacing reuses it.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `period` | Seconds for one turn, and for a star at full depth to cross the width; `140` by default |
+| `spacing` | Degrees between neighbouring dots; `1.7` by default. Smaller is denser and slower to build |
+| `drop` | How far below the bottom edge the centre sits, in radii; `0.6` by default shows about the top 40% |
+| `stars` | Whether stars drift around the globe; on by default |
+| `position` | `fixed` (default) or `absolute` |
+
+| Custom property | Light | Dark |
+| --- | --- | --- |
+| `--ds-globe-dot` | `--coral-500` | `--coral-700` |
+| `--ds-globe-halo` | `--coral-500` | `--coral-700` |
+| `--ds-sky-star` | `--accent-teal` | `--accent-teal` |
+| `--ds-sky-star-strength` | `1.6` | `1` |
+
+## Motion
+
+The same as Starfield's: it moves while on screen, holds still with reduced motion, and changes colour over the page's fade on a theme change.
+
+## Accessibility
+
+Decoration only: the element is `aria-hidden` and takes no clicks. Put the page's text above the globe, where the dots do not reach.
+
+## API
+
+[`DotGlobe.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/DotGlobe.astro), with the drawing in [`sky.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/sky.ts) and the land in [`land.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/land.ts). Not a handoff component: the handoff's Rainbow Stone page drew it itself, loading d3, topojson and the map in the browser. The numbers are the handoff's; the colours come from tokens, and the light theme is new.
+
+## Related
+
+[Starfield](../starfield/), the stars alone.

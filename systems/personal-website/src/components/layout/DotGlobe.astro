@@ -1,0 +1,133 @@
+---
+/**
+ * A globe made of dots that turns slowly on a tilted axis, rising from the bottom edge, with a
+ * soft glow at its rim and a starfield around it. Only the land is dotted, and which dots are
+ * land is worked out when the site is built (land.ts), so the page loads no map and no mapping
+ * library: it gets the lattice's size and one bit per point. By default it is fixed to the window,
+ * under everything else on the page; with position="absolute" it fills its nearest positioned
+ * ancestor instead.
+ *
+ * Coral dots and glow and teal stars, as in the handoff; the light theme uses the brighter coral
+ * so the dots hold up on cream. Set --ds-globe-dot, --ds-globe-halo, --ds-sky-star and
+ * --ds-sky-star-strength to change them; on a theme change they move to the new theme's over the
+ * page's fade. With reduced motion, in the OS or data-reduce-motion="true", it holds still. It is
+ * decoration: hidden from screen readers, and it takes no clicks.
+ *
+ * From the handoff's Rainbow Stone page, where it was drawn by the page from a map it fetched.
+ */
+import { landMask } from "./land";
+
+interface Props {
+  /** Seconds for one turn, and for a star at full depth to cross the width; 140 by default. */
+  period?: number;
+  /** Degrees between neighbouring dots; the handoff's 1.7 by default. */
+  spacing?: number;
+  /** How far below the bottom edge the centre sits, in radii: 0.6 shows about the top 40%. */
+  drop?: number;
+  /** Whether stars drift around the globe; on by default. */
+  stars?: boolean;
+  /** "fixed" (default) covers the window; "absolute" fills the nearest positioned ancestor. */
+  position?: "fixed" | "absolute";
+  class?: string;
+}
+
+const {
+  period = 140,
+  spacing = 1.7,
+  drop = 0.6,
+  stars = true,
+  position = "fixed",
+  class: className
+} = Astro.props;
+const { count, bits } = landMask(spacing);
+---
+
+<ds-dot-globe
+  class:list={["ds-globe", `ds-globe--${position}`, className]}
+  data-period={period}
+  data-drop={drop}
+  data-stars={stars ? "" : undefined}
+  data-count={count}
+  data-land={bits}
+  aria-hidden="true"
+>
+  <canvas></canvas>
+</ds-dot-globe>
+
+<script>
+  import { drawGlobe, drawStars, globeFor, landPoints, makeStars, runSky, type Star } from "./sky";
+
+  class DsDotGlobe extends HTMLElement {
+    #stop: (() => void) | undefined;
+
+    connectedCallback() {
+      const canvas = this.querySelector("canvas");
+      if (!canvas) return;
+      const period = Number(this.dataset.period) || 140;
+      const drop = this.dataset.drop ? Number(this.dataset.drop) : 0.6;
+      const withStars = this.dataset.stars !== undefined;
+      const points = landPoints(Number(this.dataset.count), this.dataset.land ?? "");
+      let stars: Star[] = [];
+      let globe = globeFor(1, 1, drop);
+      const strength = () =>
+        Number.parseFloat(getComputedStyle(this).getPropertyValue("--ds-sky-star-strength")) || 1;
+      let factor = strength();
+      this.#stop = runSky(this, canvas, {
+        colors: ["--ds-globe-dot", "--ds-globe-halo", "--ds-sky-star"],
+        resize: (width, height) => {
+          globe = globeFor(width, height, drop);
+          stars = withStars ? makeStars(width, height) : [];
+          factor = strength();
+        },
+        draw: (ctx, t, [dot, halo, star], width, height) => {
+          // No stars over the globe's face.
+          const { cx, cy, radius } = globe;
+          const behind = (x: number, y: number) => Math.hypot(x - cx, y - cy) < radius * 1.02;
+          drawStars(ctx, stars, t, { width, height, period }, star, factor, behind);
+          drawGlobe(ctx, points, t, globe, period, dot, halo);
+        }
+      });
+    }
+
+    disconnectedCallback() {
+      this.#stop?.();
+    }
+  }
+
+  if (!customElements.get("ds-dot-globe")) customElements.define("ds-dot-globe", DsDotGlobe);
+</script>
+
+<style>
+  ds-dot-globe {
+    --ds-globe-dot: var(--coral-500);
+    --ds-globe-halo: var(--coral-500);
+    --ds-sky-star: var(--accent-teal);
+    --ds-sky-star-strength: 1.6;
+    display: block;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  :global([data-theme="dark"]) ds-dot-globe {
+    --ds-globe-dot: var(--coral-700);
+    --ds-globe-halo: var(--coral-700);
+    --ds-sky-star-strength: 1;
+  }
+
+  /* Under the page's content, as Starfield is. */
+  .ds-globe--fixed {
+    position: fixed;
+    z-index: -1;
+  }
+
+  .ds-globe--absolute {
+    position: absolute;
+  }
+
+  canvas {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+</style>

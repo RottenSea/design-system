@@ -1,0 +1,71 @@
+---
+title: DotGlobe 点阵地球
+description: 从页面底部升起、缓慢自转的点阵地球。
+sidebar:
+  order: 9
+---
+
+import Example from "../../../../../components/Example.astro";
+
+一个由点组成的地球，陆地上每 1.7° 一个点，按地轴的倾角慢慢转。只有上半部分露出页面底边，边缘有一圈柔光，周围有星星漂移。
+
+<Example system="personal-website" name="dot-globe" title="网站名下面的点阵地球" viewport={1280} />
+
+## 什么时候用
+
+当只有一屏、用来进入别处的页面的背景，比如入口页。它画的东西比 Starfield 多得多，不要放在要阅读的页面后面。
+
+## 页面里怎么写
+
+```astro
+<body>
+  <DotGlobe />
+  <main>
+    <h1>Rainbow Stone</h1>
+    <nav>…</nav>
+  </main>
+</body>
+```
+
+和 Starfield 一样，它固定在窗口上、压在所有内容下面；写 `position="absolute"` 时改成填满最近的定位祖先。
+
+## 结构
+
+一个 `<canvas>`，先画星星，再画柔光，最后画点。地球半径是窗口短边的 62%，球心在底边下面 `drop` 个半径处。朝向读者的一面点是实的，越过边缘后淡到五分之一，所以背面隐约透出来。地球正面不画星星。
+
+## 陆地从哪来
+
+页面不加载地图。构建网站时，组件把点均匀地铺满整个球面，逐个拿去和 [world-atlas](https://github.com/topojson/world-atlas) 里 Natural Earth 1:110m 的海岸线比，看在不在陆地上。页面只拿到点的总数和每个点一位的标记，大约 2 KB，再从中还原出陆地上的点。默认间距下每次构建只算一次，约四分之一秒；同样间距的第二个地球直接复用。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `period` | 转一圈要几秒，也是最近的星星横穿宽度的秒数，默认 `140` |
+| `spacing` | 相邻两个点相隔几度，默认 `1.7`。越小越密，构建越慢 |
+| `drop` | 球心在底边下面几个半径，默认 `0.6`，大约露出上面 40% |
+| `stars` | 周围有没有星星，默认有 |
+| `position` | `fixed`（默认）或 `absolute` |
+
+| 自定义属性 | 浅色 | 深色 |
+| --- | --- | --- |
+| `--ds-globe-dot` | `--coral-500` | `--coral-700` |
+| `--ds-globe-halo` | `--coral-500` | `--coral-700` |
+| `--ds-sky-star` | `--accent-teal` | `--accent-teal` |
+| `--ds-sky-star-strength` | `1.6` | `1` |
+
+## 动效
+
+和 Starfield 一样：在屏幕上时动，减少动效时停下，切换主题时颜色跟着页面一起渐变。
+
+## 无障碍
+
+只是装饰：元素带 `aria-hidden`，也不接收点击。页面的文字放在地球上方，点够不到的地方。
+
+## API
+
+[`DotGlobe.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/DotGlobe.astro)，画法在 [`sky.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/sky.ts)，陆地在 [`land.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/land.ts)。交付包里没有这个组件：Rainbow Stone 页面自己画，在浏览器里加载 d3、topojson 和地图。数值照交付包，颜色改用 token，浅色主题是新加的。
+
+## 相关
+
+[Starfield](../starfield/)，只有星星。

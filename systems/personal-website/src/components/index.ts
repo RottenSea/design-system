@@ -48,6 +48,7 @@ import Fonts from "./head/Fonts.astro";
 import ThemeScript from "./head/ThemeScript.astro";
 import ContentGrid from "./layout/ContentGrid.astro";
 import FloatingControls from "./layout/FloatingControls.astro";
+import DotGlobe from "./layout/DotGlobe.astro";
 import Footer from "./layout/Footer.astro";
 import MenuPanel from "./layout/MenuPanel.astro";
 import NavDrawer from "./layout/NavDrawer.astro";
@@ -55,6 +56,7 @@ import QuoteBand from "./layout/QuoteBand.astro";
 import SearchPanel from "./layout/SearchPanel.astro";
 import SettingsMenu from "./layout/SettingsMenu.astro";
 import SkipLink from "./layout/SkipLink.astro";
+import Starfield from "./layout/Starfield.astro";
 import ThemeToggle from "./layout/ThemeToggle.astro";
 import TocButton from "./layout/TocButton.astro";
 import TopNav from "./layout/TopNav.astro";
@@ -76,6 +78,7 @@ export {
   ContentGrid,
   DiagramFrame,
   Dialog,
+  DotGlobe,
   Field,
   Fields,
   Figure,
@@ -112,6 +115,7 @@ export {
   SkipLink,
   Snackbar,
   Spoiler,
+  Starfield,
   StatList,
   Step,
   Steps,

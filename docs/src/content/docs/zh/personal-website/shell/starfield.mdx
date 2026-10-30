@@ -1,0 +1,63 @@
+---
+title: Starfield 星空
+description: 页面后面慢慢漂移、闪烁的小星星。
+sidebar:
+  order: 8
+---
+
+import Example from "../../../../../components/Example.astro";
+
+页面背后的一片小星星。它们慢慢往一侧漂，近的大一些、亮一些、快一些，每颗都按自己的节奏闪。
+
+<Example system="personal-website" name="starfield" title="标题后面的星空" viewport={1280} />
+
+## 什么时候用
+
+一页一个，当整页的背景。不要放进卡片，也不要放在会滚过去的区块里。
+
+## 页面里怎么写
+
+```astro
+<body>
+  <Starfield />
+  <TopNav … />
+  <main>…</main>
+</body>
+```
+
+它固定在窗口上，压在所有内容下面，内容不用自己写 `z-index`。系统的 `base.css` 已经把画布色铺在整页最底下；页面如果再给 `<html>` 加背景，就会把星空盖住。有自己底色的区域（比如卡片）会挡住后面的星星。
+
+写 `position="absolute"` 时，它改成填满最近的定位祖先，上面的示例就是这样。
+
+## 结构
+
+一个和窗口一样大的 `<canvas>`，按屏幕分辨率画，最多两倍 CSS 像素。每 5000 平方像素一颗星，每次的位置都一样，所以窗口变大变小时图案不变。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `period` | 最近的星星横穿整个宽度要几秒，默认 `140` |
+| `area` | 每多少平方像素一颗星，默认 `5000` |
+| `position` | `fixed`（默认）或 `absolute` |
+
+| 自定义属性 | 默认值 |
+| --- | --- |
+| `--ds-sky-star` | `--accent-teal` |
+| `--ds-sky-star-strength` | 浅色主题 `1.6`，让星星在奶油色底上看得见；深色 `1` |
+
+## 动效
+
+星空在屏幕上时一直在动，不在屏幕上时停下。打开减少动效（系统设置或 `data-reduce-motion="true"`）时停在一帧上，关掉后从那里接着动。切换主题时，星星的颜色跟着页面一起渐变。
+
+## 无障碍
+
+只是装饰：元素带 `aria-hidden`，也不接收点击。星星很淡，上面的文字对比度不受影响。
+
+## API
+
+[`Starfield.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Starfield.astro)，画法在 [`sky.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/sky.ts)。交付包里没有这个组件：The Key of Urala 和 Rainbow Stone 两个页面各自画星空。数值照交付包，颜色改用 token，浅色主题是新加的。
+
+## 相关
+
+[DotGlobe](../dot-globe/)，在地球周围画同样的星星。

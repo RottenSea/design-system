@@ -1,0 +1,63 @@
+---
+title: Starfield
+description: Small stars that drift and twinkle behind a page.
+sidebar:
+  order: 8
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A sky of small stars behind the page. They drift slowly sideways, the nearer ones larger, brighter and faster, and each one twinkles on its own.
+
+<Example system="personal-website" name="starfield" title="Starfield behind a heading" viewport={1280} />
+
+## When to use
+
+Once per page, as its background. Not inside a card or a section that scrolls past.
+
+## On a page
+
+```astro
+<body>
+  <Starfield />
+  <TopNav … />
+  <main>…</main>
+</body>
+```
+
+It is fixed to the window and sits under everything else, so the content needs no `z-index` of its own. The system's `base.css` already paints the canvas colour under the whole page; a page that also gives `<html>` a background covers the sky with it. Surfaces with their own background, such as cards, cover the stars behind them.
+
+With `position="absolute"` it fills its nearest positioned ancestor instead, as in the example above.
+
+## Anatomy
+
+One `<canvas>` the size of the window, drawn at the screen's resolution up to twice the CSS pixels. There is a star for every 5000 square pixels, placed the same way every time, so a resize keeps the pattern.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `period` | Seconds a star at full depth takes to cross the width; `140` by default |
+| `area` | One star per this many square pixels; `5000` by default |
+| `position` | `fixed` (default) or `absolute` |
+
+| Custom property | Default |
+| --- | --- |
+| `--ds-sky-star` | `--accent-teal` |
+| `--ds-sky-star-strength` | `1.6` in the light theme, so the stars show on cream; `1` in the dark |
+
+## Motion
+
+The stars move all the time the sky is on screen, and stop when it is not. With reduced motion, in the OS or `data-reduce-motion="true"`, it holds still on one frame and moves on from there when motion comes back. On a theme change the stars change colour over the page's fade.
+
+## Accessibility
+
+Decoration only: the element is `aria-hidden` and takes no clicks. The stars are faint enough that text over them keeps its contrast.
+
+## API
+
+[`Starfield.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Starfield.astro), with the drawing in [`sky.ts`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/sky.ts). Not a handoff component: the handoff's The Key of Urala and Rainbow Stone pages each drew it themselves. The numbers are theirs; the colours come from tokens, and the light theme is new.
+
+## Related
+
+[DotGlobe](../dot-globe/), which draws the same stars around a globe.
