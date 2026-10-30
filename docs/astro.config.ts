@@ -14,11 +14,17 @@ const specPages = [
   ["writing", "Writing", "写作"]
 ] as const;
 
-// Served from the root of its own domain, a subdomain chosen when it is deployed; set `site` to
-// that address then. Every language has its own folder in src/content/docs/, so there is no page
-// at the root; it redirects to English.
+// Served by GitHub Pages at rottensea.github.io/design-system/, this repository's project site,
+// so every URL starts with the base. Links in pages are relative (../tokens/) or go through
+// import.meta.env.BASE_URL, never from the domain's root. Every language has its own folder in
+// src/content/docs/, so there is no page at the base; it redirects to English.
+const base = "/design-system";
+
 export default defineConfig({
-  redirects: { "/": "/en/" },
+  site: "https://rottensea.github.io",
+  base,
+  // A redirect's target is a URL as it is: Astro does not add the base to it.
+  redirects: { "/": `${base}/en/` },
   // The pages link to each other with relative paths such as ../tokens/, which only resolve from
   // an address that ends in a slash. With "always", every link Starlight writes ends in one,
   // including the site title's link to /en/.
