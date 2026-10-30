@@ -14,7 +14,7 @@ Read [Astro's guide](https://docs.astro.build/) or the [first section](#install-
 
 const processor = await createMarkdownProcessor({
   syntaxHighlight: false,
-  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://rottenth.cafe" }]]
+  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://article.rottenth.cafe" }]]
 });
 const { code } = await processor.render(markdown);
 ---
