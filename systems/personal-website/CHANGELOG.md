@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-10-30
+
 ### Fixed
 
 - QuoteBand's hint scrolls the content to just below a fixed or sticky TopNav, instead of under it. With `pullNext` it no longer goes past the start of the content by the 40svh the content is pulled up.
@@ -173,7 +175,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.1...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.2...HEAD
+[0.7.2]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.1...personal-website-v0.7.2
 [0.7.1]: https://github.com/RottenSea/design-system/compare/personal-website-v0.7.0...personal-website-v0.7.1
 [0.7.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.6.0...personal-website-v0.7.0
 [0.6.0]: https://github.com/RottenSea/design-system/compare/personal-website-v0.5.0...personal-website-v0.6.0
