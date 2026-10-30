@@ -47,3 +47,5 @@ theme.subscribe((state, previous) => {
 ## 减少动效
 
 两种情况下动效都缩短到 1ms：系统设置里的 `prefers-reduced-motion`，以及网站在 `<html>` 上设的 `data-reduce-motion="true"`。任何时候都可能开着其中一个，所以动效只用来确认操作，不单独传达信息。
+
+有两个背景在这两种情况下都照样在动：[Starfield](../shell/starfield/) 和 [DotGlobe](../shell/dot-globe/)。它们漂得又慢又匀，没有闪动和跳动，网站也希望它们一直是活的。

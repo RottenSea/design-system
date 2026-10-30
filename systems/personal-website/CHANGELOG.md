@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `Starfield`: small stars that drift and twinkle behind a page, fixed to the window under its content, or filling a positioned box with `position="absolute"`. From the handoff's The Key of Urala and Rainbow Stone pages.
 - `DotGlobe`: a globe of land dots turning slowly on the Earth's tilt, rising from the bottom of the window, with stars around it. From the handoff's Rainbow Stone page. Which dots are land is worked out at build time from Natural Earth's 1:110m coastlines (world-atlas), so the page loads no map and no mapping library.
-- Both follow the theme, with a light version that is new: the colours are custom properties set from tokens, and they move to the new theme's over the page's fade. Both hold still with reduced motion.
+- Both follow the theme, with a light version that is new: the colours are custom properties set from tokens, and they move to the new theme's over the page's fade. Both keep moving with reduced motion, which the rest of the system's motion does not: they are slow and even, and the site wants them so.
 
 ## [0.7.3] - 2026-10-30
 

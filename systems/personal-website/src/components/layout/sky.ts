@@ -195,22 +195,24 @@ export interface Sky {
 
 /**
  * Runs a sky on a canvas inside host: sizes it to the host at the screen's resolution (at most
- * 2×), draws a frame whenever the screen refreshes while the host is on screen, and holds still on
- * one frame when the reader asked for less motion. On a theme change the colours move to the new
- * theme's over the page's fade. Returns a function that stops it all.
+ * 2×), and draws a frame whenever the screen refreshes while the host is on screen. It keeps
+ * moving when the reader asked for less motion: the sky is slow and the site wants it so. On a
+ * theme change the colours move to the new theme's over the page's fade, or at once when the page's
+ * colours change at once. Returns a function that stops it all.
  */
 export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): () => void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
   const root = document.documentElement;
-  const calmQuery = matchMedia("(prefers-reduced-motion: reduce)");
-  const calm = () => calmQuery.matches || root.dataset.reduceMotion === "true";
+  // With reduced motion the page's colours change at once on a theme change, and so do the sky's.
+  const calm = () =>
+    matchMedia("(prefers-reduced-motion: reduce)").matches || root.dataset.reduceMotion === "true";
 
   let width = 0;
   let height = 0;
   let visible = true;
   let frame = 0;
-  // Time only moves while the sky does, so stopping and starting again picks up where it was.
+  // Time only moves while the sky is on screen, so it picks up where it was when it comes back.
   let elapsed = 0;
   let last: number | undefined;
 
@@ -241,12 +243,10 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
   const tick = (now: number) => {
     frame = 0;
     if (!visible) return;
-    if (!calm()) {
-      if (last !== undefined) elapsed += now - last;
-      last = now;
-    } else last = undefined;
+    if (last !== undefined) elapsed += now - last;
+    last = now;
     paint(now);
-    if (!calm() || tween) frame = requestAnimationFrame(tick);
+    frame = requestAnimationFrame(tick);
   };
   const wake = () => {
     if (!frame) frame = requestAnimationFrame(tick);
@@ -272,14 +272,6 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
   });
   watcher.observe(host);
 
-  const motion = () => {
-    last = undefined;
-    wake();
-  };
-  calmQuery.addEventListener("change", motion);
-  const attributes = new MutationObserver(motion);
-  attributes.observe(root, { attributes: true, attributeFilter: ["data-reduce-motion"] });
-
   const unsubscribe = themeStore().subscribe((state, previous) => {
     if (state.theme === previous.theme) return;
     const now = performance.now();
@@ -294,8 +286,6 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     cancelAnimationFrame(frame);
     resizer.disconnect();
     watcher.disconnect();
-    attributes.disconnect();
-    calmQuery.removeEventListener("change", motion);
     unsubscribe();
   };
 }
