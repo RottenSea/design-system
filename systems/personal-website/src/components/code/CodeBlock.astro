@@ -1,7 +1,8 @@
 ---
 /**
  * The code surface: dark warm navy by default, cream and hairline with tone="cream". The bar
- * carries the filename in the mono face, the language as an uppercase micro-label and a copy
+ * carries the filename in the mono face (without one, "Code Block", or "Terminal" for a shell
+ * language, in the sans face), the language as an uppercase micro-label and a copy
  * button that turns coral and reads "Copied" for 1.6s. Highlighted lines take a wash and a
  * coral gutter rule. Long lines scroll instead of wrapping, because indentation is information.
  *
@@ -29,6 +30,11 @@ interface Props {
   code?: string;
   /** Shown left in the bar, in the mono face: "tokens/motion.css". */
   filename?: string;
+  /**
+   * Shown in the bar when there is no filename: "Terminal" for a shell language and "Code Block"
+   * for any other by default; false shows nothing there.
+   */
+  label?: string | false;
   /** Uppercase language label right of the filename, and Shiki's language for `code`. */
   lang?: string;
   showLineNumbers?: boolean;
@@ -48,6 +54,7 @@ interface Props {
 const {
   code,
   filename,
+  label,
   lang,
   showLineNumbers = true,
   highlightLines = [],
@@ -72,6 +79,9 @@ const html =
         meta: { __raw: meta }
       });
 const hasBar = Boolean(filename || lang || copy);
+const SHELLS = new Set(["bash", "bat", "batch", "cmd", "console", "fish", "nu", "nushell", "powershell", "ps", "ps1", "pwsh", "sh", "shell", "shellscript", "shellsession", "zsh"]);
+const name =
+  filename ?? (label === false ? undefined : (label ?? (lang && SHELLS.has(lang.toLowerCase()) ? "Terminal" : "Code Block")));
 ---
 
 <ds-code-block data-copy={copy ? "" : undefined}>
@@ -90,7 +100,7 @@ const hasBar = Boolean(filename || lang || copy);
     {
       hasBar && (
         <div class="ds-code__bar">
-          <span class="ds-code__filename">{filename}</span>
+          <span class:list={["ds-code__filename", { "ds-code__filename--generic": !filename }]}>{name}</span>
           {lang && <span class="ds-code__lang">{lang}</span>}
           {copy && (
             <button type="button" class="ds-code__copy" aria-label="Copy code" data-ds-tap="cell">
@@ -235,6 +245,11 @@ const hasBar = Boolean(filename || lang || copy);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* A name for a block without a filename is not a path, so it is not in the mono face. */
+  .ds-code__filename--generic {
+    font-family: var(--font-sans);
   }
 
   .ds-code__lang {

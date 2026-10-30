@@ -1,6 +1,7 @@
 ---
 /**
- * On-this-page navigation for a post: the headings as links, h2 flush and h3 indented. The
+ * On-this-page navigation for a post: the headings as links, h2 flush and h3 indented, the mark
+ * as well as the text. The
  * heading being read is coral text with a 2px coral mark in the gutter, the one place coral marks
  * position rather than action. Everything else is muted. No fills, no pills: a contents list is a
  * list of links, and a filled current item would read as a selected tab.
@@ -125,8 +126,10 @@ const height = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
     transition: var(--transition-tint);
   }
 
+  /* The whole link moves in, so the current mark sits at the heading's level; the text lands
+     where padding alone would put it. */
   .ds-toc__link--sub {
-    padding-left: var(--space-md);
+    margin-left: calc(var(--space-md) - var(--space-xs));
   }
 
   .ds-toc__link:hover {

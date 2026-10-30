@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `ContentGrid` takes `mainWidth`: the main column keeps that width in the middle of the page, with the rails right beside it, as a post with its table of contents wants.
+- `CodeBlock` names a block without a filename: "Terminal" for a shell language and "Code Block" for any other, in the sans face. `label` gives another name, `label={false}` none; in a code group the tab names the block, so the name is hidden there.
+
+### Changed
+
+- `TocList` indents an h3's coral mark with its text, so the mark sits at the heading's level.
+
 ## [0.7.2] - 2026-10-30
 
 ### Fixed

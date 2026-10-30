@@ -12,6 +12,12 @@
  * contents list under the last paragraph is no use to a reader who got there. `keepRails` keeps
  * the right rail down to 768px. Pages declare these; they never write the media query.
  *
+ * `mainWidth` gives the main column that width and keeps it in the middle of the page, with the
+ * rails right beside it rather than at the container's edges, as a post with its table of
+ * contents wants. The grid then spans the page: each rail's track is at least the rail's width and
+ * grows with the space left over, so both sides match and the main column is centred whenever
+ * there is room for it; with less, the side without a rail gives way first.
+ *
  * Ported from the handoff's ContentGrid.jsx with the same props. The rails are named slots:
  *
  *   <ContentGrid stackRails="left">
@@ -36,6 +42,8 @@ interface Props {
   /** Which rails stay, stacked under the main column, below 768px. */
   stackRails?: "both" | "left" | "right" | "none";
   maxWidth?: string | number;
+  /** A length: the main column's width, kept in the middle of the page. A number is px. */
+  mainWidth?: string | number;
   class?: string;
 }
 
@@ -51,21 +59,30 @@ const {
   keepRails = false,
   stackRails = "both",
   maxWidth = "var(--container-max)",
+  mainWidth,
   class: className
 } = Astro.props;
 
 const hasLeft = Astro.slots.has("left");
 const hasRight = Astro.slots.has("right");
-const columns = [hasLeft ? px(leftWidth) : null, "minmax(0, 1fr)", hasRight ? px(rightWidth) : null]
-  .filter(Boolean)
-  .join(" ");
+const side = (has: boolean, width: string | number) => (has ? `minmax(${px(width)}, 1fr)` : "minmax(0, 1fr)");
+const columns = mainWidth
+  ? `${side(hasLeft, leftWidth)} minmax(0, ${px(mainWidth)}) ${side(hasRight, rightWidth)}`
+  : [hasLeft ? px(leftWidth) : null, "minmax(0, 1fr)", hasRight ? px(rightWidth) : null].filter(Boolean).join(" ");
+const narrow = mainWidth
+  ? `${side(hasLeft, leftWidth)} minmax(0, ${px(mainWidth)}) minmax(0, 1fr)`
+  : hasLeft
+    ? `${px(leftWidth)} minmax(0, 1fr)`
+    : "minmax(0, 1fr)";
 const style = [
   `--ds-cgrid-columns: ${columns}`,
-  `--ds-cgrid-narrow: ${hasLeft ? `${px(leftWidth)} minmax(0, 1fr)` : "minmax(0, 1fr)"}`,
+  `--ds-cgrid-narrow: ${narrow}`,
   `--ds-cgrid-gap: ${gap}`,
   `--ds-cgrid-rail-gap: ${railGap}`,
   `--ds-cgrid-sticky-top: ${stickyTop}`,
-  `--ds-cgrid-max: ${px(maxWidth)}`
+  `--ds-cgrid-max: ${mainWidth ? "none" : px(maxWidth)}`,
+  `--ds-cgrid-left: ${px(leftWidth)}`,
+  `--ds-cgrid-right: ${px(rightWidth)}`
 ].join("; ");
 const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
 ---
@@ -75,6 +92,7 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
   style={style}
   data-keep-rails={keepRails ? "" : undefined}
   data-stack-rails={stackRails === "both" ? undefined : stackRails}
+  data-centred={mainWidth ? "" : undefined}
 >
   {
     hasLeft && (
@@ -121,6 +139,23 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
     min-width: 0;
   }
 
+  /* mainWidth: three tracks always, the main column in the middle and each rail against it. */
+  .ds-cgrid[data-centred] > .ds-cgrid__main {
+    grid-column: 2;
+  }
+
+  .ds-cgrid[data-centred] > [data-rail="left"] {
+    grid-column: 1;
+    justify-self: end;
+    width: var(--ds-cgrid-left);
+  }
+
+  .ds-cgrid[data-centred] > [data-rail="right"] {
+    grid-column: 3;
+    justify-self: start;
+    width: var(--ds-cgrid-right);
+  }
+
   /* Only down to 769px: its :not() is more specific than the one-column rules below. */
   @media (min-width: 769px) and (max-width: 1080px) {
     .ds-cgrid:not([data-keep-rails]) {
@@ -144,6 +179,12 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
 
     .ds-cgrid > .ds-cgrid__main {
       order: 1;
+    }
+
+    .ds-cgrid[data-centred] > * {
+      grid-column: auto;
+      justify-self: stretch;
+      width: auto;
     }
 
     .ds-cgrid[data-stack-rails="left"] > [data-rail="right"],

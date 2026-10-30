@@ -223,6 +223,11 @@ const panels = html.replace(
     max-width: var(--container-reading);
   }
 
+  /* The tab names each block, so a block's own stand-in name ("Code Block") would only repeat it. */
+  .ds-option-group :global(.ds-code__filename--generic) {
+    visibility: hidden;
+  }
+
   .ds-option-group__head {
     align-items: center;
     display: flex;
