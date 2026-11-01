@@ -1,9 +1,14 @@
 ---
 /**
  * How many times a page has been viewed, from a Twikoo comment service, as one more part of a
- * PostMeta line: "· 128 views". Each page load asks the service once, and the service counts that
- * load, a reload included. The part stays hidden until the count arrives, so without JavaScript, or
- * when the service does not answer, the line simply ends one part sooner.
+ * PostMeta line: "· 128 views". A page load asks the service, and the service counts that load. The
+ * part stays hidden until the count arrives, so without JavaScript, or when the service does not
+ * answer, the line simply ends one part sooner.
+ *
+ * With `oncePerDay`, a browser counts each page once a day: the first load of the day asks the
+ * service and keeps the answer in localStorage, and later loads that day show the kept number
+ * without asking. Twikoo has no way to read a count without adding to it, so a page seen again
+ * the same day shows the count from that morning. The day is the reader's own.
  *
  * The handoff has no view count. It asks with the request Twikoo's own getVisitorsCount sends
  * (event COUNTER_GET), so the page does not load Twikoo's script just for the number.
@@ -19,12 +24,21 @@ interface Props {
   title?: string;
   /** Starts the part with a middot, as PostMeta's plain parts are joined. */
   dot?: boolean;
+  /** Counts each page once a day in a browser. */
+  oncePerDay?: boolean;
 }
 
-const { server, path, title, dot = true } = Astro.props;
+const { server, path, title, dot = true, oncePerDay = false } = Astro.props;
 ---
 
-<ds-view-count class="ds-view-count" data-server={server} data-path={path} data-title={title} hidden>
+<ds-view-count
+  class="ds-view-count"
+  data-server={server}
+  data-path={path}
+  data-title={title}
+  data-once-per-day={oncePerDay ? "" : undefined}
+  hidden
+>
   {
     dot && (
       <span class="ds-view-count__dot" aria-hidden="true">
@@ -36,11 +50,33 @@ const { server, path, title, dot = true } = Astro.props;
 </ds-view-count>
 
 <script>
+  /** Today in the reader's time zone, as 2026-11-01. */
+  const today = () => {
+    const now = new Date();
+    return [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+      .map((part) => String(part).padStart(2, "0"))
+      .join("-");
+  };
+
   class DsViewCount extends HTMLElement {
     async connectedCallback() {
       const { server, path, title } = this.dataset;
-      const label = this.querySelector("[data-ds-view-count-label]");
-      if (!server || !path || !label) return;
+      if (!server || !path) return;
+      const perDay = this.hasAttribute("data-once-per-day");
+      const key = `ds-view-count:${server}${path}`;
+
+      if (perDay) {
+        try {
+          const kept = JSON.parse(localStorage.getItem(key) ?? "null") as { day?: string; views?: number } | null;
+          if (kept?.day === today() && typeof kept.views === "number") {
+            this.show(kept.views);
+            return;
+          }
+        } catch {
+          // No storage, or something else under the key: count this load.
+        }
+      }
+
       try {
         const response = await fetch(server, {
           method: "POST",
@@ -57,11 +93,24 @@ const { server, path, title, dot = true } = Astro.props;
         if (typeof time !== "number") return;
         // Twikoo answers with the count before it adds this load.
         const views = time + 1;
-        label.textContent = `${views.toLocaleString("en")} ${views === 1 ? "view" : "views"}`;
-        this.hidden = false;
+        this.show(views);
+        if (perDay) {
+          try {
+            localStorage.setItem(key, JSON.stringify({ day: today(), views }));
+          } catch {
+            // Without storage every load counts.
+          }
+        }
       } catch {
         // The service did not answer: the line goes without the count.
       }
+    }
+
+    show(views: number) {
+      const label = this.querySelector("[data-ds-view-count-label]");
+      if (!label) return;
+      label.textContent = `${views.toLocaleString("en")} ${views === 1 ? "view" : "views"}`;
+      this.hidden = false;
     }
   }
 
