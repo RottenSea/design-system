@@ -19,6 +19,10 @@ type Props = Record<string, unknown> & {
 };
 
 const { src, alt = "", title, ...rest } = Astro.props;
+// A post's text is no wider than --container-reading (680px), so neither is a figure in it. With
+// several widths of the image built (Astro's `image.layout`), this lets the browser pick one for
+// that width rather than for the whole window.
+const sizes = "(min-width: 720px) 680px, 100vw";
 // The plugin's mark arrives as dataDsFigure from an imported image and as data-ds-figure from a
 // plain <img>, depending on which of Astro's paths the image took.
 const figure = "dataDsFigure" in rest || "data-ds-figure" in rest;
@@ -35,7 +39,7 @@ const poster = "dataDsPoster" in rest || "data-ds-poster" in rest;
       <Image src={src} alt="" />
     )
   ) : figure ? (
-    <Figure src={src} alt={alt} caption={title || undefined} />
+    <Figure src={src} alt={alt} caption={title || undefined} sizes={sizes} />
   ) : typeof src === "string" ? (
     <img src={src} alt={alt} title={title} loading="lazy" />
   ) : (

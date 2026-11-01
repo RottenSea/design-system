@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `MarkdownImage` gives a figure in a post `sizes="(min-width: 720px) 680px, 100vw"`, the width of the post's text. A site that builds several widths of each image (Astro's `image.layout`) then sends one sized for the text instead of for the whole window.
+
 ## [1.0.1] - 2026-11-01
 
 ### Added
