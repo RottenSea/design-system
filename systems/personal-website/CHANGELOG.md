@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- `ViewCount` takes `oncePerDay`: a browser counts each page once a day. The first load of the day asks the service and keeps the number in localStorage; later loads that day show the kept number.
-
 ## [1.0.1] - 2026-11-01
 
 ### Added

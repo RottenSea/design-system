@@ -43,7 +43,7 @@ ViewCount is one more part of the meta line, "128 views", after a middot, in the
 
 - Twikoo's script, 121 KB compressed, loads only when the comments come within 800px of the screen. Its own stylesheet is removed as it loads; every rule is in `comments.css`.
 - Without JavaScript the area says "Comments need JavaScript." If the script fails to load, it says "Comments couldn't load." If the service does not answer, Twikoo shows its own error in the area, on a card with a red edge.
-- ViewCount asks the service once per page load, and the service counts that load, a reload too. The number includes the load that asked. The part stays hidden until the answer arrives, and for good if none does. With `oncePerDay`, a browser counts each page once a day: the first load of the day asks and keeps the answer, and later loads that day show the kept number without asking, since Twikoo cannot read a count without adding to it.
+- ViewCount asks the service once per page load, and the service counts that load, a reload too. The number includes the load that asked. The part stays hidden until the answer arrives, and for good if none does.
 - What the form asks for, and whether the thread shows dislikes, the commenter's system and browser, an emoji panel or a CAPTCHA, are settings in Twikoo's admin panel, which slides over the comment area from the gear.
 
 ## Variants
@@ -57,7 +57,6 @@ ViewCount is one more part of the meta line, "128 views", after a middot, in the
 | ViewCount | `server`, `path` | As for Comments |
 | | `title` | The title Twikoo records with the count, the document's title by default |
 | | `dot` | Starts the part with a middot, `true` by default |
-| | `oncePerDay` | Counts each page once a day in a browser, `false` by default |
 
 ## Accessibility
 
