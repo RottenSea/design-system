@@ -1,0 +1,1253 @@
+/*
+ * Twikoo's comment area in the system's tokens, for Comments.astro. Twikoo builds this markup in the
+ * browser, so these rules are global, each under .ds-comments .twikoo, and use Twikoo's class names.
+ * Its own stylesheet is removed, so these rules also carry what it did beyond looks: which parts are
+ * hidden until opened (the admin panel, long comments and replies, the emoji panel), and where the
+ * overlays sit.
+ */
+
+.ds-comments .twikoo {
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  font-size: var(--body-md-size);
+  line-height: var(--body-md-lh);
+  position: relative;
+}
+
+/* The admin panel covers the comment area, so the area is tall enough for it while it is open. */
+.ds-comments .twikoo:has(.tk-admin.__show) {
+  min-height: 640px;
+}
+
+.ds-comments :where(.twikoo button, .twikoo input, .twikoo textarea, .twikoo select) {
+  color: inherit;
+  font: inherit;
+}
+
+.ds-comments :where(.twikoo button) {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Font Awesome glyphs, a square of the text's size in its colour. */
+.ds-comments .tk-icon {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 1em;
+  justify-content: center;
+  width: 1em;
+}
+
+.ds-comments .tk-icon svg {
+  fill: currentColor;
+  height: 100%;
+  width: 100%;
+}
+
+.ds-comments .tk-clickable {
+  cursor: pointer;
+}
+
+/* The form. */
+
+.ds-comments .tk-submit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Twikoo's placeholder portrait adds nothing beside a form that is about to be signed. */
+.ds-comments .tk-submit .tk-avatar {
+  display: none;
+}
+
+.ds-comments .tk-submit > .tk-row:first-child {
+  display: flex;
+}
+
+.ds-comments .tk-col {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.ds-comments .tk-meta-input {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.ds-comments .tk-input {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+.ds-comments :is(.tk-input--group, .tk-textarea) {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-textarea {
+  border-radius: var(--radius-md);
+}
+
+.ds-comments :is(.tk-input--group, .tk-textarea):focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.ds-comments :is(.tk-input-group__prepend, .tk-input-group__append) {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.ds-comments .tk-input-group__prepend {
+  background: var(--surface-soft);
+  border-right: 1px solid var(--hairline-soft);
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+  padding: 0 var(--space-sm);
+}
+
+.ds-comments .tk-input__inner {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: var(--text-ink);
+  flex: 1 1 auto;
+  height: 36px;
+  min-width: 0;
+  outline: none;
+  padding: 0 var(--space-sm);
+  width: 100%;
+}
+
+.ds-comments .tk-input--group .tk-input__inner {
+  font-size: var(--body-sm-size);
+}
+
+.ds-comments .tk-input__inner::placeholder {
+  color: var(--text-muted-soft);
+}
+
+/* A field outside a group (search, the page number) draws its own border. */
+.ds-comments .tk-input:not(.tk-input--group, .tk-textarea) .tk-input__inner {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  height: 32px;
+}
+
+.ds-comments .tk-input:not(.tk-input--group, .tk-textarea) .tk-input__inner:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.ds-comments .tk-textarea__inner {
+  display: block;
+  height: auto;
+  line-height: var(--body-md-lh);
+  min-height: 8rem;
+  padding: var(--space-sm) var(--space-md) var(--space-lg);
+  resize: vertical;
+}
+
+.ds-comments .tk-input__count {
+  bottom: var(--space-xs);
+  color: var(--text-muted-soft);
+  font-size: var(--caption-size);
+  pointer-events: none;
+  position: absolute;
+  right: var(--space-sm);
+}
+
+.ds-comments .tk-input__suffix {
+  align-items: center;
+  color: var(--text-muted);
+  display: flex;
+  padding-right: var(--space-sm);
+}
+
+.ds-comments .tk-input-image {
+  display: none;
+}
+
+.ds-comments .tk-row.actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  position: relative;
+}
+
+.ds-comments .tk-row-actions-start {
+  align-items: center;
+  display: flex;
+  gap: var(--space-sm);
+  margin-right: auto;
+}
+
+.ds-comments .tk-submit-action-icon {
+  align-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 18px;
+  text-decoration: none;
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-submit-action-icon:hover {
+  color: var(--text-ink);
+}
+
+/* The verification widgets, when a provider is set, open under the buttons. */
+.ds-comments :is(.tk-turnstile-container, .tk-geetest-container, .tk-cap-container) {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-xs));
+  z-index: 1;
+}
+
+/* Buttons, the system's small secondary and primary. */
+
+.ds-comments .tk-button {
+  align-items: center;
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  color: var(--text-ink);
+  display: inline-flex;
+  font-size: var(--button-size);
+  font-weight: var(--button-weight);
+  gap: var(--space-xs);
+  height: 32px;
+  justify-content: center;
+  line-height: var(--button-lh);
+  padding: 0 14px;
+  transition: var(--transition-tint);
+  white-space: nowrap;
+}
+
+.ds-comments .tk-button:hover {
+  background: var(--surface-soft);
+}
+
+.ds-comments .tk-button--primary {
+  background: var(--color-primary);
+  border-color: transparent;
+  color: var(--color-on-primary);
+}
+
+.ds-comments .tk-button--primary:hover {
+  background: var(--color-primary-active);
+}
+
+.ds-comments .tk-button--text {
+  background: transparent;
+  border: 0;
+  color: var(--text-link);
+  height: auto;
+  padding: 0;
+}
+
+.ds-comments .tk-button--text:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+.ds-comments .tk-button:is(.is-disabled, :disabled) {
+  background: var(--color-primary-disabled);
+  border-color: transparent;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.ds-comments .tk-button.is-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.ds-comments .tk-input-group__append .tk-button {
+  border: 0;
+  border-left: 1px solid var(--hairline-soft);
+  border-radius: 0;
+  height: 100%;
+}
+
+/* What the comment will look like, under the form. */
+.ds-comments .tk-preview-container {
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* The thread. */
+
+.ds-comments .tk-comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.ds-comments .tk-comments-title {
+  align-items: center;
+  border-bottom: 1px solid var(--hairline-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: space-between;
+  padding-bottom: var(--space-sm);
+}
+
+.ds-comments .tk-comments-count {
+  color: var(--text-ink);
+  font-family: var(--title-sm-family);
+  font-size: var(--title-sm-size);
+  font-weight: var(--title-sm-weight);
+  line-height: var(--title-sm-lh);
+}
+
+.ds-comments .tk-comments-count.__hidden {
+  visibility: hidden;
+}
+
+.ds-comments .tk-comments-actions {
+  align-items: center;
+  display: flex;
+  gap: var(--space-md);
+}
+
+.ds-comments .tk-comments-sort {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.ds-comments .tk-sort-item {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--body-sm-size);
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-sort-item:hover,
+.ds-comments .tk-sort-item.__active {
+  color: var(--text-ink);
+}
+
+.ds-comments .tk-sort-item.__active {
+  font-weight: 600;
+}
+
+.ds-comments .tk-icon.__comments {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-icon.__comments:hover {
+  color: var(--text-ink);
+}
+
+.ds-comments .tk-icon.__comments.__active {
+  color: var(--color-primary);
+}
+
+.ds-comments .tk-comments-search {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.ds-comments .tk-comments-no {
+  color: var(--text-muted);
+  font-size: var(--body-sm-size);
+  justify-content: center;
+  padding: var(--space-lg) 0;
+  text-align: center;
+}
+
+/* One comment: the portrait, then the name line, the text and the replies. */
+
+.ds-comments .tk-comment {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.ds-comments .tk-comments-container > div > .tk-comment + .tk-comment {
+  border-top: 1px solid var(--hairline-soft);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+}
+
+.ds-comments .tk-avatar {
+  background: var(--surface-card);
+  border-radius: var(--radius-full);
+  flex: 0 0 auto;
+  height: 40px;
+  overflow: hidden;
+  width: 40px;
+}
+
+.ds-comments .tk-avatar-img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.ds-comments .tk-avatar .tk-icon {
+  color: var(--text-muted-soft);
+  height: 100%;
+  width: 100%;
+}
+
+.ds-comments .tk-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  min-width: 0;
+}
+
+.ds-comments .tk-main > .tk-row {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  justify-content: space-between;
+}
+
+.ds-comments .tk-meta {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxs) var(--space-xs);
+}
+
+.ds-comments .tk-nick {
+  color: var(--text-ink);
+  font-size: var(--body-sm-size);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* A linked name wraps its <strong> in the link; the name has the same weight either way. */
+.ds-comments .tk-nick strong {
+  font-weight: inherit;
+}
+
+.ds-comments .tk-nick-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.ds-comments .tk-time {
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+}
+
+.ds-comments .tk-tag {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+  line-height: 1.5;
+  padding: 0 var(--space-xs);
+}
+
+/* The author's own comments. */
+.ds-comments .tk-tag-green {
+  background: var(--surface-card);
+  border-color: transparent;
+  color: var(--text-ink);
+}
+
+/* Pinned. */
+.ds-comments .tk-tag-red {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Held as spam, which only the author sees. */
+.ds-comments .tk-tag-yellow {
+  border-color: var(--status-warning);
+  color: var(--status-warning);
+}
+
+/* The author's own buttons on a comment (pin, hide, delete), shown on hover. */
+.ds-comments .tk-actions {
+  display: none;
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-comment:hover > .tk-main > .tk-row .tk-actions,
+.ds-comments .tk-actions:focus-within {
+  display: inline-flex;
+}
+
+.ds-comments .tk-actions :is(a, button) {
+  color: var(--text-link);
+  font-size: var(--caption-size);
+}
+
+.ds-comments .tk-action {
+  align-items: center;
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-action-link {
+  align-items: center;
+  border-radius: var(--radius-xs);
+  color: var(--text-muted);
+  display: inline-flex;
+  font-size: var(--caption-size);
+  gap: var(--space-xxs);
+  padding: 2px var(--space-xxs);
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-action-link:hover {
+  color: var(--text-ink);
+}
+
+.ds-comments .tk-action-icon {
+  display: inline-flex;
+  font-size: 14px;
+}
+
+/* Each action has an outline and a solid glyph: solid on hover and once it is done. */
+.ds-comments .tk-action-icon-solid,
+.ds-comments .tk-action-link:is(:hover, .tk-liked, .tk-disliked) .tk-action-icon:not(.tk-action-icon-solid) {
+  display: none;
+}
+
+.ds-comments .tk-action-link:is(:hover, .tk-liked, .tk-disliked) .tk-action-icon-solid {
+  display: inline-flex;
+}
+
+.ds-comments .tk-action-link.tk-liked {
+  color: var(--color-primary);
+}
+
+.ds-comments .tk-action-count:empty {
+  display: none;
+}
+
+/* The comment's text, Markdown that Twikoo has made HTML. */
+
+.ds-comments .tk-content {
+  color: var(--text-body);
+  max-height: 500px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  position: relative;
+}
+
+.ds-comments .tk-content-expand {
+  max-height: none;
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) :is(p, ul, ol, blockquote, pre) {
+  margin: 0 0 var(--space-xs);
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) > :last-child > :last-child {
+  margin-bottom: 0;
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) a {
+  color: var(--text-link);
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) blockquote {
+  border-left: 2px solid var(--hairline);
+  color: var(--text-muted);
+  padding-left: var(--space-sm);
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) code {
+  background: var(--surface-card);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.1em 0.3em;
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) pre {
+  background: var(--surface-card);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) pre code {
+  background: none;
+  font-size: var(--code-size);
+  line-height: var(--code-lh);
+  padding: 0;
+}
+
+.ds-comments :is(.tk-content, .tk-preview-container) img {
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  max-height: 300px;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* Who a reply answers, "Reply @name :", muted and on the line the reply starts. */
+.ds-comments .tk-content > span:has(> .tk-ruser) {
+  color: var(--text-muted);
+  margin-right: 0.3em;
+}
+
+.ds-comments .tk-content > span:has(> .tk-ruser) + span > p:first-child {
+  display: inline;
+}
+
+.ds-comments .tk-ruser {
+  color: var(--text-link);
+  text-decoration: none;
+}
+
+/* Prism's highlighting in code blocks, from the system's marker colours. */
+.ds-comments .token:is(.comment, .prolog, .doctype, .cdata) {
+  color: var(--text-muted-soft);
+}
+
+.ds-comments .token:is(.keyword, .tag, .selector, .important) {
+  color: var(--marker-coral);
+}
+
+.ds-comments .token:is(.string, .char, .attr-value, .regex) {
+  color: var(--marker-teal);
+}
+
+.ds-comments .token:is(.number, .boolean, .constant, .property) {
+  color: var(--marker-amber);
+}
+
+.ds-comments div.code-toolbar {
+  position: relative;
+}
+
+.ds-comments div.code-toolbar > .toolbar {
+  display: flex;
+  gap: var(--space-xxs);
+  position: absolute;
+  right: var(--space-xs);
+  top: var(--space-xs);
+}
+
+.ds-comments div.code-toolbar > .toolbar :is(button, span) {
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+}
+
+/* "Read more" on a long comment or a long run of replies. */
+.ds-comments .tk-expand {
+  color: var(--text-link);
+  cursor: pointer;
+  font-size: var(--body-sm-size);
+  padding: var(--space-xxs) 0;
+}
+
+.ds-comments .tk-expand:hover {
+  text-decoration: underline;
+}
+
+/* The commenter's system and browser, or region, when the admin panel shows them. */
+.ds-comments .tk-extras {
+  color: var(--text-muted-soft);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--caption-size);
+  gap: var(--space-xxs) var(--space-sm);
+}
+
+.ds-comments .tk-extra {
+  align-items: center;
+  display: inline-flex;
+}
+
+/* Replies hang under their comment on a hairline, with smaller portraits. */
+.ds-comments .tk-replies {
+  border-left: 1px solid var(--hairline-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  max-height: 200px;
+  overflow: hidden;
+  padding-left: var(--space-md);
+  position: relative;
+}
+
+.ds-comments .tk-replies:empty {
+  display: none;
+}
+
+.ds-comments .tk-replies-expand {
+  max-height: none;
+  overflow: visible;
+}
+
+.ds-comments .tk-replies .tk-avatar {
+  height: 28px;
+  width: 28px;
+}
+
+/* The reply form, open under the comment it answers. */
+.ds-comments .tk-comment .tk-submit {
+  margin-top: var(--space-sm);
+}
+
+/* Pages of comments. */
+
+.ds-comments .tk-pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.ds-comments :is(.tk-pagination-pagers, .tk-pagination-options) {
+  align-items: center;
+  display: flex;
+  gap: var(--space-xxs);
+}
+
+.ds-comments .tk-pagination-pager {
+  align-items: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--body-sm-size);
+  height: 32px;
+  justify-content: center;
+  min-width: 32px;
+  transition: var(--transition-tint);
+}
+
+.ds-comments .tk-pagination-pager:hover {
+  background: var(--surface-soft);
+  color: var(--text-ink);
+}
+
+.ds-comments .tk-pagination-pager.__current {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  pointer-events: none;
+}
+
+.ds-comments .tk-pagination :is(.tk-pagination-size, .tk-pagination-goto) {
+  color: var(--text-muted);
+  font-size: var(--body-sm-size);
+}
+
+.ds-comments .tk-pagination .tk-input {
+  width: 4rem;
+}
+
+/* Errors, from the service or the network. */
+
+.ds-comments .tk-error {
+  background: var(--surface-card);
+  border-left: 3px solid var(--status-error);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--body-sm-size);
+  gap: var(--space-xxs);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.ds-comments .tk-error__title {
+  align-items: center;
+  color: var(--text-ink);
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-error__icon {
+  color: var(--status-error);
+  display: inline-flex;
+  height: 16px;
+  width: 16px;
+}
+
+.ds-comments :is(.tk-error__toggle, .tk-error__detail, .tk-error__raw) {
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+}
+
+.ds-comments .tk-error__toggle {
+  cursor: pointer;
+}
+
+.ds-comments .tk-error__raw {
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+}
+
+.ds-comments .tk-footer {
+  color: var(--text-muted-soft);
+  font-size: var(--caption-size);
+  margin-top: var(--space-xl);
+  text-align: right;
+}
+
+.ds-comments .tk-footer a {
+  color: inherit;
+}
+
+/* An image from a comment, enlarged over the page. */
+.ds-comments .tk-lightbox {
+  background: color-mix(in srgb, var(--surface-dark) 88%, transparent);
+  cursor: zoom-out;
+  inset: 0;
+  position: fixed;
+  z-index: 999;
+}
+
+.ds-comments .tk-lightbox-image {
+  border-radius: var(--radius-sm);
+  left: 50%;
+  max-height: 92%;
+  max-width: 92%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Loading: a ring over the area while it waits for the service. */
+
+.ds-comments .tk-loading-parent--relative {
+  position: relative;
+}
+
+.ds-comments .tk-loading-mask {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-canvas) 70%, transparent);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+  transition: var(--transition-fade);
+  z-index: 2;
+}
+
+.ds-comments .tk-loading-spinner .circular {
+  animation: ds-comments-spin 1.6s linear infinite;
+  height: 32px;
+  width: 32px;
+}
+
+.ds-comments .tk-loading-spinner .path {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-dasharray: 90 150;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+@keyframes ds-comments-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ds-comments .tk-fade-in {
+  animation: ds-reveal-in var(--motion-base) var(--ease-enter) both;
+}
+
+/* The admin panel, which slides over the comment area from the right. */
+
+.ds-comments .tk-admin-container {
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+}
+
+.ds-comments .tk-admin {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+  height: 100%;
+  left: 100%;
+  overflow: auto;
+  padding: var(--space-md);
+  pointer-events: all;
+  position: absolute;
+  top: 0;
+  transition:
+    left var(--motion-slow) var(--ease-move),
+    visibility var(--motion-slow);
+  visibility: hidden;
+  width: 100%;
+}
+
+.ds-comments .tk-admin.__show {
+  left: 0;
+  visibility: visible;
+}
+
+.ds-comments .tk-admin-close {
+  color: var(--text-muted);
+  display: block;
+  font-size: 18px;
+  left: calc(100% - 2rem);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.ds-comments .tk-admin-close:hover {
+  color: var(--text-ink);
+}
+
+.ds-comments :is(.tk-login, .tk-regist) {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl) 0;
+}
+
+.ds-comments .tk-login form,
+.ds-comments .tk-regist form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-width: 24rem;
+  width: 100%;
+}
+
+.ds-comments .tk-login-title {
+  color: var(--text-ink);
+  font-family: var(--title-md-family);
+  font-size: var(--title-md-size);
+  font-weight: var(--title-md-weight);
+}
+
+.ds-comments .tk-login-msg {
+  color: var(--text-muted);
+  font-size: var(--body-sm-size);
+  text-align: center;
+}
+
+.ds-comments .tk-panel {
+  left: var(--space-md);
+  position: absolute;
+  right: var(--space-md);
+  top: var(--space-md);
+}
+
+.ds-comments .tk-panel-title {
+  align-items: center;
+  color: var(--text-ink);
+  display: flex;
+  font-family: var(--title-md-family);
+  font-size: var(--title-md-size);
+  font-weight: var(--title-md-weight);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding-right: var(--space-xl);
+}
+
+.ds-comments .tk-panel-logout {
+  color: var(--text-link);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: var(--body-sm-size);
+  font-weight: 400;
+}
+
+.ds-comments .tk-tabs {
+  border-bottom: 1px solid var(--hairline-soft);
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.ds-comments .tk-tab {
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--body-sm-size);
+  margin-bottom: -1px;
+  padding: var(--space-xs) 0;
+}
+
+.ds-comments .tk-tab.__active {
+  border-color: var(--color-primary);
+  color: var(--text-ink);
+}
+
+.ds-comments :is(.tk-admin-comment, .tk-admin-import) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.ds-comments .tk-admin-comment-filter {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.ds-comments :is(.tk-admin-comment-filter-type, .tk-admin-config-select, .tk-admin-import select) {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  color: var(--text-ink);
+  height: 32px;
+  padding: 0 var(--space-xs);
+}
+
+.ds-comments .tk-admin-comment-filter-keyword {
+  flex: 1 1 12rem;
+}
+
+.ds-comments .tk-admin-comment-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-comments .tk-admin-comment-item {
+  border-bottom: 1px solid var(--hairline-soft);
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+}
+
+.ds-comments .tk-admin-comment-meta {
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--caption-size);
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-admin-comment .tk-content {
+  max-height: none;
+}
+
+.ds-comments :is(.tk-admin-actions, .tk-admin-comment-editor-actions, .tk-admin-import-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-admin-comment-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ds-comments .tk-admin-config-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  position: relative;
+}
+
+.ds-comments .tk-admin-config-group {
+  border-bottom: 1px solid var(--hairline-soft);
+  padding-bottom: var(--space-sm);
+}
+
+.ds-comments .tk-admin-config-group-title {
+  color: var(--text-ink);
+  cursor: pointer;
+  font-weight: 600;
+  margin: var(--space-sm) 0;
+}
+
+.ds-comments .tk-admin-config-item {
+  align-items: start;
+  display: grid;
+  gap: var(--space-xxs) var(--space-sm);
+  grid-template-columns: minmax(8rem, 12rem) 1fr;
+  padding: var(--space-xs) 0;
+  position: relative;
+}
+
+.ds-comments .tk-admin-config-title {
+  color: var(--text-ink);
+  font-family: var(--font-mono);
+  font-size: var(--caption-size);
+  overflow: hidden;
+  padding-top: var(--space-xs);
+  text-overflow: ellipsis;
+}
+
+.ds-comments :is(.tk-admin-config-desc, .tk-admin-config-email-test-desc, .tk-admin-import-label) {
+  color: var(--text-muted);
+  font-size: var(--caption-size);
+  grid-column: 2;
+}
+
+.ds-comments .tk-admin-config-input {
+  position: relative;
+}
+
+.ds-comments .tk-admin-config-input .tk-input__inner {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  height: 32px;
+}
+
+.ds-comments .tk-admin-config-actions {
+  background: var(--surface-canvas);
+  bottom: calc(-1 * var(--space-md));
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+  padding: var(--space-sm) 0;
+  position: sticky;
+}
+
+.ds-comments .tk-admin-config-message {
+  color: var(--text-muted);
+  font-size: var(--body-sm-size);
+}
+
+.ds-comments :is(.tk-admin-warn, .tk-admin-security-alert) {
+  background: var(--surface-card);
+  border-left: 3px solid var(--status-warning);
+  border-radius: var(--radius-sm);
+  font-size: var(--body-sm-size);
+  margin-bottom: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  position: relative;
+}
+
+.ds-comments .tk-admin-security-alert .tk-admin-close {
+  position: absolute;
+  right: var(--space-sm);
+  top: var(--space-sm);
+}
+
+.ds-comments .tk-admin-security-alert-url {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+/* The emoji panel. The site turns it off in the admin panel; these keep it usable if it is on. */
+
+.ds-comments .OwO {
+  position: static;
+}
+
+.ds-comments .OwO-logo {
+  align-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  height: 18px;
+  width: 18px;
+}
+
+.ds-comments .OwO-body {
+  background: var(--surface-canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-float);
+  display: none;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-xs));
+  z-index: 10;
+}
+
+.ds-comments .OwO.OwO-open .OwO-body {
+  display: block;
+}
+
+.ds-comments .OwO-items {
+  display: none;
+  list-style: none;
+  margin: 0;
+  max-height: 12rem;
+  overflow: auto;
+  padding: var(--space-xs);
+}
+
+.ds-comments .OwO-items-show {
+  display: block;
+}
+
+.ds-comments .OwO-item {
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  display: inline-block;
+  padding: var(--space-xxs) var(--space-xs);
+}
+
+.ds-comments .OwO-item:hover {
+  background: var(--surface-soft);
+}
+
+.ds-comments .OwO-item img,
+.ds-comments .tk-owo-emotion {
+  display: inline-block;
+  height: auto;
+  width: 2em;
+}
+
+.ds-comments .OwO-packages {
+  border-top: 1px solid var(--hairline-soft);
+  display: flex;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.ds-comments .OwO-packages li {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: var(--caption-size);
+}
+
+.ds-comments .OwO-packages .OwO-package-active {
+  color: var(--text-ink);
+}
+
+.ds-comments .tk-owo-preview-panel {
+  bottom: 100%;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}

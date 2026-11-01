@@ -1,0 +1,71 @@
+---
+title: Comments
+description: The comments under a post, from a Twikoo comment service, and ViewCount in the meta line.
+sidebar:
+  order: 5
+---
+
+import { Image } from "astro:assets";
+import light from "../../../../../assets/screenshots/comments-light.png";
+import dark from "../../../../../assets/screenshots/comments-dark.png";
+
+Comments puts a [Twikoo](https://twikoo.js.org) comment area under a post: a form for a name, an email, a website and the comment, and below it the thread, each reply under the comment it answers. Twikoo builds the markup in the browser. The component loads it and dresses it in the system's tokens, in both themes. ViewCount adds the number of times the post has been read to its meta line, from the same service.
+
+<Image src={light} alt="The comments in the light theme: the meta line ending in the view count, the heading, the form with its three fields, the text area and the Send button, then one comment with a reply under it" />
+
+<Image src={dark} alt="The same comments in the dark theme" />
+
+Comments need a running comment service, which this site does not have, so these are screenshots. The example page works in development, against a comment service on the same computer (`pnpm dev:comment` in the website's repository).
+
+## When to use
+
+Once per post, after the end matter, on posts that take comments. ViewCount in the meta line over the title of the same post.
+
+## On a page
+
+```astro
+<PostMeta size="md" items={meta}>
+  <ViewCount server="https://comment.example.com" path="/blog/000001" />
+</PostMeta>
+…
+<Comments server="https://comment.example.com" path="/blog/000001" />
+```
+
+`path` is the key Twikoo files the comments and the count under. Give it one that never changes, such as the post's id, and a post keeps its comments when its address changes. ViewCount and Comments on one page take the same `path`.
+
+## Anatomy
+
+The heading "Comments" in display-sm. Then the form: three fields in a row, each with its label on a soft tile, which stack when the column is narrow; the text area with a character count; and the Markdown link, Preview and Send. Then the thread: the count, the sort (Newest, Oldest, Popular), and search, refresh and the admin panel's gear. A comment is a 40px portrait, the name and the time, like and reply on the right, then the text. Replies hang under a hairline with 28px portraits, and a reply opens with the name it answers. "Powered by Twikoo" ends the area.
+
+ViewCount is one more part of the meta line, "128 views", after a middot, in the line's muted colour.
+
+## Behaviour
+
+- Twikoo's script, 121 KB compressed, loads only when the comments come within 800px of the screen. Its own stylesheet is removed as it loads; every rule is in `comments.css`.
+- Without JavaScript the area says "Comments need JavaScript." If the script fails to load, it says "Comments couldn't load." If the service does not answer, Twikoo shows its own error in the area, on a card with a red edge.
+- ViewCount asks the service once per page load, and the service counts that load, a reload too. The number includes the load that asked. The part stays hidden until the answer arrives, and for good if none does.
+- What the form asks for, and whether the thread shows dislikes, the commenter's system and browser, an emoji panel or a CAPTCHA, are settings in Twikoo's admin panel, which slides over the comment area from the gear.
+
+## Variants
+
+| Component | Prop | Values |
+| --- | --- | --- |
+| Comments | `server` | The Twikoo service's address |
+| | `path` | The page's key in Twikoo |
+| | `title` | The heading, "Comments" by default |
+| | `id` | The heading's id, `comments` by default |
+| ViewCount | `server`, `path` | As for Comments |
+| | `title` | The title Twikoo records with the count, the document's title by default |
+| | `dot` | Starts the part with a middot, `true` by default |
+
+## Accessibility
+
+The heading has an id, so a link can lead to the comments. The fields' labels are visible, but Twikoo does not tie them to the fields, so a screen reader names a field by its placeholder, "Required" or "Optional". Like and reply are icon buttons without names, and search, refresh and the gear are not buttons, so a keyboard cannot reach them. All of this is Twikoo's markup, which the component leaves as it is.
+
+## API
+
+[`Comments.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Comments.astro), [`comments.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/comments.css) and [`ViewCount.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/ViewCount.astro). New: the handoff has no comments. Twikoo 2.0.17, under the MIT licence.
+
+## Related
+
+[PostMeta](../../home/article-list-card/), [PostNav](../post-nav/).

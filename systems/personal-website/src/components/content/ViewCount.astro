@@ -1,0 +1,77 @@
+---
+/**
+ * How many times a page has been viewed, from a Twikoo comment service, as one more part of a
+ * PostMeta line: "· 128 views". Each page load asks the service once, and the service counts that
+ * load, a reload included. The part stays hidden until the count arrives, so without JavaScript, or
+ * when the service does not answer, the line simply ends one part sooner.
+ *
+ * The handoff has no view count. It asks with the request Twikoo's own getVisitorsCount sends
+ * (event COUNTER_GET), so the page does not load Twikoo's script just for the number.
+ *
+ *   <PostMeta items={meta}><ViewCount server="https://comment.example.com" path="/blog/000001" /></PostMeta>
+ */
+interface Props {
+  /** The Twikoo service's address. */
+  server: string;
+  /** The page's key in Twikoo, the same `path` its Comments use. */
+  path: string;
+  /** The title Twikoo records with the count; the document's title by default. */
+  title?: string;
+  /** Starts the part with a middot, as PostMeta's plain parts are joined. */
+  dot?: boolean;
+}
+
+const { server, path, title, dot = true } = Astro.props;
+---
+
+<ds-view-count class="ds-view-count" data-server={server} data-path={path} data-title={title} hidden>
+  {
+    dot && (
+      <span class="ds-view-count__dot" aria-hidden="true">
+        ·
+      </span>
+    )
+  }
+  <span data-ds-view-count-label></span>
+</ds-view-count>
+
+<script>
+  class DsViewCount extends HTMLElement {
+    async connectedCallback() {
+      const { server, path, title } = this.dataset;
+      const label = this.querySelector("[data-ds-view-count-label]");
+      if (!server || !path || !label) return;
+      try {
+        const response = await fetch(server, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "COUNTER_GET",
+            envId: server,
+            url: path,
+            href: location.href,
+            title: title ?? document.title
+          })
+        });
+        const { time } = (await response.json()) as { time?: number };
+        if (typeof time !== "number") return;
+        // Twikoo answers with the count before it adds this load.
+        const views = time + 1;
+        label.textContent = `${views.toLocaleString("en")} ${views === 1 ? "view" : "views"}`;
+        this.hidden = false;
+      } catch {
+        // The service did not answer: the line goes without the count.
+      }
+    }
+  }
+
+  if (!customElements.get("ds-view-count")) customElements.define("ds-view-count", DsViewCount);
+</script>
+
+<style>
+  .ds-view-count:not([hidden]) {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--space-xs);
+  }
+</style>

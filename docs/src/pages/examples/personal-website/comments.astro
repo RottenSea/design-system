@@ -1,0 +1,34 @@
+---
+// Comments need a running Twikoo service, which the docs site does not have, so the built page only
+// says so, and the docs page shows screenshots. In development this page talks to a comment service
+// on this computer: `pnpm dev:comment` in the website's repository, at http://localhost:8787.
+import { Comments, PostMeta, ViewCount } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+
+const server = "http://localhost:8787";
+const path = "/examples/comments";
+---
+
+<ExampleLayout title="Comments">
+  {
+    import.meta.env.DEV ? (
+      <div class="page">
+        <PostMeta size="md" items={["Mar 4, 2026", "Notes", "6 min"]}>
+          <ViewCount server={server} path={path} title="Comments example" />
+        </PostMeta>
+        <Comments server={server} path={path} />
+      </div>
+    ) : (
+      <p>Comments need a running comment service. This example works only in development.</p>
+    )
+  }
+</ExampleLayout>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    max-width: var(--container-reading);
+  }
+</style>

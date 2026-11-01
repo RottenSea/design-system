@@ -1,0 +1,71 @@
+---
+title: Comments 评论
+description: 文章下面的评论，来自 Twikoo 评论服务；以及信息行里的 ViewCount 浏览量。
+sidebar:
+  order: 5
+---
+
+import { Image } from "astro:assets";
+import light from "../../../../../assets/screenshots/comments-light.png";
+import dark from "../../../../../assets/screenshots/comments-dark.png";
+
+Comments 在文章下面放一块 [Twikoo](https://twikoo.js.org) 评论区：上面是填名字、邮箱、网址和评论的表单，下面是评论列表，每条回复挂在它回复的那条评论下面。评论区的结构由 Twikoo 在浏览器里生成，这个组件负责加载它，并用 system 的 token 给它定样式，浅色深色都有。ViewCount 从同一个服务取文章被读过几次，放进文章的信息行。
+
+<Image src={light} alt="浅色主题下的评论区：信息行末尾是浏览量，下面是标题、有三个输入框的表单、文本框和 Send 按钮，再下面是一条评论和它下面的一条回复" />
+
+<Image src={dark} alt="深色主题下的同一块评论区" />
+
+评论区要连着一个在运行的评论服务，文档站没有，所以这里放的是截图。示例页在本地开发时能用，连的是同一台电脑上的评论服务（在网站仓库里运行 `pnpm dev:comment`）。
+
+## 什么时候用
+
+开评论的文章，每篇放一个，放在文末的版权卡片和上一篇、下一篇之后。ViewCount 放在同一篇文章标题上方的信息行里。
+
+## 页面里怎么写
+
+```astro
+<PostMeta size="md" items={meta}>
+  <ViewCount server="https://comment.example.com" path="/blog/000001" />
+</PostMeta>
+…
+<Comments server="https://comment.example.com" path="/blog/000001" />
+```
+
+`path` 是 Twikoo 存评论和计数用的键。给它一个不会变的值，例如文章编号，这样文章换了地址，评论还跟着文章。同一页的 ViewCount 和 Comments 用同一个 `path`。
+
+## 结构
+
+最上面是 display-sm 的标题 “Comments”。然后是表单：一行三个输入框，标签放在左边的浅色块上，栏太窄时竖着排；带字数的文本框；Markdown 链接、Preview 和 Send。再下面是评论列表：评论数，排序（Newest、Oldest、Popular），以及搜索、刷新和管理面板的齿轮。一条评论是 40px 头像、名字和时间，右边是点赞和回复，下面是正文。回复挂在一条细线下，头像 28px，开头写着它回复的是谁。最后一行是 “Powered by Twikoo”。
+
+ViewCount 是信息行里多出来的一段，“128 views”，前面一个间隔点，颜色和信息行一样淡。
+
+## 行为
+
+- Twikoo 的脚本压缩后 121 KB，评论区离屏幕不到 800px 时才加载。它加载时带进来的样式表会被删掉，所有样式都在 `comments.css` 里。
+- 没有 JavaScript 时，评论区显示 “Comments need JavaScript.”。脚本加载失败时显示 “Comments couldn't load.”。评论服务没有响应时，Twikoo 会在评论区里显示自己的错误提示，是一张左边带红边的卡片。
+- ViewCount 每次打开页面问一次服务，服务把这一次算进去，刷新也算。显示的数字包括这一次。拿到数字之前这一段是隐藏的，拿不到就一直不显示。
+- 表单要填哪些项，列表里显不显示点踩、评论者的系统和浏览器、表情面板和人机验证，都在 Twikoo 的管理面板里设。点齿轮，管理面板从右边滑出来盖住评论区。
+
+## 参数
+
+| 组件 | 参数 | 取值 |
+| --- | --- | --- |
+| Comments | `server` | Twikoo 服务的地址 |
+| | `path` | 这一页在 Twikoo 里的键 |
+| | `title` | 标题，默认 “Comments” |
+| | `id` | 标题的 id，默认 `comments` |
+| ViewCount | `server`、`path` | 和 Comments 一样 |
+| | `title` | Twikoo 随计数记下的标题，默认是页面标题 |
+| | `dot` | 前面加一个间隔点，默认 `true` |
+
+## 无障碍
+
+标题有 id，链接可以直接跳到评论区。输入框的标签看得见，但 Twikoo 没有把标签和输入框关联起来，读屏软件读的是占位文字 “Required” 或 “Optional”。点赞和回复是没有名字的图标按钮；搜索、刷新和齿轮不是按钮，键盘到不了。这些都是 Twikoo 生成的结构，组件没有改动。
+
+## API
+
+[`Comments.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/Comments.astro)、[`comments.css`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/comments.css) 和 [`ViewCount.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/ViewCount.astro)。交付包里没有评论，这是新做的。Twikoo 版本 2.0.17，MIT 许可证。
+
+## 相关
+
+[PostMeta](../../home/article-list-card/)、[PostNav](../post-nav/)。

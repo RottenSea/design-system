@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Comments`: the comments under a post, from a [Twikoo](https://twikoo.js.org) comment service. It loads Twikoo when the comments come near the screen, takes Twikoo's own stylesheet out and styles the form, the thread, the replies and the admin panel from tokens, in both themes. `path` is the key the comments are kept under. New dependency: `twikoo` 2.0.17.
+- `ViewCount`: how many times a page has been viewed, from the same service, as one more part of a PostMeta line.
+- `PostMeta` has a slot after its parts, for a part the page fills in later, such as ViewCount.
+
 ## [1.0.0] - 2026-10-30
 
 The first stable release, made as the three sites built on this system went live. The public API is now promised to stay stable: token names and the CSS custom properties built from them, the files the package exports, and component props and events. From here, renaming or removing any of them comes only in a new major version. Nothing else changed since 0.7.4.

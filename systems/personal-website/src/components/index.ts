@@ -17,6 +17,7 @@ import FileTreeNode from "./code/FileTreeNode.astro";
 import MarkdownCode from "./code/MarkdownCode.astro";
 import Abbreviation from "./content/Abbreviation.astro";
 import Admonition from "./content/Admonition.astro";
+import Comments from "./content/Comments.astro";
 import DiagramFrame from "./content/DiagramFrame.astro";
 import Field from "./content/Field.astro";
 import Fields from "./content/Fields.astro";
@@ -39,6 +40,7 @@ import PostShare from "./content/PostShare.astro";
 import SharePoster from "./content/SharePoster.astro";
 import TableScroll from "./content/TableScroll.astro";
 import TocList from "./content/TocList.astro";
+import ViewCount from "./content/ViewCount.astro";
 import Dialog from "./feedback/Dialog.astro";
 import Snackbar from "./feedback/Snackbar.astro";
 import Tooltip from "./feedback/Tooltip.astro";
@@ -75,6 +77,7 @@ export {
   Avatar,
   Button,
   CodeBlock,
+  Comments,
   ContentGrid,
   DiagramFrame,
   Dialog,
@@ -129,7 +132,8 @@ export {
   TocList,
   Tooltip,
   TopNav,
-  VideoEmbed
+  VideoEmbed,
+  ViewCount
 };
 
 export const components = {

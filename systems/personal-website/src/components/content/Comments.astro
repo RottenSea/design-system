@@ -1,0 +1,96 @@
+---
+/**
+ * A post's comments, from a Twikoo comment service: the form to write one and the thread under
+ * it. Twikoo builds the form and the thread; this component loads it when the comments come near
+ * the screen, so a reader who never scrolls there never downloads it, and dresses it in the
+ * system's tokens, light and dark. Without JavaScript it says so.
+ *
+ * The handoff has no comments. Twikoo's own stylesheet, which its script adds to the page, is
+ * taken out again, and every rule here is the system's own; the class names are Twikoo's.
+ *
+ *   <Comments server="https://comment.example.com" path="/blog/000001" />
+ */
+import "./comments.css";
+
+interface Props {
+  /** The Twikoo service's address. */
+  server: string;
+  /** The page's key in Twikoo. Comments stay with the key, so a key that never changes keeps them. */
+  path: string;
+  /** The heading above the comments. */
+  title?: string;
+  /** An id for the heading, unique on the page. */
+  id?: string;
+  class?: string;
+}
+
+const { server, path, title = "Comments", id = "comments", class: className } = Astro.props;
+---
+
+<ds-comments class:list={["ds-comments", className]} data-server={server} data-path={path} lang="en">
+  <h2 class="ds-comments__title" id={id}>{title}</h2>
+  <div class="ds-comments__thread" data-ds-comments-mount>
+    <p class="ds-comments__note" data-ds-comments-note>Comments need JavaScript.</p>
+  </div>
+</ds-comments>
+
+<script>
+  class DsComments extends HTMLElement {
+    connectedCallback() {
+      const mount = this.querySelector<HTMLElement>("[data-ds-comments-mount]");
+      const note = this.querySelector<HTMLElement>("[data-ds-comments-note]");
+      if (!mount || !note) return;
+      note.textContent = "Loading comments…";
+      // Start well before the comments are on screen, so they are usually there when the reader is.
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          observer.disconnect();
+          this.load(mount, note);
+        },
+        { rootMargin: "800px 0px" }
+      );
+      observer.observe(this);
+    }
+
+    async load(mount: HTMLElement, note: HTMLElement) {
+      const { server, path } = this.dataset;
+      try {
+        const twikoo = await import("twikoo");
+        // Twikoo's script adds its stylesheet as it loads; the system's styles below replace it.
+        document.querySelectorAll("style[data-twikoo]").forEach((style) => style.remove());
+        mount.id ||= `ds-comments-${Math.random().toString(36).slice(2)}`;
+        await twikoo.init({ envId: server, el: `#${mount.id}`, path, lang: "en" });
+      } catch {
+        note.textContent = "Comments couldn't load.";
+      }
+    }
+  }
+
+  if (!customElements.get("ds-comments")) customElements.define("ds-comments", DsComments);
+</script>
+
+<style>
+  .ds-comments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .ds-comments__title {
+    color: var(--text-ink);
+    font-family: var(--display-sm-family);
+    font-size: var(--display-sm-size);
+    font-weight: var(--display-sm-weight);
+    letter-spacing: var(--display-sm-ls);
+    line-height: var(--display-sm-lh);
+    margin: 0;
+  }
+
+  .ds-comments__note {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+</style>
