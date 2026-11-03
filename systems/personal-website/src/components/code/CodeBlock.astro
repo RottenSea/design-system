@@ -1,8 +1,10 @@
 ---
 /**
- * The code surface: dark warm navy by default, cream and hairline with tone="cream". The bar
+ * The code surface. By default it follows the theme: cream and hairline in the light theme, the
+ * dark warm navy in the dark, fading between the two with the page. tone="dark" keeps the navy in
+ * both themes, and tone="cream" the cream surfaces, which darken in the dark theme. The bar
  * carries the filename in the mono face (without one, "Code Block", or "Terminal" for a shell
- * language, in the sans face), the language as an uppercase micro-label and a copy
+ * language, in the same face), the language as an uppercase micro-label and a copy
  * button that turns coral and reads "Copied" for 1.6s. Highlighted lines take a wash and a
  * coral gutter rule. Long lines scroll instead of wrapping, because indentation is information.
  *
@@ -44,8 +46,11 @@ interface Props {
   copy?: boolean;
   /** Caption under the block. */
   caption?: string;
-  /** `dark` (default) is the warm-navy code surface; `cream` is canvas and hairline. */
-  tone?: "dark" | "cream";
+  /**
+   * `auto` (default) is cream in the light theme and the warm navy in the dark; `dark` is the
+   * warm navy in both; `cream` is canvas and hairline, darkened in the dark theme.
+   */
+  tone?: "auto" | "dark" | "cream";
   /** false drops the frame (margin, border, radius, fill). */
   frame?: boolean;
   class?: string;
@@ -60,7 +65,7 @@ const {
   highlightLines = [],
   copy = true,
   caption,
-  tone = "dark",
+  tone = "auto",
   frame = true,
   class: className,
   ...rest
@@ -217,6 +222,19 @@ const name =
     color-scheme: inherit;
   }
 
+  /* The cream tone's values and the dark tone's, mixed by the page's --theme-dark: all cream in
+     the light theme, all navy in the dark, and in between while the theme fades. */
+  .ds-code--auto {
+    --ds-code-ink: color-mix(in srgb, var(--text-body-strong), var(--text-on-dark) var(--theme-dark));
+    --ds-code-soft: color-mix(in srgb, var(--text-muted), var(--text-on-dark-soft) var(--theme-dark));
+    --ds-code-rule: color-mix(in srgb, var(--hairline), var(--hairline-on-dark) var(--theme-dark));
+    --ds-code-wash: color-mix(in srgb, var(--surface-soft), rgba(250, 249, 245, 0.06) var(--theme-dark));
+    --ds-code-bar: color-mix(in srgb, var(--surface-card), var(--surface-dark-soft) var(--theme-dark));
+    --ds-code-fill: color-mix(in srgb, var(--surface-canvas), var(--surface-dark) var(--theme-dark));
+    --theme-dark: inherit;
+    color-scheme: inherit;
+  }
+
   .ds-code--framed {
     background: var(--ds-code-fill);
     border: 1px solid transparent;
@@ -227,6 +245,10 @@ const name =
 
   .ds-code--framed.ds-code--cream {
     border-color: var(--hairline);
+  }
+
+  .ds-code--framed.ds-code--auto {
+    border-color: color-mix(in srgb, var(--hairline), transparent var(--theme-dark));
   }
 
   .ds-code__bar {
@@ -247,11 +269,6 @@ const name =
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  /* A name for a block without a filename is not a path, so it is not in the mono face. */
-  .ds-code__filename--generic {
-    font-family: var(--font-sans);
   }
 
   .ds-code__lang {
