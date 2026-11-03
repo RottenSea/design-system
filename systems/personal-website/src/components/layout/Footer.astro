@@ -1,9 +1,9 @@
 ---
 /**
  * The dark footer that closes every page, in both themes: a column on the left with the site's
- * mark and name, and under them whatever the `brand-extra` slot holds (a badge, a short line); the
- * columns of links under uppercase micro-labels side by side on the right; and a line across the
- * bottom for the copyright. --surface-dark, 64px of padding above and below, within
+ * mark and name at the top and whatever the `brand-extra` slot holds (a badge, a short line) at the
+ * bottom, level with the end of the links; the columns of links under uppercase micro-labels side
+ * by side on the right; and a line across the bottom for the copyright. --surface-dark, 64px of padding above and below, within
  * --container-max. Below 768px the brand column stacks above the links, which go two across. A
  * link to another site opens in a new tab with the arrow and the hidden note the system's other
  * links to other sites have.
@@ -108,7 +108,9 @@ const hasExtra = Astro.slots.has("brand-extra");
     max-width: var(--container-max);
   }
 
+  /* As tall as the link columns beside it: the brand at the top, brand-extra at the bottom. */
   .ds-footer__lead {
+    align-self: stretch;
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
@@ -124,6 +126,7 @@ const hasExtra = Astro.slots.has("brand-extra");
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-xs);
+    margin-top: auto;
   }
 
   .ds-footer__extra > :global(img),
