@@ -51,11 +51,15 @@ const {
     max-width: 100%;
   }
 
+  /* Positioned, so it clips what is absolutely positioned inside it too: a link to another site
+     carries a visually hidden note, which in a cell past the right edge would otherwise widen the
+     page, and a phone would zoom out to fit it. */
   .ds-table-scroll {
     background: var(--surface-canvas);
     border: 1px solid var(--hairline);
     border-radius: var(--radius-lg);
     overflow-x: auto;
+    position: relative;
   }
 
   .ds-table-scroll :global(table) {
