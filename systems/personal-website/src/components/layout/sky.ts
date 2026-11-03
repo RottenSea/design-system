@@ -81,53 +81,6 @@ const rgba = ([r, g, b]: Rgb, alpha: number) =>
   `rgba(${r},${g},${b},${Math.max(0, Math.min(1, alpha)).toFixed(3)})`;
 
 /**
- * How many steps of opacity the stars and the globe's dots are drawn in. The dots of one step
- * share one path and one fill, so a frame of the globe's four thousand dots is a few dozen fills
- * instead of four thousand. A step is 1/64, too small to see on a dot.
- */
-export const LEVELS = 64;
-
-/** An opacity as the number of its step, 0 (transparent) to LEVELS (opaque). */
-export function alphaLevel(alpha: number): number {
-  return Math.round(Math.max(0, Math.min(1, alpha)) * LEVELS);
-}
-
-/**
- * Circles sorted by opacity step and filled one step at a time, faintest first. The arrays stay
- * between frames, so a frame allocates nothing new.
- */
-class Circles {
-  #steps: number[][] = Array.from({ length: LEVELS + 1 }, () => []);
-
-  add(alpha: number, x: number, y: number, radius: number) {
-    const level = alphaLevel(alpha);
-    if (level > 0) this.#steps[level].push(x, y, radius);
-  }
-
-  fill(ctx: CanvasRenderingContext2D, [r, g, b]: Rgb) {
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
-    for (let level = 1; level <= LEVELS; level++) {
-      const circles = this.#steps[level];
-      if (!circles.length) continue;
-      ctx.globalAlpha = level / LEVELS;
-      ctx.beginPath();
-      for (let i = 0; i < circles.length; i += 3) {
-        const [x, y, radius] = [circles[i], circles[i + 1], circles[i + 2]];
-        // A new subpath for each circle, so no line joins it to the one before.
-        ctx.moveTo(x + radius, y);
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-      }
-      ctx.fill();
-      circles.length = 0;
-    }
-    ctx.globalAlpha = 1;
-  }
-}
-
-const starCircles = new Circles();
-const globeCircles = new Circles();
-
-/**
  * Where star s is at time t, in ms; stars leave one edge and come back at the other. The speed
  * follows the longer side, so a tall phone screen drifts as fast as a wide one instead of a
  * quarter as fast.
@@ -153,14 +106,11 @@ export function drawStars(
     const { x, y } = starAt(s, t, size.width, size.height, size.period);
     if (hidden?.(x, y)) continue;
     const twinkle = 0.65 + 0.35 * Math.sin((t / 1000) * s.speed + s.phase);
-    starCircles.add(
-      s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength,
-      x,
-      y,
-      s.radius * (0.7 + 0.5 * s.depth) + grow
-    );
+    ctx.fillStyle = rgba(color, s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength);
+    ctx.beginPath();
+    ctx.arc(x, y, s.radius * (0.7 + 0.5 * s.depth) + grow, 0, Math.PI * 2);
+    ctx.fill();
   }
-  starCircles.fill(ctx, color);
 }
 
 export interface Globe {
@@ -213,10 +163,11 @@ export function drawGlobe(
     const away = (1 - turned) / 2;
     const alpha = away <= 0.4 ? 1 : away >= 0.6 ? 0.2 : 1 - (0.8 * (away - 0.4)) / 0.2;
     const perspective = CAMERA / (CAMERA - z);
-    globeCircles.add(alpha, cx + x * radius * perspective, cy - y * radius * perspective, base * perspective);
+    ctx.fillStyle = rgba(dot, alpha);
+    ctx.beginPath();
+    ctx.arc(cx + x * radius * perspective, cy - y * radius * perspective, base * perspective, 0, Math.PI * 2);
+    ctx.fill();
   }
-  // Faintest first: the dots over the limb, then the near side over them.
-  globeCircles.fill(ctx, dot);
 }
 
 /** A CSS time such as "350ms" or "0.35s" in milliseconds; 350 when there is none. */
@@ -262,10 +213,10 @@ export interface Sky {
 
 /**
  * Runs a sky on a canvas inside host: sizes it to the host at the screen's resolution (at most
- * 2×), and draws a frame on each screen refresh while the host is on screen.
- * It keeps moving when the reader asked for less motion: the sky is slow and the site wants it so.
- * On a theme change the colours and numbers move to the new theme's over the page's fade, or at
- * once when the page's colours change at once. Returns a function that stops it all.
+ * 2×), and draws a frame whenever the screen refreshes while the host is on screen. It keeps
+ * moving when the reader asked for less motion: the sky is slow and the site wants it so. On a
+ * theme change the colours and numbers move to the new theme's over the page's fade, or at once when
+ * the page's colours change at once. Returns a function that stops it all.
  */
 export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): () => void {
   const ctx = canvas.getContext("2d");

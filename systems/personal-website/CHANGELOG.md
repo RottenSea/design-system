@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `Starfield` and `DotGlobe` fill each star and dot on its own again, as before 1.0.6. Filling every dot of one opacity step as one path took less script time but far longer to draw: with the GPU drawing the canvas, DotGlobe at 1280 by 800, twice the CSS pixels, managed about 49 frames a second, with the slowest twentieth of frames at 56ms, against about 220 frames a second and 6ms with a fill for each dot.
+
 ## [1.0.7] - 2026-11-03
 
 ### Changed

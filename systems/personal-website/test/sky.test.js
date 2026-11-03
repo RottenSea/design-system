@@ -3,9 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { landMask } from "../src/components/layout/land.ts";
 import {
-  alphaLevel,
   drawStars,
-  LEVELS,
   landPoints,
   latticeCount,
   latticePoint,
@@ -82,15 +80,4 @@ test("CSS times read as milliseconds", () => {
   assert.equal(milliseconds("350ms"), 350);
   assert.equal(milliseconds(" 0.35s"), 350);
   assert.equal(milliseconds(""), 350);
-});
-
-test("opacities round to one of the steps the dots are drawn in", () => {
-  assert.equal(alphaLevel(0), 0);
-  assert.equal(alphaLevel(1), LEVELS);
-  assert.equal(alphaLevel(1.4), LEVELS);
-  assert.equal(alphaLevel(-0.2), 0);
-  // The globe's faintest dots, at a fifth, keep their own step.
-  assert.equal(alphaLevel(0.2) / LEVELS, 13 / 64);
-  // Never more than half a step off.
-  for (let a = 0; a <= 1; a += 0.001) assert.ok(Math.abs(alphaLevel(a) / LEVELS - a) <= 0.5 / LEVELS + 1e-9);
 });
