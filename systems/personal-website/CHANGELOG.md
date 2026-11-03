@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Footer` puts the link columns from the left, right after the brand column, instead of at the right edge: each as wide as its links, 48px apart, with 72px between the brand and the first. The link columns still set the height, with `brand-extra` level with the end of the longest. Below 768px it is the same as before.
+
+### Fixed
+
+- `ContentGrid` with `mainWidth` below 768px: the rule that puts every column back in the one track was less specific than the ones that place them, so the main column stayed in the second track, with an empty first track and the gap to its left. On a phone, a post's text sat 48px in from the left.
+- `ContentGrid` leaves out a rail whose slot renders nothing. Content given to a slot under a condition that turned out false, such as a post's table of contents when it has no headings, still counted as a rail, so a 280px empty track stayed open beside the main column from 1081px up.
+- `TableScroll` clips what is absolutely positioned inside it. The hidden "(opens in a new tab)" note of a link to another site, in a cell past the right edge, widened the page, and a phone zoomed the whole page out to fit it.
+
 ## [1.0.4] - 2026-11-03
 
 `Footer` looks different with the same props: the brand gets a column of its own, with a new `brand-extra` slot under it. A site needs no other change.

@@ -1,10 +1,13 @@
 ---
 /**
- * The dark footer that closes every page, in both themes: a column on the left with the site's
- * mark and name at the top and whatever the `brand-extra` slot holds (a badge, a short line) at the
- * bottom, level with the end of the links; the columns of links under uppercase micro-labels side
- * by side on the right; and a line across the bottom for the copyright. --surface-dark, 64px of padding above and below, within
- * --container-max. Below 768px the brand column stacks above the links, which go two across. A
+ * The dark footer that closes every page, in both themes: a column with the site's mark and name
+ * at the top and whatever the `brand-extra` slot holds (a badge, a short line) at the bottom, then
+ * a column for each list of links under its uppercase micro-label, all from the left. The link
+ * columns are as wide as their links and close together; a wider space parts them from the brand,
+ * which leads. A line across the bottom holds the copyright. The link columns set the height, and
+ * brand-extra sits level with the end of the longest.
+ * --surface-dark, 64px of padding above and below, within --container-max. Below 768px the brand
+ * column stacks above the links, which go two across. A
  * link to another site opens in a new tab with the arrow and the hidden note the system's other
  * links to other sites have.
  *
@@ -98,12 +101,14 @@ const hasExtra = Astro.slots.has("brand-extra");
     padding: 64px var(--space-lg);
   }
 
-  /* The brand column on the left, the link columns on the right, the note across the bottom. */
+  /* The brand column, then the link columns, from the left; the note across the bottom. The space
+     after the brand is half as wide again as the space between the link columns. */
   .ds-footer__inner {
     align-items: start;
+    column-gap: calc(var(--space-xxl) * 1.5);
     display: grid;
-    gap: var(--space-xxl);
     grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--space-xxl);
     margin: 0 auto;
     max-width: var(--container-max);
   }
@@ -146,9 +151,9 @@ const hasExtra = Astro.slots.has("brand-extra");
   .ds-footer__grid {
     display: grid;
     gap: var(--space-xxl);
-    grid-auto-columns: minmax(8rem, max-content);
+    grid-auto-columns: max-content;
     grid-auto-flow: column;
-    justify-content: end;
+    justify-content: start;
   }
 
   .ds-footer__column {
@@ -198,6 +203,7 @@ const hasExtra = Astro.slots.has("brand-extra");
 
   @media (max-width: 768px) {
     .ds-footer__inner {
+      gap: var(--space-xxl);
       grid-template-columns: minmax(0, 1fr);
     }
 
@@ -205,7 +211,6 @@ const hasExtra = Astro.slots.has("brand-extra");
       gap: var(--space-xl);
       grid-auto-flow: row;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      justify-content: stretch;
     }
   }
 </style>
