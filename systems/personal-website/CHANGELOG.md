@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Starfield` and `DotGlobe` draw at most 60 frames a second, so a 120Hz or 144Hz screen no longer draws twice as often for a sky that moves a few pixels a second. Their stars and dots are filled by opacity, in 64 steps, one path a step, instead of one fill and one colour string each: a frame of DotGlobe's 4,100 dots took 2.0ms instead of 3.6ms in a test at 1280 by 800, twice the CSS pixels. The picture is the same to the eye; where translucent dots overlap over the globe's limb, the overlap is no longer drawn twice.
+
 ## [1.0.5] - 2026-11-03
 
 ### Changed

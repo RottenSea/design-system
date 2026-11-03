@@ -2,7 +2,17 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { landMask } from "../src/components/layout/land.ts";
-import { landPoints, latticeCount, latticePoint, makeStars, milliseconds } from "../src/components/layout/sky.ts";
+import {
+  alphaLevel,
+  FRAME,
+  frameDue,
+  LEVELS,
+  landPoints,
+  latticeCount,
+  latticePoint,
+  makeStars,
+  milliseconds
+} from "../src/components/layout/sky.ts";
 
 /** The lattice point nearest a longitude and latitude, and whether the mask marks it as land. */
 function landAt(mask, lon, lat) {
@@ -59,4 +69,46 @@ test("CSS times read as milliseconds", () => {
   assert.equal(milliseconds("350ms"), 350);
   assert.equal(milliseconds(" 0.35s"), 350);
   assert.equal(milliseconds(""), 350);
+});
+
+test("opacities round to one of the steps the dots are drawn in", () => {
+  assert.equal(alphaLevel(0), 0);
+  assert.equal(alphaLevel(1), LEVELS);
+  assert.equal(alphaLevel(1.4), LEVELS);
+  assert.equal(alphaLevel(-0.2), 0);
+  // The globe's faintest dots, at a fifth, keep their own step.
+  assert.equal(alphaLevel(0.2) / LEVELS, 13 / 64);
+  // Never more than half a step off.
+  for (let a = 0; a <= 1; a += 0.001) assert.ok(Math.abs(alphaLevel(a) / LEVELS - a) <= 0.5 / LEVELS + 1e-9);
+});
+
+/** How many of a screen's frames over one second the sky draws. */
+function drawn(hz) {
+  let due = Number.NEGATIVE_INFINITY;
+  let count = 0;
+  for (let i = 0; i < hz; i++) {
+    const next = frameDue(due, (i * 1000) / hz);
+    if (next !== undefined) {
+      due = next;
+      count++;
+    }
+  }
+  return count;
+}
+
+test("the sky draws at most 60 frames a second, whatever the screen", () => {
+  assert.equal(drawn(60), 60);
+  assert.equal(drawn(120), 60);
+  assert.ok(Math.abs(drawn(144) - 60) <= 1);
+  assert.equal(drawn(30), 30);
+});
+
+test("a frame a little early on a 60Hz screen is still drawn, and a long pause ends at once", () => {
+  assert.ok(frameDue(0, FRAME - 1.5) !== undefined);
+  assert.equal(frameDue(0, FRAME - 3), undefined);
+  // Back on screen after five seconds: drawn now, the next one a frame later, not sooner.
+  const due = frameDue(0, 5000);
+  assert.equal(due, 5000);
+  assert.equal(frameDue(due, 5000 + FRAME / 2), undefined);
+  assert.ok(frameDue(due, 5000 + FRAME) !== undefined);
 });
