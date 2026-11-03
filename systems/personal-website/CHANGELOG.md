@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-11-03
+
+`Footer` looks different with the same props: the brand gets a column of its own, with a new `brand-extra` slot under it. A site needs no other change.
+
 ### Changed
 
 - `Figure` opens its zoom at once, from the image already on the page, instead of waiting for the larger copy to download; the larger copy takes its place when it arrives. The build makes copies 1200, 1800 and 2400px wide (none wider than the image) instead of one at 2400px, and the browser loads the smallest that covers the open image on its screen, starting as soon as the pointer rests on the image or the image takes the focus. The image carries them as `data-ds-zoom` instead of medium-zoom's `data-zoom-src`.
@@ -240,6 +244,7 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
 [unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...HEAD
+[1.0.4]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...personal-website-v1.0.4
 [1.0.3]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.2...personal-website-v1.0.3
 [1.0.2]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.1...personal-website-v1.0.2
 [1.0.1]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.0...personal-website-v1.0.1
