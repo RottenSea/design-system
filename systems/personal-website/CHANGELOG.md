@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `TopNav` puts the site's mark and name in the middle, the links on the left and the actions on the right, all within `--container-max`, so on a wide window the two sides line up with the content. Below 768px the brand moves to the left as the mark alone, with its name kept for screen readers; without a mark in the `logo` slot it keeps the name. The props and slots are the same.
+- `Starfield` and `DotGlobe` draw their stars 1.2 times larger in the light theme, where a dark dot on cream looks smaller than a light one on night; `--ds-sky-star-size` sets the factor. On a theme change the stars' strength and size now move to the new theme's with their colour, instead of waiting for the next resize.
+- `Starfield` and `DotGlobe` stars drift at a speed set by the longer side instead of the width, so on a phone held upright they move about twice as fast as before and as fast as on a wide screen. `period` is the time to cross the longer side.
+
+### Added
+
+- `MiniCalendar` takes an `id`, and a button with `data-ds-calendar-clear` set to it clears the selected day. The calendar shows the button only while a day is selected.
+- `SidebarCard` draws a link or button in its `action` slot as the label's uppercase micro-label, in the muted colour.
+
 ## [1.0.2] - 2026-11-03
 
 ### Changed

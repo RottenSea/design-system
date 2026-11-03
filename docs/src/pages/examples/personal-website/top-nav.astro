@@ -1,5 +1,6 @@
 ---
-import { NavDrawer, TopNav } from "@rottensea/ds-personal-website/components";
+import Logo from "@rottensea/ds-personal-website/assets/logo-colored.svg";
+import { IconButton, NavDrawer, TopNav } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const links = [
@@ -9,7 +10,10 @@ const links = [
 ---
 
 <ExampleLayout title="TopNav" bare>
-  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" menu="example-menu" />
+  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" menu="example-menu">
+    <Logo slot="logo" width={24} height={24} aria-hidden="true" />
+    <IconButton slot="actions" icon="search" label="Search" />
+  </TopNav>
   <NavDrawer
     id="example-menu"
     brand="Field Notes"
@@ -17,7 +21,7 @@ const links = [
     groups={[{ links }, { title: "Elsewhere", links: [{ label: "GitHub", href: "https://github.com/" }] }]}
     note="Written in the evenings."
   />
-  <p class="hint">Make the window narrower than 768px and the links become a menu button.</p>
+  <p class="hint">Make the window narrower than 768px and the links become a menu button, with the mark alone at the left.</p>
 </ExampleLayout>
 
 <style>

@@ -7,7 +7,7 @@ sidebar:
 
 import Example from "../../../../../components/Example.astro";
 
-The nav bar at the top of every page: the site's name, a few links, and actions on the right.
+The nav bar at the top of every page: a few links on the left, the site's mark and name in the middle, and actions on the right.
 
 <Example system="personal-website" name="top-nav" title="TopNav with a NavDrawer" viewport={1280} />
 
@@ -19,6 +19,7 @@ Once on every page, first after the skip link. Keep it to three or four links. A
 
 ```astro
 <TopNav brand="Field Notes" links={[{ label: "Blog", href: "/" }, { label: "About", href: "/about" }]} active="Blog">
+  <Logo slot="logo" width={24} height={24} aria-hidden="true" />
   <ThemeToggle slot="actions" />
 </TopNav>
 ```
@@ -32,7 +33,9 @@ Once on every page, first after the skip link. Keep it to three or four links. A
 
 ## Anatomy
 
-64px tall on the canvas, with no border and no shadow. The site's name in the sans at title size, then the links in the nav-link style: ink for the current page, muted for the rest. Actions sit at the right. Below 768px the links give way to a round menu button.
+64px tall on the canvas, with no border and no shadow. The links sit at the left in the nav-link style: ink for the current page, muted for the rest. In the middle is the mark from the `logo` slot and the site's name in the sans at title size, centred on the window whatever the two sides take. Actions sit at the right. The three stay within `--container-max` (1200px), so on a wide window the links and the actions line up with the content instead of running out to the edges.
+
+Below 768px the links give way to a round menu button at the right, and the brand moves to the left as the mark alone; its name stays for screen readers. Without a mark the name stays in view.
 
 The menu sheet is a panel at the right of the window over a dim scrim: the site's name and a close button, the links in groups under uppercase micro-labels, and an optional note at the bottom.
 
@@ -60,7 +63,7 @@ The links are a `<nav>` named "Site". The menu button says "Menu" and reports wh
 
 ## API
 
-[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro), [`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro), and [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro), the sheet both use. Ported from the handoff. The links are `{ label, href }`. The handoff's sign-in and call-to-action buttons are left out; a site's own buttons go in the `actions` slot. The nav measures the scroll itself instead of taking `scrollProgress`.
+[`TopNav.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/TopNav.astro), [`NavDrawer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/NavDrawer.astro), and [`MenuPanel.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/MenuPanel.astro), the sheet both use. Ported from the handoff. The links are `{ label, href }`. The handoff's sign-in and call-to-action buttons are left out; a site's own buttons go in the `actions` slot. The handoff puts the brand on the left; this system centres it. The nav measures the scroll itself instead of taking `scrollProgress`.
 
 ## Related
 

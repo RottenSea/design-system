@@ -1,10 +1,14 @@
 ---
 /**
- * The nav bar at the top of every page: the site's name on the left, a few links after it, and
- * actions on the right. 64px tall on the canvas, with no border and no shadow; the current
- * page's link is ink and the rest are muted. Below 768px the links give way to a menu button
- * that opens a sheet holding them, so a page with only a TopNav still has working small-screen
- * navigation. A page with grouped navigation mounts a NavDrawer and passes its id as `menu`.
+ * The nav bar at the top of every page: a few links on the left, the site's mark and name in the
+ * middle, and actions on the right. The three stay within the container's 1200px, so on a wide
+ * window the links and the actions line up with the content instead of running out to the edges.
+ * 64px tall on the canvas, with no border and no shadow; the current page's link is ink and the
+ * rest are muted. Below 768px the links give way to a menu button that opens a sheet holding
+ * them, so a page with only a TopNav still has working small-screen navigation, and the brand
+ * moves to the left as the mark alone (the name stays for screen readers); without a mark in the
+ * `logo` slot it keeps the name. A page with grouped navigation mounts a NavDrawer and passes its
+ * id as `menu`.
  *
  * `overlay` is for a page that opens on a full-height band such as QuoteBand: the nav is fixed,
  * takes no height, and starts transparent over the band. Over the first `ramp` pixels of scroll
@@ -14,9 +18,11 @@
  *
  * Ported from the handoff's TopNav.jsx, with links as { label, href } and the current one named
  * by `active`. The nav measures the scroll itself instead of taking `scrollProgress`. Left out:
- * `signInLabel` and `ctaLabel`; a site's own buttons go in the `actions` slot.
+ * `signInLabel` and `ctaLabel`; a site's own buttons go in the `actions` slot. The handoff puts
+ * the brand on the left; this system centres it (2026-11-03).
  *
  *   <TopNav brand="The Key of Urala" links={[{ label: "Blog", href: "/" }]} active="Blog">
+ *     <Logo slot="logo" width={24} height={24} aria-hidden="true" />
  *     <ThemeToggle slot="actions" />
  *   </TopNav>
  */
@@ -64,6 +70,7 @@ const {
   class: className
 } = Astro.props;
 const ownMenu = menu === undefined;
+const hasLogo = Astro.slots.has("logo");
 const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
 ---
 
@@ -73,7 +80,8 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
     {
       "ds-nav--overlay": overlay,
       "ds-nav--over-dark": overlay && overlayTone === "on-dark",
-      "ds-nav--dark": scrolledTone === "dark"
+      "ds-nav--dark": scrolledTone === "dark",
+      "ds-nav--has-logo": hasLogo
     },
     className
   ]}
@@ -82,24 +90,26 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   data-floating={overlay ? "" : undefined}
   style={overlay ? "--ds-nav-p: 0" : undefined}
 >
-  <a class="ds-nav__brand" href={brandHref}>
-    <slot name="logo" />
-    <span class="ds-nav__brand-name">{brand}</span>
-  </a>
-  <nav class:list={["ds-nav__links", { "ds-nav__links--upper": linkStyle === "uppercase" }]} aria-label="Site">
-    {
-      links.map((link) => (
-        <a class="ds-nav__link" href={link.href} aria-current={link.label === active ? "page" : undefined}>
-          {link.label}
-        </a>
-      ))
-    }
-  </nav>
-  <div class="ds-nav__actions">
-    <slot name="actions" />
-    <span class="ds-nav__burger">
-      <IconButton icon="menu" label="Menu" aria-haspopup="dialog" aria-expanded="false" data-ds-menu-open={menuId} />
-    </span>
+  <div class="ds-nav__inner">
+    <a class="ds-nav__brand" href={brandHref}>
+      <slot name="logo" />
+      <span class="ds-nav__brand-name">{brand}</span>
+    </a>
+    <nav class:list={["ds-nav__links", { "ds-nav__links--upper": linkStyle === "uppercase" }]} aria-label="Site">
+      {
+        links.map((link) => (
+          <a class="ds-nav__link" href={link.href} aria-current={link.label === active ? "page" : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="ds-nav__actions">
+      <slot name="actions" />
+      <span class="ds-nav__burger">
+        <IconButton icon="menu" label="Menu" aria-haspopup="dialog" aria-expanded="false" data-ds-menu-open={menuId} />
+      </span>
+    </div>
   </div>
   {
     ownMenu && (
@@ -142,24 +152,40 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
 
 <style>
   .ds-nav {
-    align-items: center;
     background: var(--surface-canvas);
     --ds-nav-ink: var(--text-ink);
     --ds-nav-muted: var(--text-muted);
     color: var(--ds-nav-ink);
     box-sizing: border-box;
-    display: flex;
-    gap: var(--space-xl);
+    display: block;
     height: var(--nav-height);
     padding: 0 var(--space-lg);
+  }
+
+  /* The brand comes first for screen readers and the keyboard, and sits in the middle column.
+     Equal outer columns keep it centred whatever the links and the actions take. */
+  .ds-nav__inner {
+    align-items: center;
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-areas: "links brand actions";
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    height: 100%;
+    margin-inline: auto;
+    max-width: var(--container-max);
   }
 
   .ds-nav__brand {
     align-items: center;
     display: flex;
-    flex: 0 0 auto;
     gap: var(--space-xs);
+    grid-area: brand;
     text-decoration: none;
+  }
+
+  .ds-nav__brand > :global(svg),
+  .ds-nav__brand > :global(img) {
+    flex: 0 0 auto;
   }
 
   .ds-nav__brand-name {
@@ -173,8 +199,9 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   .ds-nav__links {
     align-items: center;
     display: flex;
-    flex: 1;
     gap: var(--space-lg);
+    grid-area: links;
+    justify-self: start;
   }
 
   .ds-nav__link {
@@ -238,9 +265,9 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   .ds-nav__actions {
     align-items: center;
     display: flex;
-    flex: 0 0 auto;
     gap: var(--space-xs);
-    margin-left: auto;
+    grid-area: actions;
+    justify-self: end;
   }
 
   .ds-nav__burger {
@@ -248,12 +275,28 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
   }
 
   @media (max-width: 768px) {
+    .ds-nav__inner {
+      gap: var(--space-md);
+      grid-template-areas: "brand actions";
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
     .ds-nav__links {
       display: none;
     }
 
     .ds-nav__burger {
       display: inline-flex;
+    }
+
+    /* The mark alone; the name is still the link's name. */
+    .ds-nav--has-logo .ds-nav__brand-name {
+      clip-path: inset(50%);
+      height: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+      width: 1px;
     }
   }
 </style>
