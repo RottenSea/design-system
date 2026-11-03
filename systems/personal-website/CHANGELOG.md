@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-11-03
+
 ### Changed
 
 - `Starfield` and `DotGlobe` draw at most 60 frames a second, so a 120Hz or 144Hz screen no longer draws twice as often for a sky that moves a few pixels a second. Their stars and dots are filled by opacity, in 64 steps, one path a step, instead of one fill and one colour string each: a frame of DotGlobe's 4,100 dots took 2.0ms instead of 3.6ms in a test at 1280 by 800, twice the CSS pixels. The picture is the same to the eye; where translucent dots overlap over the globe's limb, the overlap is no longer drawn twice.
@@ -259,7 +261,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.6...HEAD
+[1.0.6]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.5...personal-website-v1.0.6
 [1.0.5]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.4...personal-website-v1.0.5
 [1.0.4]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...personal-website-v1.0.4
 [1.0.3]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.2...personal-website-v1.0.3
