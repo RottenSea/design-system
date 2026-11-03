@@ -1,31 +1,18 @@
 ---
-// The wordmark: the coloured mark and the name in the sans at 500, on the canvas and on the dark
-// surface. The mark is never inverted. The pair is pinned to the light theme's tokens, so it shows a
-// light and a dark ground whatever theme the docs are in.
+// The wordmark: the coloured mark and the name in the sans at 500, on the canvas of the current
+// theme; the link under the example shows the other. The mark is never inverted.
 import Logo from "@rottensea/ds-personal-website/assets/logo-colored.svg";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="Wordmark">
-  <div class="marks" data-theme="light">
-    <div class="mark">
-      <Logo width={26} height={26} aria-hidden="true" />
-      <span class="name">The Key of Urala</span>
-    </div>
-    <div class="mark mark--dark">
-      <Logo width={26} height={26} aria-hidden="true" />
-      <span class="name">The Key of Urala</span>
-    </div>
+  <div class="mark">
+    <Logo width={26} height={26} aria-hidden="true" />
+    <span class="name">The Key of Urala</span>
   </div>
 </ExampleLayout>
 
 <style>
-  .marks {
-    display: grid;
-    gap: var(--space-md);
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  }
-
   .mark {
     align-items: center;
     background: var(--surface-canvas);
@@ -36,19 +23,10 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
     padding: var(--space-lg);
   }
 
-  .mark--dark {
-    background: var(--surface-dark);
-    border-color: transparent;
-  }
-
   .name {
     color: var(--text-ink);
     font-family: var(--font-sans);
     font-size: var(--title-sm-size);
     font-weight: 500;
-  }
-
-  .mark--dark .name {
-    color: var(--text-on-dark);
   }
 </style>

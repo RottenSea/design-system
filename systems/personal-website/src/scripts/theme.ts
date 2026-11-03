@@ -44,6 +44,8 @@ export interface ThemeStore {
 const dev = Boolean((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV);
 let store: ThemeStore | undefined;
 let fadeTimer: number | undefined;
+/** The inline color-scheme <html> had before a fade held it, while one is holding it. */
+let heldScheme: string | undefined;
 let timing: { duration: number; easing: string } | undefined;
 
 /** The page's theme store, made on the first call. */
@@ -95,7 +97,7 @@ function createStore(key: string): ThemeStore {
     state = next;
     if (current() !== next.theme) {
       // The mark goes on before the theme, so the first style change already has the fade.
-      markFade(root);
+      markFade(root, current() ?? previous.theme);
       root.dataset.theme = next.theme;
     }
     for (const listener of listeners) listener(state, previous);
@@ -122,7 +124,7 @@ function createStore(key: string): ThemeStore {
     }
     const previous = state;
     state = { preference: state.preference, theme };
-    markFade(root);
+    markFade(root, previous.theme);
     for (const listener of listeners) listener(state, previous);
   }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
 
@@ -140,13 +142,25 @@ function createStore(key: string): ThemeStore {
   };
 }
 
-/** Marks <html> with data-theme-fade for the fade's time, unless the reader asked for less motion. */
-function markFade(root: HTMLElement) {
+/**
+ * Marks <html> with data-theme-fade for the fade's time, unless the reader asked for less motion.
+ * It also keeps <html>'s color-scheme at the theme being left until the fade is over: while
+ * color-scheme changes under them, Chrome starts every element's colour transition again on each
+ * frame, so text crept a fifth of the way and then jumped when the mark came off, while
+ * backgrounds faded. The scrollbars and form controls, which follow color-scheme, change at the end.
+ */
+function markFade(root: HTMLElement, from: Theme) {
   const fade = themeFade(root);
   if (!fade) return;
   root.dataset.themeFade = "";
+  if (heldScheme === undefined) heldScheme = root.style.colorScheme;
+  root.style.colorScheme = from;
   clearTimeout(fadeTimer);
-  fadeTimer = window.setTimeout(() => delete root.dataset.themeFade, fade.duration + 50);
+  fadeTimer = window.setTimeout(() => {
+    delete root.dataset.themeFade;
+    root.style.colorScheme = heldScheme ?? "";
+    heldScheme = undefined;
+  }, fade.duration + 50);
 }
 
 /**

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Dialog` plays its entrance backwards when it closes, by the close button, the scrim or Escape, with the scrim fading out, and only then closes. With reduced motion it still closes at once.
 - The theme store no longer warns in development when `data-theme` changes on a page whose `<html>` has `data-theme-pinned`: the docs site's examples use it to show one example in the other theme.
 
+### Fixed
+
+- A theme change fades text with everything else again. The `color-scheme` of `<html>` changed at the start of the fade, and while it changes under them Chrome starts every element's colour transition again on each frame, so text crept a fifth of the way and then jumped at the end while backgrounds faded. The theme store now keeps the old `color-scheme` until the fade is over; scrollbars and form controls change then.
+
 ## [1.0.8] - 2026-11-03
 
 ### Fixed
