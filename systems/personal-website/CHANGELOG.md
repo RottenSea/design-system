@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-11-03
+
 ### Changed
 
 - `Footer` puts the link columns from the left, right after the brand column, instead of at the right edge: each as wide as its links, 48px apart, with 72px between the brand and the first. The link columns still set the height, with `brand-extra` level with the end of the longest. Below 768px it is the same as before.
@@ -254,6 +256,7 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
 [unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...HEAD
+[1.0.5]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.4...personal-website-v1.0.5
 [1.0.4]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.3...personal-website-v1.0.4
 [1.0.3]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.2...personal-website-v1.0.3
 [1.0.2]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.1...personal-website-v1.0.2
