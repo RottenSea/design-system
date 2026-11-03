@@ -5,9 +5,11 @@
  * position="absolute" it fills its nearest positioned ancestor instead.
  *
  * The stars are teal, as in the handoff, and stronger on the light canvas so they still show on
- * cream. Set --ds-sky-star (a colour) and --ds-sky-star-strength (a factor on the stars' opacity)
- * on the element or an ancestor to change them; on a theme change they move to the new theme's
- * values over the page's fade. It keeps moving with reduced motion: the drift is slow enough, and
+ * cream. They are also larger there, by 1.2: a dark dot on a light ground looks smaller than the
+ * same light dot on a dark one. Set --ds-sky-star (a colour), --ds-sky-star-strength (a factor on
+ * the stars' opacity) and --ds-sky-star-size (a factor on their radius) on the element or an
+ * ancestor to change them; on a theme change they move to the new theme's values over the page's
+ * fade. It keeps moving with reduced motion: the drift is slow enough, and
  * the site wants its sky alive. It is decoration: hidden from screen readers, and it takes no
  * clicks.
  *
@@ -15,7 +17,7 @@
  */
 
 interface Props {
-  /** Seconds a star at full depth takes to cross the width; the handoff's 140 by default. */
+  /** Seconds a star at full depth takes to cross the longer side; the handoff's 140 by default. */
   period?: number;
   /** One star per this many square pixels; the handoff's 5000 by default. */
   area?: number;
@@ -48,17 +50,14 @@ const { period = 140, area = 5000, position = "fixed", class: className } = Astr
       const period = Number(this.dataset.period) || 140;
       const area = Number(this.dataset.area) || 5000;
       let stars: Star[] = [];
-      const strength = () =>
-        Number.parseFloat(getComputedStyle(this).getPropertyValue("--ds-sky-star-strength")) || 1;
-      let factor = strength();
       this.#stop = runSky(this, canvas, {
         colors: ["--ds-sky-star"],
+        numbers: ["--ds-sky-star-strength", "--ds-sky-star-size"],
         resize: (width, height) => {
           stars = makeStars(width, height, area);
-          factor = strength();
         },
-        draw: (ctx, t, [star], width, height) => {
-          drawStars(ctx, stars, t, { width, height, period }, star, factor);
+        draw: (ctx, t, [star], width, height, [strength, scale]) => {
+          drawStars(ctx, stars, t, { width, height, period }, star, strength, undefined, scale);
         }
       });
     }
@@ -75,6 +74,7 @@ const { period = 140, area = 5000, position = "fixed", class: className } = Astr
   ds-starfield {
     --ds-sky-star: var(--accent-teal);
     --ds-sky-star-strength: 1.6;
+    --ds-sky-star-size: 1.2;
     display: block;
     inset: 0;
     overflow: hidden;
@@ -83,6 +83,7 @@ const { period = 140, area = 5000, position = "fixed", class: className } = Astr
 
   :global([data-theme="dark"]) ds-starfield {
     --ds-sky-star-strength: 1;
+    --ds-sky-star-size: 1;
   }
 
   /* Under the page's content, which needs no z-index of its own. base.css gives <body> the

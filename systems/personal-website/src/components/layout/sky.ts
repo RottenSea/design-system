@@ -80,9 +80,13 @@ export type Rgb = [number, number, number];
 const rgba = ([r, g, b]: Rgb, alpha: number) =>
   `rgba(${r},${g},${b},${Math.max(0, Math.min(1, alpha)).toFixed(3)})`;
 
-/** Where star s is at time t, in ms; stars leave one edge and come back at the other. */
+/**
+ * Where star s is at time t, in ms; stars leave one edge and come back at the other. The speed
+ * follows the longer side, so a tall phone screen drifts as fast as a wide one instead of a
+ * quarter as fast.
+ */
 export function starAt(s: Star, t: number, width: number, height: number, period: number) {
-  const drift = -(t / 1000) * (width / period) * 0.72 * s.depth;
+  const drift = -(t / 1000) * (Math.max(width, height) / period) * 0.72 * s.depth;
   const wrap = (v: number, size: number) => ((v % (size + 40)) + size + 40) % (size + 40) - 20;
   return { x: wrap(s.x + drift, width), y: wrap(s.y - drift * 0.22, height) };
 }
@@ -94,7 +98,9 @@ export function drawStars(
   size: { width: number; height: number; period: number },
   color: Rgb,
   strength: number,
-  hidden?: (x: number, y: number) => boolean
+  hidden?: (x: number, y: number) => boolean,
+  /** A factor on every star's radius. */
+  scale = 1
 ) {
   for (const s of stars) {
     const { x, y } = starAt(s, t, size.width, size.height, size.period);
@@ -102,7 +108,7 @@ export function drawStars(
     const twinkle = 0.65 + 0.35 * Math.sin((t / 1000) * s.speed + s.phase);
     ctx.fillStyle = rgba(color, s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength);
     ctx.beginPath();
-    ctx.arc(x, y, s.radius * (0.7 + 0.5 * s.depth), 0, Math.PI * 2);
+    ctx.arc(x, y, s.radius * (0.7 + 0.5 * s.depth) * scale, 0, Math.PI * 2);
     ctx.fill();
   }
 }
@@ -187,18 +193,30 @@ export function parseColor(ctx: CanvasRenderingContext2D, css: string): Rgb {
 export interface Sky {
   /** The custom properties holding the colours, read again on every theme change. */
   colors: string[];
+  /** Custom properties holding plain numbers, such as factors, read and faded with the colours. */
+  numbers?: string[];
   /** Called with the canvas's new size in CSS pixels. */
   resize(width: number, height: number): void;
-  /** Draws one frame at t ms, with the colours in the order of `colors`. */
-  draw(ctx: CanvasRenderingContext2D, t: number, colors: Rgb[], width: number, height: number): void;
+  /**
+   * Draws one frame at t ms, with the colours in the order of `colors` and the numbers in the
+   * order of `numbers`.
+   */
+  draw(
+    ctx: CanvasRenderingContext2D,
+    t: number,
+    colors: Rgb[],
+    width: number,
+    height: number,
+    numbers: number[]
+  ): void;
 }
 
 /**
  * Runs a sky on a canvas inside host: sizes it to the host at the screen's resolution (at most
  * 2×), and draws a frame whenever the screen refreshes while the host is on screen. It keeps
  * moving when the reader asked for less motion: the sky is slow and the site wants it so. On a
- * theme change the colours move to the new theme's over the page's fade, or at once when the page's
- * colours change at once. Returns a function that stops it all.
+ * theme change the colours and numbers move to the new theme's over the page's fade, or at once when
+ * the page's colours change at once. Returns a function that stops it all.
  */
 export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): () => void {
   const ctx = canvas.getContext("2d");
@@ -216,28 +234,42 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
   let elapsed = 0;
   let last: number | undefined;
 
-  const read = (): Rgb[] => {
+  interface Values {
+    colors: Rgb[];
+    numbers: number[];
+  }
+  const read = (): Values => {
     const style = getComputedStyle(host);
-    return sky.colors.map((name) => parseColor(ctx, style.getPropertyValue(name).trim() || "#000"));
+    return {
+      colors: sky.colors.map((name) => parseColor(ctx, style.getPropertyValue(name).trim() || "#000")),
+      numbers: (sky.numbers ?? []).map((name) => {
+        const value = Number.parseFloat(style.getPropertyValue(name));
+        return Number.isNaN(value) ? 1 : value;
+      })
+    };
   };
-  let colors = read();
-  let tween: { from: Rgb[]; to: Rgb[]; start: number; duration: number } | undefined;
+  let values = read();
+  let tween: { from: Values; to: Values; start: number; duration: number } | undefined;
 
-  const current = (now: number): Rgb[] => {
-    if (!tween) return colors;
+  const current = (now: number): Values => {
+    if (!tween) return values;
+    const { from, to } = tween;
     const k = Math.min(1, (now - tween.start) / tween.duration);
     // Eases out, close to the page's own colour fade.
     const e = 1 - (1 - k) ** 3;
-    const mixed = tween.to.map(
-      (to, i) => to.map((c, j) => Math.round(tween!.from[i][j] + (c - tween!.from[i][j]) * e)) as Rgb
-    );
+    const mix = (a: number, b: number) => a + (b - a) * e;
+    const mixed = {
+      colors: to.colors.map((rgb, i) => rgb.map((c, j) => Math.round(mix(from.colors[i][j], c))) as Rgb),
+      numbers: to.numbers.map((n, i) => mix(from.numbers[i], n))
+    };
     if (k >= 1) tween = undefined;
     return mixed;
   };
 
   const paint = (now: number) => {
     ctx.clearRect(0, 0, width, height);
-    sky.draw(ctx, elapsed, current(now), width, height);
+    const { colors, numbers } = current(now);
+    sky.draw(ctx, elapsed, colors, width, height, numbers);
   };
 
   const tick = (now: number) => {
@@ -276,9 +308,9 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     if (state.theme === previous.theme) return;
     const now = performance.now();
     const from = current(now);
-    colors = read();
+    values = read();
     const duration = calm() ? 0 : milliseconds(getComputedStyle(root).getPropertyValue("--motion-entrance"));
-    tween = duration ? { from, to: colors, start: now, duration } : undefined;
+    tween = duration ? { from, to: values, start: now, duration } : undefined;
     wake();
   });
 

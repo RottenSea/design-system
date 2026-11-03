@@ -8,8 +8,9 @@
  * ancestor instead.
  *
  * Coral dots and glow and teal stars, as in the handoff; the light theme uses the brighter coral
- * so the dots hold up on cream. Set --ds-globe-dot, --ds-globe-halo, --ds-sky-star and
- * --ds-sky-star-strength to change them; on a theme change they move to the new theme's over the
+ * so the dots hold up on cream, and the stars are larger there, as Starfield's are. Set
+ * --ds-globe-dot, --ds-globe-halo, --ds-sky-star, --ds-sky-star-strength and --ds-sky-star-size to
+ * change them; on a theme change they move to the new theme's over the
  * page's fade. It keeps turning with reduced motion, as Starfield keeps drifting. It is
  * decoration: hidden from screen readers, and it takes no clicks.
  *
@@ -18,7 +19,7 @@
 import { landMask } from "./land";
 
 interface Props {
-  /** Seconds for one turn, and for a star at full depth to cross the width; 140 by default. */
+  /** Seconds for one turn, and for a star at full depth to cross the longer side; 140 by default. */
   period?: number;
   /** Degrees between neighbouring dots; the handoff's 1.7 by default. */
   spacing?: number;
@@ -69,21 +70,18 @@ const { count, bits } = landMask(spacing);
       const points = landPoints(Number(this.dataset.count), this.dataset.land ?? "");
       let stars: Star[] = [];
       let globe = globeFor(1, 1, drop);
-      const strength = () =>
-        Number.parseFloat(getComputedStyle(this).getPropertyValue("--ds-sky-star-strength")) || 1;
-      let factor = strength();
       this.#stop = runSky(this, canvas, {
         colors: ["--ds-globe-dot", "--ds-globe-halo", "--ds-sky-star"],
+        numbers: ["--ds-sky-star-strength", "--ds-sky-star-size"],
         resize: (width, height) => {
           globe = globeFor(width, height, drop);
           stars = withStars ? makeStars(width, height) : [];
-          factor = strength();
         },
-        draw: (ctx, t, [dot, halo, star], width, height) => {
+        draw: (ctx, t, [dot, halo, star], width, height, [strength, scale]) => {
           // No stars over the globe's face.
           const { cx, cy, radius } = globe;
           const behind = (x: number, y: number) => Math.hypot(x - cx, y - cy) < radius * 1.02;
-          drawStars(ctx, stars, t, { width, height, period }, star, factor, behind);
+          drawStars(ctx, stars, t, { width, height, period }, star, strength, behind, scale);
           drawGlobe(ctx, points, t, globe, period, dot, halo);
         }
       });
@@ -103,6 +101,7 @@ const { count, bits } = landMask(spacing);
     --ds-globe-halo: var(--coral-500);
     --ds-sky-star: var(--accent-teal);
     --ds-sky-star-strength: 1.6;
+    --ds-sky-star-size: 1.2;
     display: block;
     inset: 0;
     overflow: hidden;
@@ -113,6 +112,7 @@ const { count, bits } = landMask(spacing);
     --ds-globe-dot: var(--coral-700);
     --ds-globe-halo: var(--coral-700);
     --ds-sky-star-strength: 1;
+    --ds-sky-star-size: 1;
   }
 
   /* Under the page's content, as Starfield is. */
