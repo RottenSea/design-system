@@ -146,8 +146,8 @@ export function drawStars(
   color: Rgb,
   strength: number,
   hidden?: (x: number, y: number) => boolean,
-  /** A factor on every star's radius. */
-  scale = 1
+  /** CSS pixels added to every star's radius. */
+  grow = 0
 ) {
   for (const s of stars) {
     const { x, y } = starAt(s, t, size.width, size.height, size.period);
@@ -157,7 +157,7 @@ export function drawStars(
       s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength,
       x,
       y,
-      s.radius * (0.7 + 0.5 * s.depth) * scale
+      s.radius * (0.7 + 0.5 * s.depth) + grow
     );
   }
   starCircles.fill(ctx, color);

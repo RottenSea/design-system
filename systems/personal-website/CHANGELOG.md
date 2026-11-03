@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Starfield` and `DotGlobe` make their stars larger in the light theme by adding 0.3px to every star's radius, instead of multiplying it by 1.2. A dark dot on a light ground looks smaller by about as much for a small dot as for a large one, so the factor did most for the largest stars and almost nothing for the smallest, which grew by 0.06px; now they grow by 0.3px too. The stars still grow over the page's fade on a theme change.
+
+### Removed
+
+- `--ds-sky-star-size`, the factor on the stars' radius. `--ds-sky-star-grow`, a length in px added to it, takes its place.
+
 ## [1.0.6] - 2026-11-03
 
 ### Changed

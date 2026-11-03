@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { landMask } from "../src/components/layout/land.ts";
 import {
   alphaLevel,
+  drawStars,
   FRAME,
   frameDue,
   LEVELS,
@@ -63,6 +64,20 @@ test("the stars are the same for the same size", () => {
   const a = makeStars(800, 500);
   assert.equal(a.length, 80);
   assert.deepEqual(a, makeStars(800, 500));
+});
+
+test("the light theme's growth adds the same pixels to every star", () => {
+  /** Every circle's radius in one drawing, in the order drawn. */
+  const radii = (grow) => {
+    const drawn = [];
+    const ctx = { beginPath() {}, moveTo() {}, fill() {}, arc: (_x, _y, r) => drawn.push(r) };
+    const size = { width: 800, height: 500, period: 140 };
+    drawStars(ctx, makeStars(800, 500), 0, size, [0, 0, 0], 1, undefined, grow);
+    return drawn;
+  };
+  const [plain, grown] = [radii(0), radii(0.3)];
+  assert.equal(grown.length, plain.length);
+  for (const [i, r] of plain.entries()) assert.ok(Math.abs(grown[i] - r - 0.3) < 1e-9);
 });
 
 test("CSS times read as milliseconds", () => {
