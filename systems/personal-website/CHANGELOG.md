@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- `Footer` gives the brand a column of its own on the left, with a new `brand-extra` slot under the mark and name for a badge or a short line; the link columns sit side by side on the right, ending at the right edge; the note stays across the bottom. Below 768px the brand column stacks above the links, two across. The props are the same.
+- `Figure` opens its zoom at once, from the image already on the page, instead of waiting for the larger copy to download; the larger copy takes its place when it arrives. The build makes copies 1200, 1800 and 2400px wide (none wider than the image) instead of one at 2400px, and the browser loads the smallest that covers the open image on its screen, starting as soon as the pointer rests on the image or the image takes the focus. The image carries them as `data-ds-zoom` instead of medium-zoom's `data-zoom-src`.
+
+- `Footer` gives the brand a column of its own on the left, with a new `brand-extra` slot under the mark and name for a badge or a short line; the brand-extra slot sits at the bottom of that column, level with the end of the link columns, which sit side by side on the right, ending at the right edge; the note stays across the bottom. Below 768px the brand column stacks above the links, two across. The props are the same.
 
 ### Fixed
 
