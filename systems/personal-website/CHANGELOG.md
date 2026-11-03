@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `MiniCalendar` takes an `id`, and a button with `data-ds-calendar-clear` set to it clears the selected day. The calendar shows the button only while a day is selected.
 - `SidebarCard` draws a link or button in its `action` slot as the label's uppercase micro-label, in the muted colour.
+- `rehypeDsTaskLists`, a rehype plugin that puts each task list item's checkbox and its text in a `<label>`. GFM gives the checkboxes no name, so a screen reader announced only "checkbox"; now it reads the task. Add it to the site's `rehypePlugins`.
 
 ## [1.0.2] - 2026-11-03
 

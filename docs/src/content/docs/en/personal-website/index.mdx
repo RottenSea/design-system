@@ -54,13 +54,14 @@ const { Content } = await render(post);
 
 Figure makes its placeholders with sharp, which Astro uses for its own images. With pnpm, add `sharp` to the site's own dependencies, because pnpm does not expose the copy Astro installs.
 
-Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, its rehype plugins for heading anchors and links to other sites, and its Shiki transformers so code fences can have a title and highlighted lines:
+Posts write components with directives such as `:::tip`. Add the system's remark plugin to the unified processor so they become components, its rehype plugins for heading anchors, links to other sites and task lists (each checkbox named by its task), and its Shiki transformers so code fences can have a title and highlighted lines:
 
 ```ts
 import { unified } from "@astrojs/markdown-remark";
 import {
   rehypeDsExternalLinks,
   rehypeDsHeadingAnchors,
+  rehypeDsTaskLists,
   remarkDsDirectives,
   shikiTransformers
 } from "@rottensea/ds-personal-website/markdown";
@@ -69,7 +70,11 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkDsDirectives],
-      rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://example.com" }]]
+      rehypePlugins: [
+        rehypeDsHeadingAnchors,
+        [rehypeDsExternalLinks, { site: "https://example.com" }],
+        rehypeDsTaskLists
+      ]
     }),
     shikiConfig: {
       themes: { light: "github-light", dark: "github-dark" },

@@ -41,6 +41,12 @@ export function rehypeDsExternalLinks(options?: {
   note?: string;
 }): (tree: HastRoot) => void;
 
+/**
+ * Puts each task list item's checkbox and its text in a <label>, so the checkbox is named by its
+ * task.
+ */
+export function rehypeDsTaskLists(): (tree: HastRoot) => void;
+
 /** Copies `title="..."` and `showLineNumbers=false` from a code fence's meta onto the <pre>. */
 export function transformerMetaAttributes(): ShikiTransformer;
 
