@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `rehypeDsHeadingAnchors` leaves out headings only screen readers see (`sr-only` or `ds-visually-hidden`), such as the label GFM gives a post's footnotes, whose # link showed above the footnotes with nothing beside it.
+
 ## [1.0.3] - 2026-11-03
 
 TopNav looks different with the same props and slots: the brand moves to the middle, and on a narrow screen to the left as the mark alone, so give it a mark in its `logo` slot. To name task list checkboxes, add `rehypeDsTaskLists` to the site's `rehypePlugins`.

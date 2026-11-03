@@ -30,6 +30,13 @@ test("h2 to h4 get an id and a # link beside them, outside the heading", () => {
   assert.equal(file.data.astro.headings[1].slug, "getting-started");
 });
 
+test("a heading only screen readers see, such as the footnotes' label, gets no # link", () => {
+  const tree = root(element("h2", { id: "footnote-label", className: ["sr-only"] }, [text("Footnotes")]));
+  rehypeDsHeadingAnchors()(tree, new VFile());
+  assert.equal(tree.children[0].tagName, "h2");
+  assert.equal(tree.children[0].properties.id, "footnote-label");
+});
+
 test("an id the author set is kept", () => {
   const tree = root(element("h2", { id: "custom" }, [text("Heading")]));
   rehypeDsHeadingAnchors()(tree, new VFile());

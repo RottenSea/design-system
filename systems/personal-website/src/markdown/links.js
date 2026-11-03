@@ -32,6 +32,10 @@ export function rehypeDsHeadingAnchors({ levels = [2, 3, 4], label = "Link to se
       if (!levels.includes(level) || !parent || index === undefined) return;
       const id = node.properties?.id;
       if (typeof id !== "string") return;
+      // A heading only screen readers see, such as the label GFM gives the footnotes, would show
+      // its link with nothing beside it.
+      const classes = node.properties?.className ?? [];
+      if (classes.includes("sr-only") || classes.includes("ds-visually-hidden")) return;
       const anchor = {
         type: "element",
         tagName: "a",
