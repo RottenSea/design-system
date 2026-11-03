@@ -5,8 +5,6 @@ import { landMask } from "../src/components/layout/land.ts";
 import {
   alphaLevel,
   drawStars,
-  FRAME,
-  frameDue,
   LEVELS,
   landPoints,
   latticeCount,
@@ -95,35 +93,4 @@ test("opacities round to one of the steps the dots are drawn in", () => {
   assert.equal(alphaLevel(0.2) / LEVELS, 13 / 64);
   // Never more than half a step off.
   for (let a = 0; a <= 1; a += 0.001) assert.ok(Math.abs(alphaLevel(a) / LEVELS - a) <= 0.5 / LEVELS + 1e-9);
-});
-
-/** How many of a screen's frames over one second the sky draws. */
-function drawn(hz) {
-  let due = Number.NEGATIVE_INFINITY;
-  let count = 0;
-  for (let i = 0; i < hz; i++) {
-    const next = frameDue(due, (i * 1000) / hz);
-    if (next !== undefined) {
-      due = next;
-      count++;
-    }
-  }
-  return count;
-}
-
-test("the sky draws at most 60 frames a second, whatever the screen", () => {
-  assert.equal(drawn(60), 60);
-  assert.equal(drawn(120), 60);
-  assert.ok(Math.abs(drawn(144) - 60) <= 1);
-  assert.equal(drawn(30), 30);
-});
-
-test("a frame a little early on a 60Hz screen is still drawn, and a long pause ends at once", () => {
-  assert.ok(frameDue(0, FRAME - 1.5) !== undefined);
-  assert.equal(frameDue(0, FRAME - 3), undefined);
-  // Back on screen after five seconds: drawn now, the next one a frame later, not sooner.
-  const due = frameDue(0, 5000);
-  assert.equal(due, 5000);
-  assert.equal(frameDue(due, 5000 + FRAME / 2), undefined);
-  assert.ok(frameDue(due, 5000 + FRAME) !== undefined);
 });

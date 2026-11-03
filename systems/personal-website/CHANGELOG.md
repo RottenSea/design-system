@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `Starfield` and `DotGlobe` make their stars larger in the light theme by adding 0.3px to every star's radius, instead of multiplying it by 1.2. A dark dot on a light ground looks smaller by about as much for a small dot as for a large one, so the factor did most for the largest stars and almost nothing for the smallest, which grew by 0.06px; now they grow by 0.3px too. The stars still grow over the page's fade on a theme change.
+- `Starfield` and `DotGlobe` draw on every screen refresh again, as before 1.0.6. At 60 frames a second the drift stuttered on a screen whose rate is not a multiple of 60, such as 144Hz, where a frame stayed up for two refreshes, then three. The stars and dots are still filled by opacity in 64 steps.
 
 ### Removed
 

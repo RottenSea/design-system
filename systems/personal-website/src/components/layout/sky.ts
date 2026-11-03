@@ -219,23 +219,6 @@ export function drawGlobe(
   globeCircles.fill(ctx, dot);
 }
 
-/** The time between frames at the sky's most, 60 a second: it moves a few pixels a second. */
-export const FRAME = 1000 / 60;
-
-/**
- * Whether the screen's frame at `now` gets drawn, given when the last drawn one was due. Returns
- * when this one counts as due, for the next call, or undefined to skip it. A 60Hz screen draws
- * every frame, allowing 2ms for frames that come a little early; a 120Hz screen every other one;
- * a 144Hz screen five frames in twelve, still 60 a second. After a long pause the next frame is
- * drawn at once.
- */
-export function frameDue(lastDue: number, now: number): number | undefined {
-  if (now - lastDue < FRAME - 2) return undefined;
-  const next = lastDue + FRAME;
-  // More than a frame behind, after a pause: count from now.
-  return now - next >= FRAME ? now : next;
-}
-
 /** A CSS time such as "350ms" or "0.35s" in milliseconds; 350 when there is none. */
 export function milliseconds(time: string): number {
   const value = Number.parseFloat(time);
@@ -279,7 +262,7 @@ export interface Sky {
 
 /**
  * Runs a sky on a canvas inside host: sizes it to the host at the screen's resolution (at most
- * 2×), and draws a frame on each screen refresh, up to 60 a second, while the host is on screen.
+ * 2×), and draws a frame on each screen refresh while the host is on screen.
  * It keeps moving when the reader asked for less motion: the sky is slow and the site wants it so.
  * On a theme change the colours and numbers move to the new theme's over the page's fade, or at
  * once when the page's colours change at once. Returns a function that stops it all.
@@ -338,18 +321,12 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     sky.draw(ctx, elapsed, colors, width, height, numbers);
   };
 
-  // When the last drawn frame was due; frames between are skipped (see frameDue).
-  let due = Number.NEGATIVE_INFINITY;
   const tick = (now: number) => {
     frame = 0;
     if (!visible) return;
     if (last !== undefined) elapsed += now - last;
     last = now;
-    const next = frameDue(due, now);
-    if (next !== undefined) {
-      due = next;
-      paint(now);
-    }
+    paint(now);
     frame = requestAnimationFrame(tick);
   };
   const wake = () => {
