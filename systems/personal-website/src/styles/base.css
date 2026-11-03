@@ -116,20 +116,23 @@
 
   /*
    * A change of theme. The theme store (scripts/theme.ts) marks <html> with data-theme-fade for
-   * --motion-entrance, and meanwhile every element fades its colours over that time in place of
-   * its own transitions, so the whole page changes together: a hover tint would otherwise go at
-   * its own pace while the rest jumped. Reduced motion never sets the mark.
+   * --motion-entrance, and meanwhile <html> alone fades the theme's variables, which tokens.css
+   * registers as colours and lists in --theme-variables. Every element reads them as they blend,
+   * so the whole page changes together without a transition of its own. Elements drop their own
+   * transitions for that time: one would start again on every frame of the fade and lag behind
+   * the rest. Reduced motion never sets the mark.
    */
-  [data-theme-fade],
+  [data-theme-fade] {
+    transition-delay: 0s !important;
+    transition-duration: var(--motion-entrance) !important;
+    transition-property: var(--theme-variables) !important;
+    transition-timing-function: var(--ease-move) !important;
+  }
+
   [data-theme-fade] *,
   [data-theme-fade] *::before,
   [data-theme-fade] *::after {
-    transition-delay: 0s !important;
-    transition-duration: var(--motion-entrance) !important;
-    transition-property:
-      background-color, border-color, box-shadow, caret-color, color, column-rule-color, fill,
-      outline-color, scrollbar-color, stroke, text-decoration-color !important;
-    transition-timing-function: var(--ease-move) !important;
+    transition: none !important;
   }
 
   /*

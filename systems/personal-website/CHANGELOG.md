@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `themeValues(element, names, theme?)` in `scripts/theme`: custom properties as they will be once the theme has settled. While the theme fades, `getComputedStyle()` gives colours partway between the two themes, so Mermaid and SharePoster draw with this instead.
+
 ### Changed
 
+- A theme change fades the theme's colour variables on `<html>` alone, where every element used to get a colour transition of its own. `tokens.css` registers each colour the dark theme changes with `@property`, lists them in `--theme-variables`, and adds `--theme-dark`, 0% in the light theme and 100% in the dark. Every element reads the variables as they blend and drops its own transitions while the fade runs. A large page starts the fade much sooner: on the example post with Mermaid diagrams, KaTeX and code, the first frame came 770ms after the change and the colours jumped to the new theme; now it comes after about 75ms and the colours fade.
+- `CodeBlock`'s tokens and `Switch`'s knob mix their light and dark colours with `color-mix()` by `--theme-dark` instead of picking one with `light-dark()`, so they fade with the rest.
 - `Footer` spaces its columns wider from 769px up: 72px between the link columns instead of 48px, and 96px after the brand column instead of 72px.
 - `Dialog` plays its entrance backwards when it closes, by the close button, the scrim or Escape, with the scrim fading out, and only then closes. With reduced motion it still closes at once.
 - The theme store no longer warns in development when `data-theme` changes on a page whose `<html>` has `data-theme-pinned`: the docs site's examples use it to show one example in the other theme.

@@ -123,8 +123,9 @@ const Tag = label || description ? "label" : "span";
   }
 
   .ds-switch__knob {
-    /* Follows the color-scheme each theme sets, so a subtree pinned to a theme is right too. */
-    background: light-dark(var(--cream-50), var(--cream-300));
+    /* Follows --theme-dark, which each theme sets, so a subtree pinned to a theme is right too,
+       and a theme change fades it with the rest. */
+    background: color-mix(in srgb, var(--cream-50), var(--cream-300) var(--theme-dark));
     border: 1px solid var(--hairline);
     border-radius: var(--radius-full);
     box-shadow: var(--shadow-hover);

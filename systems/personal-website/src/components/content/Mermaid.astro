@@ -32,7 +32,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 </DiagramFrame>
 
 <script>
-  import { fadeIn, themeStore } from "../../scripts/theme";
+  import { fadeIn, themeStore, themeValues } from "../../scripts/theme";
   type Mermaid = (typeof import("mermaid"))["default"];
 
   let library: Promise<Mermaid> | undefined;
@@ -86,17 +86,17 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       const mermaid = await library;
       // Mermaid measures its labels, so it waits for the fonts.
       await document.fonts.ready;
-      const style = getComputedStyle(this);
-      const read = (token: string) => style.getPropertyValue(token).trim();
       const tone = this.dataset.tone === "dark" ? "dark" : "cream";
+      // The theme's colours as they end, not as they are partway through a theme's fade.
+      const read = themeValues(this, [...Object.values(PALETTE[tone]), "--font-sans"]);
       const themeVariables = Object.fromEntries(
-        Object.entries(PALETTE[tone]).map(([name, token]) => [name, read(token)])
+        Object.entries(PALETTE[tone]).map(([name, token]) => [name, read[token]])
       );
       mermaid.initialize({
         startOnLoad: false,
         securityLevel: "strict",
         theme: "base",
-        themeVariables: { ...themeVariables, fontFamily: read("--font-sans"), fontSize: "14px" }
+        themeVariables: { ...themeVariables, fontFamily: read["--font-sans"], fontSize: "14px" }
       });
       try {
         count += 1;

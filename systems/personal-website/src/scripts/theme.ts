@@ -6,10 +6,11 @@
  * one with subscribe(); none of them reads localStorage or the OS itself.
  *
  * A change fades every colour on the page over --motion-entrance: the store marks <html> with
- * data-theme-fade for that long, and base.css gives every element the same colour transition while
- * the mark is there, in place of its own. What a script draws, such as a Mermaid diagram or the
- * share poster, draws again for the new theme and fades in with fadeIn. With reduced motion, in
- * the OS or data-reduce-motion="true", the theme changes at once.
+ * data-theme-fade for that long, and base.css fades the theme's colour variables on <html> alone
+ * while the mark is there; every element reads them as they blend. What a script draws, such as a
+ * Mermaid diagram or the share poster, draws again for the new theme with the colours themeValues
+ * reads, and fades in with fadeIn. With reduced motion, in the OS or data-reduce-motion="true",
+ * the theme changes at once.
  *
  * Something that writes data-theme itself is taken as a change too, so it still fades and the
  * subscribers still hear of it, with a warning in development. The fade can come too late if that
@@ -145,9 +146,9 @@ function createStore(key: string): ThemeStore {
 /**
  * Marks <html> with data-theme-fade for the fade's time, unless the reader asked for less motion.
  * It also keeps <html>'s color-scheme at the theme being left until the fade is over: while
- * color-scheme changes under them, Chrome starts every element's colour transition again on each
- * frame, so text crept a fifth of the way and then jumped when the mark came off, while
- * backgrounds faded. The scrollbars and form controls, which follow color-scheme, change at the end.
+ * color-scheme changed under them, Chrome started colour transitions again on each frame, so text
+ * crept a fifth of the way and then jumped. The scrollbars and form controls, which follow
+ * color-scheme and cannot fade, change at the end.
  */
 function markFade(root: HTMLElement, from: Theme) {
   const fade = themeFade(root);
@@ -177,6 +178,27 @@ export function themeFade(root: HTMLElement = document.documentElement) {
   }
   if (root.dataset.reduceMotion === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
   return timing;
+}
+
+/**
+ * The values of custom properties on element once the theme has settled: in theme, else in the
+ * theme of the nearest data-theme around element. While the theme fades, its colour variables are
+ * partway between the two themes, so a script that draws for the new theme reads them here. A
+ * hidden probe inside element, with its own data-theme, takes them from tokens.css as they end.
+ */
+export function themeValues<Name extends string>(
+  element: Element,
+  names: readonly Name[],
+  theme?: Theme
+): Record<Name, string> {
+  const probe = document.createElement("span");
+  probe.hidden = true;
+  probe.dataset.theme = theme ?? (element.closest<HTMLElement>("[data-theme]")?.dataset.theme === "dark" ? "dark" : "light");
+  element.append(probe);
+  const style = getComputedStyle(probe);
+  const values = Object.fromEntries(names.map((name) => [name, style.getPropertyValue(name).trim()]));
+  probe.remove();
+  return values as Record<Name, string>;
 }
 
 /** Fades a new drawing in over the theme fade's time; resolves at once with reduced motion. */

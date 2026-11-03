@@ -17,24 +17,416 @@ html {
 
 /*
  * A change of theme, as on the personal-website system's pages: the theme store (ThemeSelect.astro)
- * marks <html> with data-theme-fade, and meanwhile every colour fades over the same time and curve.
- * The two values are the system's --motion-entrance and --ease-move, which the store reads here.
+ * marks <html> with data-theme-fade, and meanwhile <html> alone fades Starlight's colour variables,
+ * registered below as colours so the browser can blend them. Every element reads them as they
+ * blend and drops its own transitions for that time, which would start again on every frame and
+ * lag behind. --motion-entrance and --ease-move are the system's, which the store reads here.
+ * Starlight sets --sl-color-gray-7 in the light theme only, and where it is missing LinkCard and
+ * the code frames fall back to gray-6. A registered variable is never missing, so the dark theme
+ * gets gray-6 under that name here.
+ *
+ * The code blocks' colours come from Expressive Code, which sets its own variables on <html> for
+ * each theme: those that are colours of their own, not Starlight's, are registered too. It colours
+ * each token with --0 in the dark theme and --1 in the light; here a token mixes the two by
+ * --theme-dark, which goes from 100% in the dark theme to 0% in the light, so it fades as well.
  */
 :root {
   --motion-entrance: 350ms;
   --ease-move: cubic-bezier(0.4, 0, 0.2, 1);
+  --theme-dark: 100%;
+}
+
+:root[data-theme="light"] {
+  --theme-dark: 0%;
+}
+
+:root:not([data-theme="light"]) {
+  --sl-color-gray-7: var(--sl-color-gray-6);
+}
+
+.expressive-code .ec-line :where(span[style^="--"]:not([class])) {
+  color: color-mix(in srgb, var(--1, var(--0)), var(--0, var(--1)) var(--theme-dark)) !important;
+}
+
+@property --theme-dark {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 100%;
+}
+
+@property --sl-color-white {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-1 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-2 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-3 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-4 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-5 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-6 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-gray-7 {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-black {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-orange-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-orange {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-orange-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-green-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-green {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-green-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-blue-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-blue {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-blue-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-purple-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-purple {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-purple-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-red-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-red {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-red-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-accent-low {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-accent-high {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-text-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-text-invert {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-bg-nav {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-bg-sidebar {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-bg-inline-code {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-bg-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-hairline-light {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-hairline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-hairline-shade {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --sl-color-backdrop-overlay {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-codeBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-codeFg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-codeSelBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-gtrFg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-gtrBrdCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-gtrHlFg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-uiSelBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-uiSelFg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-focusBrd {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-sbThumbCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-sbThumbHoverCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-markBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-markBrdCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-insBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-insDiffIndCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-delBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-tm-delDiffIndCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-frm-shdCol {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+@property --ec-frm-tooltipSuccessBg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  [data-theme-fade],
-  [data-theme-fade] *,
-  [data-theme-fade] *::before,
-  [data-theme-fade] *::after {
+  [data-theme-fade] {
     transition-delay: 0s !important;
     transition-duration: var(--motion-entrance) !important;
     transition-property:
-      background-color, border-color, box-shadow, caret-color, color, column-rule-color, fill,
-      outline-color, scrollbar-color, stroke, text-decoration-color !important;
+      --theme-dark, --sl-color-white, --sl-color-gray-1, --sl-color-gray-2, --sl-color-gray-3,
+      --sl-color-gray-4, --sl-color-gray-5, --sl-color-gray-6, --sl-color-gray-7, --sl-color-black,
+      --sl-color-orange-low, --sl-color-orange, --sl-color-orange-high, --sl-color-green-low,
+      --sl-color-green, --sl-color-green-high, --sl-color-blue-low, --sl-color-blue,
+      --sl-color-blue-high, --sl-color-purple-low, --sl-color-purple, --sl-color-purple-high,
+      --sl-color-red-low, --sl-color-red, --sl-color-red-high, --sl-color-accent-low,
+      --sl-color-accent, --sl-color-accent-high, --sl-color-text, --sl-color-text-accent,
+      --sl-color-text-invert, --sl-color-bg, --sl-color-bg-nav, --sl-color-bg-sidebar,
+      --sl-color-bg-inline-code, --sl-color-bg-accent, --sl-color-hairline-light,
+      --sl-color-hairline, --sl-color-hairline-shade, --sl-color-backdrop-overlay, --ec-codeBg,
+      --ec-codeFg, --ec-codeSelBg, --ec-gtrFg, --ec-gtrBrdCol, --ec-gtrHlFg, --ec-uiSelBg,
+      --ec-uiSelFg, --ec-focusBrd, --ec-sbThumbCol, --ec-sbThumbHoverCol, --ec-tm-markBg,
+      --ec-tm-markBrdCol, --ec-tm-insBg, --ec-tm-insDiffIndCol, --ec-tm-delBg,
+      --ec-tm-delDiffIndCol, --ec-frm-shdCol, --ec-frm-tooltipSuccessBg !important;
     transition-timing-function: var(--ease-move) !important;
+  }
+
+  [data-theme-fade] *,
+  [data-theme-fade] *::before,
+  [data-theme-fade] *::after {
+    transition: none !important;
   }
 }

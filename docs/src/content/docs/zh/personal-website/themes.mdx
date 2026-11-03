@@ -27,7 +27,7 @@ import TokenTable from "../../../../components/TokenTable.astro";
 
 ## 切换
 
-CSS 只看 `data-theme` 属性，没有 `prefers-color-scheme` 查询。页面在 `<head>` 里用一小段脚本，在第一次绘制前给 `<html>` 设好 `data-theme="light"` 或 `data-theme="dark"`，所以不会先闪一下错误的主题。“跟随系统”是存起来的一个偏好，脚本用 `matchMedia` 把它换算成 `light` 或 `dark`，这样页面也能在深色的系统里强制用浅色。切换本身没有过渡：渐变会让页面上所有底色同时动起来。
+CSS 只看 `data-theme` 属性，没有 `prefers-color-scheme` 查询。页面在 `<head>` 里用一小段脚本，在第一次绘制前给 `<html>` 设好 `data-theme="light"` 或 `data-theme="dark"`，所以不会先闪一下错误的主题。“跟随系统”是存起来的一个偏好，脚本用 `matchMedia` 把它换算成 `light` 或 `dark`，这样页面也能在深色的系统里强制用浅色。切换主题时颜色在 `--motion-entrance` 内渐变，做法见[动效](../motion/#切换主题)。
 
 ## 深色主题改了哪些
 

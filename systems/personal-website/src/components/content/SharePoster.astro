@@ -46,7 +46,7 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
 <script>
   import QRCode from "qrcode";
-  import { fadeIn, themeStore } from "../../scripts/theme";
+  import { fadeIn, themeStore, themeValues } from "../../scripts/theme";
 
   interface Poster {
     title: string;
@@ -63,28 +63,31 @@ const { title, description, url, site, date, cover, lazy = false, class: classNa
 
   /** The colours and fonts of the theme the poster sits in, and the light theme's for the QR code. */
   function palette(element: HTMLElement) {
-    const style = getComputedStyle(element);
-    const get = (name: string) => style.getPropertyValue(name).trim();
-    const probe = document.createElement("div");
-    probe.dataset.theme = "light";
-    probe.hidden = true;
-    document.body.append(probe);
-    const light = getComputedStyle(probe);
-    const colors = {
-      canvas: get("--surface-canvas"),
-      card: get("--surface-card"),
-      ink: get("--text-ink"),
-      body: get("--text-body"),
-      muted: get("--text-muted"),
-      hairline: get("--hairline"),
-      coral: get("--color-primary"),
-      serif: get("--font-display"),
-      sans: get("--font-sans"),
-      qrGround: light.getPropertyValue("--surface-canvas").trim(),
-      qrInk: light.getPropertyValue("--text-ink").trim()
+    const get = themeValues(element, [
+      "--surface-canvas",
+      "--surface-card",
+      "--text-ink",
+      "--text-body",
+      "--text-muted",
+      "--hairline",
+      "--color-primary",
+      "--font-display",
+      "--font-sans"
+    ]);
+    const light = themeValues(element, ["--surface-canvas", "--text-ink"], "light");
+    return {
+      canvas: get["--surface-canvas"],
+      card: get["--surface-card"],
+      ink: get["--text-ink"],
+      body: get["--text-body"],
+      muted: get["--text-muted"],
+      hairline: get["--hairline"],
+      coral: get["--color-primary"],
+      serif: get["--font-display"],
+      sans: get["--font-sans"],
+      qrGround: light["--surface-canvas"],
+      qrInk: light["--text-ink"]
     };
-    probe.remove();
-    return colors;
   }
 
   /** Breaks text into lines that fit, between words and between Chinese characters. */

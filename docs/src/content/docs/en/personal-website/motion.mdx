@@ -40,7 +40,9 @@ theme.subscribe((state, previous) => {
 });
 ```
 
-Every change fades every colour on the page together, over `--motion-entrance` with `--ease-move`. The store marks `<html>` with `data-theme-fade` for that time; while the mark is there, `base.css` gives every element the same colour transition in place of its own, so a button's hover tint does not run at its own pace. What a script draws is not a CSS colour: Mermaid diagrams and SharePoster draw again in the new theme and fade the new drawing in over the old one with `fadeIn`, from the same module.
+Every change fades every colour on the page together, over `--motion-entrance` with `--ease-move`. `tokens.css` registers each colour the dark theme changes with `@property`, so the browser can blend it, and lists them in `--theme-variables`. The store marks `<html>` with `data-theme-fade` for that time. While the mark is there, `base.css` transitions those variables on `<html>` alone, and every element reads them as they blend. Elements drop their own transitions meanwhile, because a transition of their own would start again on every frame and fall behind the rest. A colour that picks between a light and a dark value mixes the two with `color-mix()` by `--theme-dark`, which is 0% in the light theme and 100% in the dark, so it fades as well. `light-dark()` would follow `color-scheme`, which cannot fade.
+
+What a script draws is not a CSS colour. Mermaid diagrams and SharePoster read the new theme's colours with `themeValues()`, because `getComputedStyle()` would give them partway through the fade. They draw again and fade the new drawing in over the old one with `fadeIn`, from the same module.
 
 A script that writes `data-theme` itself is still taken as a change, faded and passed to the subscribers, with a warning in development. Its fade can come too late if it reads styles straight after writing, so `set()` is the way.
 

@@ -27,7 +27,7 @@ They are separate. A component's `tone` names a surface within the page, such as
 
 ## Switching
 
-The CSS reads only the `data-theme` attribute; there is no `prefers-color-scheme` query. A page sets `data-theme="light"` or `data-theme="dark"` on `<html>` with a short script in `<head>`, before the first paint, so a page never flashes the wrong theme. "Follow the system" is a stored preference that the script turns into `light` or `dark` with `matchMedia`, which is what lets a page force light against a dark operating system. The switch itself has no transition: a crossfade would put every surface in motion at once.
+The CSS reads only the `data-theme` attribute; there is no `prefers-color-scheme` query. A page sets `data-theme="light"` or `data-theme="dark"` on `<html>` with a short script in `<head>`, before the first paint, so a page never flashes the wrong theme. "Follow the system" is a stored preference that the script turns into `light` or `dark` with `matchMedia`, which is what lets a page force light against a dark operating system. A change of theme fades the colours over `--motion-entrance`; [Motion](../motion/#changing-the-theme) explains how.
 
 ## What the dark theme changes
 
