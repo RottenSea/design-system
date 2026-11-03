@@ -1,0 +1,51 @@
+---
+title: Switch 开关
+description: 拨一下就立刻生效的设置。
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+拨一下就立刻生效的设置。网站上它是 [SettingsMenu](../../settings/settings-menu/) 里的 Reduce motion。
+
+<Example system="personal-website" name="switch" title="网站实际用到的开关：Reduce motion" />
+
+## 什么时候用
+
+马上生效的设置。表单里、要等提交才生效的选择用复选框。
+
+## 在页面里
+
+```astro
+<Switch label="Reduce motion" description="Fades and slides finish at once." />
+```
+
+## 构成
+
+44 × 24 的轨道，打开时是珊瑚色，关着时是细线轨道，上面一个浅色圆钮。旁边的文字说明打开时是什么状态，句首大写，下面可以再加一行说明。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `label`、`description` | 旁边的文字 |
+| `checked` | 一开始就打开 |
+| `disabled` | 不能拨，例如系统已经要求减少动效时 |
+| `tone` | `cream`（默认）或 `dark` |
+
+## 状态
+
+关、开、不可用。拨动时发出 `ds-change` 事件，带上新的状态；也可以直接设置 `checked` 属性。
+
+## 无障碍
+
+角色是 switch，名字是它的文字，点击、空格、回车都能拨。轨道本身已经是 44px 的触摸尺寸。
+
+## API
+
+[`Switch.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/Switch.astro)，从交付包的 Switch.jsx 移植，属性相同，去掉了 `onChange`。
+
+## 相关
+
+[SettingsMenu](../../settings/settings-menu/)、[SegmentedControl](../segmented-control/)。

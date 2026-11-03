@@ -111,11 +111,13 @@ function createStore(key: string): ThemeStore {
     change({ preference, theme: resolve(preference) });
   });
   // Someone wrote data-theme without the store. Following the OS is expected (Starlight does it
-  // itself); anything else gets a warning in development.
+  // itself), and so is a page that shows one part in another theme for a while and marks <html>
+  // with data-theme-pinned (the docs site's examples); anything else gets a warning in development.
   new MutationObserver(() => {
     const theme = current();
     if (!theme || theme === state.theme) return;
-    if (dev && !(state.preference === "system" && theme === resolve("system"))) {
+    const pinned = root.dataset.themePinned !== undefined;
+    if (dev && !pinned && !(state.preference === "system" && theme === resolve("system"))) {
       console.warn("data-theme was changed outside the theme store; use themeStore().set().");
     }
     const previous = state;

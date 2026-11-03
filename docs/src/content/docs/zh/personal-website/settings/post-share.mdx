@@ -11,13 +11,7 @@ import Example from "../../../../../components/Example.astro";
 
 <Example system="personal-website" name="post-share" title="两个按钮，以及对话框里的海报 SharePoster：有封面和没有封面" />
 
-它的部件都能单独用：
-
-<Example system="personal-website" name="buttons" title="Button：主按钮、次按钮、文字按钮；小号和禁用；深色底上的" />
-
-<Example system="personal-website" name="dialog" title="Dialog，从按钮打开" height={420} />
-
-<Example system="personal-website" name="snackbar" title="Snackbar，从按钮显示" height={200} />
+它由 [Button](../../basics/button/)、[Dialog](../../basics/dialog/) 和 [Snackbar](../../basics/snackbar/) 组成，它们各有一页。
 
 ## 什么时候用
 
@@ -28,17 +22,13 @@ import Example from "../../../../../components/Example.astro";
 ```astro
 <PostShare title={title} description={description} url={url} site="Field Notes"
   date="2026-03-04" cover={coverUrl} filename="hairlines" />
-
-<Button variant="secondary" iconLeft="link">Copy link</Button>
-<Dialog id="note" title="A title">…<Fragment slot="actions">…</Fragment></Dialog>
-<Snackbar id="toast" />   <!-- toast.show("Saved") -->
 ```
 
 ## 结构
 
 海报 1080 × 1440，颜色跟着它所在的主题，切换主题时重画：上面按宽度 9:16 放封面，没有封面就是奶油色卡片；标题用衬线字，最多三行；摘要用无衬线字；再是一条细线、网站名、日期、一小段珊瑚色，右边是二维码，始终是浅色方块上的深色码，因为不是所有扫码程序都认得深底浅码。海报是 SharePoster：在 PostShare 里，第一次打开对话框、字体加载好之后才画；单独用时马上画，元素有 `draw()` 和 `blob()`。
 
-Dialog 是从对角线翻转进来的居中卡片。Snackbar 是底部一行字，用反色底。
+两个按钮是小号的次要 [Button](../../basics/button/)；对话框是小号的 [Dialog](../../basics/dialog/)，里面有 Download，浏览器能分享文件时还有 Share；“Link copied” 是 [Snackbar](../../basics/snackbar/)。
 
 ## 类型
 
@@ -46,9 +36,6 @@ Dialog 是从对角线翻转进来的居中卡片。Snackbar 是底部一行字�
 | --- | --- |
 | `cover` | 封面的网址；没有就用奶油色卡片 |
 | `filename` | PNG 的文件名 |
-| `variant`（Button） | `primary`、`secondary`、`secondary-on-dark` 或 `text` |
-| `size`（Dialog） | `sm`（420px）、`md`（560px）或 `lg`（720px） |
-| `depth`（Dialog） | `tilt`、`lift` 或 `none` |
 
 ## 状态
 
@@ -63,8 +50,8 @@ Dialog 是从对角线翻转进来的居中卡片。Snackbar 是底部一行字�
 
 ## API
 
-[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro)、[`SharePoster.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/SharePoster.astro)、[`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro)、[`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro)、[`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro)。Button、Dialog、Snackbar 从交付包移植；交付包没有分享组件。二维码用 `qrcode` 包生成。
+[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro)、[`SharePoster.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/SharePoster.astro)。交付包没有分享组件。二维码用 `qrcode` 包生成。
 
 ## 相关
 
-[PostLicense 版权卡片](../../post/post-license/)。
+[PostLicense 版权卡片](../../post/post-license/)、[Button](../../basics/button/)、[Dialog](../../basics/dialog/)、[Snackbar](../../basics/snackbar/)。

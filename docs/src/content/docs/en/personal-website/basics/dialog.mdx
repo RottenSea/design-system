@@ -1,0 +1,57 @@
+---
+title: Dialog
+description: A modal card over a dimmed page, for the share poster.
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A centred card over a dimmed page. On the site it holds the share poster, opened from Share poster at the end of a post, with Download as its action.
+
+<Example system="personal-website" name="dialog" title="Dialog as the site uses it: the small share dialog, opened from a button" height={420} />
+
+## When to use
+
+For something the reader opened and finishes before going back to the page. Never for a message that needs no answer; that is a [Snackbar](../snackbar/).
+
+## On a page
+
+```astro
+<Button variant="secondary" size="sm" iconLeft="share" data-ds-dialog-open="poster">Share poster</Button>
+<Dialog id="poster" title="Share poster" size="sm">
+  …
+  <Fragment slot="actions"><Button iconLeft="download">Download</Button></Fragment>
+</Dialog>
+```
+
+Any element with `data-ds-dialog-open` set to the dialog's id opens it.
+
+## Anatomy
+
+The canvas, 16px radius, a hairline, 32px padding and the float shadow. The title in the display serif, an optional description under it, the round close button at the top right, the content, then the actions at the bottom right. It scrolls inside rather than growing past the window.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `size` | `sm` (420px), the one the site uses; `md` (560px, default) or `lg` (720px) |
+| `depth` | `tilt` (default): swings in edge-on from the diagonal over 350ms; `lift`, a 200ms settle, for a dialog opened from another; `none` |
+| `tone` | `cream` (default) or `dark` |
+| `showClose` | The close button; on by default |
+
+## States
+
+Opening plays the entrance; closing plays it backwards, with the scrim fading out, before the dialog goes. With reduced motion both finish at once.
+
+## Accessibility
+
+A native modal `<dialog>`: it keeps the focus inside and makes the page behind it inert. Its title names it and the description describes it. Escape, a click on the scrim and the close button close it.
+
+## API
+
+[`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro), ported from the handoff's Dialog.jsx, except `open`, `onClose`, `onConfirm` and the built-in buttons: the content and the actions are slots.
+
+## Related
+
+[PostShare](../../settings/post-share/), [Button](../button/).

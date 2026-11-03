@@ -3,16 +3,11 @@ import { IconButton } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
-<ExampleLayout title="FloatingControls and IconButton">
+<ExampleLayout title="FloatingControls">
+  {/* As a post has them: back to top, and the table of contents on a narrow screen. */}
   <div class="row">
     <IconButton icon="arrow-up" label="Back to top" class="float" />
-    <IconButton icon="moon" label="Switch to dark theme" class="float" />
-    <IconButton icon="menu" label="Menu" />
-    <IconButton icon="x" label="Close" disabled />
-  </div>
-  <div class="row row--dark">
-    <IconButton icon="arrow-up" label="Back to top" tone="dark" />
-    <IconButton icon="sun" label="Switch to light theme" tone="dark" />
+    <IconButton icon="list" label="On this page" class="float" />
   </div>
 </ExampleLayout>
 
@@ -24,10 +19,6 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
     padding: var(--space-sm);
   }
 
-  .row--dark {
-    background: var(--surface-dark);
-    border-radius: var(--radius-lg);
-  }
 
   .row > :global(.float) {
     box-shadow: var(--shadow-float);

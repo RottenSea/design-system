@@ -1,35 +1,32 @@
 ---
-// How a card is set apart: by fill, by a hairline, or, rarely, by a shadow. In both themes, since
-// the hairlines and the dark surface change with the theme.
-import ThemePair from "../../../components/ThemePair.astro";
+// How a card is set apart: by fill, by a hairline, or, rarely, by a shadow. The hairlines and the
+// dark surface change with the theme, which the link under the example switches.
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="Fill, hairline and shadow">
-  <ThemePair>
-    <div class="cards">
-      <div class="card card--fill">
-        <strong>Fill</strong>
-        <span>--surface-card, no border, no shadow</span>
-      </div>
-      <div class="card card--outline">
-        <strong>Hairline</strong>
-        <span>--surface-canvas with --border-hairline</span>
-      </div>
-      <div class="card card--outline card--hover">
-        <strong>Hover</strong>
-        <span>--shadow-hover, on a card under the pointer</span>
-      </div>
-      <div class="card card--outline card--float">
-        <strong>Float</strong>
-        <span>--shadow-float, on something above the page</span>
-      </div>
-      <div class="card card--dark">
-        <strong>Dark</strong>
-        <span>--surface-dark, the emphasis surface</span>
-      </div>
+  <div class="cards">
+    <div class="card card--fill">
+      <strong>Fill</strong>
+      <span>--surface-card, no border, no shadow</span>
     </div>
-  </ThemePair>
+    <div class="card card--outline">
+      <strong>Hairline</strong>
+      <span>--surface-canvas with --border-hairline</span>
+    </div>
+    <div class="card card--outline card--hover">
+      <strong>Hover</strong>
+      <span>--shadow-hover, on a card under the pointer</span>
+    </div>
+    <div class="card card--outline card--float">
+      <strong>Float</strong>
+      <span>--shadow-float, on something above the page</span>
+    </div>
+    <div class="card card--dark">
+      <strong>Dark</strong>
+      <span>--surface-dark, the emphasis surface</span>
+    </div>
+  </div>
 </ExampleLayout>
 
 <style>

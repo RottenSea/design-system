@@ -23,6 +23,6 @@ const long = Array.from({ length: 28 }, (_, i) => `const line${i + 1} = ${i + 1}
 <ExampleLayout title="CodeBlock">
   <CodeBlock code={css} lang="css" filename="src/styles/motion.css" highlightLines={[2]} />
   <CodeBlock code={diff} lang="ts" filename="astro.config.ts" />
-  <CodeBlock code="pnpm add astro" lang="sh" tone="cream" />
+  <CodeBlock code="pnpm add astro" lang="sh" />
   <CodeBlock code={long} lang="js" filename="long.js" caption="A block longer than 20 lines starts folded." />
 </ExampleLayout>

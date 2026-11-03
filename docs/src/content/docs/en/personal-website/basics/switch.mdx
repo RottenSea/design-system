@@ -1,0 +1,51 @@
+---
+title: Switch
+description: A setting that applies the moment it is flipped.
+sidebar:
+  order: 7
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A setting that applies the moment it is flipped. On the site it is Reduce motion in [SettingsMenu](../../settings/settings-menu/).
+
+<Example system="personal-website" name="switch" title="Switch as the site uses it: Reduce motion" />
+
+## When to use
+
+For a setting that takes effect at once. A choice inside a form that is sent later is a checkbox.
+
+## On a page
+
+```astro
+<Switch label="Reduce motion" description="Fades and slides finish at once." />
+```
+
+## Anatomy
+
+A 44 by 24 track, coral when on and a hairline track when off, with a light knob. The label beside it states the on condition in sentence case, with an optional description under it.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `label`, `description` | The text beside it |
+| `checked` | On at the start |
+| `disabled` | Can't be flipped, for example when the system already asks for reduced motion |
+| `tone` | `cream` (default) or `dark` |
+
+## States
+
+Off, on, and disabled. Flipping it sends a `ds-change` event with the new state; `checked` can also be set as a property.
+
+## Accessibility
+
+A switch role with the label as its name, flipped with a click, Space or Enter. The track is already the 44px touch size.
+
+## API
+
+[`Switch.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/Switch.astro), ported from the handoff's Switch.jsx with the same props, except `onChange`.
+
+## Related
+
+[SettingsMenu](../../settings/settings-menu/), [SegmentedControl](../segmented-control/).

@@ -1,0 +1,28 @@
+---
+// Tooltip as the site uses it: the one-line note over a term in a post (Abbreviation), above it.
+import { Tooltip } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Tooltip">
+  <p class="text">
+    The page is rendered on the server, which is
+    <Tooltip label="Server-Side Rendering"><span class="term" tabindex="0">SSR</span></Tooltip>.
+    Point at the term or move the focus to it.
+  </p>
+</ExampleLayout>
+
+<style>
+  /* Room above the line for the tip. */
+  .text {
+    color: var(--text-body);
+    font-size: var(--body-md-size);
+    line-height: var(--body-md-lh);
+    margin: var(--space-xl) 0 0;
+  }
+
+  .term {
+    border-bottom: 1px dotted currentColor;
+    cursor: help;
+  }
+</style>

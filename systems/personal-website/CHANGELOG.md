@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `Footer` spaces its columns wider from 769px up: 72px between the link columns instead of 48px, and 96px after the brand column instead of 72px.
+- `Dialog` plays its entrance backwards when it closes, by the close button, the scrim or Escape, with the scrim fading out, and only then closes. With reduced motion it still closes at once.
+- The theme store no longer warns in development when `data-theme` changes on a page whose `<html>` has `data-theme-pinned`: the docs site's examples use it to show one example in the other theme.
 
 ## [1.0.8] - 2026-11-03
 

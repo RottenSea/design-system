@@ -1,7 +1,6 @@
 ---
 // Coral in its two sanctioned sizes, one control or a whole surface, and the small marks that
-// carry the accent and status colours, in both themes.
-import ThemePair from "../../../components/ThemePair.astro";
+// carry the accent and status colours. The link under the example shows the other theme.
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 import { loadTokens, select } from "../../../lib/tokens";
 
@@ -11,42 +10,40 @@ const markers = select(tokens, ["marker.*"]).filter((token) => !token.id.endsWit
 ---
 
 <ExampleLayout title="Coral and accents">
-  <ThemePair>
-    <div class="coral">
-      <div class="buttons">
-        <span class="button">Subscribe</span>
-        <span class="button button--active">Pressed</span>
-        <span class="button button--disabled">Disabled</span>
-      </div>
-      <p class="text">
-        Read the <span class="link">full changelog</span> before upgrading.
-      </p>
-      <div class="callout">
-        <strong>A whole coral surface</strong>
-        <span>The one place coral is generous: a full-width callout.</span>
-      </div>
-      <div class="dots">
-        {
-          dots.map((dot) => (
-            <span class="dot-label">
-              <span class="dot" style={`background: var(${dot.cssVar})`} />
-              {dot.cssVar}
-            </span>
-          ))
-        }
-      </div>
-      <p class="text">
-        {
-          markers.map((marker, index) => (
-            <>
-              {index > 0 && " "}
-              <mark style={`background: var(${marker.cssVar})`}>{marker.cssVar}</mark>
-            </>
-          ))
-        }
-      </p>
+  <div class="coral">
+    <div class="buttons">
+      <span class="button">Subscribe</span>
+      <span class="button button--active">Pressed</span>
+      <span class="button button--disabled">Disabled</span>
     </div>
-  </ThemePair>
+    <p class="text">
+      Read the <span class="link">full changelog</span> before upgrading.
+    </p>
+    <div class="callout">
+      <strong>A whole coral surface</strong>
+      <span>The one place coral is generous: a full-width callout.</span>
+    </div>
+    <div class="dots">
+      {
+        dots.map((dot) => (
+          <span class="dot-label">
+            <span class="dot" style={`background: var(${dot.cssVar})`} />
+            {dot.cssVar}
+          </span>
+        ))
+      }
+    </div>
+    <p class="text">
+      {
+        markers.map((marker, index) => (
+          <>
+            {index > 0 && " "}
+            <mark style={`background: var(${marker.cssVar})`}>{marker.cssVar}</mark>
+          </>
+        ))
+      }
+    </p>
+  </div>
 </ExampleLayout>
 
 <style>

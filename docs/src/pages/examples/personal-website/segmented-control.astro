@@ -1,0 +1,17 @@
+---
+// SegmentedControl as the site uses it: the theme in the settings panel.
+import { SegmentedControl } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="SegmentedControl">
+  <SegmentedControl
+    label="Theme"
+    value="system"
+    options={[
+      { value: "light", label: "Light" },
+      { value: "dark", label: "Dark" },
+      { value: "system", label: "System" }
+    ]}
+  />
+</ExampleLayout>

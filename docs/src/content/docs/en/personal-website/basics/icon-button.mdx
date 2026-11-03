@@ -1,0 +1,51 @@
+---
+title: IconButton
+description: A round button with one icon, for actions the reader knows by sight.
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A 36px round button with one icon: search and the settings in the nav, the menu on a phone, the theme, back to top, and the close button of a dialog or a panel.
+
+<Example system="personal-website" name="icon-button" title="IconButton as the site uses it: search, settings, menu, theme, back to top and close" />
+
+## When to use
+
+For an action a reader recognises by its icon alone, where a label would crowd the place. Anything less familiar gets a [Button](../button/) with words.
+
+## On a page
+
+```astro
+<IconButton icon="search" label="Search" data-ds-search-open="site-search" />
+```
+
+## Anatomy
+
+A 36px circle with an 18px Tabler outline, the canvas with a hairline; below 768px it grows to the 44px touch target. The icons are `search`, `adjustments`, `menu`, `list`, `sun`, `moon`, `arrow-up` and `x`.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `icon` | One of the icons above |
+| `label` | The accessible name; required, since there is no visible text |
+| `tone` | `canvas` (default), the one the site uses; `dark` for the night surface |
+| `href` | Makes it a link drawn the same way |
+
+## States
+
+Pressed fills it; `disabled` mutes it.
+
+## Accessibility
+
+`label` is its name for screen readers, and a native `<button>` takes the keyboard. The icon is hidden from screen readers.
+
+## API
+
+[`IconButton.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/IconButton.astro), ported from the handoff's IconButton.jsx with the same props.
+
+## Related
+
+[Button](../button/), [TopNav](../../shell/top-nav/), [FloatingControls](../../shell/floating-controls/).

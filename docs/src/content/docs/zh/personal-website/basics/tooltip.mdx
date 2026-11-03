@@ -1,0 +1,52 @@
+---
+title: Tooltip 提示气泡
+description: 反色底的一行说明，出现在它解释的元素上方。
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+出现在元素上方的一行说明。网站上它是文章里术语的说明，由 [Abbreviation](../../components/abbreviation/) 加上去。
+
+<Example system="personal-website" name="tooltip" title="网站实际用到的提示气泡：术语上方的说明" />
+
+## 什么时候用
+
+读者可能想知道、但不知道也不影响的简短解释，例如缩写的全称。读者必须读到的内容写进正文。
+
+## 在页面里
+
+```astro
+<Tooltip label="Server-Side Rendering"><abbr tabindex="0">SSR</abbr></Tooltip>
+```
+
+触发它的元素放在默认插槽里，而且要能获得焦点。
+
+## 构成
+
+反色底，奶油色页面上是深色、深色页面上是奶油色，一行短文字，在触发元素上方。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `placement` | `top`（默认），网站只用这一种；`bottom`、`left` 或 `right` |
+| `tone` | 触发元素所在的底色：`cream`（默认）或 `dark` |
+| `delay` | 鼠标悬停多久才出现，毫秒，默认 120 |
+
+## 状态
+
+鼠标悬停一会儿、键盘聚焦、手指点按都会打开；只淡入淡出，按 Escape 关闭。
+
+## 无障碍
+
+说明是触发元素给读屏软件的描述；键盘聚焦和鼠标悬停一样能打开。
+
+## API
+
+[`Tooltip.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Tooltip.astro)，从交付包的 Tooltip.jsx 移植，属性相同；另外加了点按打开，给手机用。
+
+## 相关
+
+[Abbreviation](../../components/abbreviation/)。

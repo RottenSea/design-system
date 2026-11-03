@@ -13,6 +13,10 @@
  * its narrowest form. `viewport` lays the example out at that width instead and scales it down
  * to fit the column, with a link to open it at full size. `height` gives a whole-page example a
  * fixed window height, at that width, to scroll inside, instead of growing to its content.
+ *
+ * A link under the example shows it in the other theme, this example only, until the docs site's
+ * theme changes or the page is reloaded; nothing is remembered. The full-size link opens the
+ * example in the theme it shows here.
  */
 interface Props {
   system: string;
@@ -40,18 +44,33 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
       style={[viewport && `width: ${viewport}px`, height && `height: ${height}px`].filter(Boolean).join("; ") || undefined}
     ></iframe>
   </div>
-  {
-    viewport && (
-      <a class="full" href={src} target="_blank" rel="noreferrer">
-        {zh ? `按 ${viewport}px 宽打开` : `Open at ${viewport}px`}
-        <span aria-hidden="true"> ↗</span>
-      </a>
-    )
-  }
+  <div class="links">
+    <button
+      class="theme"
+      type="button"
+      data-to-dark={zh ? "切换到深色" : "Show in the dark theme"}
+      data-to-light={zh ? "切换到浅色" : "Show in the light theme"}
+    >
+      {zh ? "切换主题" : "Switch theme"}
+    </button>
+    {
+      viewport && (
+        <a class="full" href={src} target="_blank" rel="noreferrer">
+          {zh ? `按 ${viewport}px 宽打开` : `Open at ${viewport}px`}
+          <span aria-hidden="true"> ↗</span>
+        </a>
+      )
+    }
+  </div>
 </ds-example>
 
 <script>
   import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
+
+  /** What ExampleLayout puts on the example's window. */
+  interface ExampleWindow {
+    dsExample?: { theme(): "light" | "dark"; show(theme: "light" | "dark"): void };
+  }
 
   class DsExample extends HTMLElement {
     connectedCallback() {
@@ -61,9 +80,31 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
       // The store has already written the choice; the example's store reads it on a storage event.
       // The browser's own event follows and finds nothing new.
       const store = themeStore("starlight-theme");
+      const view = () => frame.contentWindow as (Window & typeof globalThis & ExampleWindow) | null;
+      // The example's theme: its own once it has loaded, the docs page's before.
+      const shown = () => view()?.dsExample?.theme() ?? store.get().theme;
+      const toggle = this.querySelector<HTMLButtonElement>(".theme");
+      const label = () => {
+        if (!toggle) return;
+        toggle.textContent = shown() === "dark" ? toggle.dataset.toLight ?? "" : toggle.dataset.toDark ?? "";
+      };
+      label();
+      toggle?.addEventListener("click", () => {
+        view()?.dsExample?.show(shown() === "dark" ? "light" : "dark");
+        label();
+      });
+      frame.addEventListener("load", label);
       store.subscribe(() => {
-        const view = frame.contentWindow as (Window & typeof globalThis) | null;
-        view?.dispatchEvent(new view.StorageEvent("storage", { key: store.key }));
+        const win = view();
+        win?.dispatchEvent(new win.StorageEvent("storage", { key: store.key }));
+        label();
+      });
+      // The full-size page opens in the theme the example shows.
+      const full = this.querySelector<HTMLAnchorElement>(".full");
+      full?.addEventListener("click", () => {
+        const url = new URL(full.href);
+        url.searchParams.set("theme", shown());
+        full.href = url.href;
       });
       const viewport = Number(this.dataset.viewport);
       if (!viewport) return;
@@ -108,9 +149,26 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
     transform-origin: top left;
   }
 
-  .full {
-    display: inline-block;
+  .links {
+    display: flex;
+    flex-wrap: wrap;
     font-size: var(--sl-text-sm);
+    gap: 0.25rem 1rem;
     margin-top: 0.5rem;
+  }
+
+  /* A button, since it changes the example rather than going anywhere, in the look of the links. */
+  .theme {
+    background: none;
+    border: 0;
+    color: var(--sl-color-text-accent);
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    text-decoration: underline;
+  }
+
+  .theme:hover {
+    color: var(--sl-color-white);
   }
 </style>

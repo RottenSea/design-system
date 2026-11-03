@@ -1,0 +1,48 @@
+---
+title: Snackbar
+description: A one-line message at the bottom of the window that leaves by itself.
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Says that something happened, then leaves. On the site it says "Link copied" after Copy link.
+
+<Example system="personal-website" name="snackbar" title="Snackbar as the site uses it: Link copied, after Copy link" height={200} />
+
+## When to use
+
+To confirm an action that has no other visible result. Never for something the reader must act on (that is a [Dialog](../dialog/)) or for form errors.
+
+## On a page
+
+```astro
+<Snackbar id="toast" />
+```
+
+```js
+document.getElementById("toast").show("Link copied");
+```
+
+## Anatomy
+
+One line at the bottom of the window on the inverse surface: a dark bar on a cream page, a cream bar on a dark one. One bar at a time; a second message replaces the first.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `duration` | How long a message stays, in milliseconds; 4000 by default |
+
+## Accessibility
+
+A polite live region: screen readers read the message without moving the focus.
+
+## API
+
+[`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro), ported from the handoff's Snackbar.jsx without its action button, close button and status dot, which nothing on the site uses. `show(message)` shows it.
+
+## Related
+
+[PostShare](../../settings/post-share/).

@@ -1,6 +1,6 @@
 ---
 import Logo from "@rottensea/ds-personal-website/assets/logo-colored.svg";
-import { IconButton, NavDrawer, TopNav } from "@rottensea/ds-personal-website/components";
+import { IconButton, SettingsMenu, TopNav } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const links = [
@@ -10,17 +10,12 @@ const links = [
 ---
 
 <ExampleLayout title="TopNav" bare>
-  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" menu="example-menu">
+  {/* As the site has it: Blog and About, then search and the display settings. */}
+  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog">
     <Logo slot="logo" width={24} height={24} aria-hidden="true" />
     <IconButton slot="actions" icon="search" label="Search" />
+    <SettingsMenu slot="actions" storageKey="ds-docs-example-theme" motionKey="ds-docs-example-motion" />
   </TopNav>
-  <NavDrawer
-    id="example-menu"
-    brand="Field Notes"
-    active="Blog"
-    groups={[{ links }, { title: "Elsewhere", links: [{ label: "GitHub", href: "https://github.com/" }] }]}
-    note="Written in the evenings."
-  />
   <p class="hint">Make the window narrower than 768px and the links become a menu button, with the mark alone at the left.</p>
 </ExampleLayout>
 

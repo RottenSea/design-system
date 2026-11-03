@@ -1,0 +1,52 @@
+---
+title: Tooltip
+description: A one-line note on the inverse surface, over the element it explains.
+sidebar:
+  order: 5
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A one-line note over the element it explains. On the site it is the note of a term in a post, which [Abbreviation](../../components/abbreviation/) puts there.
+
+<Example system="personal-website" name="tooltip" title="Tooltip as the site uses it: the note over a term" />
+
+## When to use
+
+For a short explanation a reader may want but doesn't need, such as the meaning of an abbreviation. Anything the reader must read goes in the text.
+
+## On a page
+
+```astro
+<Tooltip label="Server-Side Rendering"><abbr tabindex="0">SSR</abbr></Tooltip>
+```
+
+The trigger goes in the default slot and must take the focus.
+
+## Anatomy
+
+The inverse surface, dark on a cream page and cream on a dark one, with one short line of text, above the trigger.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `placement` | `top` (default), the one the site uses; `bottom`, `left` or `right` |
+| `tone` | The surface the trigger sits on: `cream` (default) or `dark` |
+| `delay` | The hover delay in milliseconds; 120 by default |
+
+## States
+
+It opens on hover after the delay, on keyboard focus and on a tap, fades only, and closes on Escape.
+
+## Accessibility
+
+The tip is the trigger's description for screen readers, and keyboard focus opens it as hover does.
+
+## API
+
+[`Tooltip.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Tooltip.astro), ported from the handoff's Tooltip.jsx with the same props; a tap opens it too, for phones.
+
+## Related
+
+[Abbreviation](../../components/abbreviation/).

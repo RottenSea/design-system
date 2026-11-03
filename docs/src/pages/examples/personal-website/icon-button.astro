@@ -1,0 +1,26 @@
+---
+// IconButton as the site uses it: search and settings in the nav, the menu on a phone, the theme,
+// back to top, and the close button of a dialog or panel.
+import { IconButton } from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="IconButton">
+  <div class="row">
+    <IconButton icon="search" label="Search" />
+    <IconButton icon="adjustments" label="Settings" />
+    <IconButton icon="menu" label="Menu" />
+    <IconButton icon="moon" label="Dark theme" />
+    <IconButton icon="arrow-up" label="Back to top" />
+    <IconButton icon="x" label="Close" />
+  </div>
+</ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+</style>

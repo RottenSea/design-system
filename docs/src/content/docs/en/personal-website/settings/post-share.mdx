@@ -11,13 +11,7 @@ Two buttons at the end of a post. Copy link copies the address and says so. Shar
 
 <Example system="personal-website" name="post-share" title="The two buttons, then SharePoster, the poster in the dialog, with a cover and without" />
 
-Its parts work on their own:
-
-<Example system="personal-website" name="buttons" title="Button: primary, secondary, text; small and disabled; on the dark surface" />
-
-<Example system="personal-website" name="dialog" title="Dialog, opened from a button" height={420} />
-
-<Example system="personal-website" name="snackbar" title="Snackbar, shown from a button" height={200} />
+It is made of [Button](../../basics/button/), [Dialog](../../basics/dialog/) and [Snackbar](../../basics/snackbar/), each on a page of its own.
 
 ## When to use
 
@@ -28,17 +22,13 @@ Once per post, under the copyright card.
 ```astro
 <PostShare title={title} description={description} url={url} site="Field Notes"
   date="2026-03-04" cover={coverUrl} filename="hairlines" />
-
-<Button variant="secondary" iconLeft="link">Copy link</Button>
-<Dialog id="note" title="A title">…<Fragment slot="actions">…</Fragment></Dialog>
-<Snackbar id="toast" />   <!-- toast.show("Saved") -->
 ```
 
 ## Anatomy
 
 The poster is 1080 by 1440 in the colours of the theme it sits in, drawn again when the theme changes: the cover over the top 9:16 of its width, or the cream card; the title in the display serif, up to three lines; the description in the sans; then a hairline, the site's name, the date, a coral mark, and the QR code at the right, always dark on a light tile, since not every scanner reads a light code on a dark ground. It is SharePoster, which PostShare draws when the dialog first opens, after its fonts have loaded; on its own it draws at once, and its element has `draw()` and `blob()`.
 
-Dialog is a centred card that swings in from the diagonal. Snackbar is one line at the bottom, on the inverse surface.
+The two buttons are small secondary [Buttons](../../basics/button/); the dialog is a small [Dialog](../../basics/dialog/) with Download, and Share when the browser can share files; "Link copied" is a [Snackbar](../../basics/snackbar/).
 
 ## Variants
 
@@ -46,9 +36,6 @@ Dialog is a centred card that swings in from the diagonal. Snackbar is one line 
 | --- | --- |
 | `cover` | The cover's URL; without it, the cream card |
 | `filename` | The PNG's name |
-| `variant` (Button) | `primary`, `secondary`, `secondary-on-dark` or `text` |
-| `size` (Dialog) | `sm` (420px), `md` (560px) or `lg` (720px) |
-| `depth` (Dialog) | `tilt`, `lift` or `none` |
 
 ## States
 
@@ -63,8 +50,8 @@ The poster's canvas is an image named after the post. The dialog is a native mod
 
 ## API
 
-[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro), [`SharePoster.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/SharePoster.astro), [`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro), [`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro) and [`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro). Button, Dialog and Snackbar are ported from the handoff; the handoff has no share component. The QR code comes from the `qrcode` package.
+[`PostShare.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/PostShare.astro) and [`SharePoster.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/SharePoster.astro). The handoff has no share component. The QR code comes from the `qrcode` package.
 
 ## Related
 
-[PostLicense](../../post/post-license/).
+[PostLicense](../../post/post-license/), [Button](../../basics/button/), [Dialog](../../basics/dialog/), [Snackbar](../../basics/snackbar/).

@@ -40,6 +40,8 @@ const Wrapper = bare ? "div" : "main";
     <script is:inline>
       const root = document.documentElement;
       root.dataset.themeKey = "starlight-theme";
+      // The example can be shown in the other theme for a while (see dsExample below).
+      root.dataset.themePinned = "";
       if (window.parent !== window) {
         try {
           root.dataset.theme = window.parent.document.documentElement.dataset.theme === "dark" ? "dark" : "light";
@@ -47,12 +49,14 @@ const Wrapper = bare ? "div" : "main";
           root.dataset.theme = "light";
         }
       } else {
-        // Opened on its own ("Open at 1280px"): the theme picked on the docs site, which Starlight
-        // keeps in localStorage, or else the OS setting.
-        let picked = "";
-        try {
-          picked = localStorage.getItem("starlight-theme") ?? "";
-        } catch {}
+        // Opened on its own ("Open at 1280px"): the theme the example showed on the docs page, or
+        // the one picked on the docs site, which Starlight keeps in localStorage, or else the OS.
+        let picked = new URLSearchParams(location.search).get("theme") ?? "";
+        if (picked !== "light" && picked !== "dark") {
+          try {
+            picked = localStorage.getItem("starlight-theme") ?? "";
+          } catch {}
+        }
         root.dataset.theme =
           picked === "light" || picked === "dark"
             ? picked
@@ -84,6 +88,8 @@ const Wrapper = bare ? "div" : "main";
     <Wrapper class:list={["example", { "example--bare": bare }]}>
       <slot />
     </Wrapper>
+    {/* Shown only when the example is opened on its own, with no docs page around it. */}
+    <button class="example-theme" type="button" hidden>Switch theme</button>
   </body>
 </html>
 
@@ -93,6 +99,34 @@ const Wrapper = bare ? "div" : "main";
   // The example follows the docs site, in a frame or on its own: a choice made there arrives as a
   // storage event under Starlight's key, and the OS is followed while the choice is Auto.
   themeStore();
+
+  // Shows the example in a theme of its own until the docs site's theme next changes. It writes
+  // data-theme without the store, which would save the choice under Starlight's key and so change
+  // the docs site too; the store sees the change and tells the components, which fade as usual.
+  const root = document.documentElement;
+  const dsExample = {
+    theme: (): "light" | "dark" => (root.dataset.theme === "dark" ? "dark" : "light"),
+    show(theme: "light" | "dark") {
+      root.dataset.theme = theme;
+    }
+  };
+  Object.assign(window, { dsExample });
+
+  if (window.parent === window) {
+    const button = document.querySelector<HTMLButtonElement>(".example-theme");
+    if (button) {
+      const label = () => {
+        button.textContent = dsExample.theme() === "dark" ? "Light theme" : "Dark theme";
+      };
+      label();
+      button.hidden = false;
+      button.addEventListener("click", () => {
+        dsExample.show(dsExample.theme() === "dark" ? "light" : "dark");
+        label();
+      });
+      new MutationObserver(label).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    }
+  }
 </script>
 
 <style>
@@ -114,6 +148,26 @@ const Wrapper = bare ? "div" : "main";
      goes under it rather than the docs page behind the iframe. */
   :global(html) {
     background: var(--surface-canvas);
+  }
+
+  /* The theme switch of an example opened on its own, out of the way in a corner. */
+  .example-theme {
+    background: var(--surface-card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-pill);
+    bottom: var(--space-md);
+    box-shadow: var(--shadow-float);
+    color: var(--text-ink);
+    cursor: pointer;
+    font: var(--button-weight) var(--button-size) / 1 var(--font-sans);
+    padding: var(--space-xs) var(--space-md);
+    position: fixed;
+    right: var(--space-md);
+    z-index: 100;
+  }
+
+  .example-theme[hidden] {
+    display: none;
   }
 
   /* In development, Astro's toolbar belongs on the docs page, not in every example. */

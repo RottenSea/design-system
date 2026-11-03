@@ -7,10 +7,15 @@ const long =
 ---
 
 <ExampleLayout title="QuoteBand" bare>
-  <QuoteBand eyebrow="Writing since 2019" attribution="From the 2026 notes" minHeight="420px">
-    Make the small decisions once, then stop deciding.
-  </QuoteBand>
-  <QuoteBand tone="dark" attribution="A longer quote steps down a size" minHeight="420px" hintLabel="none">
-    {long}
-  </QuoteBand>
+  {/* As the home page has it: bare over the page's own ground, one of several quotes at random. */}
+  <QuoteBand
+    tone="bare"
+    overlayTone="ink"
+    eyebrow="Writing since 2019"
+    quotes={[
+      { text: "Make the small decisions once, then stop deciding." },
+      { text: long, attribution: "A longer quote steps down a size" }
+    ]}
+    minHeight="420px"
+  />
 </ExampleLayout>

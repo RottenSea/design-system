@@ -5,7 +5,7 @@ sidebar:
   order: 0
 ---
 
-Each page says when to use the component, how to write it in a post, and what it looks like. The examples run in a frame with only this system's CSS, and follow the light or dark theme of these docs.
+Each page says when to use the component, how to write it in a post, and what it looks like. The examples run in a frame with only this system's CSS, and follow the light or dark theme of these docs; the link under each one shows it in the other theme.
 
 | Component | In a post | What it does |
 | --- | --- | --- |

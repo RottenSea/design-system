@@ -1,0 +1,54 @@
+---
+title: SegmentedControl
+description: Two to four short options, one of them chosen.
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+Two to four short options for how the reader sees the same thing. On the site it is the theme in [SettingsMenu](../../settings/settings-menu/): Light, Dark or System.
+
+<Example system="personal-website" name="segmented-control" title="SegmentedControl as the site uses it: the theme" />
+
+## When to use
+
+For a choice of how something looks, applied at once. More than four options, or options that need sentences, belong in a list.
+
+## On a page
+
+```astro
+<SegmentedControl label="Theme" value="system" options={[
+  { value: "light", label: "Light" }, { value: "dark", label: "Dark" }, { value: "system", label: "System" }
+]} />
+```
+
+## Anatomy
+
+A track on the cream card; the chosen option is raised to the canvas with a hairline, so it reads on the canvas and on a card alike.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `options` | Strings, or `{ value, label }` |
+| `value` | The chosen option |
+| `label` | The group's accessible name |
+| `size` | `md` (default), the one the site uses, or `sm` |
+| `tone` | `cream` (default) or `dark` |
+
+## States
+
+One option is chosen. A choice sends a `ds-change` event with the new value; `select(value)` sets it without one.
+
+## Accessibility
+
+A radio group named by `label`: the arrow keys move the choice and the focus together.
+
+## API
+
+[`SegmentedControl.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/SegmentedControl.astro), ported from the handoff's SegmentedControl.jsx with the same props, except `onChange`. The handoff marks it up as tabs; this is a radio group, since choosing sets a value rather than showing a panel.
+
+## Related
+
+[SettingsMenu](../../settings/settings-menu/), [Switch](../switch/).

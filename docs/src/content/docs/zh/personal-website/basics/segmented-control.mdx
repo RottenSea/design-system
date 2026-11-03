@@ -1,0 +1,54 @@
+---
+title: SegmentedControl 分段控件
+description: 两到四个短选项，选中其中一个。
+sidebar:
+  order: 6
+---
+
+import Example from "../../../../../components/Example.astro";
+
+两到四个短选项，决定读者怎么看同一样东西。网站上它是 [SettingsMenu](../../settings/settings-menu/) 里的主题：Light、Dark 或 System。
+
+<Example system="personal-website" name="segmented-control" title="网站实际用到的分段控件：主题" />
+
+## 什么时候用
+
+选择东西怎么显示，选了立刻生效。超过四个选项，或者选项要用一句话才说得清，就用列表。
+
+## 在页面里
+
+```astro
+<SegmentedControl label="Theme" value="system" options={[
+  { value: "light", label: "Light" }, { value: "dark", label: "Dark" }, { value: "system", label: "System" }
+]} />
+```
+
+## 构成
+
+奶油色卡片底色的轨道；选中的选项浮到页面底色上，加一圈细线，所以放在页面上和卡片上都看得清。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `options` | 字符串，或 `{ value, label }` |
+| `value` | 选中的选项 |
+| `label` | 这组选项给读屏软件的名字 |
+| `size` | `md`（默认），网站只用这一种；或 `sm` |
+| `tone` | `cream`（默认）或 `dark` |
+
+## 状态
+
+总有一个选项被选中。换一个选项时发出 `ds-change` 事件，带上新的值；`select(value)` 也能改，但不发事件。
+
+## 无障碍
+
+是一组单选按钮，名字是 `label`：方向键同时移动选中项和焦点。
+
+## API
+
+[`SegmentedControl.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/SegmentedControl.astro)，从交付包的 SegmentedControl.jsx 移植，属性相同，去掉了 `onChange`。交付包把它写成标签页；这里是单选组，因为选一项是设一个值，不是切换显示一块内容。
+
+## 相关
+
+[SettingsMenu](../../settings/settings-menu/)、[Switch](../switch/)。

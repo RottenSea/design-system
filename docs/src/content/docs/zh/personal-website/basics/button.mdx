@@ -1,0 +1,52 @@
+---
+title: Button 按钮
+description: 带文字的操作，主操作用珊瑚色，旁边的用细线框。
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+带文字的操作。网站上一共四个：文章末尾的 Copy link 和 Share poster，海报对话框里的 Share 和 Download。
+
+<Example system="personal-website" name="buttons" title="网站实际用到的按钮：两个小号次要按钮，然后是 Share 和 Download" />
+
+## 什么时候用
+
+一处只有一个主操作，用 `primary`，例如对话框里的 Download；它旁边的或者单独的操作用 `secondary`。只用图标表示的操作用 [IconButton](../icon-button/)。去别的页面的是链接，不是按钮。
+
+## 在页面里
+
+```astro
+<Button variant="secondary" size="sm" iconLeft="link">Copy link</Button>
+<Button iconLeft="download">Download</Button>
+```
+
+## 构成
+
+高 40px，`size="sm"` 时 32px；窄于 768px 时放大到 44px 的触摸尺寸。文字前后可以带一个 Tabler 图标。`primary` 是珊瑚色底白字；`secondary` 是页面底色加细线框。文字用动词，句首大写，一到三个词。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `variant` | `primary`（默认）或 `secondary`，网站只用这两种；另有 `secondary-on-dark` 用在深色底上，`text` 用在一行文字里 |
+| `size` | `md`（默认）或 `sm` |
+| `iconLeft`、`iconRight` | `link`、`share`、`download` 或 `arrow-right` |
+| `href` | 变成样子相同的链接 |
+
+## 状态
+
+只有按下时的底色，没有悬停样式。`disabled` 时变成细线的颜色，文字变淡。
+
+## 无障碍
+
+是原生的 `<button>`（有 `href` 时是 `<a>`），Tab、回车、空格都照常能用。图标对读屏软件隐藏，按钮的名字就是它的文字。
+
+## API
+
+[`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro)，从交付包的 Button.jsx 移植，属性相同，去掉了 `onClick` 和 `as`。
+
+## 相关
+
+[IconButton](../icon-button/)、[PostShare](../../settings/post-share/)、[Dialog](../dialog/)。

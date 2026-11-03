@@ -1,0 +1,48 @@
+---
+title: Snackbar 消息条
+description: 窗口底部的一行提示，过一会儿自己消失。
+sidebar:
+  order: 4
+---
+
+import Example from "../../../../../components/Example.astro";
+
+告诉读者刚才发生了什么，然后自己消失。网站上，点 Copy link 后它显示 “Link copied”。
+
+<Example system="personal-website" name="snackbar" title="网站实际用到的消息条：点 Copy link 后的 Link copied" height={200} />
+
+## 什么时候用
+
+确认一个没有别的可见结果的操作。需要读者处理的事不用它（那是 [Dialog](../dialog/)），表单错误也不用它。
+
+## 在页面里
+
+```astro
+<Snackbar id="toast" />
+```
+
+```js
+document.getElementById("toast").show("Link copied");
+```
+
+## 构成
+
+窗口底部一行，用反色底：奶油色页面上是深色条，深色页面上是奶油色条。一次只有一条，第二条消息会替换第一条。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `duration` | 一条消息停留多少毫秒，默认 4000 |
+
+## 无障碍
+
+是 polite 的实时区域：读屏软件会读出消息，但不移动焦点。
+
+## API
+
+[`Snackbar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Snackbar.astro)，从交付包的 Snackbar.jsx 移植，去掉了网站用不到的操作按钮、关闭按钮和状态圆点。用 `show(message)` 显示。
+
+## 相关
+
+[PostShare](../../settings/post-share/)。

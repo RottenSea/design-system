@@ -3,7 +3,8 @@
  * The system's one modal surface: a centred card over a dimmed scrim. A top-level dialog swings
  * in edge-on from the (1, 1, 0) diagonal, past flat by 6° and back, over 350ms; a dialog opened
  * from another uses `lift`, a 200ms settle from 1.04; `none` is for one that opens without the
- * reader asking. It is the one component allowed a transform on entrance. Canvas fill, 16px
+ * reader asking. It is the one component allowed a transform on entrance. Closing plays the same
+ * animation backwards, with the scrim fading out, before the dialog goes. Canvas fill, 16px
  * radius, a hairline, 32px padding and --shadow-float; 420, 560 or 720px wide, scrolling inside
  * rather than growing past the window.
  *
@@ -80,12 +81,28 @@ const {
     connectedCallback() {
       const dialog = this.querySelector("dialog");
       if (!dialog) return;
+      // Plays the entrance backwards, then closes. With reduced motion the animations last 1ms
+      // (base.css), so the dialog still closes at once.
+      const close = async () => {
+        if (!dialog.open || dialog.classList.contains("ds-dialog--closing")) return;
+        dialog.classList.add("ds-dialog--closing");
+        const card = dialog.querySelector(".ds-dialog__card");
+        const running = card?.getAnimations() ?? [];
+        await Promise.allSettled(running.map((animation) => animation.finished));
+        dialog.classList.remove("ds-dialog--closing");
+        dialog.close();
+      };
       // The dialog fills the window and is the scrim, so a click on the dialog itself, not
       // inside the card, is a click on the scrim.
       dialog.addEventListener("click", (event) => {
-        if (event.target === dialog) dialog.close();
+        if (event.target === dialog) close();
       });
-      dialog.querySelector("[data-ds-dialog-close]")?.addEventListener("click", () => dialog.close());
+      dialog.querySelector("[data-ds-dialog-close]")?.addEventListener("click", close);
+      // Escape: the browser would close it at once.
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        close();
+      });
     }
   }
 
@@ -156,6 +173,20 @@ const {
     animation: ds-dialog-lift-in 200ms ease-out both;
   }
 
+  /* Closing: the same animations, backwards. They need names of their own: a finished animation
+     given a new direction under the same name jumps to its end instead of playing. */
+  .ds-dialog--closing::backdrop {
+    animation: ds-dialog-scrim-out var(--motion-base) var(--ease-enter) reverse both;
+  }
+
+  .ds-dialog--tilt.ds-dialog--closing .ds-dialog__card {
+    animation: ds-dialog-tilt-out 350ms ease reverse both;
+  }
+
+  .ds-dialog--lift.ds-dialog--closing .ds-dialog__card {
+    animation: ds-dialog-lift-out 200ms ease-out reverse both;
+  }
+
   .ds-dialog__head {
     align-items: flex-start;
     display: flex;
@@ -220,6 +251,12 @@ const {
     }
   }
 
+  @keyframes ds-dialog-scrim-out {
+    from {
+      opacity: 0;
+    }
+  }
+
   @keyframes ds-dialog-tilt-in {
     0% {
       opacity: 0;
@@ -237,6 +274,34 @@ const {
   }
 
   @keyframes ds-dialog-lift-in {
+    0% {
+      opacity: 0;
+      transform: scale(1.04);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-dialog-tilt-out {
+    0% {
+      opacity: 0;
+      transform: rotate3d(1, 1, 0, 90deg);
+    }
+
+    50% {
+      transform: rotate3d(1, 1, 0, -6deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-dialog-lift-out {
     0% {
       opacity: 0;
       transform: scale(1.04);

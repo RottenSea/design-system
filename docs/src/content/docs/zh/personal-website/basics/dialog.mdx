@@ -1,0 +1,57 @@
+---
+title: Dialog 对话框
+description: 压暗页面、居中的一张卡片，网站用它放分享海报。
+sidebar:
+  order: 3
+---
+
+import Example from "../../../../../components/Example.astro";
+
+页面压暗，中间一张卡片。网站上它装着分享海报：在文章末尾点 Share poster 打开，操作是 Download。
+
+<Example system="personal-website" name="dialog" title="网站实际用到的对话框：小号的分享对话框，从按钮打开" height={420} />
+
+## 什么时候用
+
+读者自己打开、做完再回到页面的事。不需要读者回应的消息不用它，用 [Snackbar](../snackbar/)。
+
+## 在页面里
+
+```astro
+<Button variant="secondary" size="sm" iconLeft="share" data-ds-dialog-open="poster">Share poster</Button>
+<Dialog id="poster" title="Share poster" size="sm">
+  …
+  <Fragment slot="actions"><Button iconLeft="download">Download</Button></Fragment>
+</Dialog>
+```
+
+任何元素只要 `data-ds-dialog-open` 写的是对话框的 id，点了就打开它。
+
+## 构成
+
+页面底色，16px 圆角，细线框，32px 内边距，浮起阴影。标题用展示衬线字体，下面可以有一句说明，右上角是圆形关闭按钮，然后是内容，操作按钮在右下角。内容太多时在卡片里面滚动，不会超出窗口。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `size` | `sm`（420px），网站只用这一种；`md`（560px，默认）或 `lg`（720px） |
+| `depth` | `tilt`（默认）：从对角线方向侧着转进来，350ms；`lift`：200ms 轻轻落定，给从另一个对话框打开的用；`none` |
+| `tone` | `cream`（默认）或 `dark` |
+| `showClose` | 关闭按钮，默认显示 |
+
+## 状态
+
+打开时播放进场动画；关闭时把它倒着播一遍，遮罩同时淡出，播完再关。打开减少动效时，两个动画都立刻结束。
+
+## 无障碍
+
+是原生的模态 `<dialog>`：焦点留在里面，后面的页面不能操作。标题是它的名字，说明是它的描述。按 Escape、点遮罩、点关闭按钮都能关。
+
+## API
+
+[`Dialog.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/feedback/Dialog.astro)，从交付包的 Dialog.jsx 移植，去掉了 `open`、`onClose`、`onConfirm` 和自带的按钮：内容和操作按钮都用插槽。
+
+## 相关
+
+[PostShare](../../settings/post-share/)、[Button](../button/)。

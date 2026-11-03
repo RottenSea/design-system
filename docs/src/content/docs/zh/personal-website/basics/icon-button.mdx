@@ -1,0 +1,51 @@
+---
+title: IconButton 图标按钮
+description: 只有一个图标的圆形按钮，给一看就懂的操作用。
+sidebar:
+  order: 2
+---
+
+import Example from "../../../../../components/Example.astro";
+
+36px 的圆形按钮，里面一个图标：导航栏里的搜索和设置、手机上的菜单、主题、回到顶部，以及对话框和面板的关闭按钮。
+
+<Example system="personal-website" name="icon-button" title="网站实际用到的图标按钮：搜索、设置、菜单、主题、回到顶部、关闭" />
+
+## 什么时候用
+
+读者只看图标就知道是什么的操作，而且那里放文字会挤。不那么常见的操作用带文字的 [Button](../button/)。
+
+## 在页面里
+
+```astro
+<IconButton icon="search" label="Search" data-ds-search-open="site-search" />
+```
+
+## 构成
+
+36px 的圆，里面一个 18px 的 Tabler 线条图标，页面底色加细线框；窄于 768px 时放大到 44px 的触摸尺寸。图标有 `search`、`adjustments`、`menu`、`list`、`sun`、`moon`、`arrow-up` 和 `x`。
+
+## 变体
+
+| 属性 | 取值 |
+| --- | --- |
+| `icon` | 上面的图标之一 |
+| `label` | 读屏软件读到的名字，必填，因为按钮上没有文字 |
+| `tone` | `canvas`（默认），网站只用这一种；`dark` 用在深色底上 |
+| `href` | 变成样子相同的链接 |
+
+## 状态
+
+按下时有底色；`disabled` 时变淡。
+
+## 无障碍
+
+`label` 是它给读屏软件的名字，原生的 `<button>` 能用键盘操作。图标对读屏软件隐藏。
+
+## API
+
+[`IconButton.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/IconButton.astro)，从交付包的 IconButton.jsx 移植，属性相同。
+
+## 相关
+
+[Button](../button/)、[TopNav](../../shell/top-nav/)、[FloatingControls](../../shell/floating-controls/)。

@@ -1,0 +1,52 @@
+---
+title: Button
+description: A labelled action, in coral for the main one and with a hairline beside it.
+sidebar:
+  order: 1
+---
+
+import Example from "../../../../../components/Example.astro";
+
+A labelled action. The site has four: Copy link and Share poster at the end of a post, and Share and Download in the poster's dialog.
+
+<Example system="personal-website" name="buttons" title="Button as the site uses it: two small secondary buttons, then Share and Download" />
+
+## When to use
+
+Use `primary` for the one main action in a place, such as Download in the dialog, and `secondary` beside it or on its own. For an action shown only by an icon, use [IconButton](../icon-button/). A link that goes somewhere is a link, not a button.
+
+## On a page
+
+```astro
+<Button variant="secondary" size="sm" iconLeft="link">Copy link</Button>
+<Button iconLeft="download">Download</Button>
+```
+
+## Anatomy
+
+40px high, or 32px with `size="sm"`; below 768px it grows to the 44px touch target. An optional Tabler icon before or after the label. `primary` is coral with white text; `secondary` is the canvas with a hairline. Labels are verbs in sentence case, one to three words.
+
+## Variants
+
+| Prop | Values |
+| --- | --- |
+| `variant` | `primary` (default) or `secondary`, the two the site uses; `secondary-on-dark` and `text` exist for the night surface and a bare action in a line of type |
+| `size` | `md` (default) or `sm` |
+| `iconLeft`, `iconRight` | `link`, `share`, `download` or `arrow-right` |
+| `href` | Makes it a link drawn the same way |
+
+## States
+
+The pressed fill is the only state; there is no hover style. `disabled` flattens it to the hairline colour with a muted label.
+
+## Accessibility
+
+A native `<button>` (or `<a>` with `href`), so Tab, Enter and Space work as usual. The icon is hidden from screen readers; the label names the button.
+
+## API
+
+[`Button.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/buttons/Button.astro), ported from the handoff's Button.jsx with the same props, except `onClick` and `as`.
+
+## Related
+
+[IconButton](../icon-button/), [PostShare](../../settings/post-share/), [Dialog](../dialog/).

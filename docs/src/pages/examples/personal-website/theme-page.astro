@@ -1,30 +1,28 @@
 ---
-// A small page in both themes: the same markup, the same tokens, two readings of one palette.
-import ThemePair from "../../../components/ThemePair.astro";
+// A small page: the same markup and tokens read differently in each theme, which the link under
+// the example switches.
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
-<ExampleLayout title="One page, two themes">
-  <ThemePair>
-    <div class="page">
-      <p class="ds-caption-upper eyebrow">Journal</p>
-      <h2 class="ds-display-sm heading">Notes on a quiet palette</h2>
-      <p class="ds-body-sm body">
-        The surfaces, text and hairlines change with the theme. <span class="link">Coral does not.</span>
-      </p>
-      <div class="cards">
-        <div class="card">
-          <span class="ds-title-sm card__title">Cream card</span>
-          <span class="ds-caption card__note">Set apart by its fill</span>
-        </div>
-        <div class="card card--dark">
-          <span class="ds-title-sm card__title">Dark card</span>
-          <span class="ds-caption card__note">Still one step above the canvas</span>
-        </div>
+<ExampleLayout title="One page in the current theme">
+  <div class="page">
+    <p class="ds-caption-upper eyebrow">Journal</p>
+    <h2 class="ds-display-sm heading">Notes on a quiet palette</h2>
+    <p class="ds-body-sm body">
+      The surfaces, text and hairlines change with the theme. <span class="link">Coral does not.</span>
+    </p>
+    <div class="cards">
+      <div class="card">
+        <span class="ds-title-sm card__title">Cream card</span>
+        <span class="ds-caption card__note">Set apart by its fill</span>
       </div>
-      <span class="button">Subscribe</span>
+      <div class="card card--dark">
+        <span class="ds-title-sm card__title">Dark card</span>
+        <span class="ds-caption card__note">Still one step above the canvas</span>
+      </div>
     </div>
-  </ThemePair>
+    <span class="button">Subscribe</span>
+  </div>
 </ExampleLayout>
 
 <style>

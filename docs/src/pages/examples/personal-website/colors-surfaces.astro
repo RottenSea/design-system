@@ -1,7 +1,6 @@
 ---
-// Every surface with the text colours meant for it, in both themes. The lists come from the token
+// Every surface with the text colours meant for it. The lists come from the token
 // files, so a new surface or text colour shows up here by itself.
-import ThemePair from "../../../components/ThemePair.astro";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 import { loadTokens, select } from "../../../lib/tokens";
 
@@ -14,24 +13,22 @@ const darkText = select(tokens, ["text.on-dark", "text.on-dark-soft"]);
 ---
 
 <ExampleLayout title="Surfaces and text">
-  <ThemePair>
-    <div class="surfaces">
-      {
-        surfaces.map((surface) => (
-          <div class="surface" style={`background: var(${surface.cssVar})`}>
-            <code class="surface__name" style={`color: var(${onDark(surface.id) ? "--text-on-dark-soft" : "--text-muted"})`}>
-              {surface.cssVar}
-            </code>
-            {(onDark(surface.id) ? darkText : creamText).map((text) => (
-              <span class="surface__text" style={`color: var(${text.cssVar})`}>
-                {text.cssVar.replace("--text-", "")}
-              </span>
-            ))}
-          </div>
-        ))
-      }
-    </div>
-  </ThemePair>
+  <div class="surfaces">
+    {
+      surfaces.map((surface) => (
+        <div class="surface" style={`background: var(${surface.cssVar})`}>
+          <code class="surface__name" style={`color: var(${onDark(surface.id) ? "--text-on-dark-soft" : "--text-muted"})`}>
+            {surface.cssVar}
+          </code>
+          {(onDark(surface.id) ? darkText : creamText).map((text) => (
+            <span class="surface__text" style={`color: var(${text.cssVar})`}>
+              {text.cssVar.replace("--text-", "")}
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
 </ExampleLayout>
 
 <style>

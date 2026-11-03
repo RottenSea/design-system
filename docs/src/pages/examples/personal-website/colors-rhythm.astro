@@ -1,6 +1,5 @@
 ---
-// The order of surfaces down a page, in both themes: never the same surface twice in a row.
-import ThemePair from "../../../components/ThemePair.astro";
+// The order of surfaces down a page: never the same surface twice in a row.
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const bands = [
@@ -14,18 +13,16 @@ const bands = [
 ---
 
 <ExampleLayout title="Surface rhythm">
-  <ThemePair>
-    <div class="bands">
-      {
-        bands.map((band) => (
-          <div class="band" style={`background: var(${band.surface}); color: var(${band.text})`}>
-            <span class="band__name">{band.name}</span>
-            <span class="band__use">{band.use}</span>
-          </div>
-        ))
-      }
-    </div>
-  </ThemePair>
+  <div class="bands">
+    {
+      bands.map((band) => (
+        <div class="band" style={`background: var(${band.surface}); color: var(${band.text})`}>
+          <span class="band__name">{band.name}</span>
+          <span class="band__use">{band.use}</span>
+        </div>
+      ))
+    }
+  </div>
 </ExampleLayout>
 
 <style>

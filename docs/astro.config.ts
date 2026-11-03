@@ -86,6 +86,20 @@ export default defineConfig({
             },
             { slug: "personal-website/changelog" },
             {
+              label: "Basics",
+              translations: { "zh-CN": "基础组件" },
+              items: [
+                {
+                  slug: "personal-website/basics",
+                  label: "Overview",
+                  translations: { "zh-CN": "概览" }
+                },
+                ...["button", "icon-button", "dialog", "snackbar", "tooltip", "segmented-control", "switch"].map((name) => ({
+                  slug: `personal-website/basics/${name}`
+                }))
+              ]
+            },
+            {
               label: "Components",
               translations: { "zh-CN": "组件" },
               items: [

@@ -9,7 +9,7 @@ import Example from "../../../../../components/Example.astro";
 
 A round button that opens a small panel with the theme, as Light, Dark or System, and a Reduce motion switch. A choice applies at once and is remembered.
 
-<Example system="personal-website" name="settings-menu" title="The settings button, then its two controls on their own: SegmentedControl and Switch" />
+<Example system="personal-website" name="settings-menu" title="The settings button; press it for the panel" />
 
 ## When to use
 
@@ -26,13 +26,11 @@ Once, at the right end of the nav. It replaces ThemeToggle on a site that also w
 </TopNav>
 ```
 
-SegmentedControl and Switch work on their own too. Both send `ds-change` with the new value, and take a value without an event: `select(value)` and the `checked` property.
-
 ## Anatomy
 
 A 36px IconButton with the `adjustments` icon. Its panel is 280px wide on the canvas with a hairline and `--shadow-float`, under the button with its right edge at the button's, kept inside the window. In it: an uppercase "Theme" label, the SegmentedControl, a soft hairline, then the Switch with a line of description.
 
-SegmentedControl is a track on the cream card; the chosen option is raised to the canvas with a hairline. Switch is a 44 by 24 track, coral when on, with a canvas knob that slides over `--motion-base`.
+The two controls are [SegmentedControl](../../basics/segmented-control/) and [Switch](../../basics/switch/), each on a page of its own.
 
 ## Variants
 
@@ -40,9 +38,7 @@ SegmentedControl is a track on the cream card; the chosen option is raised to th
 | --- | --- |
 | `storageKey`, `motionKey` | The localStorage keys; ThemeScript must read the same ones |
 | `label` | The button's and panel's name, "Display settings" |
-| `size` (SegmentedControl) | `md` (default) or `sm` |
 | `tone` | `cream` or `canvas` (default), or `dark` |
-| `description`, `disabled` (Switch) | A line under the label; a switch that cannot be changed |
 
 ## States
 
@@ -54,12 +50,12 @@ SegmentedControl is a track on the cream card; the chosen option is raised to th
 
 ## Accessibility
 
-The panel is a native popover named "Display settings": a click outside or Escape closes it, and the button's `aria-expanded` follows it. SegmentedControl is a radio group, not tabs, since choosing sets a value rather than showing a panel; the arrow keys move the choice and the focus. Switch is a `role="switch"` button inside its label.
+The panel is a native popover named "Display settings": a click outside or Escape closes it, and the button's `aria-expanded` follows it. SegmentedControl is a radio group and Switch a `role="switch"` button; their pages say more.
 
 ## API
 
-[`SettingsMenu.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SettingsMenu.astro), [`SegmentedControl.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/SegmentedControl.astro) and [`Switch.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/forms/Switch.astro). SegmentedControl and Switch are ported from the handoff, which has no settings panel; this one puts them in a popover the size of its DropdownMenu.
+[`SettingsMenu.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/SettingsMenu.astro). The handoff has no settings panel; this one puts its SegmentedControl and Switch in a popover the size of its DropdownMenu.
 
 ## Related
 
-[ThemeToggle](../../shell/theme-toggle/), [Motion](../../motion/).
+[ThemeToggle](../../shell/theme-toggle/), [SegmentedControl](../../basics/segmented-control/), [Switch](../../basics/switch/), [Motion](../../motion/).

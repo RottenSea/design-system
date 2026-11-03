@@ -1,10 +1,11 @@
 ---
+// Snackbar as the site uses it: "Link copied" after Copy link at the end of a post.
 import { Button, Snackbar } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="Snackbar">
-  <Button variant="secondary" data-show-toast>Show a message</Button>
+  <Button variant="secondary" size="sm" iconLeft="link" data-show-toast>Copy link</Button>
   <Snackbar id="example-toast" />
 </ExampleLayout>
 
