@@ -3,7 +3,7 @@
  * The content page grid: a fixed left rail, the main column, a fixed right rail, capped at the
  * 1200px container. Rails stack their own children with `railGap` and stick below the nav while
  * the main column scrolls. Give only one rail for a two-column page; the missing track is
- * dropped, not left empty.
+ * dropped, not left empty, and so is a rail whose slot renders nothing.
  *
  * Narrower screens lose columns rather than shrink them: below 1080px the right rail is hidden
  * (so it holds nothing a reader needs), and below 768px everything is one column with the main
@@ -63,8 +63,15 @@ const {
   class: className
 } = Astro.props;
 
-const hasLeft = Astro.slots.has("left");
-const hasRight = Astro.slots.has("right");
+// A rail is there only if its slot renders something. Astro.slots.has is true for content given
+// under a condition that turned out false, such as {hasToc && <Fragment slot="right">…}, which
+// would keep an empty rail's track open beside the main column.
+const render = async (name: "left" | "right") =>
+  Astro.slots.has(name) ? (await Astro.slots.render(name)).trim() : "";
+const leftHtml = await render("left");
+const rightHtml = await render("right");
+const hasLeft = leftHtml !== "";
+const hasRight = rightHtml !== "";
 const side = (has: boolean, width: string | number) => (has ? `minmax(${px(width)}, 1fr)` : "minmax(0, 1fr)");
 const columns = mainWidth
   ? `${side(hasLeft, leftWidth)} minmax(0, ${px(mainWidth)}) ${side(hasRight, rightWidth)}`
@@ -97,7 +104,7 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
   {
     hasLeft && (
       <aside class:list={["ds-cgrid__rail", { "ds-cgrid__rail--sticky": sticks("left") }]} data-rail="left">
-        <slot name="left" />
+        <Fragment set:html={leftHtml} />
       </aside>
     )
   }
@@ -107,7 +114,7 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
   {
     hasRight && (
       <aside class:list={["ds-cgrid__rail", { "ds-cgrid__rail--sticky": sticks("right") }]} data-rail="right">
-        <slot name="right" />
+        <Fragment set:html={rightHtml} />
       </aside>
     )
   }
@@ -181,7 +188,9 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
       order: 1;
     }
 
-    .ds-cgrid[data-centred] > * {
+    /* As specific as the rules that place the columns, so it wins over them: with `> *` the main
+       column stayed in track 2, beside an empty track 1 and the gap. */
+    .ds-cgrid[data-centred] > :is(.ds-cgrid__main, .ds-cgrid__rail) {
       grid-column: auto;
       justify-self: stretch;
       width: auto;
