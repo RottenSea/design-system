@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Footer` gives the brand a column of its own on the left, with a new `brand-extra` slot under the mark and name for a badge or a short line; the link columns sit side by side on the right, ending at the right edge; the note stays across the bottom. Below 768px the brand column stacks above the links, two across. The props are the same.
+
 ### Fixed
 
 - `rehypeDsHeadingAnchors` leaves out headings only screen readers see (`sr-only` or `ds-visually-hidden`), such as the label GFM gives a post's footnotes, whose # link showed above the footnotes with nothing beside it.

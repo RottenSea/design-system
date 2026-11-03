@@ -1,4 +1,5 @@
 ---
+import Logo from "@rottensea/ds-personal-website/assets/logo-colored.svg";
 import { Footer } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
@@ -21,5 +22,15 @@ const columns = [
 ---
 
 <ExampleLayout title="Footer" bare>
-  <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes. Posts are CC BY 4.0." />
+  <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes. Posts are CC BY 4.0.">
+    <Logo slot="logo" width={24} height={24} aria-hidden="true" />
+    <p slot="brand-extra" class="extra">Written in the evenings.</p>
+  </Footer>
 </ExampleLayout>
+
+<style>
+  .extra {
+    font-size: var(--body-sm-size);
+    margin: 0;
+  }
+</style>

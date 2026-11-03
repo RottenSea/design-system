@@ -22,14 +22,17 @@ import Example from "../../../../../components/Example.astro";
   brand="Field Notes"
   columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
   note="© 2026 Field Notes."
-/>
+>
+  <Logo slot="logo" width={24} height={24} aria-hidden="true" />
+  <img slot="brand-extra" src="/badge.svg" alt="Written by a person" width="131" height="42" />
+</Footer>
 ```
 
-那一行里要放链接时，改用 `note` 插槽。
+`logo` 插槽在网站名前面放标志；`brand-extra` 插槽在它们下面，放徽章或一行短字。那一行说明里要放链接时，改用 `note` 插槽。
 
 ## 结构
 
-底色 `--surface-dark`，上下各 64px。网站名，下面最多四列链接，列名是大写小字，最下面一条细线上是那一行说明。
+底色 `--surface-dark`，上下各 64px，宽度不超过 `--container-max`。左边单独一列：标志和网站名，下面是 `brand-extra` 插槽。右边是并排的几列链接，列名是大写小字，靠右对齐。最下面一条细线上是那一行说明，横跨整个宽度。窄于 768px 时品牌那一列在上，链接在下面，两列一行。
 
 ## 状态
 
@@ -45,7 +48,7 @@ import Example from "../../../../../components/Example.astro";
 
 ## API
 
-[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro)。从交付包移植，链接写成 `{ label, href }`。交付包在任何宽度下都是四列，这里按 ContentGrid 的断点减少列数。交付包那一行用的 `--text-muted-soft` 在深色主题的页脚上只有 3.5:1，所以换成了 `--text-on-dark-soft`。
+[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro)。从交付包移植，链接写成 `{ label, href }`。交付包把网站名放在四列链接上面，这里让品牌单独占左边一列。交付包那一行用的 `--text-muted-soft` 在深色主题的页脚上只有 3.5:1，所以换成了 `--text-on-dark-soft`。
 
 ## 相关
 

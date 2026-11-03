@@ -22,14 +22,17 @@ Once, at the end of every page.
   brand="Field Notes"
   columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
   note="© 2026 Field Notes."
-/>
+>
+  <Logo slot="logo" width={24} height={24} aria-hidden="true" />
+  <img slot="brand-extra" src="/badge.svg" alt="Written by a person" width="131" height="42" />
+</Footer>
 ```
 
-A note with links in it goes in the `note` slot instead.
+The `logo` slot puts a mark before the name; the `brand-extra` slot goes under them, for a badge or a short line. A note with links in it goes in the `note` slot instead.
 
 ## Anatomy
 
-`--surface-dark` with 64px above and below. The site's name, then up to four columns under uppercase micro-labels, then the note above a hairline.
+`--surface-dark` with 64px above and below, within `--container-max`. On the left, a column of its own with the mark and the site's name and, under them, the `brand-extra` slot. On the right, the columns of links side by side under uppercase micro-labels, ending at the right edge. Across the bottom, the note above a hairline. Below 768px the brand column stacks above the links, which go two across.
 
 ## States
 
@@ -45,7 +48,7 @@ Each column is a `<nav>` named by its title. A link to another site opens a new 
 
 ## API
 
-[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro). Ported from the handoff, with links as `{ label, href }`. The handoff keeps four columns at every width; here they follow ContentGrid's breakpoints. The handoff's note colour, `--text-muted-soft`, is 3.5:1 on the footer in the dark theme, so the note uses `--text-on-dark-soft`.
+[`Footer.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/layout/Footer.astro). Ported from the handoff, with links as `{ label, href }`. The handoff puts the name above four columns of links at every width; here the brand has a column of its own beside them. The handoff's note colour, `--text-muted-soft`, is 3.5:1 on the footer in the dark theme, so the note uses `--text-on-dark-soft`.
 
 ## Related
 

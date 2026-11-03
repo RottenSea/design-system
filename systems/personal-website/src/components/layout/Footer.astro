@@ -1,19 +1,25 @@
 ---
 /**
- * The dark footer that closes every page, in both themes: the site's name, up to four columns of
- * links under uppercase micro-labels, and a line at the bottom for the copyright. --surface-dark,
- * 64px of padding above and below. The columns are four across, two below 1080px and one below
- * 768px. A link to another site opens in a new tab with the arrow and the hidden note the
- * system's other links to other sites have.
+ * The dark footer that closes every page, in both themes: a column on the left with the site's
+ * mark and name, and under them whatever the `brand-extra` slot holds (a badge, a short line); the
+ * columns of links under uppercase micro-labels side by side on the right; and a line across the
+ * bottom for the copyright. --surface-dark, 64px of padding above and below, within
+ * --container-max. Below 768px the brand column stacks above the links, which go two across. A
+ * link to another site opens in a new tab with the arrow and the hidden note the system's other
+ * links to other sites have.
  *
  * Ported from the handoff's Footer.jsx with the same props, with links as { label, href } and
- * `onNavigate` left out. The handoff fixes four columns at every width; the two narrower steps
- * follow ContentGrid's breakpoints. `note` can also be a slot, for a line with links in it. The
+ * `onNavigate` left out. The handoff puts the name above four columns of links; this system gives
+ * the brand a column of its own beside them (2026-11-03). `note` can also be a slot, for a line
+ * with links in it. The
  * note is --text-on-dark-soft rather than the handoff's --text-muted-soft, which is 3.5:1 on the
  * footer in the dark theme.
  *
  *   <Footer brand="The Key of Urala" columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
- *     note="© 2026 …" />
+ *     note="© 2026 …">
+ *     <Logo slot="logo" width={24} height={24} aria-hidden="true" />
+ *     <img slot="brand-extra" src="/badge.svg" alt="…" width="131" height="42" />
+ *   </Footer>
  */
 import type { MenuLink } from "./MenuPanel.astro";
 
@@ -33,13 +39,23 @@ interface Props {
 const { brand, columns = [], note, class: className } = Astro.props;
 const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href) && !href.startsWith("mailto:");
 const hasNote = note !== undefined || Astro.slots.has("note");
+const hasExtra = Astro.slots.has("brand-extra");
 ---
 
 <footer class:list={["ds-footer", className]}>
   <div class="ds-footer__inner">
-    <div class="ds-footer__brand">
-      <slot name="logo" />
-      <span class="ds-footer__brand-name">{brand}</span>
+    <div class="ds-footer__lead">
+      <div class="ds-footer__brand">
+        <slot name="logo" />
+        <span class="ds-footer__brand-name">{brand}</span>
+      </div>
+      {
+        hasExtra && (
+          <div class="ds-footer__extra">
+            <slot name="brand-extra" />
+          </div>
+        )
+      }
     </div>
     {
       columns.length > 0 && (
@@ -82,18 +98,39 @@ const hasNote = note !== undefined || Astro.slots.has("note");
     padding: 64px var(--space-lg);
   }
 
+  /* The brand column on the left, the link columns on the right, the note across the bottom. */
   .ds-footer__inner {
-    display: flex;
-    flex-direction: column;
+    align-items: start;
+    display: grid;
     gap: var(--space-xxl);
+    grid-template-columns: auto minmax(0, 1fr);
     margin: 0 auto;
     max-width: var(--container-max);
+  }
+
+  .ds-footer__lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
   }
 
   .ds-footer__brand {
     align-items: center;
     display: flex;
     gap: var(--space-xs);
+  }
+
+  .ds-footer__extra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .ds-footer__extra > :global(img),
+  .ds-footer__extra > :global(svg) {
+    display: block;
+    height: auto;
+    max-width: 100%;
   }
 
   .ds-footer__brand-name {
@@ -105,8 +142,10 @@ const hasNote = note !== undefined || Astro.slots.has("note");
 
   .ds-footer__grid {
     display: grid;
-    gap: var(--space-xl);
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-xxl);
+    grid-auto-columns: minmax(8rem, max-content);
+    grid-auto-flow: column;
+    justify-content: end;
   }
 
   .ds-footer__column {
@@ -141,6 +180,7 @@ const hasNote = note !== undefined || Astro.slots.has("note");
 
   .ds-footer__note {
     border-top: 1px solid var(--hairline-on-dark);
+    grid-column: 1 / -1;
     color: var(--text-on-dark-soft);
     font-family: var(--font-sans);
     font-size: var(--body-sm-size);
@@ -153,15 +193,16 @@ const hasNote = note !== undefined || Astro.slots.has("note");
     color: var(--text-on-dark);
   }
 
-  @media (max-width: 1080px) {
-    .ds-footer__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
   @media (max-width: 768px) {
-    .ds-footer__grid {
+    .ds-footer__inner {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ds-footer__grid {
+      gap: var(--space-xl);
+      grid-auto-flow: row;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-content: stretch;
     }
   }
 </style>
