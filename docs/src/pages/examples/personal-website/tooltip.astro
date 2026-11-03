@@ -6,19 +6,20 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 <ExampleLayout title="Tooltip">
   <p class="text">
-    The page is rendered on the server, which is
+    The page is rendered on the server, which is{" "}
     <Tooltip label="Server-Side Rendering"><span class="term" tabindex="0">SSR</span></Tooltip>.
     Point at the term or move the focus to it.
   </p>
 </ExampleLayout>
 
 <style>
-  /* Room above the line for the tip. */
+  /* Room above the line for the tip: padding, since the layout takes the first child's margin
+     away. */
   .text {
     color: var(--text-body);
     font-size: var(--body-md-size);
     line-height: var(--body-md-lh);
-    margin: var(--space-xl) 0 0;
+    padding-top: var(--space-xl);
   }
 
   .term {

@@ -9,7 +9,9 @@
  * --surface-dark, 64px of padding above and below, within --container-max. Below 768px the brand
  * column stacks above the links, which go two across. A
  * link to another site opens in a new tab with the arrow and the hidden note the system's other
- * links to other sites have.
+ * links to other sites have. Placed straight in <body>, it sits on the window's bottom edge on a
+ * page shorter than the window: <body> becomes a column at least as tall as the window, and the
+ * footer takes the space left over above it.
  *
  * Ported from the handoff's Footer.jsx with the same props, with links as { label, href } and
  * `onNavigate` left out. The handoff puts the name above four columns of links; this system gives
@@ -98,7 +100,18 @@ const hasExtra = Astro.slots.has("brand-extra");
   .ds-footer {
     background: var(--surface-dark);
     color: var(--text-on-dark-soft);
+    margin-top: auto;
     padding: 64px var(--space-lg);
+  }
+
+  /* <body>, when the footer is in it: at least as tall as the window, so the footer's auto top
+     margin takes up a short page's spare height. dvh follows a phone's address bar as it shows
+     and hides. A child with auto side margins would shrink to its content in a column, so such a
+     child sets its width as well. */
+  :global(body:has(> .ds-footer)) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
   }
 
   /* The brand column, then the link columns, from the left; the note across the bottom. The space

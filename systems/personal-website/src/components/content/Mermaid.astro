@@ -33,12 +33,51 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 
 <script>
   import { fadeIn, themeStore, themeValues } from "../../scripts/theme";
+  import { fontStylesheets } from "../../styles/fonts.js";
   type Mermaid = (typeof import("mermaid"))["default"];
 
   let library: Promise<Mermaid> | undefined;
   // Mermaid's settings are global, so diagrams are drawn one after another.
   let queue: Promise<unknown> = Promise.resolve();
   let count = 0;
+  let stage: HTMLElement | undefined;
+
+  /**
+   * Where Mermaid draws before the drawing goes into the frame. Mermaid measures its labels in an
+   * element it adds to the container it is given, the body by default, which made the page taller
+   * for a moment on every drawing. This one is fixed to the window and hidden, so it takes no room.
+   */
+  function drawingStage() {
+    if (!stage?.isConnected) {
+      stage = document.createElement("div");
+      stage.setAttribute("aria-hidden", "true");
+      stage.style.cssText = "position: fixed; inset: 0 auto auto 0; width: 100vw; visibility: hidden; pointer-events: none; overflow: hidden; height: 0;";
+      document.body.append(stage);
+    }
+    return stage;
+  }
+
+  /**
+   * The stylesheet with the sans faces, first in the Fonts component's list, once it has loaded.
+   * Fonts loads it without holding up the page, and until it arrives the browser knows no web font
+   * to wait for, so document.fonts.ready alone let Mermaid measure the labels in the fallback font
+   * and then show them in the web font, too wide or too narrow for their boxes.
+   */
+  const sansSheet = new Promise<void>((resolve) => {
+    const link = [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].find(
+      (element) => element.href === fontStylesheets[0]
+    );
+    if (!link || link.media !== "print") return resolve();
+    link.addEventListener("load", () => resolve(), { once: true });
+    link.addEventListener("error", () => resolve(), { once: true });
+  });
+
+  /** How long the page's diagrams wait for the font, together: a second from when this runs. */
+  const patience = new Promise<false>((resolve) => setTimeout(() => resolve(false), 1000));
+
+  /** The sans font in the faces the text needs, once its stylesheet and those files have come. */
+  const sansFont = (family: string, text: string) =>
+    sansSheet.then(() => document.fonts.load(`14px ${family}`, text)).catch(() => undefined);
 
   /** The token pairs for each frame tone, as the handoff's contract lists them. */
   const PALETTE = {
@@ -63,6 +102,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
   class DsMermaid extends HTMLElement {
     #code = "";
     #unsubscribe: (() => void) | undefined;
+    #inFallback = false;
 
     connectedCallback() {
       this.#code = this.querySelector("pre")?.textContent ?? "";
@@ -84,11 +124,18 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     async #render() {
       library ??= import("mermaid").then((module) => module.default);
       const mermaid = await library;
-      // Mermaid measures its labels, so it waits for the fonts.
-      await document.fonts.ready;
       const tone = this.dataset.tone === "dark" ? "dark" : "cream";
       // The theme's colours as they end, not as they are partway through a theme's fade.
       const read = themeValues(this, [...Object.values(PALETTE[tone]), "--font-sans"]);
+      // Mermaid measures its labels, so it waits for the font, for up to a second after the page
+      // started. On a slow connection it draws in the fallback font first, and once more when the
+      // font has come.
+      const font = sansFont(read["--font-sans"], this.#code);
+      const inTime = await Promise.race([font.then(() => true), patience]);
+      if (!inTime && !this.#inFallback) {
+        this.#inFallback = true;
+        void font.then(() => this.#draw());
+      }
       const themeVariables = Object.fromEntries(
         Object.entries(PALETTE[tone]).map(([name, token]) => [name, read[token]])
       );
@@ -100,13 +147,14 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       });
       try {
         count += 1;
-        const { svg } = await mermaid.render(`ds-mermaid-${count}`, this.#code);
+        const { svg } = await mermaid.render(`ds-mermaid-${count}`, this.#code, drawingStage());
         if (this.dataset.drawn === undefined) {
           this.innerHTML = svg;
           this.dataset.drawn = "";
           return;
         }
-        // Drawn again for a new theme: the new diagram fades in over the old one, then replaces it.
+        // Drawn again, for a new theme or the web font: the new diagram fades in over the old one,
+        // then replaces it.
         const old = [...this.children];
         const template = document.createElement("template");
         template.innerHTML = svg;

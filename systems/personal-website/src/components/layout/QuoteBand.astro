@@ -147,7 +147,10 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
       text.textContent = quote.text;
       const length = quote.text.length;
       const size = !this.hasAttribute("data-auto-size") || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
-      text.className = `ds-quote-band__quote ds-quote-band__quote--${size}`;
+      // classList, not className: a site that scopes styles by class (Starlight sets Astro to do
+      // that) has the scope as a class here, and replacing the list dropped the band's styles.
+      text.classList.remove("ds-quote-band__quote--lg", "ds-quote-band__quote--md", "ds-quote-band__quote--sm");
+      text.classList.add(`ds-quote-band__quote--${size}`);
       source.textContent = quote.attribution ?? "";
       source.hidden = !quote.attribution;
     }

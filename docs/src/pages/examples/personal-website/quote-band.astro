@@ -1,5 +1,7 @@
 ---
-import { QuoteBand } from "@rottensea/ds-personal-website/components";
+// As the home page has it: bare over the sky, in the theme's ink, as tall as the window, one of
+// several quotes at random.
+import { QuoteBand, Starfield } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const long =
@@ -7,7 +9,7 @@ const long =
 ---
 
 <ExampleLayout title="QuoteBand" bare>
-  {/* As the home page has it: bare over the page's own ground, one of several quotes at random. */}
+  <Starfield />
   <QuoteBand
     tone="bare"
     overlayTone="ink"
@@ -16,6 +18,13 @@ const long =
       { text: "Make the small decisions once, then stop deciding." },
       { text: long, attribution: "A longer quote steps down a size" }
     ]}
-    minHeight="420px"
   />
 </ExampleLayout>
+
+<style>
+  /* The example's <html> has the canvas colour, so <body> drops its own, which would cover the
+     sky; on the site <body>'s colour goes to the whole window instead. */
+  :global(body) {
+    background: transparent;
+  }
+</style>

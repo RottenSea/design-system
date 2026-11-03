@@ -3,7 +3,8 @@ import { SettingsMenu } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
-<ExampleLayout title="SettingsMenu">
+{/* The example keeps its choice under a key of its own, so the docs site keeps its theme. */}
+<ExampleLayout title="SettingsMenu" themeKey="ds-docs-example-theme">
   <div class="row">
     <SettingsMenu storageKey="ds-docs-example-theme" motionKey="ds-docs-example-motion" />
     <span class="note">Press the button for the panel. A choice changes this example only.</span>
@@ -11,14 +12,18 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 </ExampleLayout>
 
 <style>
+  /* Tall enough for the open panel, which floats under the button and is not part of the
+     example's height. */
   .row {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
     gap: var(--space-md);
+    min-height: 16rem;
   }
 
   .note {
     color: var(--text-muted);
     font-size: var(--body-sm-size);
+    padding-top: var(--space-xs);
   }
 </style>

@@ -1,34 +1,60 @@
 ---
+// The home page as the personal website builds it: the sky behind everything, the nav floating
+// over a bare QuoteBand as tall as the window, then the posts between two rails and the footer.
+// The page scrolls as an ordinary page; nothing moves at its own speed.
 import {
   ArticleListCard,
   ContentGrid,
   FilterList,
+  FloatingControls,
   Footer,
+  IconButton,
   MiniCalendar,
   Pagination,
   QuoteBand,
+  SettingsMenu,
   SidebarCard,
+  SkipLink,
+  Starfield,
   StatList,
   TagList,
   TopNav
 } from "@rottensea/ds-personal-website/components";
+import cover from "../../../assets/examples/dusk.jpg";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 // A made-up site, so the example shows the parts and not a real one's content.
 const links = [
-  { label: "Blog", href: "#posts" },
-  { label: "About", href: "#posts" }
+  { label: "Blog", href: "#main" },
+  { label: "About", href: "#main" }
 ];
 const quotes = [
   { text: "Make the small decisions once, then stop deciding.", attribution: "From the 2026 notes" },
   { text: "A hairline is a promise that two things belong apart.", attribution: "Notebook, March" }
 ];
+const columns = [
+  { title: "Site", links: [...links, { label: "RSS", href: "#main" }] },
+  {
+    title: "Network",
+    links: [
+      { label: "Field Notes", href: "#main" },
+      { label: "The Workshop", href: "#main" }
+    ]
+  },
+  { title: "Elsewhere", links: [{ label: "GitHub", href: "https://github.com/" }] }
+];
 ---
 
-<ExampleLayout title="Home page" bare>
-  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" overlay />
-  <QuoteBand eyebrow="Writing since 2019" quotes={quotes} pullNext />
-  <main id="posts" class="page">
+{/* The settings panel keeps its choice in the example, not on the docs site. */}
+<ExampleLayout title="Home page" bare themeKey="ds-docs-example-theme">
+  <Starfield />
+  <SkipLink />
+  <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" overlay>
+    <IconButton slot="actions" icon="search" label="Search" />
+    <SettingsMenu slot="actions" storageKey="ds-docs-example-theme" motionKey="ds-docs-example-motion" />
+  </TopNav>
+  <QuoteBand tone="bare" overlayTone="ink" eyebrow="Writing since 2019" quotes={quotes} />
+  <main id="main" class="page">
     <ContentGrid>
       <Fragment slot="left">
         <FilterList
@@ -36,48 +62,68 @@ const quotes = [
           items={[
             { label: "Notes", count: 6 },
             { label: "Essays", count: 9 },
-            { label: "Build log", count: 3 }
+            { label: "Photos", count: 3 }
           ]}
         />
         <TagList
           items={[
             { label: "type", count: 12 },
             { label: "systems", count: 8 },
-            { label: "craft", count: 5 }
+            { label: "walks", count: 5 }
           ]}
         />
       </Fragment>
       <div class="posts">
         <ArticleListCard
-          href="#posts"
+          href="#main"
           title="Hairlines carry more than they look like they do"
           date="2026-03-04"
+          datetime="2026-03-04T03:00:00Z"
           category="Notes"
           readTime="6 min"
           tags={["type", "systems"]}
           pinned
+          level={2}
         >
           A one-pixel line in the right colour separates two things without drawing attention to itself.
         </ArticleListCard>
         <ArticleListCard
-          href="#posts"
-          title="Writing for a page nobody scrolls twice"
+          href="#main"
+          title="Three ridges at dusk"
           date="2026-02-19"
+          datetime="2026-02-19T10:00:00Z"
+          category="Photos"
+          readTime="2 min"
+          tags={["walks"]}
+          coverSrc={cover.src}
+          level={2}
+        >
+          A short walk, a long light.
+        </ArticleListCard>
+        <ArticleListCard
+          href="#main"
+          title="Writing for a page nobody scrolls twice"
+          date="2026-01-28"
+          datetime="2026-01-28T09:00:00Z"
           category="Essays"
           readTime="11 min"
-          tags={["craft"]}
+          tags={["type"]}
+          level={2}
         >
           The first screen is the only one most readers see.
         </ArticleListCard>
-        <Pagination page={1} pageCount={3} />
+        <Pagination page={1} pageCount={2} />
       </div>
       <Fragment slot="right">
         <SidebarCard title="Stats">
           <StatList
             items={[
               { label: "Posts", value: 18 },
+              { label: "Categories", value: 3 },
+              { label: "Tags", value: 14 },
               { label: "Words", value: 41250 },
-              { label: "Uptime", value: "162 days" }
+              { label: "Uptime", value: "162 days" },
+              { label: "Last updated", value: "2026-03-04" }
             ]}
           />
         </SidebarCard>
@@ -88,17 +134,27 @@ const quotes = [
             counts={{ "2026-03-04": 1, "2026-03-12": 2, "2026-03-25": 1 }}
             weekStart="sun"
             navigable
+            selectable
           />
         </SidebarCard>
       </Fragment>
     </ContentGrid>
   </main>
-  <Footer brand="Field Notes" note="© 2026 Field Notes." />
+  <Footer brand="Field Notes" columns={columns} note="© 2026 Field Notes." />
+  <FloatingControls />
 </ExampleLayout>
 
 <style>
+  /* The example's <html> has the canvas colour, so <body> drops its own, which would cover the
+     sky; on the site <body>'s colour goes to the whole window instead. */
+  :global(body) {
+    background: transparent;
+  }
+
+  /* The site's main: the grid's full width, with the site's padding. */
   .page {
-    padding: var(--space-xxl) var(--space-lg) var(--space-section);
+    padding: var(--space-xl) var(--space-lg) var(--space-section);
+    width: 100%;
   }
 
   .posts {

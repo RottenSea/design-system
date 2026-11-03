@@ -94,9 +94,12 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
         label();
       });
       frame.addEventListener("load", label);
+      // An example that keeps its own choice (ExampleLayout's themeKey) ignores the storage event,
+      // so it is shown in the docs site's theme as well.
       store.subscribe(() => {
         const win = view();
         win?.dispatchEvent(new win.StorageEvent("storage", { key: store.key }));
+        win?.dsExample?.show(store.get().theme);
         label();
       });
       // The full-size page opens in the theme the example shows.

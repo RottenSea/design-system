@@ -1,10 +1,26 @@
 ---
+// The three sizes, with a photograph and with the initials. The about page uses the large photo.
 import { Avatar } from "@rottensea/ds-personal-website/components";
 import portrait from "../../../assets/examples/shore.jpg";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="Avatar">
-  {/* As the about page has it: a photo, large. */}
-  <Avatar src={portrait} name="Field Notes" size="lg" />
+  <div class="row">
+    <Avatar src={portrait} name="Field Notes" size="sm" />
+    <Avatar src={portrait} name="Field Notes" size="md" />
+    <Avatar src={portrait} name="Field Notes" size="lg" />
+    <Avatar name="Field Notes" size="sm" />
+    <Avatar name="Field Notes" size="md" />
+    <Avatar name="Field Notes" size="lg" />
+  </div>
 </ExampleLayout>
+
+<style>
+  .row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+</style>

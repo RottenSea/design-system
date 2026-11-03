@@ -1,6 +1,6 @@
 ---
-// Button as the site uses it: in the share dialog, Download and Share; at the end of a post,
-// the two small secondary buttons.
+// Button as the site uses it: Copy link at the end of a post, and Share and Download in the share
+// dialog.
 import { Button } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
@@ -8,9 +8,6 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 <ExampleLayout title="Button">
   <div class="row">
     <Button variant="secondary" size="sm" iconLeft="link">Copy link</Button>
-    <Button variant="secondary" size="sm" iconLeft="share">Share poster</Button>
-  </div>
-  <div class="row">
     <Button variant="secondary" iconLeft="share">Share</Button>
     <Button iconLeft="download">Download</Button>
   </div>

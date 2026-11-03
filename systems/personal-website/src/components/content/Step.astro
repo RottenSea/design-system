@@ -1,8 +1,8 @@
 ---
 /**
  * One step inside Steps. The marker is a 28px numbered disc joined to the next step by a 1px
- * hairline; the current step takes the dark surface, the system's selected signal, and a done
- * step takes the coral fill with a check. The number comes from a CSS counter on Steps.
+ * hairline; the current step takes the darker coral of --color-primary-active, and a done step
+ * the coral fill with a check. The number comes from a CSS counter on Steps.
  *
  * The title goes in `title`, or in the `title` slot when it needs links or code. The body is
  * the default slot.
@@ -90,8 +90,8 @@ const { title, status = "todo" } = Astro.props;
   }
 
   .ds-step[data-status="current"] .ds-step__disc {
-    background: var(--surface-dark);
-    color: var(--text-on-dark);
+    background: var(--color-primary-active);
+    color: var(--color-on-primary);
   }
 
   .ds-step__line {
@@ -142,11 +142,6 @@ const { title, status = "todo" } = Astro.props;
   :global(.ds-steps--dark) .ds-step__disc {
     background: var(--surface-dark-elevated);
     color: var(--text-on-dark-soft);
-  }
-
-  :global(.ds-steps--dark) .ds-step[data-status="current"] .ds-step__disc {
-    background: var(--surface-canvas);
-    color: var(--text-ink);
   }
 
   :global(.ds-steps--dark) .ds-step__line {

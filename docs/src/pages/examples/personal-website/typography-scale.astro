@@ -6,7 +6,7 @@ import { loadTokens } from "../../../lib/tokens";
 
 const styles = (await loadTokens("personal-website")).filter((token) => token.type === "typography");
 const sample = (id: string) =>
-  id.startsWith("display") ? "Quiet ink on warm paper 暖纸上的静墨" : "The quick brown fox jumps over the lazy dog. 敏捷的狐狸跳过了懒狗。";
+  id.startsWith("display") ? "Quiet ink on warm paper 暖纸上的静墨" : "Write it down before you forget why it mattered. 趁还记得为什么重要，先把它写下来。";
 ---
 
 <ExampleLayout title="Type scale">

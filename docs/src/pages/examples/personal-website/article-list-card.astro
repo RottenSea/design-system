@@ -1,31 +1,52 @@
 ---
+// As the home page lists posts: a pinned post without a cover, a post with one at the right, and
+// under them the meta line as a post's header has it. The docs page draws it at 800px wide and
+// the list at the home page's 624px, so the cover stays at the right as it does on the site.
 import { ArticleListCard, PostMeta } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 import cover from "../../../assets/examples/dusk.jpg";
 ---
 
 <ExampleLayout title="ArticleListCard and PostMeta">
-  <ArticleListCard
-    href="#"
-    title="Hairlines carry more than they look like they do"
-    date="2026-03-04"
-    category="Notes"
-    readTime="6 min"
-    tags={["type", "systems"]}
-    pinned
-  >
-    A one-pixel line in the right colour separates two things without drawing attention to itself.
-  </ArticleListCard>
-  <ArticleListCard
-    href="#"
-    title="Three ridges at dusk"
-    date="2026-02-19"
-    ago="8 months ago"
-    category="Photos"
-    wordCount={420}
-    coverSrc={cover.src}
-  >
-    A short walk, a long light.
-  </ArticleListCard>
-  <PostMeta date="2026-03-04" category="Notes" readTime="6 min" />
+  <div class="list">
+    <ArticleListCard
+      href="#"
+      title="Hairlines carry more than they look like they do"
+      date="2026-03-04"
+      datetime="2026-03-04T03:00:00Z"
+      category="Notes"
+      readTime="6 min"
+      tags={["type", "systems"]}
+      pinned
+      level={2}
+    >
+      A one-pixel line in the right colour separates two things without drawing attention to itself.
+    </ArticleListCard>
+    <ArticleListCard
+      href="#"
+      title="Three ridges at dusk"
+      date="2026-02-19"
+      datetime="2026-02-19T10:00:00Z"
+      category="Photos"
+      readTime="2 min"
+      tags={["walks"]}
+      coverSrc={cover.src}
+      level={2}
+    >
+      A short walk, a long light.
+    </ArticleListCard>
+    <PostMeta
+      size="md"
+      items={[{ label: "2026-03-04", datetime: "2026-03-04T03:00:00Z" }, { label: "Notes", href: "#" }, "6 min"]}
+    />
+  </div>
 </ExampleLayout>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    max-width: 39rem;
+  }
+</style>

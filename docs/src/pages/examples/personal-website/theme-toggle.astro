@@ -6,9 +6,21 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 <ExampleLayout title="ThemeToggle">
   <div class="row">
     <ThemeToggle storageKey="ds-docs-example-theme" />
-    <p class="text">Press it to switch this frame's theme. The docs around it keep theirs.</p>
+    <p class="text">It shows the icon for the other theme. Switch this example with the link below it.</p>
   </div>
 </ExampleLayout>
+
+<script>
+  // Pressing the toggle here would change the docs site's theme too, so the press stops before
+  // the toggle hears it; the theme changes only from outside the example.
+  document.querySelector(".row")?.addEventListener(
+    "click",
+    (event) => {
+      if ((event.target as Element).closest(".ds-theme-toggle")) event.stopPropagation();
+    },
+    { capture: true }
+  );
+</script>
 
 <style>
   .row {
