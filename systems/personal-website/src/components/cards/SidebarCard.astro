@@ -6,7 +6,8 @@
  * cream card; `outline` is for a rail that sits on a cream band, where the fill would vanish.
  *
  * Ported from the handoff's SidebarCard.jsx with the same props, except `onDismiss`: a rail card
- * on this site is never temporary. `action` is a named slot, for a small link beside the label.
+ * on this site is never temporary. `action` is a named slot, for a small link or button at the
+ * right of the label, drawn as the same uppercase micro-label in the muted colour.
  *
  *   <SidebarCard title="Stats"><StatList … /></SidebarCard>
  */
@@ -64,6 +65,39 @@ const dark = tone === "dark";
     margin: 0;
     min-width: 0;
     text-transform: uppercase;
+  }
+
+  .ds-sidebar-card__head > :global(:is(a, button)) {
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted-soft);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--caption-upper-size);
+    font-weight: var(--caption-upper-weight);
+    letter-spacing: var(--caption-upper-ls);
+    line-height: var(--caption-upper-lh);
+    padding: 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: var(--transition-tint);
+  }
+
+  .ds-sidebar-card__head > :global(:is(a, button):hover) {
+    color: var(--text-ink);
+  }
+
+  .ds-sidebar-card__head > :global([hidden]) {
+    display: none;
+  }
+
+  .ds-sidebar-card--dark .ds-sidebar-card__head > :global(:is(a, button)) {
+    color: var(--text-on-dark-soft);
+  }
+
+  .ds-sidebar-card--dark .ds-sidebar-card__head > :global(:is(a, button):hover) {
+    color: var(--text-on-dark);
   }
 
   .ds-sidebar-card__body {

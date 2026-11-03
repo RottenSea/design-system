@@ -23,6 +23,15 @@ import Example from "../../../../../components/Example.astro";
 
 `counts` 是每天的文章数，按日期列出。月历显示读者所在时区的当前月份，并标出读者的今天；构建时不知道这两样，所以浏览器里会重画一次。`navigable` 加上“上个月、下个月”按钮。`selectable` 让有文章的日子变成按钮，按下发出 `ds-select` 事件，内容是那天的日期，再按一次是 `null`。
 
+清除按钮可以放在页面上任何地方：给它写 `data-ds-calendar-clear`，值是月历的 `id`，一开始加上 `hidden`。选中某一天时月历才显示它，按下就清掉选中的日子，发出内容为 `null` 的 `ds-select`。放在 SidebarCard 里时用 `action` 插槽，在标题右边：
+
+```astro
+<SidebarCard title="Calendar">
+  <button slot="action" type="button" data-ds-calendar-clear="calendar" hidden>Clear</button>
+  <MiniCalendar id="calendar" counts={counts} navigable selectable />
+</SidebarCard>
+```
+
 ## 结构
 
 月份和年份、两个箭头、一行星期的首字母，下面是正方形的格子。格子按栏宽等分，所以 200px 和 300px 宽的侧栏都放得下。
@@ -51,7 +60,7 @@ import Example from "../../../../../components/Example.astro";
 
 ## API
 
-[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro)。从交付包移植。`counts` 按日期而不是按某个月的第几天列出，所以能在月份之间切换；`navigable`、`selectable` 和 `ds-select` 事件代替 `onPrev`、`onNext` 和 `onSelect`。
+[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro)。从交付包移植。`counts` 按日期而不是按某个月的第几天列出，所以能在月份之间切换；`navigable`、`selectable` 和 `ds-select` 事件代替 `onPrev`、`onNext` 和 `onSelect`。清除按钮是新加的。
 
 ## 相关
 

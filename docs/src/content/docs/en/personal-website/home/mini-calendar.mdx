@@ -23,6 +23,15 @@ In a SidebarCard in the rail, as an index of when posts went up. It is not a dat
 
 `counts` has the posts per day, keyed by date. The grid shows the reader's current month and marks their today, in their own time zone; the build cannot know either, so the browser draws the grid again. `navigable` adds Previous and Next month. `selectable` makes the marked days buttons that send a `ds-select` event with the date, or `null` when the day is pressed again.
 
+A clear button can sit anywhere on the page: give it `data-ds-calendar-clear` set to the calendar's `id`, and `hidden` to start with. The calendar shows it only while a day is selected; pressing it clears the day and sends `ds-select` with `null`. In a SidebarCard it goes in the `action` slot, at the right of the label:
+
+```astro
+<SidebarCard title="Calendar">
+  <button slot="action" type="button" data-ds-calendar-clear="calendar" hidden>Clear</button>
+  <MiniCalendar id="calendar" counts={counts} navigable selectable />
+</SidebarCard>
+```
+
 ## Anatomy
 
 The month and year, the arrows, a row of weekday letters, then square cells that are fractions of the column, so the grid fits a 200px or a 300px rail.
@@ -51,7 +60,7 @@ A marked day carries a hidden note, "1 post", for screen readers, and today is m
 
 ## API
 
-[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro). Ported from the handoff. `counts` is keyed by date instead of the day of one month, so the grid can move between months; `navigable`, `selectable` and the `ds-select` event take the place of `onPrev`, `onNext` and `onSelect`.
+[`MiniCalendar.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/content/MiniCalendar.astro). Ported from the handoff. `counts` is keyed by date instead of the day of one month, so the grid can move between months; `navigable`, `selectable` and the `ds-select` event take the place of `onPrev`, `onNext` and `onSelect`. The clear button is new.
 
 ## Related
 

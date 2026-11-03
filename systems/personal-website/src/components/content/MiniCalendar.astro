@@ -13,7 +13,10 @@
  * today, so the script draws the grid again in the browser: the reader's current month (unless
  * `year` and `month` are given) with their today marked. `navigable` adds Previous and Next month
  * buttons. `selectable` makes marked days buttons that send a `ds-select` event with the date, or
- * null when the selected day is pressed again.
+ * null when the selected day is pressed again. A button anywhere on the page with
+ * data-ds-calendar-clear set to the calendar's id clears the selection the same way; the calendar
+ * shows it only while a day is selected, so give it `hidden` to start with. In a SidebarCard it
+ * goes in the `action` slot.
  *
  *   <MiniCalendar counts={{ "2026-05-18": 1, "2026-06-16": 1 }} weekStart="sun" navigable selectable />
  */
@@ -32,6 +35,8 @@ interface Props {
   selectable?: boolean;
   tone?: "cream" | "dark";
   emphasis?: "strong" | "soft";
+  /** Names the calendar for a clear button's data-ds-calendar-clear. */
+  id?: string;
   class?: string;
 }
 
@@ -44,6 +49,7 @@ const {
   selectable = false,
   tone = "cream",
   emphasis = "strong",
+  id,
   class: className
 } = Astro.props;
 const counts = Astro.props.counts ?? Object.fromEntries(marked.map((date) => [date, 1]));
@@ -68,6 +74,7 @@ const grid = monthHtml({
     { "ds-cal--dark": tone === "dark", "ds-cal--soft": emphasis === "soft" },
     className
   ]}
+  id={id}
   data-counts={JSON.stringify(counts)}
   data-year={year}
   data-month={month}
@@ -123,6 +130,24 @@ const grid = monthHtml({
         this.querySelector<HTMLButtonElement>(`[data-date="${day.dataset.date}"]`)?.focus();
         this.dispatchEvent(new CustomEvent("ds-select", { detail: this.selected, bubbles: true }));
       });
+      for (const button of this.#clearers()) {
+        button.addEventListener("click", () => {
+          const was = this.selected;
+          this.selected = null;
+          this.draw();
+          // The button hides itself, so the focus goes to the day it cleared, or into the calendar.
+          (
+            this.querySelector<HTMLButtonElement>(`[data-date="${was}"]`) ?? this.querySelector("button")
+          )?.focus();
+          this.dispatchEvent(new CustomEvent("ds-select", { detail: null, bubbles: true }));
+        });
+      }
+    }
+
+    #clearers() {
+      return this.id
+        ? [...document.querySelectorAll<HTMLElement>(`[data-ds-calendar-clear="${this.id}"]`)]
+        : [];
     }
 
     /** Selects a day, or clears the selection with null, without sending an event. */
@@ -145,6 +170,7 @@ const grid = monthHtml({
         selectable: this.hasAttribute("data-selectable"),
         selected: this.selected
       });
+      for (const button of this.#clearers()) button.hidden = this.selected === null;
     }
   }
 
