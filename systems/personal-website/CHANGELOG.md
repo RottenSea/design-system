@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Footer` spaces its columns wider from 769px up: 72px between the link columns instead of 48px, and 96px after the brand column instead of 72px.
+
 ## [1.0.8] - 2026-11-03
 
 ### Fixed

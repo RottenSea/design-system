@@ -102,10 +102,10 @@ const hasExtra = Astro.slots.has("brand-extra");
   }
 
   /* The brand column, then the link columns, from the left; the note across the bottom. The space
-     after the brand is half as wide again as the space between the link columns. */
+     after the brand, 96px, is a third wider than the 72px between the link columns. */
   .ds-footer__inner {
     align-items: start;
-    column-gap: calc(var(--space-xxl) * 1.5);
+    column-gap: calc(var(--space-xxl) * 2);
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     row-gap: var(--space-xxl);
@@ -150,7 +150,7 @@ const hasExtra = Astro.slots.has("brand-extra");
 
   .ds-footer__grid {
     display: grid;
-    gap: var(--space-xxl);
+    gap: calc(var(--space-xxl) * 1.5);
     grid-auto-columns: max-content;
     grid-auto-flow: column;
     justify-content: start;
