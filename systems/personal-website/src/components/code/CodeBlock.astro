@@ -396,10 +396,18 @@ const name =
     opacity: 1;
   }
 
-  .ds-code--folded .ds-code__scroll {
-    max-height: calc(var(--ds-code-folded-lines) * var(--code-lh) * var(--code-size) + var(--space-md));
+  /*
+   * Folded on the <pre>, not the scroll area, so the horizontal scrollbar stays below the code
+   * and out of the fade. The <pre> is as wide as its longest line, since the mask clips to its box.
+   */
+  .ds-code--folded .ds-code__scroll :global(pre) {
     mask-image: linear-gradient(to bottom, #000 70%, transparent);
-    overflow-y: hidden;
+    /* The height the scroll area had when it took the fold, less its padding. */
+    max-height: calc(var(--ds-code-folded-lines) * var(--code-lh) * var(--code-size) - var(--space-md));
+    min-width: 100%;
+    overflow-x: visible;
+    overflow-y: clip;
+    width: max-content;
   }
 
   .ds-code__expand {

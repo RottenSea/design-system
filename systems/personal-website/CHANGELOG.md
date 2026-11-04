@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Content inside an `Admonition` stands apart from it in the light theme. A code block's bar and a table's header took the card's own colour, and the light hairline around them barely shows on the card, so they ran into the admonition; an admonition inside another ran into it in both themes. Inside an admonition, `--surface-card`, `--surface-code-bar` and `--surface-cream-strong` now take `--surface-on-card`, which also covers a formula's card, a spoiler's cover and an OptionGroup's tabs. `tone="dark"` is unchanged.
+- A folded `CodeBlock` with a line too long for it keeps its horizontal scrollbar below the code. The fold cut the scroll area itself, so the scrollbar lay across the last line shown, inside the fade; the `<pre>` now takes the fold and the fade, and the scrollbar sits under it as in an unfolded block.
 
 ### Removed
 
