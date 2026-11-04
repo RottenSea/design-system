@@ -566,6 +566,21 @@
           }
         }
       }
+    },
+    "on-card": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8784, 0.8471, 0.7922],
+        "hex": "#e0d8ca"
+      },
+      "$description": "A card-coloured part inside a card, such as a code block's bar or a table's header in an admonition: one step from the card, as the dark theme's code bar is.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "卡片里本来用卡片色的部分，例如提示块里代码块的标题栏、表格的表头：和卡片错开一档，和深色主题里代码块标题栏的差距一样。"
+          }
+        }
+      }
     }
   },
   "hairline": {

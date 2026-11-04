@@ -133,6 +133,13 @@
         "hex": "#faf9f5",
         "alpha": 0.06
       }
+    },
+    "on-card": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.1961, 0.1843, 0.1647],
+        "hex": "#322f2a"
+      }
     }
   },
   "hairline": {

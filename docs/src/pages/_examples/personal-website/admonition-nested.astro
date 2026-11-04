@@ -1,0 +1,27 @@
+---
+import {
+  Admonition,
+  CodeBlock,
+  TableScroll
+} from "@rottensea/ds-personal-website/components";
+import ExampleLayout from "../../../layouts/ExampleLayout.astro";
+---
+
+<ExampleLayout title="Admonition with a code block, a table and an admonition inside">
+  <Admonition variant="note" title="Before you build">
+    <p>Install the dependencies first:</p>
+    <CodeBlock code="pnpm install" lang="sh" />
+    <TableScroll>
+      <table>
+        <thead>
+          <tr><th>Command</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>pnpm dev</td><td>Starts the site on port 4321</td></tr>
+          <tr><td>pnpm build</td><td>Writes the site to dist/</td></tr>
+        </tbody>
+      </table>
+    </TableScroll>
+    <Admonition variant="warning">The first build downloads the fonts.</Admonition>
+  </Admonition>
+</ExampleLayout>

@@ -165,6 +165,13 @@ const classes = [
     color: var(--text-on-dark);
   }
 
+  /* What would take the card's own colour inside it steps to --surface-on-card instead. */
+  .ds-admonition:not(.ds-admonition--dark) > .ds-admonition__body {
+    --surface-card: var(--surface-on-card);
+    --surface-code-bar: var(--surface-on-card);
+    --surface-cream-strong: var(--surface-on-card);
+  }
+
   .ds-admonition__body > :global(* + *) {
     margin-top: var(--space-xs);
   }
