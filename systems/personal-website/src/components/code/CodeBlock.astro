@@ -222,15 +222,17 @@ const name =
     color-scheme: inherit;
   }
 
-  /* The cream tone's values and the dark tone's, mixed by the page's --theme-dark: all cream in
-     the light theme, all navy in the dark, and in between while the theme fades. */
+  /* Cream in the light theme and the navy in the dark, from tokens the theme sets: the theme's
+     own fade on <html> blends them, so the block changes at the page's pace. Mixing the two
+     tones here by --theme-dark would not: both ends would be fading as well, and the block
+     would run ahead of the page. */
   .ds-code--auto {
-    --ds-code-ink: color-mix(in srgb, var(--text-body-strong), var(--text-on-dark) var(--theme-dark));
-    --ds-code-soft: color-mix(in srgb, var(--text-muted), var(--text-on-dark-soft) var(--theme-dark));
-    --ds-code-rule: color-mix(in srgb, var(--hairline), var(--hairline-on-dark) var(--theme-dark));
-    --ds-code-wash: color-mix(in srgb, var(--surface-soft), rgba(250, 249, 245, 0.06) var(--theme-dark));
-    --ds-code-bar: color-mix(in srgb, var(--surface-card), var(--surface-dark-soft) var(--theme-dark));
-    --ds-code-fill: color-mix(in srgb, var(--surface-canvas), var(--surface-dark) var(--theme-dark));
+    --ds-code-ink: var(--text-body-strong);
+    --ds-code-soft: var(--text-muted);
+    --ds-code-rule: var(--hairline-code);
+    --ds-code-wash: var(--surface-code-highlight);
+    --ds-code-bar: var(--surface-code-bar);
+    --ds-code-fill: var(--surface-code);
     --theme-dark: inherit;
     color-scheme: inherit;
   }
@@ -248,7 +250,7 @@ const name =
   }
 
   .ds-code--framed.ds-code--auto {
-    border-color: color-mix(in srgb, var(--hairline), transparent var(--theme-dark));
+    border-color: var(--hairline-code-frame);
   }
 
   .ds-code__bar {

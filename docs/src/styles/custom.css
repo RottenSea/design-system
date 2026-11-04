@@ -7,6 +7,15 @@ html {
 }
 
 /*
+ * The article column, wider than Starlight's 45rem so an example in a wide enough window gets more
+ * than the 768px the system's desktop layout needs (Example.astro scales it down in a narrower
+ * one).
+ */
+:root {
+  --sl-content-width: 52rem;
+}
+
+/*
  * A table wider than the article scrolls sideways (Starlight makes it a scroll box) instead of
  * squeezing a column down to its longest word. Every cell keeps room for a few words; a cell that
  * holds a sentence, such as a description, sets a wider minimum of its own.

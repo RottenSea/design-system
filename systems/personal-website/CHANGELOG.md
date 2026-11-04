@@ -9,14 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Colour tokens for a code block that follows the theme: `surface.code`, `surface.code-bar`, `surface.code-highlight`, `hairline-code` and `hairline-code-frame`. Each takes the light or dark value of the theme, so it fades at the page's pace.
 - `themeValues(element, names, theme?)` in `scripts/theme`: custom properties as they will be once the theme has settled. While the theme fades, `getComputedStyle()` gives colours partway between the two themes, so Mermaid and SharePoster draw with this instead.
 
 ### Changed
 
-- `CodeBlock` follows the theme by default, and so does every code fence in a post: the new `auto` tone is cream in the light theme (the canvas, a hairline and the card colour in the bar) and the warm navy in the dark, fading between them with the page. `tone="dark"` keeps the navy in both themes, as the default did before.
+- `CodeBlock` follows the theme by default, and so does every code fence in a post: the new `auto` tone is cream in the light theme (the canvas, a hairline and the card colour in the bar) and the warm navy in the dark, fading between them with the page, from the new `surface.code*` and `hairline-code*` tokens. `tone="dark"` keeps the navy in both themes, as the default did before.
 - `CodeBlock` shows "Terminal" and "Code Block" in the mono face, like a filename, instead of the sans face.
 - A theme change fades the theme's colour variables on `<html>` alone, where every element used to get a colour transition of its own. `tokens.css` registers each colour the dark theme changes with `@property`, lists them in `--theme-variables`, and adds `--theme-dark`, 0% in the light theme and 100% in the dark. Every element reads the variables as they blend and drops its own transitions while the fade runs. A large page starts the fade much sooner: on the example post with Mermaid diagrams, KaTeX and code, the first frame came 770ms after the change and the colours jumped to the new theme; now it comes after about 75ms and the colours fade.
-- `CodeBlock`'s tokens and `Switch`'s knob mix their light and dark colours with `color-mix()` by `--theme-dark` instead of picking one with `light-dark()`, so they fade with the rest.
+- Shiki's token colours in `CodeBlock` and `Switch`'s knob mix their light and dark colours with `color-mix()` by `--theme-dark` instead of picking one with `light-dark()`, so they fade with the rest.
 - `Footer` spaces its columns wider from 769px up: 72px between the link columns instead of 48px, and 96px after the brand column instead of 72px.
 - `Dialog` animates out when it closes, by the close button, the scrim or Escape, and only then closes. It has no overshoot: a `tilt` dialog turns away on the entrance's diagonal over 250ms, slowly at first and then faster, and fades out late; a `lift` dialog grows to 1.04 the same way over 200ms; the scrim fades with it. With reduced motion it still closes at once.
 - `Steps` marks the current step with `--color-primary-active` and a white number, in place of the dark surface.
@@ -25,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `Mermaid` changes with the page when the theme changes, where it started a moment later. It drew the diagram for the new theme only after the change; now it draws the other theme's diagram once the browser is idle, and on a change fades it in over the old one as the page's colours start to fade.
+- `Mermaid` draws flat diagrams in the token colours. Mermaid 12 draws in its newer look by default, with drop shadows, gradient strokes and greys of its own; the component now asks for the classic look and gives Mermaid every colour it would otherwise work out itself, such as a sequence diagram's arrows, which were in the text colour, and its half arrowheads, which were black.
 - `Mermaid` no longer makes the page taller for a moment each time it draws: it draws in a hidden element fixed to the window instead of one Mermaid adds to `<body>`. In a docs example, whose frame follows its page's height, the frame grew and shrank on every theme change.
 - `Mermaid` measures its labels in the web font. The Fonts component loads the font stylesheets without holding up the page, so `document.fonts.ready` could resolve before the browser knew of the sans font, and the labels were measured in the fallback font and shown in Manrope, out of their boxes. It now waits up to a second after the page starts for the sans font in the faces the diagram's text needs; on a slower connection it draws in the fallback font and once more when the font arrives.
 - `QuoteBand` keeps its styles when it picks a quote at random on a site that scopes styles by class, as Starlight sets Astro to do: replacing the quote's `className` dropped the scope class, and the quote showed in the body font.

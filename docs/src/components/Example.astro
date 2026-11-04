@@ -9,10 +9,12 @@
  *
  * loads src/pages/examples/personal-website/admonition.astro.
  *
- * The iframe is as wide as the article column, under 768px, so a page layout would always show
- * its narrowest form. `viewport` lays the example out at that width instead and scales it down
- * to fit the column, with a link to open it at full size. `height` gives a whole-page example a
- * fixed window height, at that width, to scroll inside, instead of growing to its content.
+ * The system switches to its phone layout below 768px, and the article column can be narrower
+ * than that in a desktop window. So in a desktop window an example is laid out at least 769px
+ * wide and scaled down to fit the column, and shows what a desktop reader sees; on a phone it
+ * takes the column's width and shows the phone layout. `viewport` lays a page layout out wider
+ * still, at that width, with a link to open it at full size. `height` gives a whole-page example
+ * a fixed window height, at that width, to scroll inside, instead of growing to its content.
  *
  * A link under the example shows it in the other theme, this example only, until the docs site's
  * theme changes or the page is reloaded; nothing is remembered. The full-size link opens the
@@ -35,13 +37,13 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 ---
 
 <ds-example data-viewport={viewport}>
-  <div class:list={["stage", { "stage--scaled": viewport }]}>
+  <div class="stage">
     <iframe
       src={src}
       title={title}
       loading="lazy"
       data-height={height}
-      style={[viewport && `width: ${viewport}px`, height && `height: ${height}px`].filter(Boolean).join("; ") || undefined}
+      style={height ? `height: ${height}px` : undefined}
     ></iframe>
   </div>
   <div class="links">
@@ -66,6 +68,9 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
 
 <script>
   import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
+
+  /** The narrowest window the system lays out for a desktop: its phone layout is up to 768px. */
+  const DESKTOP = 769;
 
   /** What ExampleLayout puts on the example's window. */
   interface ExampleWindow {
@@ -109,15 +114,21 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
         url.searchParams.set("theme", shown());
         full.href = url.href;
       });
-      const viewport = Number(this.dataset.viewport);
-      if (!viewport) return;
-      // The example page sets the iframe's height; the stage shrinks with the scale around it.
+      // The layout width: `viewport`, or in a desktop window the column's width but no less than
+      // the system's desktop layout. The example page sets the iframe's height; the stage shrinks
+      // with the scale around it.
+      const viewport = Number(this.dataset.viewport) || 0;
+      const desktop = matchMedia(`(min-width: ${DESKTOP}px)`);
       const scale = () => {
-        const factor = Math.min(1, stage.clientWidth / viewport);
-        frame.style.transform = `scale(${factor})`;
-        stage.style.height = `${frame.offsetHeight * factor}px`;
+        const column = stage.clientWidth;
+        const width = Math.max(column, viewport || (desktop.matches ? DESKTOP : 0));
+        const factor = Math.min(1, column / width);
+        frame.style.width = factor < 1 ? `${width}px` : "";
+        frame.style.transform = factor < 1 ? `scale(${factor})` : "";
+        stage.style.height = factor < 1 ? `${frame.offsetHeight * factor}px` : "";
       };
       scale();
+      desktop.addEventListener("change", scale);
       const observer = new ResizeObserver(scale);
       observer.observe(stage);
       observer.observe(frame);
@@ -147,7 +158,7 @@ const zh = Astro.locals.starlightRoute?.lang === "zh-CN";
   }
 
   /* Starlight caps media in an article at 100% of the column; a scaled example is laid out wider. */
-  .stage--scaled iframe {
+  iframe {
     max-width: none;
     transform-origin: top left;
   }

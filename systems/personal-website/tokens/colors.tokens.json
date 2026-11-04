@@ -526,6 +526,39 @@
           }
         }
       }
+    },
+    "code": {
+      "$value": "{cream.50}",
+      "$description": "A code block that follows the theme: the canvas in the light theme, the dark surface in the dark.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "跟着主题走的代码块：浅色主题是画布色，深色主题是深色表面。"
+          }
+        }
+      }
+    },
+    "code-bar": {
+      "$value": "{cream.200}",
+      "$description": "The file name bar of a code block that follows the theme.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "跟着主题走的代码块的文件名栏。"
+          }
+        }
+      }
+    },
+    "code-highlight": {
+      "$value": "{cream.100}",
+      "$description": "A highlighted line in a code block that follows the theme.",
+      "$extensions": {
+        "cafe.rottenth": {
+          "description": {
+            "zh-CN": "跟着主题走的代码块里高亮的行。"
+          }
+        }
+      }
     }
   },
   "hairline": {
@@ -564,6 +597,30 @@
       "cafe.rottenth": {
         "description": {
           "zh-CN": "深色表面上的边框。"
+        }
+      }
+    }
+  },
+  "hairline-code": {
+    "$type": "color",
+    "$value": "{cream.500}",
+    "$description": "Lines inside a code block that follows the theme, under the file name and above the caption.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "跟着主题走的代码块里面的线：文件名下面、说明上面。"
+        }
+      }
+    }
+  },
+  "hairline-code-frame": {
+    "$type": "color",
+    "$value": "{cream.500}",
+    "$description": "The frame of a code block that follows the theme. It has none in the dark theme, where the block is its own surface.",
+    "$extensions": {
+      "cafe.rottenth": {
+        "description": {
+          "zh-CN": "跟着主题走的代码块的外框。深色主题里代码块本身就是一层表面，没有框。"
         }
       }
     }

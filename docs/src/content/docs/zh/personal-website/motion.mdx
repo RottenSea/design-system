@@ -40,7 +40,7 @@ theme.subscribe((state, previous) => {
 });
 ```
 
-每次切换，页面上所有颜色都一起过渡，用 `--motion-entrance` 和 `--ease-move`。`tokens.css` 用 `@property` 把深色主题会改的每个颜色注册成颜色类型，浏览器才能在两个值之间渐变，并把它们列在 `--theme-variables` 里。store 在 `<html>` 上标记 `data-theme-fade`，持续这么久。标记在的时候，`base.css` 只在 `<html>` 上过渡这些变量，每个元素读到的都是渐变中的值。这段时间里元素自己的过渡都关掉，否则它每一帧都会重新开始，落在其他颜色后面。在浅色值和深色值之间二选一的颜色，用 `color-mix()` 按 `--theme-dark` 混合两个值：浅色主题里是 0%，深色主题里是 100%，所以也会渐变。`light-dark()` 跟着 `color-scheme` 走，而 `color-scheme` 没法渐变。
+每次切换，页面上所有颜色都一起过渡，用 `--motion-entrance` 和 `--ease-move`。`tokens.css` 用 `@property` 把深色主题会改的每个颜色注册成颜色类型，浏览器才能在两个值之间渐变，并把它们列在 `--theme-variables` 里。store 在 `<html>` 上标记 `data-theme-fade`，持续这么久。标记在的时候，`base.css` 只在 `<html>` 上过渡这些变量，每个元素读到的都是渐变中的值。这段时间里元素自己的过渡都关掉，否则它每一帧都会重新开始，落在其他颜色后面。在浅色值和深色值之间二选一的颜色，用 `color-mix()` 按 `--theme-dark` 混合两个值：浅色主题里是 0%，深色主题里是 100%，所以也会渐变。这只适用于两个值本身不变的情况，比如 Shiki 给一个词的两种颜色。如果两个值都是主题颜色，它们自己也在渐变，混出来的颜色会比页面跑得快，所以这种颜色直接做成主题里的 token，比如 CodeBlock 用的 `surface.code`。`light-dark()` 跟着 `color-scheme` 走，而 `color-scheme` 没法渐变。
 
 脚本画出来的东西不是 CSS 颜色。Mermaid 图和 SharePoster 用 `themeValues()` 读新主题的颜色，因为渐变过程中 `getComputedStyle()` 读到的是半路的颜色。它们按新主题重画，再用同一个模块里的 `fadeIn` 让新图在旧图上淡入。
 

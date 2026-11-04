@@ -3,9 +3,11 @@
  * A Mermaid diagram in a DiagramFrame, drawn in the browser. The page carries the diagram's
  * source, shown in the mono face, and mermaid is fetched, as a separate file, only on a page that
  * has a diagram; then the drawing replaces the source. The colours are read from the
- * system's tokens on the element, so the graph matches the page, and because Mermaid writes its
- * colours into the SVG, the diagram is drawn again when the page switches between light and dark;
- * the new drawing fades in over the old one as the page's colours fade.
+ * system's tokens on the element, so the graph matches the page. Mermaid writes its colours into
+ * the SVG, so there is a drawing for each theme: the other theme's is drawn once the browser is
+ * idle, and when the page switches between light and dark the new drawing fades in over the old
+ * one as the page's colours fade, starting with them. The drawing is flat, without the shadows of
+ * Mermaid's newer look.
  *
  * Not in the handoff, which leaves drawing to the page (its DiagramFrame "Mermaid contract"); this
  * follows that contract's way 2 and its token mapping. Coral is not used: nodes stay on the cream
@@ -32,7 +34,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
 </DiagramFrame>
 
 <script>
-  import { fadeIn, themeStore, themeValues } from "../../scripts/theme";
+  import { fadeIn, themeStore, themeValues, type Theme } from "../../scripts/theme";
   import { fontStylesheets } from "../../styles/fonts.js";
   type Mermaid = (typeof import("mermaid"))["default"];
 
@@ -79,37 +81,89 @@ const { code, label, caption, tone = "cream" } = Astro.props;
   const sansFont = (family: string, text: string) =>
     sansSheet.then(() => document.fonts.load(`14px ${family}`, text)).catch(() => undefined);
 
-  /** The token pairs for each frame tone, as the handoff's contract lists them. */
+  /** The tokens for each frame tone, as the handoff's contract pairs them. */
   const PALETTE = {
     cream: {
-      background: "--surface-canvas",
-      primaryColor: "--surface-card",
-      primaryTextColor: "--text-ink",
-      primaryBorderColor: "--hairline",
-      lineColor: "--text-muted",
-      tertiaryColor: "--surface-soft"
+      canvas: "--surface-canvas",
+      fill: "--surface-card",
+      soft: "--surface-soft",
+      text: "--text-ink",
+      border: "--hairline",
+      line: "--text-muted"
     },
     dark: {
-      background: "--surface-dark",
-      primaryColor: "--surface-dark-elevated",
-      primaryTextColor: "--text-on-dark",
-      primaryBorderColor: "--hairline-on-dark",
-      lineColor: "--text-on-dark-soft",
-      tertiaryColor: "--surface-dark-elevated"
+      canvas: "--surface-dark",
+      fill: "--surface-dark-elevated",
+      soft: "--surface-dark-elevated",
+      text: "--text-on-dark",
+      border: "--hairline-on-dark",
+      line: "--text-on-dark-soft"
     }
   };
+
+  /**
+   * Mermaid's colour settings, each given one of the tone's tokens. The contract names the first
+   * six. Mermaid works the rest out from those, some into colours of its own: a sequence diagram's
+   * arrows in the text colour, a crossed arrow in black. So they are all given here.
+   */
+  const VARIABLES = {
+    background: "canvas",
+    primaryColor: "fill",
+    primaryTextColor: "text",
+    primaryBorderColor: "border",
+    lineColor: "line",
+    tertiaryColor: "soft",
+    mainBkg: "fill",
+    nodeBorder: "border",
+    nodeTextColor: "text",
+    textColor: "text",
+    titleColor: "text",
+    clusterBkg: "soft",
+    clusterBorder: "border",
+    edgeLabelBackground: "canvas",
+    actorBkg: "fill",
+    actorBorder: "border",
+    actorTextColor: "text",
+    actorLineColor: "border",
+    signalColor: "line",
+    signalTextColor: "text",
+    labelBoxBkgColor: "fill",
+    labelBoxBorderColor: "border",
+    labelTextColor: "text",
+    loopTextColor: "text",
+    noteBkgColor: "soft",
+    noteBorderColor: "border",
+    noteTextColor: "text",
+    activationBkgColor: "soft",
+    activationBorderColor: "border"
+  } as const;
+
+  /** Runs a drawing after the ones before it. */
+  function enqueue<T>(task: () => Promise<T>) {
+    const run = queue.then(task);
+    queue = run.catch(() => undefined);
+    return run;
+  }
+
+  /** Runs a task once the browser is idle, or soon where it cannot say. */
+  const whenIdle = (task: () => void) =>
+    "requestIdleCallback" in window ? requestIdleCallback(task, { timeout: 2000 }) : setTimeout(task, 200);
 
   class DsMermaid extends HTMLElement {
     #code = "";
     #unsubscribe: (() => void) | undefined;
     #inFallback = false;
+    /** The drawing for each theme, kept so a theme change shows its drawing at once. */
+    #drawings = new Map<Theme, Promise<string | undefined>>();
+    /** The theme of the drawing shown last or on its way. */
+    #shown: Theme = "light";
 
     connectedCallback() {
       this.#code = this.querySelector("pre")?.textContent ?? "";
       if (!this.#code.trim()) return;
-      this.#draw();
+      void this.#show(document.documentElement.dataset.theme === "dark" ? "dark" : "light", false);
       this.#unsubscribe = themeStore().subscribe((state, previous) => {
-        if (state.theme !== previous.theme) this.#draw();
+        if (state.theme !== previous.theme) void this.#show(state.theme, true);
       });
     }
 
@@ -117,55 +171,87 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       this.#unsubscribe?.();
     }
 
-    #draw() {
-      queue = queue.then(() => this.#render()).catch(() => undefined);
+    /**
+     * Shows the page theme's drawing. The other theme's is drawn while the browser is idle, so a
+     * theme change only swaps two drawings: the new one fades in over the old one as the page's
+     * colours fade, starting with them.
+     */
+    async #show(theme: Theme, fade: boolean) {
+      this.#shown = theme;
+      const svg = await this.#drawing(theme);
+      // A later change has its own drawing on the way.
+      if (!svg || this.#shown !== theme) return;
+      whenIdle(() => void this.#drawing(theme === "dark" ? "light" : "dark"));
+      await this.#place(svg, fade);
     }
 
-    async #render() {
+    #drawing(theme: Theme) {
+      let drawing = this.#drawings.get(theme);
+      if (!drawing) {
+        drawing = enqueue(() => this.#render(theme));
+        this.#drawings.set(theme, drawing);
+      }
+      return drawing;
+    }
+
+    async #place(svg: string, fade: boolean) {
+      if (this.dataset.drawn === undefined) {
+        this.innerHTML = svg;
+        this.dataset.drawn = "";
+        return;
+      }
+      const old = [...this.children];
+      const template = document.createElement("template");
+      template.innerHTML = svg;
+      for (const element of old) element.setAttribute("aria-hidden", "true");
+      this.append(template.content);
+      const fresh = this.lastElementChild;
+      if (fresh && fade) await fadeIn(fresh);
+      for (const element of old) element.remove();
+    }
+
+    /** A drawing in a theme's colours, or nothing if Mermaid cannot draw the source. */
+    async #render(theme: Theme) {
       library ??= import("mermaid").then((module) => module.default);
       const mermaid = await library;
       const tone = this.dataset.tone === "dark" ? "dark" : "cream";
-      // The theme's colours as they end, not as they are partway through a theme's fade.
-      const read = themeValues(this, [...Object.values(PALETTE[tone]), "--font-sans"]);
+      // The theme's colours as they end, not as they are partway through a theme's fade. A frame
+      // inside an element with a data-theme of its own keeps that one.
+      const fixed = this.parentElement?.closest<HTMLElement>("[data-theme]:not(html)")?.dataset.theme;
+      const names = [...new Set([...Object.values(PALETTE[tone]), "--font-sans"])];
+      const read = themeValues(this, names, fixed === "dark" || fixed === "light" ? fixed : theme);
       // Mermaid measures its labels, so it waits for the font, for up to a second after the page
-      // started. On a slow connection it draws in the fallback font first, and once more when the
-      // font has come.
+      // started. On a slow connection it draws in the fallback font first, and both themes once
+      // more when the font has come.
       const font = sansFont(read["--font-sans"], this.#code);
       const inTime = await Promise.race([font.then(() => true), patience]);
       if (!inTime && !this.#inFallback) {
         this.#inFallback = true;
-        void font.then(() => this.#draw());
+        void font.then(() => {
+          this.#drawings.clear();
+          void this.#show(this.#shown, true);
+        });
       }
       const themeVariables = Object.fromEntries(
-        Object.entries(PALETTE[tone]).map(([name, token]) => [name, read[token]])
+        Object.entries(VARIABLES).map(([name, role]) => [name, read[PALETTE[tone][role]]])
       );
       mermaid.initialize({
         startOnLoad: false,
         securityLevel: "strict",
         theme: "base",
+        // Flat, as the system draws: Mermaid's newer look adds drop shadows and gradient strokes.
+        look: "classic",
         themeVariables: { ...themeVariables, fontFamily: read["--font-sans"], fontSize: "14px" }
       });
       try {
         count += 1;
         const { svg } = await mermaid.render(`ds-mermaid-${count}`, this.#code, drawingStage());
-        if (this.dataset.drawn === undefined) {
-          this.innerHTML = svg;
-          this.dataset.drawn = "";
-          return;
-        }
-        // Drawn again, for a new theme or the web font: the new diagram fades in over the old one,
-        // then replaces it.
-        const old = [...this.children];
-        const template = document.createElement("template");
-        template.innerHTML = svg;
-        for (const element of old) element.setAttribute("aria-hidden", "true");
-        this.append(template.content);
-        const fresh = this.lastElementChild;
-        if (fresh) await fadeIn(fresh);
-        for (const element of old) element.remove();
+        // The half arrowheads of a sequence diagram are black whatever the settings say.
+        return svg.replaceAll('stroke="black"', `stroke="${themeVariables.lineColor}"`);
       } catch (error) {
         // The source stays on the page, which is the frame's fallback.
         console.warn("Mermaid could not draw a diagram:", error);
+        return undefined;
       }
     }
   }

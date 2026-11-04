@@ -35,7 +35,7 @@ The diagram is drawn in the browser. The mermaid library is fetched only on a pa
 
 ## Anatomy
 
-A DiagramFrame: the canvas with a hairline and `--radius-lg` corners, an optional label in its top left, the diagram centred, and an optional caption below.
+A DiagramFrame: the canvas with a hairline and `--radius-lg` corners, an optional label in its top left, the diagram centred, and an optional caption below. The diagram is flat: Mermaid's classic look, without the drop shadows and gradient strokes of its newer one.
 
 ## Variants
 
@@ -50,7 +50,7 @@ DiagramFrame on its own takes any drawing: an SVG string in `svg`, any element i
 | State | What changes |
 | --- | --- |
 | Loading | The source shows in muted mono until mermaid has drawn the diagram. If drawing fails, the source stays |
-| Theme change | Mermaid writes its colours into the drawing, so the diagram is drawn again when the page switches between light and dark |
+| Theme change | Mermaid writes its colours into the drawing, so there is one for each theme. The other theme's is drawn once the browser is idle, and on a switch it fades in over the old one together with the page's colours |
 
 ## Accessibility
 

@@ -4,9 +4,17 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="Abbreviation">
-  <p>
+  <p class="text">
     Astro renders pages ahead of time, which is static site generation
     (<Abbreviation term="Static Site Generation">SSG</Abbreviation>), and can also render them
     on request, which is <Abbreviation term="Server-Side Rendering">SSR</Abbreviation>.
   </p>
 </ExampleLayout>
+
+<style>
+  /* Room above the first line for the tip, which opens above the term: padding, since the layout
+     takes the first child's margin away. */
+  .text {
+    padding-top: var(--space-xl);
+  }
+</style>
