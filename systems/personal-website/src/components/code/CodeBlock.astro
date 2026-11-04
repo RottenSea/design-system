@@ -1,9 +1,8 @@
 ---
 /**
  * A code block: pass `code` and `lang` to highlight with Shiki, or put Shiki's <pre> in the slot.
- * Long lines scroll rather than wrap, and a block over 12 lines starts folded to 10. The
- * horizontal scrollbar is a rail at the bottom of the block, below Show all, kept in step with the
- * code; without script it stays under the code.
+ * Long lines scroll rather than wrap, and a block over 12 lines starts folded to 10. Show all sits
+ * inside the scroll area, pinned to its left edge, so the horizontal scrollbar is the block's last row.
  *
  * It imports Shiki's theme objects instead of naming them: a bundler that inlines Shiki empties
  * its table of named themes.
@@ -128,9 +127,8 @@ const name =
           <slot />
         )
       }
+      <button type="button" class="ds-code__expand" hidden>Show all lines</button>
     </div>
-    <button type="button" class="ds-code__expand" hidden>Show all lines</button>
-    <div class="ds-code__rail" tabindex="-1" aria-hidden="true" hidden><div class="ds-code__rail-track"></div></div>
     {caption && <figcaption class="ds-code__caption">{caption}</figcaption>}
   </figure>
 </ds-code-block>
@@ -185,30 +183,6 @@ const name =
           expand.setAttribute("aria-expanded", "true");
         });
       }
-
-      // The rail scrolls the code and the code the rail; each only moves the other when they differ.
-      const scroll = this.querySelector<HTMLElement>(".ds-code__scroll");
-      const rail = this.querySelector<HTMLElement>(".ds-code__rail");
-      const track = rail?.firstElementChild as HTMLElement | null;
-      const figure = this.querySelector("figure");
-      if (!scroll || !rail || !track || !figure) return;
-      const fit = () => {
-        const over = scroll.scrollWidth > scroll.clientWidth + 1;
-        rail.hidden = !over;
-        figure.toggleAttribute("data-ds-rail", over);
-        track.style.width = `${scroll.scrollWidth}px`;
-        rail.scrollLeft = scroll.scrollLeft;
-      };
-      const follow = (from: HTMLElement, to: HTMLElement) => () => {
-        if (Math.abs(to.scrollLeft - from.scrollLeft) > 0.5) to.scrollLeft = from.scrollLeft;
-      };
-      scroll.addEventListener("scroll", follow(scroll, rail), { passive: true });
-      rail.addEventListener("scroll", follow(rail, scroll), { passive: true });
-      // The code grows when the web font arrives, and the block with the window.
-      const observer = new ResizeObserver(fit);
-      observer.observe(scroll);
-      observer.observe(pre);
-      fit();
     }
   }
 
@@ -343,7 +317,7 @@ const name =
   .ds-code__scroll {
     overflow-x: auto;
     scrollbar-color: var(--ds-code-soft) transparent;
-    padding: var(--space-md) 0;
+    padding-top: var(--space-md);
   }
 
   .ds-code__scroll :global(pre) {
@@ -355,7 +329,7 @@ const name =
     margin: 0;
     /* Astro writes overflow-x: auto on a post's <pre>; the scroll area scrolls instead. */
     overflow: visible !important;
-    padding: 0;
+    padding: 0 0 var(--space-md);
   }
 
   .ds-code__scroll :global(pre span) {
@@ -425,13 +399,13 @@ const name =
   }
 
   /*
-   * Folded on the <pre>, not the scroll area, so without script the horizontal scrollbar stays
-   * below the code and out of the fade. The <pre> is as wide as its longest line, since the mask
-   * clips to its box.
+   * Folded on the <pre>, not the scroll area, so Show all and the scrollbar stay out of the fade.
+   * The <pre> is as wide as its longest line, since the mask clips to its box.
    */
   .ds-code--folded .ds-code__scroll :global(pre) {
+    box-sizing: border-box;
     mask-image: linear-gradient(to bottom, #000 70%, transparent);
-    max-height: calc(var(--ds-code-folded-lines) * var(--code-lh) * var(--code-size));
+    max-height: calc(var(--ds-code-folded-lines) * var(--code-lh) * var(--code-size) + var(--space-md));
     min-width: 100%;
     overflow-x: visible !important;
     overflow-y: clip !important;
@@ -447,7 +421,10 @@ const name =
     display: block;
     font-family: var(--font-sans);
     font-size: var(--caption-size);
+    /* In the scroll area, as wide as what shows of it and held at its left edge. */
+    left: 0;
     padding: var(--space-xs) var(--space-md);
+    position: sticky;
     text-align: left;
     transition: var(--transition-tint);
     width: 100%;
@@ -455,25 +432,6 @@ const name =
 
   .ds-code__expand[hidden] {
     display: none;
-  }
-
-  /* With the rail in place the code's own scrollbar goes; the code still scrolls by touch and keys. */
-  .ds-code[data-ds-rail] .ds-code__scroll {
-    scrollbar-width: none;
-  }
-
-  .ds-code__rail {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-color: var(--ds-code-soft) transparent;
-  }
-
-  .ds-code__rail[hidden] {
-    display: none;
-  }
-
-  .ds-code__rail-track {
-    height: 1px;
   }
 
   .ds-code__expand:hover {

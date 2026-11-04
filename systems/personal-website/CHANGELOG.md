@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `CodeBlock` folds a block longer than 12 lines to its first 10, where it folded one longer than 20 to its first 16.
-- `CodeBlock`'s horizontal scrollbar is a rail at the very bottom of the block, below "Show all N lines", kept in step with the code, whose own scrollbar is hidden. The code still scrolls by touch, Shift and the wheel, or the arrow keys. Without script the scrollbar stays under the code.
+- `CodeBlock`'s horizontal scrollbar is the block's last row, below "Show all N lines": the button sits in the scroll area, held at its left edge, so the scroll area's own scrollbar falls under it. A folded block's scrollbar used to lie across the last line shown, inside the fade.
 
 ### Added
 
