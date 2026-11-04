@@ -4,7 +4,6 @@ import {
   FloatingControls,
   Footer,
   SidebarCard,
-  SkipLink,
   TopNav
 } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
@@ -24,7 +23,6 @@ const columns = [
 ---
 
 <ExampleLayout title="Page shell" bare>
-  <SkipLink />
   <TopNav brand="Field Notes" brandHref="#" links={links} active="Blog" />
   <main id="main" class="page">
     <ContentGrid>

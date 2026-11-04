@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- `SkipLink`, and its page on the docs site. A site that used it takes `<SkipLink />` out of its layout.
+
 ## [1.1.1] - 2026-11-04
 
 ### Added

@@ -51,7 +51,6 @@ import NavDrawer from "./layout/NavDrawer.astro";
 import QuoteBand from "./layout/QuoteBand.astro";
 import SearchPanel from "./layout/SearchPanel.astro";
 import SettingsMenu from "./layout/SettingsMenu.astro";
-import SkipLink from "./layout/SkipLink.astro";
 import Starfield from "./layout/Starfield.astro";
 import ThemeToggle from "./layout/ThemeToggle.astro";
 import TocButton from "./layout/TocButton.astro";
@@ -109,7 +108,6 @@ export {
   SettingsMenu,
   SharePoster,
   SidebarCard,
-  SkipLink,
   Snackbar,
   Spoiler,
   Starfield,

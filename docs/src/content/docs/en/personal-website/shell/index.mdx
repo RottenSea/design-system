@@ -7,7 +7,7 @@ sidebar:
 
 import Example from "../../../../../components/Example.astro";
 
-The page shell is what every page has around its content: the nav at the top, the grid with its rails, the footer, the round buttons in the corner, and the skip link a keyboard reader meets first.
+The page shell is what every page has around its content: the nav at the top, the grid with its rails, the footer and the round buttons in the corner.
 
 <Example system="personal-website" name="page-shell" title="A whole page: nav, three columns, footer and the floating buttons" viewport={1280} />
 
@@ -16,7 +16,7 @@ The page shell is what every page has around its content: the nav at the top, th
 ```astro
 ---
 import {
-  ContentGrid, FloatingControls, Footer, SidebarCard, SkipLink, ThemeScript, ThemeToggle, TopNav
+  ContentGrid, FloatingControls, Footer, SidebarCard, ThemeScript, ThemeToggle, TopNav
 } from "@rottensea/ds-personal-website/components";
 ---
 <html>
@@ -24,7 +24,6 @@ import {
     <ThemeScript />
   </head>
   <body>
-    <SkipLink />
     <TopNav brand="Field Notes" links={links} active="Blog" />
     <main id="main">
       <ContentGrid>
@@ -57,6 +56,5 @@ The shell uses three widths and no others. Above 1080px a page can have both rai
 | [Footer](footer/) | The dark band that closes the page |
 | [FloatingControls](floating-controls/) | Back to top and up to two other round buttons; IconButton |
 | [ThemeToggle](theme-toggle/) | The light and dark switch; ThemeScript, which sets the theme before the first paint |
-| [SkipLink](skip-link/) | The link past the nav for keyboard readers |
 | [Starfield](starfield/) | Stars that drift behind a page |
 | [DotGlobe](dot-globe/) | A turning globe of dots for a page that is one screen |

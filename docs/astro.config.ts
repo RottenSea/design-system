@@ -185,7 +185,6 @@ export default defineConfig({
                   "footer",
                   "floating-controls",
                   "theme-toggle",
-                  "skip-link",
                   "starfield",
                   "dot-globe"
                 ].map((name) => ({
