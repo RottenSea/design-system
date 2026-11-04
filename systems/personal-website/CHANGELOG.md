@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-04
+
+### Added
+
+- `coral.300`, a light coral (`#e6ab96`): coral-500 mixed 60% with cream-50.
+
+### Changed
+
+- `DotGlobe` draws its dots in `--coral-300` in the light theme. The halo and the dark theme are unchanged.
+
 ## [1.1.0] - 2026-11-04
 
 ### Changed
@@ -314,7 +324,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.0...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.1...HEAD
+[1.1.1]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.0...personal-website-v1.1.1
 [1.1.0]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.9...personal-website-v1.1.0
 [1.0.9]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.8...personal-website-v1.0.9
 [1.0.8]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.7...personal-website-v1.0.8
