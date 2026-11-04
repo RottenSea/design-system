@@ -7,22 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- `CodeBlock` folds a block longer than 12 lines to its first 10, where it folded one longer than 20 to its first 16.
-- `CodeBlock`'s horizontal scrollbar is the block's last row, below "Show all N lines": the button sits in the scroll area, held at its left edge, so the scroll area's own scrollbar falls under it. A folded block's scrollbar used to lie across the last line shown, inside the fade.
+## [1.1.2] - 2026-11-04
 
 ### Added
 
 - `surface.on-card`, for a part inside a card that would take the card's own colour: `#e0d8ca` in the light theme and `#322f2a` in the dark, one step from the card in each, as the dark theme's code bar is.
 
-### Fixed
+### Changed
 
-- Content inside an `Admonition` stands apart from it in the light theme. A code block's bar and a table's header took the card's own colour, and the light hairline around them barely shows on the card, so they ran into the admonition; an admonition inside another ran into it in both themes. Inside an admonition, `--surface-card`, `--surface-code-bar` and `--surface-cream-strong` now take `--surface-on-card`, which also covers a formula's card, a spoiler's cover and an OptionGroup's tabs. `tone="dark"` is unchanged.
+- `CodeBlock` folds a block longer than 12 lines to its first 10, where it folded one longer than 20 to its first 16.
+- `CodeBlock`'s horizontal scrollbar is the block's last row, below "Show all N lines": the button sits in the scroll area, held at its left edge, so the scroll area's own scrollbar falls under it. A folded block's scrollbar used to lie across the last line shown, inside the fade.
 
 ### Removed
 
 - `SkipLink`, and its page on the docs site. A site that used it takes `<SkipLink />` out of its layout.
+
+### Fixed
+
+- Content inside an `Admonition` stands apart from it in the light theme. A code block's bar and a table's header took the card's own colour, and the light hairline around them barely shows on the card, so they ran into the admonition; an admonition inside another ran into it in both themes. Inside an admonition, `--surface-card`, `--surface-code-bar` and `--surface-cream-strong` now take `--surface-on-card`, which also covers a formula's card, a spoiler's cover and an OptionGroup's tabs. `tone="dark"` is unchanged.
 
 ## [1.1.1] - 2026-11-04
 
@@ -341,7 +343,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.1...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.2...HEAD
+[1.1.2]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.1...personal-website-v1.1.2
 [1.1.1]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.0...personal-website-v1.1.1
 [1.1.0]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.9...personal-website-v1.1.0
 [1.0.9]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.8...personal-website-v1.0.9
