@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-11-04
+
 ### Added
 
 - Colour tokens for a code block that follows the theme: `surface.code`, `surface.code-bar`, `surface.code-highlight`, `hairline-code` and `hairline-code-frame`. Each takes the light or dark value of the theme, so it fades at the page's pace.
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Dialog` animates out when it closes, by the close button, the scrim or Escape, and only then closes. It has no overshoot: a `tilt` dialog turns away on the entrance's diagonal over 250ms, slowly at first and then faster, and fades out late; a `lift` dialog grows to 1.04 the same way over 200ms; the scrim fades with it. With reduced motion it still closes at once.
 - `Steps` marks the current step with `--color-primary-active` and a white number, in place of the dark surface.
 - `Footer` placed straight in `<body>` sits on the window's bottom edge on a page shorter than the window: `<body>` becomes a column at least `100dvh` tall and the footer takes the spare height above it, as the personal website did on its own.
+- `SearchPanel` keeps its scrollbar's space in the results, so the rows do not move sideways when more results bring in a scrollbar. `CodeBlock`'s scroll area draws its thumb in the block's own soft text colour, so it reads on the navy as well.
 - The theme store no longer warns in development when `data-theme` changes on a page whose `<html>` has `data-theme-pinned`: the docs site's examples use it to show one example in the other theme.
 
 ### Fixed
@@ -304,7 +307,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.8...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.9...HEAD
+[1.0.9]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.8...personal-website-v1.0.9
 [1.0.8]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.7...personal-website-v1.0.8
 [1.0.7]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.6...personal-website-v1.0.7
 [1.0.6]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.5...personal-website-v1.0.6
