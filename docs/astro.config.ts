@@ -1,5 +1,30 @@
+import { readdirSync } from "node:fs";
 import starlight from "@astrojs/starlight";
+import type { AstroIntegration } from "astro";
 import { defineConfig } from "astro/config";
+
+// Starlight prefixes every route with a locale, and Astro answers a project page outside /en/ or
+// /zh/ with a 404 status in development. Injected routes are exempt, so the example pages live in
+// src/pages/_examples/ (no route of their own) and are injected here. A new example needs a restart.
+function examples(): AstroIntegration {
+  return {
+    name: "examples",
+    hooks: {
+      "astro:config:setup": ({ injectRoute }) => {
+        const dir = new URL("./src/pages/_examples/", import.meta.url);
+        for (const system of readdirSync(dir)) {
+          for (const file of readdirSync(new URL(`${system}/`, dir))) {
+            if (!file.endsWith(".astro")) continue;
+            injectRoute({
+              pattern: `/examples/${system}/${file.slice(0, -".astro".length)}`,
+              entrypoint: new URL(`${system}/${file}`, dir)
+            });
+          }
+        }
+      }
+    }
+  };
+}
 
 // Pages under /<locale>/spec/, in reading order.
 const specPages = [
@@ -35,6 +60,7 @@ export default defineConfig({
     }
   },
   integrations: [
+    examples(),
     starlight({
       title: "Design Systems",
       customCss: ["./src/styles/custom.css"],
