@@ -3,13 +3,20 @@ import { SettingsMenu } from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
-{/* The example keeps its choice under a key of its own, so the docs site keeps its theme. */}
-<ExampleLayout title="SettingsMenu" themeKey="ds-docs-example-theme">
+{/* The theme options show the docs page's choice and are turned off below, so the example cannot
+    change the docs page's theme. Reduce motion keeps its choice under a key of its own. */}
+<ExampleLayout title="SettingsMenu">
   <div class="row">
-    <SettingsMenu storageKey="ds-docs-example-theme" motionKey="ds-docs-example-motion" />
-    <span class="note">Press the button for the panel. A choice changes this example only.</span>
+    <SettingsMenu storageKey="starlight-theme" motionKey="ds-docs-example-motion" />
+    <span class="note">Press the button for the panel. The theme shows the docs page's choice; Reduce motion changes this example only.</span>
   </div>
 </ExampleLayout>
+
+<script>
+  for (const option of document.querySelectorAll<HTMLButtonElement>(".ds-settings__theme button[data-value]")) {
+    option.disabled = true;
+  }
+</script>
 
 <style>
   /* Tall enough for the open panel, which floats under the button and is not part of the
