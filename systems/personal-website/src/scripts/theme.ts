@@ -5,9 +5,13 @@
  * tabs of the site as they change the choice. Components ask for a change with set() and hear of
  * one with subscribe(); none of them reads localStorage or the OS itself.
  *
- * A change fades every colour on the page over --motion-entrance: the store marks <html> with
- * data-theme-fade for that long, and base.css fades the theme's colour variables on <html> alone
- * while the mark is there; every element reads them as they blend. What a script draws, such as a
+ * A change fades every colour on the page over --motion-entrance. The store writes the theme's
+ * variables, the ones --theme-variables lists, on <html> on each frame, a step further from the
+ * old theme's values to the new one's, and every element reads them as they blend. It writes them
+ * itself because Chrome will not draw a visited link from a variable that a CSS transition is
+ * changing (crbug.com/569257985): the link and the text inside it showed the colour of the element
+ * around the link until the transition ended. While the fade runs, <html> carries
+ * data-theme-fade, and base.css holds every element's own transitions. What a script draws, such as a
  * Mermaid diagram or the share poster, draws again for the new theme with the colours themeValues
  * reads, and fades in with fadeIn. With reduced motion, in the OS or data-reduce-motion="true",
  * the theme changes at once.
@@ -24,6 +28,8 @@
  * The localStorage key is the one ThemeScript writes on <html> as data-theme-key, else the one
  * passed to the first themeStore() call, else "ds-theme".
  */
+
+import { easing, mixFadeValue, parseFadeValue } from "./fade.ts";
 
 export type Theme = "light" | "dark";
 export type ThemePreference = Theme | "system";
@@ -44,7 +50,8 @@ export interface ThemeStore {
 
 const dev = Boolean((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV);
 let store: ThemeStore | undefined;
-let fadeTimer: number | undefined;
+/** The fade in progress: the variables' values on its last frame, and how to end it now. */
+let running: { values: Map<string, string>; finish: () => void } | undefined;
 /** The inline color-scheme <html> had before a fade held it, while one is holding it. */
 let heldScheme: string | undefined;
 let timing: { duration: number; easing: string } | undefined;
@@ -97,9 +104,9 @@ function createStore(key: string): ThemeStore {
     if (next.preference === previous.preference && next.theme === previous.theme) return;
     state = next;
     if (current() !== next.theme) {
-      // The mark goes on before the theme, so the first style change already has the fade.
-      markFade(root, current() ?? previous.theme);
-      root.dataset.theme = next.theme;
+      fadeTheme(root, current() ?? previous.theme, () => {
+        root.dataset.theme = next.theme;
+      });
     }
     for (const listener of listeners) listener(state, previous);
   };
@@ -116,7 +123,7 @@ function createStore(key: string): ThemeStore {
   // Someone wrote data-theme without the store. Following the OS is expected (Starlight does it
   // itself), and so is a page that shows one part in another theme for a while and marks <html>
   // with data-theme-pinned (the docs site's examples); anything else gets a warning in development.
-  new MutationObserver(() => {
+  const observer = new MutationObserver(() => {
     const theme = current();
     if (!theme || theme === state.theme) return;
     const pinned = root.dataset.themePinned !== undefined;
@@ -125,9 +132,16 @@ function createStore(key: string): ThemeStore {
     }
     const previous = state;
     state = { preference: state.preference, theme };
-    markFade(root, previous.theme);
+    // The fade reads the old theme's values before the change, so the change is undone for that
+    // moment. Nothing has been drawn in the new theme yet: this runs before the next frame.
+    root.dataset.theme = previous.theme;
+    fadeTheme(root, previous.theme, () => {
+      root.dataset.theme = theme;
+    });
+    observer.takeRecords();
     for (const listener of listeners) listener(state, previous);
-  }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  });
+  observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
 
   return {
     key,
@@ -144,24 +158,66 @@ function createStore(key: string): ThemeStore {
 }
 
 /**
- * Marks <html> with data-theme-fade for the fade's time, unless the reader asked for less motion.
- * It also keeps <html>'s color-scheme at the theme being left until the fade is over: while
- * color-scheme changed under them, Chrome started colour transitions again on each frame, so text
- * crept a fifth of the way and then jumped. The scrollbars and form controls, which follow
- * color-scheme and cannot fade, change at the end.
+ * Changes the theme with apply() and fades the theme's variables from their values before it to
+ * their values after it, written on <html> on each frame. A fade still running goes on from where
+ * it is. While it runs, <html> has data-theme-fade, and its color-scheme stays at the theme being
+ * left: the scrollbars and form controls, which follow color-scheme and cannot fade, change at the
+ * end. With reduced motion, or on a page nobody can see, the theme changes at once.
  */
-function markFade(root: HTMLElement, from: Theme) {
+function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
   const fade = themeFade(root);
-  if (!fade) return;
+  const names = (getComputedStyle(root).getPropertyValue("--theme-variables") || "")
+    .split(",")
+    .map((name) => name.trim())
+    .filter((name) => name.startsWith("--"));
+  const before = getComputedStyle(root);
+  const start = new Map(names.map((name) => [name, running?.values.get(name) ?? before.getPropertyValue(name).trim()]));
+  running?.finish();
+  apply();
+  if (!fade || document.hidden || names.length === 0) return;
+
+  // The values the new theme settles on, read with nothing written over them.
+  const after = getComputedStyle(root);
+  const steps = names.map((name) => {
+    const end = after.getPropertyValue(name).trim();
+    const a = parseFadeValue(start.get(name) ?? "");
+    const b = parseFadeValue(end);
+    return { name, from: a, to: b, end };
+  });
+  const values = new Map(start);
+  for (const [name, value] of start) root.style.setProperty(name, value);
   root.dataset.themeFade = "";
   if (heldScheme === undefined) heldScheme = root.style.colorScheme;
   root.style.colorScheme = from;
-  clearTimeout(fadeTimer);
-  fadeTimer = window.setTimeout(() => {
+
+  const progress = easing(fade.easing);
+  const began = performance.now();
+  let frame = 0;
+  const finish = () => {
+    cancelAnimationFrame(frame);
+    clearTimeout(timer);
+    for (const name of names) root.style.removeProperty(name);
     delete root.dataset.themeFade;
     root.style.colorScheme = heldScheme ?? "";
     heldScheme = undefined;
-  }, fade.duration + 50);
+    if (running?.finish === finish) running = undefined;
+  };
+  const step = (now: number) => {
+    const time = (now - began) / fade.duration;
+    if (time >= 1) return finish();
+    const amount = progress(Math.max(0, time));
+    for (const { name, from: a, to: b, end } of steps) {
+      const value = (a && b && mixFadeValue(a, b, amount)) || end;
+      values.set(name, value);
+      root.style.setProperty(name, value);
+    }
+    frame = requestAnimationFrame(step);
+  };
+  frame = requestAnimationFrame(step);
+  // A frame that never comes, in a hidden frame or a busy page, does not leave the page between
+  // the two themes.
+  const timer = window.setTimeout(finish, fade.duration + 250);
+  running = { values, finish };
 }
 
 /**

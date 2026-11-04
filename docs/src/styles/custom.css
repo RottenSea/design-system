@@ -26,10 +26,12 @@ html {
 
 /*
  * A change of theme, as on the personal-website system's pages: the theme store (ThemeSelect.astro)
- * marks <html> with data-theme-fade, and meanwhile <html> alone fades Starlight's colour variables,
- * registered below as colours so the browser can blend them. Every element reads them as they
- * blend and drops its own transitions for that time, which would start again on every frame and
- * lag behind. --motion-entrance and --ease-move are the system's, which the store reads here.
+ * writes Starlight's colour variables, the ones --theme-variables lists at the end of this file,
+ * on <html> on each frame, a step further from the old theme to the new. They are registered as
+ * colours below, so the store reads each one as a colour it can blend. Every element reads them as
+ * they blend and drops its own transitions while <html> has data-theme-fade, since one would start
+ * again on every frame and lag behind. --motion-entrance and --ease-move are the system's, which
+ * the store reads here.
  * Starlight sets --sl-color-gray-7 in the light theme only, and where it is missing LinkCard and
  * the code frames fall back to gray-6. A registered variable is never missing, so the dark theme
  * gets gray-6 under that name here.
@@ -411,31 +413,27 @@ html {
   initial-value: transparent;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  [data-theme-fade] {
-    transition-delay: 0s !important;
-    transition-duration: var(--motion-entrance) !important;
-    transition-property:
-      --theme-dark, --sl-color-white, --sl-color-gray-1, --sl-color-gray-2, --sl-color-gray-3,
-      --sl-color-gray-4, --sl-color-gray-5, --sl-color-gray-6, --sl-color-gray-7, --sl-color-black,
-      --sl-color-orange-low, --sl-color-orange, --sl-color-orange-high, --sl-color-green-low,
-      --sl-color-green, --sl-color-green-high, --sl-color-blue-low, --sl-color-blue,
-      --sl-color-blue-high, --sl-color-purple-low, --sl-color-purple, --sl-color-purple-high,
-      --sl-color-red-low, --sl-color-red, --sl-color-red-high, --sl-color-accent-low,
-      --sl-color-accent, --sl-color-accent-high, --sl-color-text, --sl-color-text-accent,
-      --sl-color-text-invert, --sl-color-bg, --sl-color-bg-nav, --sl-color-bg-sidebar,
-      --sl-color-bg-inline-code, --sl-color-bg-accent, --sl-color-hairline-light,
-      --sl-color-hairline, --sl-color-hairline-shade, --sl-color-backdrop-overlay, --ec-codeBg,
-      --ec-codeFg, --ec-codeSelBg, --ec-gtrFg, --ec-gtrBrdCol, --ec-gtrHlFg, --ec-uiSelBg,
-      --ec-uiSelFg, --ec-focusBrd, --ec-sbThumbCol, --ec-sbThumbHoverCol, --ec-tm-markBg,
-      --ec-tm-markBrdCol, --ec-tm-insBg, --ec-tm-insDiffIndCol, --ec-tm-delBg,
-      --ec-tm-delDiffIndCol, --ec-frm-shdCol, --ec-frm-tooltipSuccessBg !important;
-    transition-timing-function: var(--ease-move) !important;
-  }
+/* The variables the theme store fades, written on <html> on each frame of a theme change. */
+:root {
+  --theme-variables:
+    --theme-dark, --sl-color-white, --sl-color-gray-1, --sl-color-gray-2, --sl-color-gray-3,
+    --sl-color-gray-4, --sl-color-gray-5, --sl-color-gray-6, --sl-color-gray-7, --sl-color-black,
+    --sl-color-orange-low, --sl-color-orange, --sl-color-orange-high, --sl-color-green-low,
+    --sl-color-green, --sl-color-green-high, --sl-color-blue-low, --sl-color-blue,
+    --sl-color-blue-high, --sl-color-purple-low, --sl-color-purple, --sl-color-purple-high,
+    --sl-color-red-low, --sl-color-red, --sl-color-red-high, --sl-color-accent-low,
+    --sl-color-accent, --sl-color-accent-high, --sl-color-text, --sl-color-text-accent,
+    --sl-color-text-invert, --sl-color-bg, --sl-color-bg-nav, --sl-color-bg-sidebar,
+    --sl-color-bg-inline-code, --sl-color-bg-accent, --sl-color-hairline-light,
+    --sl-color-hairline, --sl-color-hairline-shade, --sl-color-backdrop-overlay, --ec-codeBg,
+    --ec-codeFg, --ec-codeSelBg, --ec-gtrFg, --ec-gtrBrdCol, --ec-gtrHlFg, --ec-uiSelBg,
+    --ec-uiSelFg, --ec-focusBrd, --ec-sbThumbCol, --ec-sbThumbHoverCol, --ec-tm-markBg,
+    --ec-tm-markBrdCol, --ec-tm-insBg, --ec-tm-insDiffIndCol, --ec-tm-delBg,
+    --ec-tm-delDiffIndCol, --ec-frm-shdCol, --ec-frm-tooltipSuccessBg;
+}
 
-  [data-theme-fade] *,
-  [data-theme-fade] *::before,
-  [data-theme-fade] *::after {
-    transition: none !important;
-  }
+[data-theme-fade] *,
+[data-theme-fade] *::before,
+[data-theme-fade] *::after {
+  transition: none !important;
 }

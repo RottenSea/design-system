@@ -120,20 +120,12 @@
   }
 
   /*
-   * A change of theme. The theme store (scripts/theme.ts) marks <html> with data-theme-fade for
-   * --motion-entrance, and meanwhile <html> alone fades the theme's variables, which tokens.css
-   * registers as colours and lists in --theme-variables. Every element reads them as they blend,
-   * so the whole page changes together without a transition of its own. Elements drop their own
-   * transitions for that time: one would start again on every frame of the fade and lag behind
-   * the rest. Reduced motion never sets the mark.
+   * A change of theme. The theme store (scripts/theme.ts) writes the variables --theme-variables
+   * lists on <html> on each frame for --motion-entrance, a step further from the old theme to the
+   * new, and every element reads them as they blend, so the whole page changes together. Meanwhile
+   * <html> carries data-theme-fade, and elements drop their own transitions: one would start again
+   * on every frame of the fade and lag behind the rest. Reduced motion never sets the mark.
    */
-  [data-theme-fade] {
-    transition-delay: 0s !important;
-    transition-duration: var(--motion-entrance) !important;
-    transition-property: var(--theme-variables) !important;
-    transition-timing-function: var(--ease-move) !important;
-  }
-
   [data-theme-fade] *,
   [data-theme-fade] *::before,
   [data-theme-fade] *::after {

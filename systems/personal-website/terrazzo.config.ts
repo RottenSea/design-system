@@ -24,11 +24,11 @@ const tokenIds = (file: string) => tokensIn(file).map((token) => token.id);
 const variable = (id: string) => `--${id.replaceAll(".", "-")}`;
 
 /*
- * A change of theme fades these on <html> alone (base.css): every colour the dark theme changes,
- * registered as a colour so the browser can blend it, and --theme-dark, which goes from 0% in the
- * light theme to 100% in the dark for a colour that picks between two values with color-mix().
- * Every element reads the blended values, so none needs a transition of its own. They are listed
- * in --theme-variables for the fade's transition-property.
+ * A change of theme fades these on <html> alone: every colour the dark theme changes, and
+ * --theme-dark, which goes from 0% in the light theme to 100% in the dark for a colour that picks
+ * between two values with color-mix(). They are listed in --theme-variables, which the theme store
+ * (scripts/theme.ts) reads, and registered, so the store reads each one as a colour or percentage
+ * it can blend. Every element reads the blended values, so none needs a transition of its own.
  */
 const THEME_COLORS = tokensIn("./tokens/theme-dark.tokens.json")
   .filter((token) => token.type === "color")
