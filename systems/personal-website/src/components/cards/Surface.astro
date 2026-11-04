@@ -51,9 +51,13 @@ const Tag = as ?? (href ? "a" : "div");
 </Tag>
 
 <style>
+  /* The hairline is an inset shadow over an extra pixel of padding, not a border: a card with href
+     is a link, and Chrome draws a visited link's border in a colour of its own, which it does not
+     redraw while the theme fades. */
   .ds-surface {
-    border: 1px solid transparent;
+    --ds-surface-line: transparent;
     border-radius: var(--radius-lg);
+    box-shadow: inset 0 0 0 1px var(--ds-surface-line);
     box-sizing: border-box;
     color: var(--text-body);
     display: block;
@@ -67,7 +71,7 @@ const Tag = as ?? (href ? "a" : "div");
 
   .ds-surface--outline {
     background: var(--surface-canvas);
-    border-color: var(--hairline);
+    --ds-surface-line: var(--hairline);
   }
 
   .ds-surface--dark {
@@ -80,26 +84,26 @@ const Tag = as ?? (href ? "a" : "div");
 
   .ds-surface--dark.ds-surface--outline {
     background: var(--surface-dark);
-    border-color: var(--hairline-on-dark);
+    --ds-surface-line: var(--hairline-on-dark);
   }
 
   .ds-surface--pad-none {
-    padding: 0;
+    padding: 1px;
   }
 
   .ds-surface--pad-sm {
-    padding: var(--space-md);
+    padding: calc(var(--space-md) + 1px);
   }
 
   .ds-surface--pad-md {
-    padding: var(--space-lg);
+    padding: calc(var(--space-lg) + 1px);
   }
 
   .ds-surface--pad-lg {
-    padding: var(--space-xl);
+    padding: calc(var(--space-xl) + 1px);
   }
 
   .ds-surface--hover:hover {
-    box-shadow: var(--shadow-hover);
+    box-shadow: inset 0 0 0 1px var(--ds-surface-line), var(--shadow-hover);
   }
 </style>

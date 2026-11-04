@@ -16,6 +16,8 @@ import TokenTable from "../../../../components/TokenTable.astro";
 
 奶油色卡片没有边框也没有阴影，底色就够了。和画布同色的卡片（对比卡、网格小块）加一条细线。细线是奶油色调的，看上去是高一级的层次，而不是一条墨线。浅一号的细线用来分隔同一张卡片或同一段里的内容。细线的颜色见[颜色](../colors/#细线)。
 
+可能是链接的元素，比如带 `href` 的卡片、GitHubCard、secondary 按钮和 SkipLink，外圈的细线用内阴影 `box-shadow: inset` 画，内边距多加 1px，位置和原来的边框一样，不用 `border`。Chrome 画访问过的链接时，边框用的是页面读不到的另一份颜色，主题渐变时它不跟着重画：线一直停在旧主题的颜色，渐变结束才一下跳过去。
+
 <TokenTable system="personal-website" tokens={["border.*"]} />
 
 ## 阴影
