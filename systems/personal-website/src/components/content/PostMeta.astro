@@ -50,8 +50,19 @@ interface Props {
   class?: string;
 }
 
-const { date, category, readTime, author, items, tone = "cream", size = "sm", class: className } = Astro.props;
-const parts: PostMetaItem[] = (items?.length ? items : [date, category, readTime, author])
+const {
+  date,
+  category,
+  readTime,
+  author,
+  items,
+  tone = "cream",
+  size = "sm",
+  class: className
+} = Astro.props;
+const parts: PostMetaItem[] = (
+  items?.length ? items : [date, category, readTime, author]
+)
   .filter((part): part is PostMetaItem | string => Boolean(part))
   .map((part) => (typeof part === "string" ? { label: part } : part));
 const iconLed = parts.some((part) => part.icon);

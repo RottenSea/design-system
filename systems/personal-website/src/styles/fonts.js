@@ -6,7 +6,8 @@
 // range covers the regular, medium and bold weight tokens with the same files. Maple Mono NL NF CN
 // comes from RottenSea/webfonts, one stylesheet per static style.
 
-const MAPLE = "https://cdn.jsdelivr.net/gh/RottenSea/webfonts@maple-mono-nl-nf-cn-v1.0.0/7.9";
+const MAPLE =
+  "https://cdn.jsdelivr.net/gh/RottenSea/webfonts@maple-mono-nl-nf-cn-v1.0.0/7.9";
 
 export const fontStylesheets = [
   "https://fonts.googleapis.com/css2?family=Manrope:wght@400..700&family=Noto+Sans+SC:wght@400..700&family=Noto+Serif+SC:wght@400..700&family=Noto+Sans+Math&display=swap",

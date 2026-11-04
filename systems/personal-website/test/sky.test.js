@@ -15,7 +15,11 @@ import {
 function landAt(mask, lon, lat) {
   const bytes = Buffer.from(mask.bits, "base64");
   const [lo, la] = [(lon * Math.PI) / 180, (lat * Math.PI) / 180];
-  const target = { x: Math.cos(la) * Math.sin(lo), y: Math.sin(la), z: Math.cos(la) * Math.cos(lo) };
+  const target = {
+    x: Math.cos(la) * Math.sin(lo),
+    y: Math.sin(la),
+    z: Math.cos(la) * Math.cos(lo)
+  };
   let best = 0;
   let nearest = -2;
   for (let i = 0; i < mask.count; i++) {
@@ -38,7 +42,10 @@ test("about three tenths of the globe is land", () => {
   const mask = landMask(1.7);
   const land = landPoints(mask.count, mask.bits).length / 3;
   assert.equal(mask.count, 14274);
-  assert.ok(land / mask.count > 0.27 && land / mask.count < 0.31, `${land} of ${mask.count}`);
+  assert.ok(
+    land / mask.count > 0.27 && land / mask.count < 0.31,
+    `${land} of ${mask.count}`
+  );
 });
 
 test("land and sea are where they should be, across the date line and at the poles", () => {
@@ -66,14 +73,20 @@ test("the light theme's growth adds the same pixels to every star", () => {
   /** Every circle's radius in one drawing, in the order drawn. */
   const radii = (grow) => {
     const drawn = [];
-    const ctx = { beginPath() {}, moveTo() {}, fill() {}, arc: (_x, _y, r) => drawn.push(r) };
+    const ctx = {
+      beginPath() {},
+      moveTo() {},
+      fill() {},
+      arc: (_x, _y, r) => drawn.push(r)
+    };
     const size = { width: 800, height: 500, period: 140 };
     drawStars(ctx, makeStars(800, 500), 0, size, [0, 0, 0], 1, undefined, grow);
     return drawn;
   };
   const [plain, grown] = [radii(0), radii(0.3)];
   assert.equal(grown.length, plain.length);
-  for (const [i, r] of plain.entries()) assert.ok(Math.abs(grown[i] - r - 0.3) < 1e-9);
+  for (const [i, r] of plain.entries())
+    assert.ok(Math.abs(grown[i] - r - 0.3) < 1e-9);
 });
 
 test("CSS times read as milliseconds", () => {

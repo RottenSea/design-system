@@ -20,7 +20,12 @@ interface Props {
   class?: string;
 }
 
-const { title, variant = "fill", tone = "cream", class: className } = Astro.props;
+const {
+  title,
+  variant = "fill",
+  tone = "cream",
+  class: className
+} = Astro.props;
 const dark = tone === "dark";
 ---
 

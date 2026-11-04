@@ -8,7 +8,10 @@ const SIZE = 16;
 const cache = new Map<string, Promise<string | undefined>>();
 
 async function make(path: string) {
-  const tiny = await sharp(path).resize(SIZE, SIZE, { fit: "inside" }).png().toBuffer();
+  const tiny = await sharp(path)
+    .resize(SIZE, SIZE, { fit: "inside" })
+    .png()
+    .toBuffer();
   // A transparent image would show the stand-in through its clear parts after it loads.
   const { isOpaque } = await sharp(tiny).stats();
   if (!isOpaque) return undefined;
@@ -17,8 +20,11 @@ async function make(path: string) {
 }
 
 /** The stand-in for a local image, or undefined for a remote, vector or transparent one. */
-export function placeholderOf(image: ImageMetadata): Promise<string | undefined> {
-  if (!image.fsPath || image.format === "svg") return Promise.resolve(undefined);
+export function placeholderOf(
+  image: ImageMetadata
+): Promise<string | undefined> {
+  if (!image.fsPath || image.format === "svg")
+    return Promise.resolve(undefined);
   let result = cache.get(image.fsPath);
   if (!result) {
     // An unreadable file loses its stand-in, not the page.

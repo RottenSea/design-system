@@ -21,7 +21,10 @@ export function parseZoomSources(list: string): ZoomSource[] {
 }
 
 /** The smallest copy at least `needed` pixels wide, or the largest when none is. */
-export function pickZoomSource(sources: ZoomSource[], needed: number): ZoomSource | undefined {
+export function pickZoomSource(
+  sources: ZoomSource[],
+  needed: number
+): ZoomSource | undefined {
   return sources.find((source) => source.width >= needed) ?? sources.at(-1);
 }
 
@@ -35,7 +38,13 @@ export function zoomedWidth(
   margin: number,
   ratio: number
 ): number {
-  const room = { width: viewport.width - 2 * margin, height: viewport.height - 2 * margin };
-  const scale = Math.min(room.width / natural.width, room.height / natural.height);
+  const room = {
+    width: viewport.width - 2 * margin,
+    height: viewport.height - 2 * margin
+  };
+  const scale = Math.min(
+    room.width / natural.width,
+    room.height / natural.height
+  );
   return Math.round(natural.width * scale * ratio);
 }

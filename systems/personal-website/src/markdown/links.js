@@ -23,7 +23,10 @@ const hidden = (value) => ({
  * @param {{ levels?: number[], label?: string }} [options] `label` comes before the heading's
  *   text in the link's name for screen readers.
  */
-export function rehypeDsHeadingAnchors({ levels = [2, 3, 4], label = "Link to section:" } = {}) {
+export function rehypeDsHeadingAnchors({
+  levels = [2, 3, 4],
+  label = "Link to section:"
+} = {}) {
   const addIds = rehypeHeadingIds();
   return (tree, file) => {
     addIds(tree, file);
@@ -35,7 +38,8 @@ export function rehypeDsHeadingAnchors({ levels = [2, 3, 4], label = "Link to se
       // A heading only screen readers see, such as the label GFM gives the footnotes, would show
       // its link with nothing beside it.
       const classes = node.properties?.className ?? [];
-      if (classes.includes("sr-only") || classes.includes("ds-visually-hidden")) return;
+      if (classes.includes("sr-only") || classes.includes("ds-visually-hidden"))
+        return;
       const anchor = {
         type: "element",
         tagName: "a",
@@ -71,17 +75,28 @@ const WEB = /^(?:https?:)?\/\//i;
  * @param {{ site?: string, note?: string }} [options] `site` is the site's own address, whose
  *   links stay internal; `note` is the hidden note.
  */
-export function rehypeDsExternalLinks({ site, note = " (opens in a new tab)" } = {}) {
+export function rehypeDsExternalLinks({
+  site,
+  note = " (opens in a new tab)"
+} = {}) {
   const own = site ? new URL(site).host : undefined;
   return (tree) => {
     visit(tree, "element", (node) => {
       if (node.tagName !== "a") return;
       const href = String(node.properties?.href ?? "");
-      if (!WEB.test(href) || node.properties.target || node.properties.download != null) return;
+      if (
+        !WEB.test(href) ||
+        node.properties.target ||
+        node.properties.download != null
+      )
+        return;
       if (own && new URL(href, "https://example.invalid").host === own) return;
       node.properties.target = "_blank";
       node.properties.rel = ["noreferrer"];
-      node.properties.className = [...(node.properties.className ?? []), "ds-external"];
+      node.properties.className = [
+        ...(node.properties.className ?? []),
+        "ds-external"
+      ];
       node.children.push(hidden(note));
     });
   };

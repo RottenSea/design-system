@@ -17,14 +17,26 @@ test("video page addresses become players", () => {
     embed("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=1m30s"),
     "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&start=90"
   );
-  assert.equal(embed("https://youtu.be/dQw4w9WgXcQ"), "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1");
+  assert.equal(
+    embed("https://youtu.be/dQw4w9WgXcQ"),
+    "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1"
+  );
   assert.equal(
     embed("https://www.youtube.com/shorts/abcDEF12345"),
     "https://www.youtube-nocookie.com/embed/abcDEF12345?autoplay=1"
   );
-  assert.equal(embed("https://www.acfun.cn/v/ac48905554"), "https://www.acfun.cn/player/ac48905554");
-  assert.equal(embed("https://m.acfun.cn/v/ac48905554"), "https://www.acfun.cn/player/ac48905554");
-  assert.equal(embed("https://vimeo.com/76979871"), "https://player.vimeo.com/video/76979871?autoplay=1");
+  assert.equal(
+    embed("https://www.acfun.cn/v/ac48905554"),
+    "https://www.acfun.cn/player/ac48905554"
+  );
+  assert.equal(
+    embed("https://m.acfun.cn/v/ac48905554"),
+    "https://www.acfun.cn/player/ac48905554"
+  );
+  assert.equal(
+    embed("https://vimeo.com/76979871"),
+    "https://player.vimeo.com/video/76979871?autoplay=1"
+  );
 });
 
 test("each video keeps a link to its own page", () => {

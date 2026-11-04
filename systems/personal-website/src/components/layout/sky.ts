@@ -24,7 +24,10 @@ export function latticeCount(spacing: number): number {
  * Point i of an n-point Fibonacci lattice on the unit sphere: equal areas, no clumping at the
  * poles. y points north; longitude 0 faces +z.
  */
-export function latticePoint(i: number, n: number): { x: number; y: number; z: number } {
+export function latticePoint(
+  i: number,
+  n: number
+): { x: number; y: number; z: number } {
   const y = 1 - (2 * i + 1) / n;
   const r = Math.sqrt(Math.max(0, 1 - y * y));
   const theta = i * GOLDEN;
@@ -85,9 +88,17 @@ const rgba = ([r, g, b]: Rgb, alpha: number) =>
  * follows the longer side, so a tall phone screen drifts as fast as a wide one instead of a
  * quarter as fast.
  */
-export function starAt(s: Star, t: number, width: number, height: number, period: number) {
-  const drift = -(t / 1000) * (Math.max(width, height) / period) * 0.72 * s.depth;
-  const wrap = (v: number, size: number) => ((v % (size + 40)) + size + 40) % (size + 40) - 20;
+export function starAt(
+  s: Star,
+  t: number,
+  width: number,
+  height: number,
+  period: number
+) {
+  const drift =
+    -(t / 1000) * (Math.max(width, height) / period) * 0.72 * s.depth;
+  const wrap = (v: number, size: number) =>
+    (((v % (size + 40)) + size + 40) % (size + 40)) - 20;
   return { x: wrap(s.x + drift, width), y: wrap(s.y - drift * 0.22, height) };
 }
 
@@ -106,7 +117,10 @@ export function drawStars(
     const { x, y } = starAt(s, t, size.width, size.height, size.period);
     if (hidden?.(x, y)) continue;
     const twinkle = 0.65 + 0.35 * Math.sin((t / 1000) * s.speed + s.phase);
-    ctx.fillStyle = rgba(color, s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength);
+    ctx.fillStyle = rgba(
+      color,
+      s.alpha * twinkle * (0.55 + 0.45 * s.depth) * strength
+    );
     ctx.beginPath();
     ctx.arc(x, y, s.radius * (0.7 + 0.5 * s.depth) + grow, 0, Math.PI * 2);
     ctx.fill();
@@ -139,7 +153,14 @@ export function drawGlobe(
   halo: Rgb
 ) {
   const { cx, cy, radius } = globe;
-  const glow = ctx.createRadialGradient(cx, cy, radius * 0.86, cx, cy, radius * 1.22);
+  const glow = ctx.createRadialGradient(
+    cx,
+    cy,
+    radius * 0.86,
+    cx,
+    cy,
+    radius * 1.22
+  );
   glow.addColorStop(0, rgba(halo, 0));
   glow.addColorStop(0.42, rgba(halo, 0.2));
   glow.addColorStop(1, rgba(halo, 0));
@@ -161,11 +182,18 @@ export function drawGlobe(
     const z = py * sinTilt + turned * cosTilt;
     // Full strength on the near side, fading to a fifth over the limb.
     const away = (1 - turned) / 2;
-    const alpha = away <= 0.4 ? 1 : away >= 0.6 ? 0.2 : 1 - (0.8 * (away - 0.4)) / 0.2;
+    const alpha =
+      away <= 0.4 ? 1 : away >= 0.6 ? 0.2 : 1 - (0.8 * (away - 0.4)) / 0.2;
     const perspective = CAMERA / (CAMERA - z);
     ctx.fillStyle = rgba(dot, alpha);
     ctx.beginPath();
-    ctx.arc(cx + x * radius * perspective, cy - y * radius * perspective, base * perspective, 0, Math.PI * 2);
+    ctx.arc(
+      cx + x * radius * perspective,
+      cy - y * radius * perspective,
+      base * perspective,
+      0,
+      Math.PI * 2
+    );
     ctx.fill();
   }
 }
@@ -218,13 +246,18 @@ export interface Sky {
  * theme change the colours and numbers move to the new theme's over the page's fade, or at once when
  * the page's colours change at once. Returns a function that stops it all.
  */
-export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): () => void {
+export function runSky(
+  host: HTMLElement,
+  canvas: HTMLCanvasElement,
+  sky: Sky
+): () => void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
   const root = document.documentElement;
   // With reduced motion the page's colours change at once on a theme change, and so do the sky's.
   const calm = () =>
-    matchMedia("(prefers-reduced-motion: reduce)").matches || root.dataset.reduceMotion === "true";
+    matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    root.dataset.reduceMotion === "true";
 
   let width = 0;
   let height = 0;
@@ -241,7 +274,9 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
   const read = (): Values => {
     const style = getComputedStyle(host);
     return {
-      colors: sky.colors.map((name) => parseColor(ctx, style.getPropertyValue(name).trim() || "#000")),
+      colors: sky.colors.map((name) =>
+        parseColor(ctx, style.getPropertyValue(name).trim() || "#000")
+      ),
       numbers: (sky.numbers ?? []).map((name) => {
         const value = Number.parseFloat(style.getPropertyValue(name));
         return Number.isNaN(value) ? 1 : value;
@@ -249,7 +284,9 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     };
   };
   let values = read();
-  let tween: { from: Values; to: Values; start: number; duration: number } | undefined;
+  let tween:
+    | { from: Values; to: Values; start: number; duration: number }
+    | undefined;
 
   const current = (now: number): Values => {
     if (!tween) return values;
@@ -259,7 +296,10 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     const e = 1 - (1 - k) ** 3;
     const mix = (a: number, b: number) => a + (b - a) * e;
     const mixed = {
-      colors: to.colors.map((rgb, i) => rgb.map((c, j) => Math.round(mix(from.colors[i][j], c))) as Rgb),
+      colors: to.colors.map(
+        (rgb, i) =>
+          rgb.map((c, j) => Math.round(mix(from.colors[i][j], c))) as Rgb
+      ),
       numbers: to.numbers.map((n, i) => mix(from.numbers[i], n))
     };
     if (k >= 1) tween = undefined;
@@ -309,7 +349,11 @@ export function runSky(host: HTMLElement, canvas: HTMLCanvasElement, sky: Sky): 
     const now = performance.now();
     const from = current(now);
     values = read();
-    const duration = calm() ? 0 : milliseconds(getComputedStyle(root).getPropertyValue("--motion-entrance"));
+    const duration = calm()
+      ? 0
+      : milliseconds(
+          getComputedStyle(root).getPropertyValue("--motion-entrance")
+        );
     tween = duration ? { from, to: values, start: now, duration } : undefined;
     wake();
   });

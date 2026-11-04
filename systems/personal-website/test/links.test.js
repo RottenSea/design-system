@@ -1,18 +1,30 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { VFile } from "vfile";
-import { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "../src/markdown/links.js";
+import {
+  rehypeDsExternalLinks,
+  rehypeDsHeadingAnchors
+} from "../src/markdown/links.js";
 
 const text = (value) => ({ type: "text", value });
-const element = (tagName, properties, children) => ({ type: "element", tagName, properties, children });
+const element = (tagName, properties, children) => ({
+  type: "element",
+  tagName,
+  properties,
+  children
+});
 const root = (...children) => ({ type: "root", children });
 const classes = (node) => node.properties.className;
-const textOf = (node) => ("value" in node ? node.value : (node.children ?? []).map(textOf).join(""));
+const textOf = (node) =>
+  "value" in node ? node.value : (node.children ?? []).map(textOf).join("");
 
 test("h2 to h4 get an id and a # link beside them, outside the heading", () => {
   const tree = root(
     element("h1", {}, [text("Title")]),
-    element("h2", {}, [text("Getting "), element("code", {}, [text("started")])]),
+    element("h2", {}, [
+      text("Getting "),
+      element("code", {}, [text("started")])
+    ]),
     element("h5", {}, [text("Deep")])
   );
   const file = new VFile();
@@ -31,7 +43,11 @@ test("h2 to h4 get an id and a # link beside them, outside the heading", () => {
 });
 
 test("a heading only screen readers see, such as the footnotes' label, gets no # link", () => {
-  const tree = root(element("h2", { id: "footnote-label", className: ["sr-only"] }, [text("Footnotes")]));
+  const tree = root(
+    element("h2", { id: "footnote-label", className: ["sr-only"] }, [
+      text("Footnotes")
+    ])
+  );
   rehypeDsHeadingAnchors()(tree, new VFile());
   assert.equal(tree.children[0].tagName, "h2");
   assert.equal(tree.children[0].properties.id, "footnote-label");
@@ -50,7 +66,9 @@ test("links to other sites open in a new tab, with a hidden note", () => {
       element("a", { href: "/about" }, [text("About")]),
       element("a", { href: "mailto:a@example.com" }, [text("Mail")]),
       element("a", { href: "https://rottenth.cafe/blog" }, [text("Own")]),
-      element("a", { href: "https://example.com/a.zip", download: "" }, [text("Zip")])
+      element("a", { href: "https://example.com/a.zip", download: "" }, [
+        text("Zip")
+      ])
     ])
   );
   rehypeDsExternalLinks({ site: "https://rottenth.cafe" })(tree);
@@ -59,5 +77,6 @@ test("links to other sites open in a new tab, with a hidden note", () => {
   assert.deepEqual(astro.properties.rel, ["noreferrer"]);
   assert.deepEqual(classes(astro), ["ds-external"]);
   assert.equal(textOf(astro), "Astro (opens in a new tab)");
-  for (const link of [about, mail, own, zip]) assert.equal(link.properties.target, undefined);
+  for (const link of [about, mail, own, zip])
+    assert.equal(link.properties.target, undefined);
 });

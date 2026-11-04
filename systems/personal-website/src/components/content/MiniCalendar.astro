@@ -52,7 +52,8 @@ const {
   id,
   class: className
 } = Astro.props;
-const counts = Astro.props.counts ?? Object.fromEntries(marked.map((date) => [date, 1]));
+const counts =
+  Astro.props.counts ?? Object.fromEntries(marked.map((date) => [date, 1]));
 // At build time "today" is the build's; the browser redraws with the reader's.
 const [buildYear, buildMonth] = localToday().split("-").map(Number);
 const shownYear = year ?? buildYear;

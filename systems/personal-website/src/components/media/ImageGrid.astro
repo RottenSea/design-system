@@ -54,8 +54,12 @@ const {
 
 const style = `--ds-columns: ${Number(columns) || 3}; --ds-ratio: ${ratio}; --ds-gap: ${gap}`;
 const cellStyle = (item: Item) =>
-  [item.ratio && `--ds-ratio: ${item.ratio}`, item.fit && `--ds-fit: ${item.fit}`].filter(Boolean).join("; ") ||
-  undefined;
+  [
+    item.ratio && `--ds-ratio: ${item.ratio}`,
+    item.fit && `--ds-fit: ${item.fit}`
+  ]
+    .filter(Boolean)
+    .join("; ") || undefined;
 ---
 
 <div class:list={["ds-image-grid", { "ds-image-grid--dark": tone === "dark" }, className]} style={style}>

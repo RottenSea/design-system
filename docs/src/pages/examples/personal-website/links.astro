@@ -1,6 +1,9 @@
 ---
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
-import { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "@rottensea/ds-personal-website/markdown";
+import {
+  rehypeDsExternalLinks,
+  rehypeDsHeadingAnchors
+} from "@rottensea/ds-personal-website/markdown";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 // The same Markdown a post would have, run through the system's two rehype plugins.
@@ -14,7 +17,10 @@ Read [Astro's guide](https://docs.astro.build/) or the [first section](#install-
 
 const processor = await createMarkdownProcessor({
   syntaxHighlight: false,
-  rehypePlugins: [rehypeDsHeadingAnchors, [rehypeDsExternalLinks, { site: "https://article.rottenth.cafe" }]]
+  rehypePlugins: [
+    rehypeDsHeadingAnchors,
+    [rehypeDsExternalLinks, { site: "https://article.rottenth.cafe" }]
+  ]
 });
 const { code } = await processor.render(markdown);
 ---

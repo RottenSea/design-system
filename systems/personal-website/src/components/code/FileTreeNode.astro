@@ -9,8 +9,8 @@
  * :::file-tree directive writes.
  */
 import FileIcon from "../../icons/file.svg";
-import FolderOpen from "../../icons/folder-open.svg";
 import Folder from "../../icons/folder.svg";
+import FolderOpen from "../../icons/folder-open.svg";
 
 export interface FileNode {
   name: string;
@@ -48,10 +48,14 @@ const id = node ? (node.path ?? node.name) : undefined;
 const name = node ? node.name : (Astro.props.name ?? "");
 const state = node ? node.state : Astro.props.state;
 const hint = node ? node.hint : Astro.props.hint;
-const folder = node ? Array.isArray(node.children) : Boolean(Astro.props.folder);
+const folder = node
+  ? Array.isArray(node.children)
+  : Boolean(Astro.props.folder);
 const open = node ? defaultOpen.includes(id ?? "") : Boolean(Astro.props.open);
 const selected = node ? selectedPath === id : Boolean(Astro.props.selected);
-const hasContents = node ? Boolean(node.children?.length) : Astro.slots.has("default");
+const hasContents = node
+  ? Boolean(node.children?.length)
+  : Astro.slots.has("default");
 const style = `--ds-depth: ${depth}`;
 ---
 

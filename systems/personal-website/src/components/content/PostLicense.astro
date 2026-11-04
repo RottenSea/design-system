@@ -49,7 +49,8 @@ const {
   newTabNote = " (opens in a new tab)",
   class: className
 } = Astro.props;
-const date = (value: PostDate | string) => (typeof value === "string" ? { label: value } : value);
+const date = (value: PostDate | string) =>
+  typeof value === "string" ? { label: value } : value;
 const dates = [
   { term: "Published", ...date(published) },
   ...(updated ? [{ term: "Updated", ...date(updated) }] : [])

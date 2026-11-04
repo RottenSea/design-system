@@ -10,10 +10,17 @@ import CodeBlock from "./CodeBlock.astro";
 type Props = Record<string, unknown>;
 
 const props = Astro.props;
-const filename = typeof props["data-title"] === "string" ? props["data-title"] : undefined;
-const language = typeof props["data-language"] === "string" ? props["data-language"] : undefined;
+const filename =
+  typeof props["data-title"] === "string" ? props["data-title"] : undefined;
+const language =
+  typeof props["data-language"] === "string"
+    ? props["data-language"]
+    : undefined;
 // Plain text needs no language label.
-const lang = language && language !== "plaintext" && language !== "text" ? language : undefined;
+const lang =
+  language && language !== "plaintext" && language !== "text"
+    ? language
+    : undefined;
 ---
 
 <CodeBlock filename={filename} lang={lang}>

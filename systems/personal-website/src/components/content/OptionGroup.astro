@@ -27,7 +27,14 @@ interface Props {
   class?: string;
 }
 
-const { syncKey, label, size = "sm", tone = "cream", class: className, ...rest } = Astro.props;
+const {
+  syncKey,
+  label,
+  size = "sm",
+  tone = "cream",
+  class: className,
+  ...rest
+} = Astro.props;
 
 const id = `ds-options-${crypto.randomUUID().slice(0, 8)}`;
 const html = await Astro.slots.render("default");

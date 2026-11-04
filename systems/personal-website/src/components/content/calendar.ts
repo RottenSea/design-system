@@ -17,35 +17,65 @@ export interface MonthOptions {
   selected: string | null;
 }
 
-const WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const WEEK = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
+];
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-export const isoDate = (year: number, month: number, day: number) => `${year}-${pad(month)}-${pad(day)}`;
+export const isoDate = (year: number, month: number, day: number) =>
+  `${year}-${pad(month)}-${pad(day)}`;
 
 /** Today in the reader's own calendar. */
-export const localToday = (now = new Date()) => isoDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+export const localToday = (now = new Date()) =>
+  isoDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
 
 export const monthLabel = (year: number, month: number) =>
-  new Date(Date.UTC(year, month - 1, 1)).toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+  new Date(Date.UTC(year, month - 1, 1)).toLocaleString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  });
 
-export function monthHtml({ year, month, counts, today, weekStart, selectable, selected }: MonthOptions): string {
+export function monthHtml({
+  year,
+  month,
+  counts,
+  today,
+  weekStart,
+  selectable,
+  selected
+}: MonthOptions): string {
   const offset = weekStart === "sun" ? 0 : 1;
   const firstDay = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
   const length = new Date(Date.UTC(year, month, 0)).getUTCDate();
   const lead = (firstDay - offset + 7) % 7;
   const week = [...WEEK.slice(offset), ...WEEK.slice(0, offset)];
   const cells: string[] = week.map(
-    (name) => `<abbr class="ds-cal__head" title="${name}" aria-hidden="true">${name[0]}</abbr>`
+    (name) =>
+      `<abbr class="ds-cal__head" title="${name}" aria-hidden="true">${name[0]}</abbr>`
   );
-  for (let i = 0; i < lead; i += 1) cells.push('<span class="ds-cal__blank"></span>');
+  for (let i = 0; i < lead; i += 1)
+    cells.push('<span class="ds-cal__blank"></span>');
   for (let day = 1; day <= length; day += 1) {
     const date = isoDate(year, month, day);
     const count = counts[date] ?? 0;
-    const classes = ["ds-cal__day", count ? "ds-cal__day--marked" : "", date === today ? "ds-cal__day--today" : ""]
+    const classes = [
+      "ds-cal__day",
+      count ? "ds-cal__day--marked" : "",
+      date === today ? "ds-cal__day--today" : ""
+    ]
       .filter(Boolean)
       .join(" ");
-    const note = count ? `<span class="ds-visually-hidden">, ${count} post${count === 1 ? "" : "s"}</span>` : "";
+    const note = count
+      ? `<span class="ds-visually-hidden">, ${count} post${count === 1 ? "" : "s"}</span>`
+      : "";
     const current = date === today ? ' aria-current="date"' : "";
     cells.push(
       count && selectable

@@ -13,9 +13,15 @@ interface Props {
 
 const { system } = Astro.props;
 // The docs build runs in docs/, next to systems/.
-const source = readFileSync(resolve(process.cwd(), "..", "systems", system, "CHANGELOG.md"), "utf8");
+const source = readFileSync(
+  resolve(process.cwd(), "..", "systems", system, "CHANGELOG.md"),
+  "utf8"
+);
 const markdown = source.replace(/^# .*\n/, "");
-const processor = await createMarkdownProcessor({ syntaxHighlight: false, smartypants: false });
+const processor = await createMarkdownProcessor({
+  syntaxHighlight: false,
+  smartypants: false
+});
 const { code } = await processor.render(markdown);
 ---
 

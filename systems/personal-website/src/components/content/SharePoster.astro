@@ -32,7 +32,16 @@ interface Props {
   class?: string;
 }
 
-const { title, description, url, site, date, cover, lazy = false, class: className } = Astro.props;
+const {
+  title,
+  description,
+  url,
+  site,
+  date,
+  cover,
+  lazy = false,
+  class: className
+} = Astro.props;
 ---
 
 <ds-share-poster

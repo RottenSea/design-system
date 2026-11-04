@@ -27,7 +27,12 @@ interface Props {
   class?: string;
 }
 
-const { period = 140, area = 5000, position = "fixed", class: className } = Astro.props;
+const {
+  period = 140,
+  area = 5000,
+  position = "fixed",
+  class: className
+} = Astro.props;
 ---
 
 <ds-starfield

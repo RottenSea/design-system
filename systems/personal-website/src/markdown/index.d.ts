@@ -11,7 +11,9 @@ import type { VFile } from "vfile";
  * system's components, and marks an image on a line of its own as a figure.
  * It also turns on the parsers of remark-directive and remark-math.
  */
-export function remarkDsDirectives(this: Processor): (tree: Root, file: VFile) => void;
+export function remarkDsDirectives(
+  this: Processor
+): (tree: Root, file: VFile) => void;
 
 /**
  * MathML for a formula, typeset by KaTeX, for MathBlock's `html`. `display` is false for a formula

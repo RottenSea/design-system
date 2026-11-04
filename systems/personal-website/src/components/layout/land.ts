@@ -33,7 +33,8 @@ let pieces: Piece[] | undefined;
 const cache = new Map<number, LandMask>();
 
 /** Whether a ring jumps across the 180° meridian somewhere. */
-const crosses = (ring: Ring) => ring.some((p, i) => i > 0 && Math.abs(p[0] - ring[i - 1][0]) > 180);
+const crosses = (ring: Ring) =>
+  ring.some((p, i) => i > 0 && Math.abs(p[0] - ring[i - 1][0]) > 180);
 
 /** A ring walked without jumps: each time it crosses 180°, what follows shifts by 360. */
 function unwrap(ring: Ring): Ring {
@@ -52,9 +53,15 @@ function piece(input: Ring[]): Piece {
   let rings = input;
   const outer = rings[0];
   const lons = outer.map((p) => p[0]);
-  if (Math.max(...lons) - Math.min(...lons) > 350 && Math.min(...outer.map((p) => p[1])) < -60) {
+  if (
+    Math.max(...lons) - Math.min(...lons) > 350 &&
+    Math.min(...outer.map((p) => p[1])) < -60
+  ) {
     // Antarctica: drop the edge that closes it across the map and go round the pole instead.
-    rings = [[...outer.slice(0, -1), [180, outer[0][1]], [180, -90], [-180, -90]], ...rings.slice(1)];
+    rings = [
+      [...outer.slice(0, -1), [180, outer[0][1]], [180, -90], [-180, -90]],
+      ...rings.slice(1)
+    ];
   } else if (crosses(outer)) {
     rings = rings.map(unwrap);
   }
@@ -72,8 +79,11 @@ function piece(input: Ring[]): Piece {
 function landPieces(): Piece[] {
   const land = feature(
     atlas as unknown as Parameters<typeof feature>[0],
-    (atlas as unknown as { objects: { land: Parameters<typeof feature>[1] } }).objects.land
-  ) as unknown as { features: { geometry: { type: string; coordinates: unknown } }[] };
+    (atlas as unknown as { objects: { land: Parameters<typeof feature>[1] } })
+      .objects.land
+  ) as unknown as {
+    features: { geometry: { type: string; coordinates: unknown } }[];
+  };
   return land.features.flatMap(({ geometry }) =>
     (geometry.type === "MultiPolygon"
       ? (geometry.coordinates as Ring[][])
@@ -88,7 +98,11 @@ function inRing(ring: Ring, lon: number, lat: number): boolean {
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
     const [xi, yi] = ring[i];
     const [xj, yj] = ring[j];
-    if (yi > lat !== yj > lat && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+    if (
+      yi > lat !== yj > lat &&
+      lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi
+    )
+      inside = !inside;
   }
   return inside;
 }
@@ -99,7 +113,8 @@ function inPiece(p: Piece, lon: number, lat: number): boolean {
   // unwrapped from their own starts, so a hole (the Caspian in Eurasia) may sit 360° from the
   // outline around it: a point is in a hole at any of the three.
   const at = [lon, lon + 360, lon - 360];
-  if (!at.some((x) => x >= p.west && x <= p.east && inRing(p.rings[0], x, lat))) return false;
+  if (!at.some((x) => x >= p.west && x <= p.east && inRing(p.rings[0], x, lat)))
+    return false;
   return !p.rings.slice(1).some((hole) => at.some((x) => inRing(hole, x, lat)));
 }
 

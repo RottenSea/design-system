@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/complexity/noImportantStyles: these rules must win over component styles. */
 /*
  * The scrollbar's space is kept on every page, so a page does not shift sideways when the search
  * dialog hides the scrollbar, or between a page that scrolls and one that does not.
@@ -56,7 +57,11 @@ html {
 }
 
 .expressive-code .ec-line :where(span[style^="--"]:not([class])) {
-  color: color-mix(in srgb, var(--1, var(--0)), var(--0, var(--1)) var(--theme-dark)) !important;
+  color: color-mix(
+    in srgb,
+    var(--1, var(--0)),
+    var(--0, var(--1)) var(--theme-dark)
+  ) !important;
 }
 
 @property --theme-dark {
@@ -415,6 +420,7 @@ html {
 
 /* The variables the theme store fades, written on <html> on each frame of a theme change. */
 :root {
+  /* biome-ignore-start lint/correctness/noMissingVarFunction: a list of names, read by the theme store. */
   --theme-variables:
     --theme-dark, --sl-color-white, --sl-color-gray-1, --sl-color-gray-2, --sl-color-gray-3,
     --sl-color-gray-4, --sl-color-gray-5, --sl-color-gray-6, --sl-color-gray-7, --sl-color-black,
@@ -430,6 +436,7 @@ html {
     --ec-uiSelFg, --ec-focusBrd, --ec-sbThumbCol, --ec-sbThumbHoverCol, --ec-tm-markBg,
     --ec-tm-markBrdCol, --ec-tm-insBg, --ec-tm-insDiffIndCol, --ec-tm-delBg,
     --ec-tm-delDiffIndCol, --ec-frm-shdCol, --ec-frm-tooltipSuccessBg;
+  /* biome-ignore-end lint/correctness/noMissingVarFunction: a list of names, read by the theme store. */
 }
 
 [data-theme-fade] *,

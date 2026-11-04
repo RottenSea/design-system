@@ -13,8 +13,8 @@
  * post, it opens in a new tab, with an arrow and a hidden note.
  */
 import Archive from "../../icons/archive.svg";
-import Fork from "../../icons/git-fork.svg";
 import GitHubMark from "../../icons/brand-github.svg";
+import Fork from "../../icons/git-fork.svg";
 import License from "../../icons/license.svg";
 import Star from "../../icons/star.svg";
 import { type Repository, repository } from "./github.js";
@@ -32,7 +32,10 @@ const { repo, details, tone = "cream", class: className } = Astro.props;
 const [owner, name] = repo.split("/");
 const data = details ?? (await repository(repo));
 const url = data?.url ?? `https://github.com/${repo}`;
-const count = new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 });
+const count = new Intl.NumberFormat("en", {
+  notation: "compact",
+  maximumFractionDigits: 1
+});
 ---
 
 <a

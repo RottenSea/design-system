@@ -19,9 +19,11 @@ export function transformerMetaAttributes() {
     name: "ds:meta-attributes",
     pre(node) {
       const raw = this.options.meta?.__raw ?? "";
-      const title = raw.match(/title="([^"]*)"/)?.[1] ?? raw.match(/title='([^']*)'/)?.[1];
+      const title =
+        raw.match(/title="([^"]*)"/)?.[1] ?? raw.match(/title='([^']*)'/)?.[1];
       if (title) node.properties["data-title"] = title;
-      if (/\bshowLineNumbers=false\b/.test(raw)) node.properties["data-line-numbers"] = "false";
+      if (/\bshowLineNumbers=false\b/.test(raw))
+        node.properties["data-line-numbers"] = "false";
     }
   };
 }

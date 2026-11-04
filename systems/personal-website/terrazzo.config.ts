@@ -1,13 +1,18 @@
-import { defineConfig } from "@terrazzo/cli";
 import { readFileSync } from "node:fs";
+import { defineConfig } from "@terrazzo/cli";
 import css from "@terrazzo/plugin-css";
 
 /** Every token in a token file with its type, which a token takes from its group when it has none. */
 function tokensIn(file: string): { id: string; type?: string }[] {
   const tokens: { id: string; type?: string }[] = [];
-  const walk = (node: Record<string, unknown>, path: string[], type?: string) => {
+  const walk = (
+    node: Record<string, unknown>,
+    path: string[],
+    type?: string
+  ) => {
     const own = typeof node.$type === "string" ? node.$type : type;
-    if ("$value" in node) return void tokens.push({ id: path.join("."), type: own });
+    if ("$value" in node)
+      return void tokens.push({ id: path.join("."), type: own });
     for (const [key, child] of Object.entries(node)) {
       if (!key.startsWith("$") && child && typeof child === "object") {
         walk(child as Record<string, unknown>, [...path, key], own);
@@ -35,8 +40,11 @@ const THEME_COLORS = tokensIn("./tokens/theme-dark.tokens.json")
   .map((token) => variable(token.id));
 const THEME_VARIABLES = ["--theme-dark", ...THEME_COLORS];
 const PROPERTIES = [
-  "@property --theme-dark {\n  syntax: \"<percentage>\";\n  inherits: true;\n  initial-value: 0%;\n}",
-  ...THEME_COLORS.map((name) => `@property ${name} {\n  syntax: "<color>";\n  inherits: true;\n  initial-value: transparent;\n}`),
+  '@property --theme-dark {\n  syntax: "<percentage>";\n  inherits: true;\n  initial-value: 0%;\n}',
+  ...THEME_COLORS.map(
+    (name) =>
+      `@property ${name} {\n  syntax: "<color>";\n  inherits: true;\n  initial-value: transparent;\n}`
+  )
 ].join("\n\n");
 
 // Typography tokens write one variable per property, named the short way the components use.
@@ -45,7 +53,7 @@ const TYPE_SUFFIX: Record<string, string> = {
   "font-size": "size",
   "font-weight": "weight",
   "line-height": "lh",
-  "letter-spacing": "ls",
+  "letter-spacing": "ls"
 };
 
 export default defineConfig({
@@ -66,21 +74,23 @@ export default defineConfig({
           input: { theme: "light", viewport: "wide" },
           prepare: (contents) =>
             `${PROPERTIES}\n\n:root,\n[data-theme="light"] {\n  color-scheme: light;\n  --theme-dark: 0%;\n` +
-            `  --theme-variables: ${THEME_VARIABLES.join(", ")};\n${contents}\n}`,
+            `  --theme-variables: ${THEME_VARIABLES.join(", ")};\n${contents}\n}`
         },
         {
           // The one dark block. The page's boot script always sets data-theme, so there is no
           // prefers-color-scheme query here. Only the tokens the dark theme changes are written.
           input: { theme: "dark" },
           include: tokenIds("./tokens/theme-dark.tokens.json"),
-          prepare: (contents) => `[data-theme="dark"] {\n  color-scheme: dark;\n  --theme-dark: 100%;\n${contents}\n}`,
+          prepare: (contents) =>
+            `[data-theme="dark"] {\n  color-scheme: dark;\n  --theme-dark: 100%;\n${contents}\n}`
         },
         {
           input: { viewport: "narrow" },
           include: tokenIds("./tokens/typography-narrow.tokens.json"),
-          prepare: (contents) => `@media (max-width: 768px) {\n  :root {\n${contents}\n  }\n}`,
-        },
-      ],
-    }),
-  ],
+          prepare: (contents) =>
+            `@media (max-width: 768px) {\n  :root {\n${contents}\n  }\n}`
+        }
+      ]
+    })
+  ]
 });

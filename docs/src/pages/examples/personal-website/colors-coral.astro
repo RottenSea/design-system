@@ -6,7 +6,9 @@ import { loadTokens, select } from "../../../lib/tokens";
 
 const tokens = await loadTokens("personal-website");
 const dots = select(tokens, ["accent.*", "status.*"]);
-const markers = select(tokens, ["marker.*"]).filter((token) => !token.id.endsWith("-on-dark"));
+const markers = select(tokens, ["marker.*"]).filter(
+  (token) => !token.id.endsWith("-on-dark")
+);
 ---
 
 <ExampleLayout title="Coral and accents">

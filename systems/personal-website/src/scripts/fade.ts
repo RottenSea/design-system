@@ -4,7 +4,9 @@
  */
 
 /** A colour in sRGB, channels 0 to 255 and alpha 0 to 1, or a percentage. */
-export type FadeValue = { rgb: [number, number, number]; alpha: number } | { percent: number };
+export type FadeValue =
+  | { rgb: [number, number, number]; alpha: number }
+  | { percent: number };
 
 /**
  * A computed value as the browser writes it for a registered colour or percentage: rgb(),
@@ -16,9 +18,16 @@ export function parseFadeValue(value: string): FadeValue | null {
   if (colour) {
     const parts = colour[1].split(/[\s,/]+/).filter(Boolean);
     if (parts.length < 3 || parts.length > 4) return null;
-    const numbers = parts.map((part) => (part.endsWith("%") ? Number.parseFloat(part) / 100 : Number.parseFloat(part)));
+    const numbers = parts.map((part) =>
+      part.endsWith("%")
+        ? Number.parseFloat(part) / 100
+        : Number.parseFloat(part)
+    );
     if (numbers.some((number) => Number.isNaN(number))) return null;
-    return { rgb: [numbers[0], numbers[1], numbers[2]], alpha: numbers[3] ?? 1 };
+    return {
+      rgb: [numbers[0], numbers[1], numbers[2]],
+      alpha: numbers[3] ?? 1
+    };
   }
   const percent = /^(-?[\d.]+)%$/.exec(text);
   if (percent) return { percent: Number.parseFloat(percent[1]) };
@@ -32,8 +41,13 @@ const round = (value: number) => Math.round(value * 100) / 100;
  * in sRGB with premultiplied alpha, as a CSS transition blends legacy colours, so a colour fading
  * to transparent keeps its hue. Null if the two are not the same kind.
  */
-export function mixFadeValue(from: FadeValue, to: FadeValue, progress: number): string | null {
-  if ("percent" in from && "percent" in to) return `${round(from.percent + (to.percent - from.percent) * progress)}%`;
+export function mixFadeValue(
+  from: FadeValue,
+  to: FadeValue,
+  progress: number
+): string | null {
+  if ("percent" in from && "percent" in to)
+    return `${round(from.percent + (to.percent - from.percent) * progress)}%`;
   if (!("rgb" in from) || !("rgb" in to)) return null;
   const alpha = from.alpha + (to.alpha - from.alpha) * progress;
   const channels = from.rgb.map((value, index) => {
@@ -55,9 +69,16 @@ const KEYWORDS: Record<string, [number, number, number, number]> = {
 /** A CSS easing, a cubic-bezier() or one of its keywords, as progress for a time from 0 to 1. */
 export function easing(css: string): (time: number) => number {
   const text = css.trim();
-  const given = /^cubic-bezier\(([^)]*)\)$/.exec(text)?.[1].split(",").map(Number);
-  const [x1, y1, x2, y2] = given?.length === 4 && given.every(Number.isFinite) ? given : (KEYWORDS[text] ?? KEYWORDS.ease);
-  const curve = (a: number, b: number, s: number) => 3 * a * s * (1 - s) ** 2 + 3 * b * s * s * (1 - s) + s ** 3;
+  const given = /^cubic-bezier\(([^)]*)\)$/
+    .exec(text)?.[1]
+    .split(",")
+    .map(Number);
+  const [x1, y1, x2, y2] =
+    given?.length === 4 && given.every(Number.isFinite)
+      ? given
+      : (KEYWORDS[text] ?? KEYWORDS.ease);
+  const curve = (a: number, b: number, s: number) =>
+    3 * a * s * (1 - s) ** 2 + 3 * b * s * s * (1 - s) + s ** 3;
   return (time) => {
     if (time <= 0) return 0;
     if (time >= 1) return 1;

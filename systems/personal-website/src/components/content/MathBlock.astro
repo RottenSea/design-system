@@ -25,7 +25,8 @@ interface Props {
 
 const { html, tex, number, tone = "cream", class: className } = Astro.props;
 // MDX passes attributes as strings, so "false" means false.
-const display = Astro.props.display !== false && Astro.props.display !== "false";
+const display =
+  Astro.props.display !== false && Astro.props.display !== "false";
 const hasSlot = Astro.slots.has("default");
 const dark = tone === "dark";
 ---

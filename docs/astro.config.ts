@@ -76,11 +76,24 @@ export default defineConfig({
           label: "Personal website",
           translations: { "zh-CN": "个人网站" },
           items: [
-            { slug: "personal-website", label: "Overview", translations: { "zh-CN": "概览" } },
+            {
+              slug: "personal-website",
+              label: "Overview",
+              translations: { "zh-CN": "概览" }
+            },
             {
               label: "Foundations",
               translations: { "zh-CN": "基础" },
-              items: ["colors", "typography", "spacing-radius", "shadows-borders", "motion", "themes", "scrollbars", "accessibility"].map((name) => ({
+              items: [
+                "colors",
+                "typography",
+                "spacing-radius",
+                "shadows-borders",
+                "motion",
+                "themes",
+                "scrollbars",
+                "accessibility"
+              ].map((name) => ({
                 slug: `personal-website/${name}`
               }))
             },
@@ -94,7 +107,15 @@ export default defineConfig({
                   label: "Overview",
                   translations: { "zh-CN": "概览" }
                 },
-                ...["button", "icon-button", "dialog", "snackbar", "tooltip", "segmented-control", "switch"].map((name) => ({
+                ...[
+                  "button",
+                  "icon-button",
+                  "dialog",
+                  "snackbar",
+                  "tooltip",
+                  "segmented-control",
+                  "switch"
+                ].map((name) => ({
                   slug: `personal-website/basics/${name}`
                 }))
               ]
@@ -163,11 +184,16 @@ export default defineConfig({
                   label: "Overview",
                   translations: { "zh-CN": "概览" }
                 },
-                ...["quote-band", "article-list-card", "filter-list", "pagination", "stat-list", "mini-calendar"].map(
-                  (name) => ({
-                    slug: `personal-website/home/${name}`
-                  })
-                )
+                ...[
+                  "quote-band",
+                  "article-list-card",
+                  "filter-list",
+                  "pagination",
+                  "stat-list",
+                  "mini-calendar"
+                ].map((name) => ({
+                  slug: `personal-website/home/${name}`
+                }))
               ]
             },
             {
@@ -179,9 +205,11 @@ export default defineConfig({
                   label: "Overview",
                   translations: { "zh-CN": "概览" }
                 },
-                ...["toc-list", "post-license", "post-nav", "avatar"].map((name) => ({
-                  slug: `personal-website/post/${name}`
-                }))
+                ...["toc-list", "post-license", "post-nav", "avatar"].map(
+                  (name) => ({
+                    slug: `personal-website/post/${name}`
+                  })
+                )
               ]
             },
             {
@@ -193,7 +221,12 @@ export default defineConfig({
                   label: "Overview",
                   translations: { "zh-CN": "概览" }
                 },
-                ...["settings-menu", "search-panel", "post-share", "page-transitions"].map((name) => ({
+                ...[
+                  "settings-menu",
+                  "search-panel",
+                  "post-share",
+                  "page-transitions"
+                ].map((name) => ({
                   slug: `personal-website/settings/${name}`
                 }))
               ]

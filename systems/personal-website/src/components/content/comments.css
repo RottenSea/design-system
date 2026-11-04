@@ -19,7 +19,8 @@
   min-height: 640px;
 }
 
-.ds-comments :where(.twikoo button, .twikoo input, .twikoo textarea, .twikoo select) {
+.ds-comments
+  :where(.twikoo button, .twikoo input, .twikoo textarea, .twikoo select) {
   color: inherit;
   font: inherit;
 }
@@ -57,11 +58,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-}
-
-/* Twikoo's placeholder portrait adds nothing beside a form that is about to be signed. */
-.ds-comments .tk-submit .tk-avatar {
-  display: none;
 }
 
 .ds-comments .tk-submit > .tk-row:first-child {
@@ -141,7 +137,8 @@
   color: var(--text-muted-soft);
 }
 
-/* A field outside a group (search, the page number) draws its own border. */
+/* A field outside a group (search, the page number, admin settings) draws its own border. */
+.ds-comments .tk-admin-config-input .tk-input__inner,
 .ds-comments .tk-input:not(.tk-input--group, .tk-textarea) .tk-input__inner {
   background: var(--surface-canvas);
   border: 1px solid var(--hairline);
@@ -149,7 +146,9 @@
   height: 32px;
 }
 
-.ds-comments .tk-input:not(.tk-input--group, .tk-textarea) .tk-input__inner:focus {
+.ds-comments
+  .tk-input:not(.tk-input--group, .tk-textarea)
+  .tk-input__inner:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--focus-ring);
 }
@@ -213,7 +212,8 @@
 }
 
 /* The verification widgets, when a provider is set, open under the buttons. */
-.ds-comments :is(.tk-turnstile-container, .tk-geetest-container, .tk-cap-container) {
+.ds-comments
+  :is(.tk-turnstile-container, .tk-geetest-container, .tk-cap-container) {
   position: absolute;
   right: 0;
   top: calc(100% + var(--space-xs));
@@ -402,6 +402,11 @@
   width: 40px;
 }
 
+/* Twikoo's placeholder portrait adds nothing beside a form that is about to be signed. */
+.ds-comments .tk-submit .tk-avatar {
+  display: none;
+}
+
 .ds-comments .tk-avatar-img {
   display: block;
   height: 100%;
@@ -532,11 +537,15 @@
 
 /* Each action has an outline and a solid glyph: solid on hover and once it is done. */
 .ds-comments .tk-action-icon-solid,
-.ds-comments .tk-action-link:is(:hover, .tk-liked, .tk-disliked) .tk-action-icon:not(.tk-action-icon-solid) {
+.ds-comments
+  .tk-action-link:is(:hover, .tk-liked, .tk-disliked)
+  .tk-action-icon:not(.tk-action-icon-solid) {
   display: none;
 }
 
-.ds-comments .tk-action-link:is(:hover, .tk-liked, .tk-disliked) .tk-action-icon-solid {
+.ds-comments
+  .tk-action-link:is(:hover, .tk-liked, .tk-disliked)
+  .tk-action-icon-solid {
   display: inline-flex;
 }
 
@@ -562,11 +571,16 @@
   max-height: none;
 }
 
-.ds-comments :is(.tk-content, .tk-preview-container) :is(p, ul, ol, blockquote, pre) {
+.ds-comments
+  :is(.tk-content, .tk-preview-container)
+  :is(p, ul, ol, blockquote, pre) {
   margin: 0 0 var(--space-xs);
 }
 
-.ds-comments :is(.tk-content, .tk-preview-container) > :last-child > :last-child {
+.ds-comments
+  :is(.tk-content, .tk-preview-container)
+  > :last-child
+  > :last-child {
   margin-bottom: 0;
 }
 
@@ -1024,7 +1038,12 @@
   gap: var(--space-sm);
 }
 
-.ds-comments :is(.tk-admin-comment-filter-type, .tk-admin-config-select, .tk-admin-import select) {
+.ds-comments
+  :is(
+    .tk-admin-comment-filter-type,
+    .tk-admin-config-select,
+    .tk-admin-import select
+  ) {
   background: var(--surface-canvas);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-sm);
@@ -1061,7 +1080,12 @@
   max-height: none;
 }
 
-.ds-comments :is(.tk-admin-actions, .tk-admin-comment-editor-actions, .tk-admin-import-actions) {
+.ds-comments
+  :is(
+    .tk-admin-actions,
+    .tk-admin-comment-editor-actions,
+    .tk-admin-import-actions
+  ) {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
@@ -1110,7 +1134,12 @@
   text-overflow: ellipsis;
 }
 
-.ds-comments :is(.tk-admin-config-desc, .tk-admin-config-email-test-desc, .tk-admin-import-label) {
+.ds-comments
+  :is(
+    .tk-admin-config-desc,
+    .tk-admin-config-email-test-desc,
+    .tk-admin-import-label
+  ) {
   color: var(--text-muted);
   font-size: var(--caption-size);
   grid-column: 2;
@@ -1118,13 +1147,6 @@
 
 .ds-comments .tk-admin-config-input {
   position: relative;
-}
-
-.ds-comments .tk-admin-config-input .tk-input__inner {
-  background: var(--surface-canvas);
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  height: 32px;
 }
 
 .ds-comments .tk-admin-config-actions {

@@ -27,7 +27,8 @@ interface Props {
 }
 
 const { items, columns = 1, tone = "cream", class: className } = Astro.props;
-const format = (value: number | string) => (typeof value === "number" ? value.toLocaleString("en-US") : value);
+const format = (value: number | string) =>
+  typeof value === "number" ? value.toLocaleString("en-US") : value;
 ---
 
 <dl

@@ -20,15 +20,39 @@ interface Props {
 
 const { system, tokens: patterns, darkOnly = false } = Astro.props;
 const all = await loadTokens(system);
-const rows = (patterns ? select(all, patterns) : all).filter((row) => !darkOnly || row.value.dark);
+const rows = (patterns ? select(all, patterns) : all).filter(
+  (row) => !darkOnly || row.value.dark
+);
 const zh = Astro.locals.starlightRoute.lang.startsWith("zh");
 const t = zh
-  ? { token: "Token", value: "值", description: "说明", light: "浅色", dark: "深色", narrow: "窄屏", copy: "复制", copied: "已复制", to: "指向" }
-  : { token: "Token", value: "Value", description: "Description", light: "Light", dark: "Dark", narrow: "Narrow", copy: "Copy", copied: "Copied", to: "Points to" };
+  ? {
+      token: "Token",
+      value: "值",
+      description: "说明",
+      light: "浅色",
+      dark: "深色",
+      narrow: "窄屏",
+      copy: "复制",
+      copied: "已复制",
+      to: "指向"
+    }
+  : {
+      token: "Token",
+      value: "Value",
+      description: "Description",
+      light: "Light",
+      dark: "Dark",
+      narrow: "Narrow",
+      copy: "Copy",
+      copied: "Copied",
+      to: "Points to"
+    };
 const hasDark = rows.some((row) => row.value.dark);
 // A typography token writes one variable per property and a class; the size variable stands for it.
-const nameOf = (row: (typeof rows)[number]) => (row.type === "typography" ? `${row.cssVar}-size` : row.cssVar);
-const description = (row: (typeof rows)[number]) => (zh ? row.description["zh-CN"] : undefined) ?? row.description.en;
+const nameOf = (row: (typeof rows)[number]) =>
+  row.type === "typography" ? `${row.cssVar}-size` : row.cssVar;
+const description = (row: (typeof rows)[number]) =>
+  (zh ? row.description["zh-CN"] : undefined) ?? row.description.en;
 ---
 
 <ds-token-table data-copied={t.copied}>

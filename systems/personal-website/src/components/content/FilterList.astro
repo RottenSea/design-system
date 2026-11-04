@@ -30,8 +30,17 @@ interface Props {
   class?: string;
 }
 
-const { label, items, value, showCount = true, tone = "cream", class: className } = Astro.props;
-const rows = items.map((item) => (typeof item === "string" ? { label: item } : item));
+const {
+  label,
+  items,
+  value,
+  showCount = true,
+  tone = "cream",
+  class: className
+} = Astro.props;
+const rows = items.map((item) =>
+  typeof item === "string" ? { label: item } : item
+);
 ---
 
 <ds-filter-list class:list={["ds-filter-list", { "ds-filter-list--dark": tone === "dark" }, className]}>

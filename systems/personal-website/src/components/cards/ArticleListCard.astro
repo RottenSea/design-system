@@ -65,7 +65,10 @@ const tagList = Array.isArray(tags)
       .split(",")
       .map((tag) => tag.trim())
       .filter(Boolean);
-const words = typeof wordCount === "number" ? `${wordCount.toLocaleString("en-US")} words` : wordCount;
+const words =
+  typeof wordCount === "number"
+    ? `${wordCount.toLocaleString("en-US")} words`
+    : wordCount;
 const when = [date, ago].filter(Boolean).join(" · ");
 const meta: PostMetaItem[] = [
   when ? { icon: "calendar-event" as const, label: when, datetime } : null,

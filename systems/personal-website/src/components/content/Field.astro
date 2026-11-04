@@ -19,7 +19,10 @@ interface Props {
 }
 
 const { name, type, default: fallback } = Astro.props;
-const required = Astro.props.required !== undefined && Astro.props.required !== false && Astro.props.required !== "false";
+const required =
+  Astro.props.required !== undefined &&
+  Astro.props.required !== false &&
+  Astro.props.required !== "false";
 ---
 
 <div class="ds-field">

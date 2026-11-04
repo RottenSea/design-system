@@ -22,7 +22,10 @@ export function repository(repo) {
 }
 
 async function load(repo) {
-  const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28"
+  };
   const token = process.env.GITHUB_TOKEN;
   if (token) headers.Authorization = `Bearer ${token}`;
   try {
@@ -30,7 +33,8 @@ async function load(repo) {
       headers,
       signal: AbortSignal.timeout(10_000)
     });
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    if (!response.ok)
+      throw new Error(`${response.status} ${response.statusText}`);
     const data = await response.json();
     return {
       description: data.description ?? undefined,
@@ -38,13 +42,18 @@ async function load(repo) {
       stars: data.stargazers_count ?? 0,
       forks: data.forks_count ?? 0,
       // GitHub reports a license it cannot name as NOASSERTION; that says nothing to a reader.
-      license: data.license?.spdx_id && data.license.spdx_id !== "NOASSERTION" ? data.license.spdx_id : undefined,
+      license:
+        data.license?.spdx_id && data.license.spdx_id !== "NOASSERTION"
+          ? data.license.spdx_id
+          : undefined,
       topics: data.topics ?? [],
       archived: Boolean(data.archived),
       url: data.html_url ?? `https://github.com/${repo}`
     };
   } catch (error) {
-    console.warn(`GitHubCard: could not load ${repo} from GitHub (${error.message}); showing its name only.`);
+    console.warn(
+      `GitHubCard: could not load ${repo} from GitHub (${error.message}); showing its name only.`
+    );
     return undefined;
   }
 }

@@ -28,11 +28,22 @@ interface Props {
   class?: string;
 }
 
-const { options, value, label, size = "md", tone = "cream", class: className } = Astro.props;
+const {
+  options,
+  value,
+  label,
+  size = "md",
+  tone = "cream",
+  class: className
+} = Astro.props;
 const items = options.map((option) =>
-  typeof option === "string" ? { value: option.toLowerCase(), label: option } : option
+  typeof option === "string"
+    ? { value: option.toLowerCase(), label: option }
+    : option
 );
-const chosen = items.some((item) => item.value === value) ? value : items[0]?.value;
+const chosen = items.some((item) => item.value === value)
+  ? value
+  : items[0]?.value;
 ---
 
 <ds-segmented

@@ -24,7 +24,13 @@ interface Props {
   class?: string;
 }
 
-const { server, path, title = "Comments", id = "comments", class: className } = Astro.props;
+const {
+  server,
+  path,
+  title = "Comments",
+  id = "comments",
+  class: className
+} = Astro.props;
 ---
 
 <ds-comments class:list={["ds-comments", className]} data-server={server} data-path={path} lang="en">

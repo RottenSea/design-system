@@ -47,7 +47,8 @@ interface Props {
   class?: string;
 }
 
-const px = (value: string | number) => (typeof value === "number" ? `${value}px` : value);
+const px = (value: string | number) =>
+  typeof value === "number" ? `${value}px` : value;
 
 const {
   leftWidth = "var(--rail-left)",
@@ -72,10 +73,17 @@ const leftHtml = await render("left");
 const rightHtml = await render("right");
 const hasLeft = leftHtml !== "";
 const hasRight = rightHtml !== "";
-const side = (has: boolean, width: string | number) => (has ? `minmax(${px(width)}, 1fr)` : "minmax(0, 1fr)");
+const side = (has: boolean, width: string | number) =>
+  has ? `minmax(${px(width)}, 1fr)` : "minmax(0, 1fr)";
 const columns = mainWidth
   ? `${side(hasLeft, leftWidth)} minmax(0, ${px(mainWidth)}) ${side(hasRight, rightWidth)}`
-  : [hasLeft ? px(leftWidth) : null, "minmax(0, 1fr)", hasRight ? px(rightWidth) : null].filter(Boolean).join(" ");
+  : [
+      hasLeft ? px(leftWidth) : null,
+      "minmax(0, 1fr)",
+      hasRight ? px(rightWidth) : null
+    ]
+      .filter(Boolean)
+      .join(" ");
 const narrow = mainWidth
   ? `${side(hasLeft, leftWidth)} minmax(0, ${px(mainWidth)}) minmax(0, 1fr)`
   : hasLeft

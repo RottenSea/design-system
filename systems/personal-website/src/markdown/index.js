@@ -19,13 +19,21 @@
 // It is plain JavaScript because a site's Astro config imports it straight from node_modules,
 // where Node does not strip TypeScript. The components it names must be passed to the page,
 // for example with `components` from "../components/index.js".
+
+import { toString as textOf } from "mdast-util-to-string";
 import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
-import { toString as textOf } from "mdast-util-to-string";
 import { videoSource } from "../components/media/video.js";
 import { typesetMath } from "./math.js";
 
-const CALLOUTS = new Set(["note", "tip", "important", "warning", "caution", "details"]);
+const CALLOUTS = new Set([
+  "note",
+  "tip",
+  "important",
+  "warning",
+  "caution",
+  "details"
+]);
 
 /** An MDX JSX attribute. A null value is a boolean attribute such as `open`. */
 const attribute = (name, value) => ({ type: "mdxJsxAttribute", name, value });
@@ -47,7 +55,12 @@ function admonition(node) {
   if (node.name === "details" && node.attributes && "open" in node.attributes) {
     attributes.push(attribute("open", null));
   }
-  return { type: "mdxJsxFlowElement", name: "Admonition", attributes, children: node.children };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "Admonition",
+    attributes,
+    children: node.children
+  };
 }
 
 function blockSpoiler(node) {
@@ -62,18 +75,31 @@ function blockSpoiler(node) {
 
 function steps(node, file) {
   takeLabel(node);
-  const list = node.children.find((child) => child.type === "list" && child.ordered);
+  const list = node.children.find(
+    (child) => child.type === "list" && child.ordered
+  );
   if (!list) {
     file.message(":::steps needs an ordered list inside it", node);
-    return { type: "mdxJsxFlowElement", name: "Steps", attributes: [], children: node.children };
+    return {
+      type: "mdxJsxFlowElement",
+      name: "Steps",
+      attributes: [],
+      children: node.children
+    };
   }
   const current = node.attributes?.current;
-  const currentIndex = current === undefined || current === null ? undefined : Number(current);
+  const currentIndex =
+    current === undefined || current === null ? undefined : Number(current);
   const items = list.children.map((item, index) => {
     const [title, ...body] = item.children;
     let status = "todo";
     if (currentIndex !== undefined && !Number.isNaN(currentIndex)) {
-      status = index < currentIndex ? "done" : index === currentIndex ? "current" : "todo";
+      status =
+        index < currentIndex
+          ? "done"
+          : index === currentIndex
+            ? "current"
+            : "todo";
     }
     // The first paragraph is the title; it goes in the title slot so it keeps links and code.
     const titleSlot = {
@@ -89,7 +115,12 @@ function steps(node, file) {
       children: [titleSlot, ...body]
     };
   });
-  return { type: "mdxJsxFlowElement", name: "Steps", attributes: [], children: items };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "Steps",
+    attributes: [],
+    children: items
+  };
 }
 
 /** A container's label: the `label` attribute, or the `[label]` after the name. */
@@ -137,18 +168,32 @@ function codeGroup(node, file) {
     return node.children;
   }
   if (before.length) {
-    file.message(":::code-group should start with a code fence; the text before it stays above the group", node);
+    file.message(
+      ":::code-group should start with a code fence; the text before it stays above the group",
+      node
+    );
   }
   const attributes = [];
-  if (node.attributes?.sync) attributes.push(attribute("syncKey", node.attributes.sync));
+  if (node.attributes?.sync)
+    attributes.push(attribute("syncKey", node.attributes.sync));
   if (label) attributes.push(attribute("label", label));
-  return [...before, { type: "mdxJsxFlowElement", name: "OptionGroup", attributes, children: options }];
+  return [
+    ...before,
+    {
+      type: "mdxJsxFlowElement",
+      name: "OptionGroup",
+      attributes,
+      children: options
+    }
+  ];
 }
 
 /** The source text of a node, so a file name such as __init__.py is not read as emphasis. */
 function sourceOf(node, file) {
   const { start, end } = node.position ?? {};
-  return start && end ? String(file.value).slice(start.offset, end.offset) : textOf(node);
+  return start && end
+    ? String(file.value).slice(start.offset, end.offset)
+    : textOf(node);
 }
 
 /**
@@ -159,11 +204,16 @@ function sourceOf(node, file) {
 function fileTreeNodes(list, depth, file) {
   return list.children.map((item) => {
     const [first, ...rest] = item.children;
-    const line = first?.type === "paragraph" ? sourceOf(first, file).trim() : "";
+    const line =
+      first?.type === "paragraph" ? sourceOf(first, file).trim() : "";
     const [, rawName = "", hint] = line.match(/^(.*?)(?:\s{2,}(.*))?$/) ?? [];
     const inner = rest.find((child) => child.type === "list");
-    const attributes = [attribute("name", rawName.replace(/\/$/, "")), attribute("depth", String(depth))];
-    if (rawName.endsWith("/") || inner) attributes.push(attribute("folder", null));
+    const attributes = [
+      attribute("name", rawName.replace(/\/$/, "")),
+      attribute("depth", String(depth))
+    ];
+    if (rawName.endsWith("/") || inner)
+      attributes.push(attribute("folder", null));
     if (inner) attributes.push(attribute("open", null));
     if (hint) attributes.push(attribute("hint", hint));
     return {
@@ -195,7 +245,10 @@ function fileTree(node, file) {
  * MarkdownImage, which then draws a Figure with the title as its caption.
  */
 function asFigure(image) {
-  image.data = { ...image.data, hProperties: { ...image.data?.hProperties, dataDsFigure: true } };
+  image.data = {
+    ...image.data,
+    hProperties: { ...image.data?.hProperties, dataDsFigure: true }
+  };
   return image;
 }
 
@@ -205,13 +258,17 @@ const isBlank = (node) => node.type === "text" && !node.value.trim();
 const isImageParagraph = (node) =>
   node.type === "paragraph" &&
   node.children.some((child) => child.type === "image") &&
-  node.children.every((child) => child.type === "image" || child.type === "break" || isBlank(child));
+  node.children.every(
+    (child) =>
+      child.type === "image" || child.type === "break" || isBlank(child)
+  );
 
 /** Takes images out of the paragraphs they sit in alone, so each becomes a figure. */
 function liftImages(node) {
   if (!Array.isArray(node.children)) return;
   node.children = node.children.flatMap((child) => {
-    if (isImageParagraph(child)) return child.children.filter((c) => c.type === "image").map(asFigure);
+    if (isImageParagraph(child))
+      return child.children.filter((c) => c.type === "image").map(asFigure);
     liftImages(child);
     return [child];
   });
@@ -223,15 +280,27 @@ function gallery(node, file) {
   const images = [];
   let dropped = false;
   for (const child of node.children) {
-    if (isImageParagraph(child)) images.push(...child.children.filter((c) => c.type === "image"));
+    if (isImageParagraph(child))
+      images.push(...child.children.filter((c) => c.type === "image"));
     else if (child.type === "image") images.push(child);
     else dropped = true;
   }
-  if (dropped) file.message(":::gallery holds only images; other content in it was left out", node);
+  if (dropped)
+    file.message(
+      ":::gallery holds only images; other content in it was left out",
+      node
+    );
   const attributes = [];
-  if (node.attributes?.columns) attributes.push(attribute("columns", node.attributes.columns));
-  if (node.attributes?.ratio) attributes.push(attribute("ratio", node.attributes.ratio));
-  return { type: "mdxJsxFlowElement", name: "ImageGrid", attributes, children: images.map(asFigure) };
+  if (node.attributes?.columns)
+    attributes.push(attribute("columns", node.attributes.columns));
+  if (node.attributes?.ratio)
+    attributes.push(attribute("ratio", node.attributes.ratio));
+  return {
+    type: "mdxJsxFlowElement",
+    name: "ImageGrid",
+    attributes,
+    children: images.map(asFigure)
+  };
 }
 
 /**
@@ -244,21 +313,40 @@ function video(node, file) {
   const title = node.attributes?.title ?? (label ? textOf(label) : undefined);
   const source = src ? videoSource({ src }) : undefined;
   if (!source) {
-    file.message('::video needs a src, as in ::video{src="https://www.bilibili.com/video/BV..."}', node);
+    file.message(
+      '::video needs a src, as in ::video{src="https://www.bilibili.com/video/BV..."}',
+      node
+    );
     node.data = { ...node.data, dsReported: true };
     return undefined;
   }
   if (!source.provider) {
-    file.message(`::video does not know the site of ${src}; it is used as the player's address`, node);
+    file.message(
+      `::video does not know the site of ${src}; it is used as the player's address`,
+      node
+    );
   }
   const attributes = [attribute("src", src)];
   if (title) attributes.push(attribute("title", title));
   if (caption) attributes.push(attribute("caption", caption));
   if (ratio) attributes.push(attribute("ratio", ratio));
   const children = poster
-    ? [{ type: "image", url: poster, alt: "", title: null, data: { hProperties: { dataDsPoster: true } } }]
+    ? [
+        {
+          type: "image",
+          url: poster,
+          alt: "",
+          title: null,
+          data: { hProperties: { dataDsPoster: true } }
+        }
+      ]
     : [];
-  return { type: "mdxJsxFlowElement", name: "VideoEmbed", attributes, children };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "VideoEmbed",
+    attributes,
+    children
+  };
 }
 
 /**
@@ -277,7 +365,10 @@ function math(node, display, file) {
     attributes.push(attribute("html", typesetMath(tex, display)));
   } catch (error) {
     const fence = display ? "$$" : "$";
-    file.message(`Could not typeset ${fence}${tex}${fence}: ${error.message}`, node);
+    file.message(
+      `Could not typeset ${fence}${tex}${fence}: ${error.message}`,
+      node
+    );
   }
   return {
     type: display ? "mdxJsxFlowElement" : "mdxJsxTextElement",
@@ -293,35 +384,59 @@ function math(node, display, file) {
  */
 function mermaid(node) {
   const meta = node.meta ?? "";
-  const quoted = (name) => meta.match(new RegExp(`${name}=(?:"([^"]*)"|'([^']*)')`))?.slice(1).find(Boolean);
+  const quoted = (name) =>
+    meta
+      .match(new RegExp(`${name}=(?:"([^"]*)"|'([^']*)')`))
+      ?.slice(1)
+      .find(Boolean);
   const attributes = [attribute("code", node.value)];
   const label = quoted("title");
   const caption = quoted("caption");
   if (label) attributes.push(attribute("label", label));
   if (caption) attributes.push(attribute("caption", caption));
-  return { type: "mdxJsxFlowElement", name: "Mermaid", attributes, children: [] };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "Mermaid",
+    attributes,
+    children: []
+  };
 }
 
 /** :::field{name type required default} with the description inside. */
 function field(node, file) {
   takeLabel(node);
   const { name, type, default: fallback } = node.attributes ?? {};
-  if (!name) file.message(':::field needs a name, as in :::field{name="build.format"}', node);
+  if (!name)
+    file.message(
+      ':::field needs a name, as in :::field{name="build.format"}',
+      node
+    );
   const attributes = [attribute("name", name ?? "")];
   if (type) attributes.push(attribute("type", type));
-  if (node.attributes && "required" in node.attributes) attributes.push(attribute("required", null));
+  if (node.attributes && "required" in node.attributes)
+    attributes.push(attribute("required", null));
   if (fallback !== undefined) attributes.push(attribute("default", fallback));
-  return { type: "mdxJsxFlowElement", name: "Field", attributes, children: node.children };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "Field",
+    attributes,
+    children: node.children
+  };
 }
 
-const isField = (node) => node.type === "mdxJsxFlowElement" && node.name === "Field";
+const isField = (node) =>
+  node.type === "mdxJsxFlowElement" && node.name === "Field";
 
 /** ::::fields holds :::field blocks; anything else stays above the card, with a warning. */
 function fields(node, file) {
   const label = groupLabel(node);
   const rows = node.children.filter(isField);
   const rest = node.children.filter((child) => !isField(child));
-  if (rest.length) file.message("::::fields holds only :::field blocks; the rest stays above the card", node);
+  if (rest.length)
+    file.message(
+      "::::fields holds only :::field blocks; the rest stays above the card",
+      node
+    );
   const element = {
     type: "mdxJsxFlowElement",
     name: "Fields",
@@ -345,7 +460,10 @@ function wrapStrayFields(node, file, inFields = false) {
       const previous = children.at(-1);
       if (previous?.data?.dsStray) previous.children.push(child);
       else {
-        file.message(":::field belongs inside ::::fields; it was given a card of its own", child);
+        file.message(
+          ":::field belongs inside ::::fields; it was given a card of its own",
+          child
+        );
         children.push({
           type: "mdxJsxFlowElement",
           name: "Fields",
@@ -366,20 +484,37 @@ function wrapStrayFields(node, file, inFields = false) {
 function github(node, file) {
   const repo = node.attributes?.repo;
   if (!repo || !/^[\w.-]+\/[\w.-]+$/.test(repo)) {
-    file.message('::github needs a repo, as in ::github{repo="withastro/astro"}', node);
+    file.message(
+      '::github needs a repo, as in ::github{repo="withastro/astro"}',
+      node
+    );
     node.data = { ...node.data, dsReported: true };
     return undefined;
   }
-  return { type: "mdxJsxFlowElement", name: "GitHubCard", attributes: [attribute("repo", repo)], children: [] };
+  return {
+    type: "mdxJsxFlowElement",
+    name: "GitHubCard",
+    attributes: [attribute("repo", repo)],
+    children: []
+  };
 }
 
 function inlineSpoiler(node) {
-  return { type: "mdxJsxTextElement", name: "Spoiler", attributes: [], children: node.children };
+  return {
+    type: "mdxJsxTextElement",
+    name: "Spoiler",
+    attributes: [],
+    children: node.children
+  };
 }
 
 function term(node, file) {
   const note = node.attributes?.note;
-  if (!note) file.message(':term needs a note, as in :term[SSR]{note="Server-Side Rendering"}', node);
+  if (!note)
+    file.message(
+      ':term needs a note, as in :term[SSR]{note="Server-Side Rendering"}',
+      node
+    );
   return {
     type: "mdxJsxTextElement",
     name: "Abbreviation",
@@ -419,7 +554,11 @@ const NODE_HANDLERS = {
   code: (node) => (node.lang === "mermaid" ? mermaid(node) : node)
 };
 
-const PREFIX = { containerDirective: ":::", leafDirective: "::", textDirective: ":" };
+const PREFIX = {
+  containerDirective: ":::",
+  leafDirective: "::",
+  textDirective: ":"
+};
 
 /**
  * A directive this plugin does not know. remark-directive reads any ASCII colon followed by a
@@ -430,11 +569,16 @@ const PREFIX = { containerDirective: ":::", leafDirective: "::", textDirective: 
 function restore(node, file) {
   // Times such as 10:30 parse as a directive named 30; those are never meant as one.
   if (/^[a-z]/i.test(node.name) && !node.data?.dsReported) {
-    file.message(`Unknown directive ${PREFIX[node.type]}${node.name}; kept as text`, node);
+    file.message(
+      `Unknown directive ${PREFIX[node.type]}${node.name}; kept as text`,
+      node
+    );
   }
   const { start, end } = node.position ?? {};
   const source =
-    start && end ? String(file.value).slice(start.offset, end.offset) : `${PREFIX[node.type]}${node.name}`;
+    start && end
+      ? String(file.value).slice(start.offset, end.offset)
+      : `${PREFIX[node.type]}${node.name}`;
   if (node.type === "textDirective") return { type: "text", value: source };
   if (node.type === "leafDirective") {
     return { type: "paragraph", children: [{ type: "text", value: source }] };
@@ -472,7 +616,7 @@ export function remarkDsDirectives() {
   };
 }
 
-export { shikiTransformers, transformerMetaAttributes } from "./shiki.js";
-export { typesetMath } from "./math.js";
 export { rehypeDsExternalLinks, rehypeDsHeadingAnchors } from "./links.js";
+export { typesetMath } from "./math.js";
+export { shikiTransformers, transformerMetaAttributes } from "./shiki.js";
 export { rehypeDsTaskLists } from "./tasks.js";

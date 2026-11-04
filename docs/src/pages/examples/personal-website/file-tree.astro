@@ -1,5 +1,8 @@
 ---
-import { FileTree, FileTreeNode } from "@rottensea/ds-personal-website/components";
+import {
+  FileTree,
+  FileTreeNode
+} from "@rottensea/ds-personal-website/components";
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 
 const items = [
@@ -10,13 +13,28 @@ const items = [
       {
         name: "content",
         path: "src/content",
-        children: [{ name: "config.ts", path: "src/content/config.ts", state: "removed" as const }]
+        children: [
+          {
+            name: "config.ts",
+            path: "src/content/config.ts",
+            state: "removed" as const
+          }
+        ]
       },
-      { name: "content.config.ts", path: "src/content.config.ts", state: "added" as const },
+      {
+        name: "content.config.ts",
+        path: "src/content.config.ts",
+        state: "added" as const
+      },
       { name: "pages", path: "src/pages", children: [] }
     ]
   },
-  { name: "astro.config.ts", path: "astro.config.ts", state: "changed" as const, hint: "one line" },
+  {
+    name: "astro.config.ts",
+    path: "astro.config.ts",
+    state: "changed" as const,
+    hint: "one line"
+  },
   { name: "package.json", path: "package.json" }
 ];
 ---

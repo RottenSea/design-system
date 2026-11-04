@@ -42,7 +42,8 @@ interface Props {
 }
 
 const { brand, columns = [], note, class: className } = Astro.props;
-const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href) && !href.startsWith("mailto:");
+const external = (href: string) =>
+  /^(?:[a-z]+:|\/\/)/i.test(href) && !href.startsWith("mailto:");
 const hasNote = note !== undefined || Astro.slots.has("note");
 const hasExtra = Astro.slots.has("brand-extra");
 ---

@@ -44,7 +44,9 @@ const {
   class: className
 } = Astro.props;
 const selected = values ?? (value ? [value] : []);
-const tags = items.map((item) => (typeof item === "string" ? { label: item } : item));
+const tags = items.map((item) =>
+  typeof item === "string" ? { label: item } : item
+);
 ---
 
 <ds-tag-list

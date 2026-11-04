@@ -27,7 +27,14 @@ interface Props {
   class?: string;
 }
 
-const { prev, next, label = "More posts", prevLabel = "Previous", nextLabel = "Next", class: className } = Astro.props;
+const {
+  prev,
+  next,
+  label = "More posts",
+  prevLabel = "Previous",
+  nextLabel = "Next",
+  class: className
+} = Astro.props;
 const sides = [
   { post: prev, rel: "prev", text: prevLabel },
   { post: next, rel: "next", text: nextLabel }

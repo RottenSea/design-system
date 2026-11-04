@@ -45,10 +45,14 @@ export interface ThemeStore {
   /** Applies a choice and remembers it. */
   set(preference: ThemePreference): void;
   /** Calls the listener after each change; returns a function that stops it. */
-  subscribe(listener: (state: ThemeState, previous: ThemeState) => void): () => void;
+  subscribe(
+    listener: (state: ThemeState, previous: ThemeState) => void
+  ): () => void;
 }
 
-const dev = Boolean((import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV);
+const dev = Boolean(
+  (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV
+);
 let store: ThemeStore | undefined;
 /** The fade in progress: the variables' values on its last frame, and how to end it now. */
 let running: { values: Map<string, string>; finish: () => void } | undefined;
@@ -61,7 +65,9 @@ export function themeStore(key?: string): ThemeStore {
   const root = document.documentElement;
   if (!store) store = createStore(root.dataset.themeKey || key || "ds-theme");
   else if (dev && key && key !== store.key) {
-    console.warn(`The theme store keeps its choice under "${store.key}", not "${key}".`);
+    console.warn(
+      `The theme store keeps its choice under "${store.key}", not "${key}".`
+    );
   }
   return store;
 }
@@ -69,7 +75,9 @@ export function themeStore(key?: string): ThemeStore {
 function createStore(key: string): ThemeStore {
   const root = document.documentElement;
   const system = matchMedia("(prefers-color-scheme: dark)");
-  const listeners = new Set<(state: ThemeState, previous: ThemeState) => void>();
+  const listeners = new Set<
+    (state: ThemeState, previous: ThemeState) => void
+  >();
 
   const read = (): ThemePreference => {
     try {
@@ -90,18 +98,27 @@ function createStore(key: string): ThemeStore {
   const resolve = (preference: ThemePreference): Theme =>
     preference === "system" ? (system.matches ? "dark" : "light") : preference;
   const current = (): Theme | undefined =>
-    root.dataset.theme === "light" || root.dataset.theme === "dark" ? root.dataset.theme : undefined;
+    root.dataset.theme === "light" || root.dataset.theme === "dark"
+      ? root.dataset.theme
+      : undefined;
   // Read the fade's timing now: reading styles after data-theme has changed but before the mark
   // is on would apply the new colours at once.
   themeFade(root);
 
   // ThemeScript has set the theme before the first paint; without it, set it now, at once.
-  let state: ThemeState = { preference: read(), theme: current() ?? resolve(read()) };
+  let state: ThemeState = {
+    preference: read(),
+    theme: current() ?? resolve(read())
+  };
   root.dataset.theme = state.theme;
 
   const change = (next: ThemeState) => {
     const previous = state;
-    if (next.preference === previous.preference && next.theme === previous.theme) return;
+    if (
+      next.preference === previous.preference &&
+      next.theme === previous.theme
+    )
+      return;
     state = next;
     if (current() !== next.theme) {
       fadeTheme(root, current() ?? previous.theme, () => {
@@ -112,7 +129,8 @@ function createStore(key: string): ThemeStore {
   };
 
   system.addEventListener("change", () => {
-    if (state.preference === "system") change({ preference: "system", theme: resolve("system") });
+    if (state.preference === "system")
+      change({ preference: "system", theme: resolve("system") });
   });
   // Another tab, or a document in a frame, changed the choice.
   window.addEventListener("storage", (event) => {
@@ -127,8 +145,14 @@ function createStore(key: string): ThemeStore {
     const theme = current();
     if (!theme || theme === state.theme) return;
     const pinned = root.dataset.themePinned !== undefined;
-    if (dev && !pinned && !(state.preference === "system" && theme === resolve("system"))) {
-      console.warn("data-theme was changed outside the theme store; use themeStore().set().");
+    if (
+      dev &&
+      !pinned &&
+      !(state.preference === "system" && theme === resolve("system"))
+    ) {
+      console.warn(
+        "data-theme was changed outside the theme store; use themeStore().set()."
+      );
     }
     const previous = state;
     state = { preference: state.preference, theme };
@@ -166,12 +190,19 @@ function createStore(key: string): ThemeStore {
  */
 function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
   const fade = themeFade(root);
-  const names = (getComputedStyle(root).getPropertyValue("--theme-variables") || "")
+  const names = (
+    getComputedStyle(root).getPropertyValue("--theme-variables") || ""
+  )
     .split(",")
     .map((name) => name.trim())
     .filter((name) => name.startsWith("--"));
   const before = getComputedStyle(root);
-  const start = new Map(names.map((name) => [name, running?.values.get(name) ?? before.getPropertyValue(name).trim()]));
+  const start = new Map(
+    names.map((name) => [
+      name,
+      running?.values.get(name) ?? before.getPropertyValue(name).trim()
+    ])
+  );
   running?.finish();
   apply();
   if (!fade || document.hidden || names.length === 0) return;
@@ -228,11 +259,18 @@ export function themeFade(root: HTMLElement = document.documentElement) {
   if (!timing) {
     const style = getComputedStyle(root);
     timing = {
-      duration: Number.parseFloat(style.getPropertyValue("--motion-entrance")) || 350,
-      easing: style.getPropertyValue("--ease-move").trim() || "cubic-bezier(0.4, 0, 0.2, 1)"
+      duration:
+        Number.parseFloat(style.getPropertyValue("--motion-entrance")) || 350,
+      easing:
+        style.getPropertyValue("--ease-move").trim() ||
+        "cubic-bezier(0.4, 0, 0.2, 1)"
     };
   }
-  if (root.dataset.reduceMotion === "true" || matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+  if (
+    root.dataset.reduceMotion === "true" ||
+    matchMedia("(prefers-reduced-motion: reduce)").matches
+  )
+    return null;
   return timing;
 }
 
@@ -249,10 +287,16 @@ export function themeValues<Name extends string>(
 ): Record<Name, string> {
   const probe = document.createElement("span");
   probe.hidden = true;
-  probe.dataset.theme = theme ?? (element.closest<HTMLElement>("[data-theme]")?.dataset.theme === "dark" ? "dark" : "light");
+  probe.dataset.theme =
+    theme ??
+    (element.closest<HTMLElement>("[data-theme]")?.dataset.theme === "dark"
+      ? "dark"
+      : "light");
   element.append(probe);
   const style = getComputedStyle(probe);
-  const values = Object.fromEntries(names.map((name) => [name, style.getPropertyValue(name).trim()]));
+  const values = Object.fromEntries(
+    names.map((name) => [name, style.getPropertyValue(name).trim()])
+  );
   probe.remove();
   return values as Record<Name, string>;
 }
@@ -262,6 +306,9 @@ export async function fadeIn(element: Element) {
   const fade = themeFade();
   if (!fade) return;
   await element
-    .animate([{ opacity: 0 }, { opacity: 1 }], { duration: fade.duration, easing: fade.easing })
+    .animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: fade.duration,
+      easing: fade.easing
+    })
     .finished.catch(() => undefined);
 }

@@ -64,10 +64,13 @@ const {
   class: className
 } = Astro.props;
 
-const step = (length: number) => (!autoSize || length <= 90 ? "lg" : length <= 180 ? "md" : "sm");
+const step = (length: number) =>
+  !autoSize || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
 const first = quotes?.[0];
 const slotText = first ? "" : await Astro.slots.render("default");
-const length = first ? first.text.length : slotText.replace(/<[^>]*>/g, "").trim().length;
+const length = first
+  ? first.text.length
+  : slotText.replace(/<[^>]*>/g, "").trim().length;
 const shownAttribution = first ? first.attribution : attribution;
 const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
 ---

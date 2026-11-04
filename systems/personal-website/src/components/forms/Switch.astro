@@ -22,7 +22,15 @@ interface Props {
   class?: string;
 }
 
-const { label, description, checked = false, disabled = false, tone = "cream", id, class: className } = Astro.props;
+const {
+  label,
+  description,
+  checked = false,
+  disabled = false,
+  tone = "cream",
+  id,
+  class: className
+} = Astro.props;
 const Tag = label || description ? "label" : "span";
 ---
 

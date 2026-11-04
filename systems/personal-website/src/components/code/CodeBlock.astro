@@ -84,9 +84,31 @@ const html =
         meta: { __raw: meta }
       });
 const hasBar = Boolean(filename || lang || copy);
-const SHELLS = new Set(["bash", "bat", "batch", "cmd", "console", "fish", "nu", "nushell", "powershell", "ps", "ps1", "pwsh", "sh", "shell", "shellscript", "shellsession", "zsh"]);
+const SHELLS = new Set([
+  "bash",
+  "bat",
+  "batch",
+  "cmd",
+  "console",
+  "fish",
+  "nu",
+  "nushell",
+  "powershell",
+  "ps",
+  "ps1",
+  "pwsh",
+  "sh",
+  "shell",
+  "shellscript",
+  "shellsession",
+  "zsh"
+]);
 const name =
-  filename ?? (label === false ? undefined : (label ?? (lang && SHELLS.has(lang.toLowerCase()) ? "Terminal" : "Code Block")));
+  filename ??
+  (label === false
+    ? undefined
+    : (label ??
+      (lang && SHELLS.has(lang.toLowerCase()) ? "Terminal" : "Code Block")));
 ---
 
 <ds-code-block data-copy={copy ? "" : undefined}>

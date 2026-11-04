@@ -5,7 +5,9 @@
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 import { loadTokens, select } from "../../../lib/tokens";
 
-const durations = select(await loadTokens("personal-website"), ["motion.*"]).filter((token) => token.type === "duration");
+const durations = select(await loadTokens("personal-website"), [
+  "motion.*"
+]).filter((token) => token.type === "duration");
 ---
 
 <ExampleLayout title="Motion">

@@ -8,14 +8,18 @@ import { remarkDsDirectives } from "../src/markdown/index.js";
 
 /** Parses MDX the way a site does and returns the transformed tree and the file's warnings. */
 function run(source) {
-  const processor = unified().use(remarkParse).use(remarkMdx).use(remarkDsDirectives);
+  const processor = unified()
+    .use(remarkParse)
+    .use(remarkMdx)
+    .use(remarkDsDirectives);
   const file = new VFile(source);
   const tree = processor.runSync(processor.parse(file), file);
   return { tree, messages: file.messages.map(String) };
 }
 
 /** The attributes of an MDX JSX node as a plain object; a boolean attribute reads as true. */
-const attrs = (node) => Object.fromEntries(node.attributes.map((a) => [a.name, a.value ?? true]));
+const attrs = (node) =>
+  Object.fromEntries(node.attributes.map((a) => [a.name, a.value ?? true]));
 
 const text = (node) =>
   "value" in node ? node.value : (node.children ?? []).map(text).join("");
@@ -31,28 +35,42 @@ test(":::tip becomes an Admonition with its title", () => {
 
 test(":::details{open} keeps the open flag", () => {
   const { tree } = run(":::details[More]{open}\nHidden.\n:::\n");
-  assert.deepEqual(attrs(tree.children[0]), { variant: "details", title: "More", open: true });
+  assert.deepEqual(attrs(tree.children[0]), {
+    variant: "details",
+    title: "More",
+    open: true
+  });
 });
 
 test(":::spoiler becomes a block Spoiler and :spoiler an inline one", () => {
-  const { tree } = run(":::spoiler\nThe answer.\n:::\n\nIt was :spoiler[the butler].\n");
+  const { tree } = run(
+    ":::spoiler\nThe answer.\n:::\n\nIt was :spoiler[the butler].\n"
+  );
   assert.equal(tree.children[0].name, "Spoiler");
   assert.deepEqual(attrs(tree.children[0]), { variant: "block" });
-  const inline = tree.children[1].children.find((n) => n.type === "mdxJsxTextElement");
+  const inline = tree.children[1].children.find(
+    (n) => n.type === "mdxJsxTextElement"
+  );
   assert.equal(inline.name, "Spoiler");
   assert.equal(text(inline), "the butler");
 });
 
 test(":term becomes an Abbreviation with the note as its term", () => {
-  const { tree } = run('Rendered on the server, :term[SSR]{note="Server-Side Rendering"}.\n');
-  const node = tree.children[0].children.find((n) => n.type === "mdxJsxTextElement");
+  const { tree } = run(
+    'Rendered on the server, :term[SSR]{note="Server-Side Rendering"}.\n'
+  );
+  const node = tree.children[0].children.find(
+    (n) => n.type === "mdxJsxTextElement"
+  );
   assert.equal(node.name, "Abbreviation");
   assert.deepEqual(attrs(node), { term: "Server-Side Rendering" });
   assert.equal(text(node), "SSR");
 });
 
 test(":::steps turns each list item into a Step with a title slot and a status", () => {
-  const { tree } = run(":::steps{current=1}\n1. First\n\n   Detail.\n\n2. Second\n3. Third\n:::\n");
+  const { tree } = run(
+    ":::steps{current=1}\n1. First\n\n   Detail.\n\n2. Second\n3. Third\n:::\n"
+  );
   const [list] = tree.children;
   assert.equal(list.name, "Steps");
   assert.deepEqual(
@@ -68,13 +86,18 @@ test(":::steps turns each list item into a Step with a title slot and a status",
 
 test("directives nest: a spoiler inside a tip is handled too", () => {
   const { tree } = run(":::tip\nIt was :spoiler[him].\n:::\n");
-  const inline = tree.children[0].children[0].children.find((n) => n.type === "mdxJsxTextElement");
+  const inline = tree.children[0].children[0].children.find(
+    (n) => n.type === "mdxJsxTextElement"
+  );
   assert.equal(inline.name, "Spoiler");
 });
 
 test("an unknown directive is kept as text, with a warning", () => {
   const { tree, messages } = run("Sent at 10:30, see note:abc for details.\n");
-  assert.equal(text(tree.children[0]), "Sent at 10:30, see note:abc for details.");
+  assert.equal(
+    text(tree.children[0]),
+    "Sent at 10:30, see note:abc for details."
+  );
   assert.equal(messages.length, 1);
   assert.match(messages[0], /Unknown directive :abc/);
 });
@@ -131,24 +154,28 @@ test(":::file-tree turns a nested list into FileTreeNodes", () => {
   assert.equal(root.name, "FileTree");
   assert.deepEqual(attrs(root), { label: "Your project" });
   const [src, dist, config] = root.children;
-  assert.deepEqual(attrs(src), { name: "src", depth: "0", folder: true, open: true });
+  assert.deepEqual(attrs(src), {
+    name: "src",
+    depth: "0",
+    folder: true,
+    open: true
+  });
   assert.deepEqual(attrs(dist), { name: "dist", depth: "0", folder: true });
   assert.deepEqual(attrs(config), { name: "astro.config.ts", depth: "0" });
   // Names are read from the source, so underscores are not emphasis.
-  assert.deepEqual(
-    src.children.map(attrs),
-    [
-      { name: "__init__.py", depth: "1" },
-      { name: "content.config.ts", depth: "1", hint: "new" }
-    ]
-  );
+  assert.deepEqual(src.children.map(attrs), [
+    { name: "__init__.py", depth: "1" },
+    { name: "content.config.ts", depth: "1", hint: "new" }
+  ]);
 });
 
 /** The figure mark the plugin puts on an image, or undefined. */
 const figureMark = (node) => node.data?.hProperties?.dataDsFigure;
 
 test("an image on a line of its own leaves its paragraph and is marked as a figure", () => {
-  const { tree } = run('![A cat](./cat.png "On the sofa")\n\nText with ![an icon](./i.png) inside.\n');
+  const { tree } = run(
+    '![A cat](./cat.png "On the sofa")\n\nText with ![an icon](./i.png) inside.\n'
+  );
   const [image, paragraph] = tree.children;
   assert.equal(image.type, "image");
   assert.equal(image.title, "On the sofa");
@@ -181,17 +208,24 @@ test(":::gallery turns its images into an ImageGrid of figures", () => {
 });
 
 test(":::gallery leaves out text, with a warning", () => {
-  const { tree, messages } = run(":::gallery\n![A](./a.png)\n\nNot an image.\n:::\n");
+  const { tree, messages } = run(
+    ":::gallery\n![A](./a.png)\n\nNot an image.\n:::\n"
+  );
   assert.equal(tree.children[0].children.length, 1);
   assert.match(messages[0], /holds only images/);
 });
 
 test("::video becomes a VideoEmbed, with a local poster as a marked image", () => {
-  const source = '::video{src="https://www.acfun.cn/v/ac48905554" title="A talk" poster="./cover.png" ratio="4/3"}\n';
+  const source =
+    '::video{src="https://www.acfun.cn/v/ac48905554" title="A talk" poster="./cover.png" ratio="4/3"}\n';
   const { tree, messages } = run(source);
   const [node] = tree.children;
   assert.equal(node.name, "VideoEmbed");
-  assert.deepEqual(attrs(node), { src: "https://www.acfun.cn/v/ac48905554", title: "A talk", ratio: "4/3" });
+  assert.deepEqual(attrs(node), {
+    src: "https://www.acfun.cn/v/ac48905554",
+    title: "A talk",
+    ratio: "4/3"
+  });
   const [poster] = node.children;
   assert.equal(poster.type, "image");
   assert.equal(poster.url, "./cover.png");
@@ -223,7 +257,9 @@ $$
 
 test("$ math inside a sentence becomes an inline MathBlock", () => {
   const { tree } = run("The energy is $E = mc^2$ here.\n");
-  const node = tree.children[0].children.find((n) => n.type === "mdxJsxTextElement");
+  const node = tree.children[0].children.find(
+    (n) => n.type === "mdxJsxTextElement"
+  );
   assert.equal(node.name, "MathBlock");
   assert.equal(attrs(node).display, "false");
   assert.match(attrs(node).html, /<math/);
@@ -239,7 +275,9 @@ $$
 });
 
 test("a mermaid fence becomes a Mermaid diagram with its label and caption", () => {
-  const { tree } = run('```mermaid title="Build" caption="How a post is built"\ngraph LR\n  A --> B\n```\n');
+  const { tree } = run(
+    '```mermaid title="Build" caption="How a post is built"\ngraph LR\n  A --> B\n```\n'
+  );
   const [node] = tree.children;
   assert.equal(node.name, "Mermaid");
   assert.deepEqual(attrs(node), {

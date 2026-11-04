@@ -18,7 +18,16 @@ import Search from "../../icons/search.svg";
 import Sun from "../../icons/sun.svg";
 import X from "../../icons/x.svg";
 
-const ICONS = { adjustments: Adjustments, "arrow-up": ArrowUp, list: List, menu: Menu, moon: Moon, search: Search, sun: Sun, x: X };
+const ICONS = {
+  adjustments: Adjustments,
+  "arrow-up": ArrowUp,
+  list: List,
+  menu: Menu,
+  moon: Moon,
+  search: Search,
+  sun: Sun,
+  x: X
+};
 
 export type IconName = keyof typeof ICONS;
 
@@ -33,7 +42,15 @@ type Props = Omit<HTMLAttributes<"button">, "type"> & {
   class?: string;
 };
 
-const { icon, label, tone = "canvas", disabled = false, href, class: className, ...rest } = Astro.props;
+const {
+  icon,
+  label,
+  tone = "canvas",
+  disabled = false,
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
 const Icon = ICONS[icon];
 const classes = ["ds-icon-button", `ds-icon-button--${tone}`, className];
 ---

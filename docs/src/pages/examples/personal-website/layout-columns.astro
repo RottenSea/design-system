@@ -5,7 +5,8 @@ import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 import { loadTokens } from "../../../lib/tokens";
 
 const tokens = await loadTokens("personal-website");
-const value = (id: string) => tokens.find((token) => token.id === id)?.value.light ?? "";
+const value = (id: string) =>
+  tokens.find((token) => token.id === id)?.value.light ?? "";
 const px = (id: string) => Number.parseInt(value(id), 10);
 const layouts = [
   {
@@ -18,7 +19,12 @@ const layouts = [
     meta: `${px("break.stack") + 1}–${value("break.rails")} · --break-rails`,
     columns: ["left", "main"]
   },
-  { name: "Stacked, main first", meta: `up to ${value("break.stack")} · --break-stack`, columns: ["main", "left", "right"], stack: true }
+  {
+    name: "Stacked, main first",
+    meta: `up to ${value("break.stack")} · --break-stack`,
+    columns: ["main", "left", "right"],
+    stack: true
+  }
 ];
 ---
 

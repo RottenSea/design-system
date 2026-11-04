@@ -44,7 +44,17 @@ interface Props {
   class?: string;
 }
 
-const { id, brand, groups, active, side = "right", width = 320, note, label = "Menu", class: className } = Astro.props;
+const {
+  id,
+  brand,
+  groups,
+  active,
+  side = "right",
+  width = 320,
+  note,
+  label = "Menu",
+  class: className
+} = Astro.props;
 const panelWidth = typeof width === "number" ? `${width}px` : width;
 const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
 ---

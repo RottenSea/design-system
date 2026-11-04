@@ -18,7 +18,12 @@ import Download from "../../icons/download.svg";
 import Link from "../../icons/link.svg";
 import Share from "../../icons/share.svg";
 
-const ICONS = { "arrow-right": ArrowRight, download: Download, link: Link, share: Share };
+const ICONS = {
+  "arrow-right": ArrowRight,
+  download: Download,
+  link: Link,
+  share: Share
+};
 
 export type ButtonIcon = keyof typeof ICONS;
 
@@ -47,7 +52,12 @@ const {
 } = Astro.props;
 const Left = iconLeft ? ICONS[iconLeft] : undefined;
 const Right = iconRight ? ICONS[iconRight] : undefined;
-const classes = ["ds-button", `ds-button--${variant}`, `ds-button--${size}`, className];
+const classes = [
+  "ds-button",
+  `ds-button--${variant}`,
+  `ds-button--${size}`,
+  className
+];
 const tap = variant === "text" ? undefined : "cell";
 ---
 

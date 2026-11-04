@@ -6,9 +6,18 @@ import { loadTokens, select } from "../../../lib/tokens";
 
 const tokens = await loadTokens("personal-website");
 // The translucent blur surfaces belong over imagery, not under text, so they are left out.
-const surfaces = select(tokens, ["surface.*"]).filter((token) => !token.id.includes("blur"));
+const surfaces = select(tokens, ["surface.*"]).filter(
+  (token) => !token.id.includes("blur")
+);
 const onDark = (id: string) => id.includes("dark");
-const creamText = select(tokens, ["text.ink", "text.body-strong", "text.body", "text.muted", "text.muted-soft", "text.link"]);
+const creamText = select(tokens, [
+  "text.ink",
+  "text.body-strong",
+  "text.body",
+  "text.muted",
+  "text.muted-soft",
+  "text.link"
+]);
 const darkText = select(tokens, ["text.on-dark", "text.on-dark-soft"]);
 ---
 

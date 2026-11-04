@@ -26,7 +26,12 @@ interface Props {
   class?: string;
 }
 
-const { devices = ["mobile", "tablet", "desktop"], topLabel = "Back to top", tone = "canvas", class: className } = Astro.props;
+const {
+  devices = ["mobile", "tablet", "desktop"],
+  topLabel = "Back to top",
+  tone = "canvas",
+  class: className
+} = Astro.props;
 const shows = (device: Device) => (devices.includes(device) ? "1" : "0");
 ---
 
