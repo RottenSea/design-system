@@ -9,7 +9,9 @@ import Example from "../../../../../components/Example.astro";
 
 Shows code with its filename, language, line numbers and a copy button, and marks the lines that matter.
 
-<Example system="personal-website" name="code-block" title="Code blocks with a filename, highlights, a diff and folding" />
+<Example system="personal-website" name="code-block" title="Code blocks with a filename, highlights, a diff, a long line and folding" />
+
+The last two show the long cases: a line wider than the block scrolls sideways, and a block longer than 12 lines starts folded to its first 10.
 
 ## When to use
 
@@ -59,11 +61,11 @@ A bar with the filename, the language as an uppercase label and the copy button,
 | State | What changes |
 | --- | --- |
 | Copied | The copy button turns coral and reads "Copied" for 1.6 seconds |
-| Folded | A block longer than 20 lines shows its first 16 and a "Show all N lines" button; it unfolds for good when pressed |
+| Folded | A block longer than 12 lines shows its first 10 and a "Show all N lines" button; it unfolds for good when pressed |
 
 ## Accessibility
 
-The copy button is a real button named "Copy code", and "Copied" once it has worked. The fold button reports `aria-expanded`. Long lines scroll sideways instead of wrapping, because a wrapped line loses its indentation. Line numbers are drawn by CSS, so they are neither read aloud nor copied. Copying leaves out lines marked as removed.
+The copy button is a real button named "Copy code", and "Copied" once it has worked. The fold button reports `aria-expanded`. Long lines scroll sideways instead of wrapping, because a wrapped line loses its indentation. The horizontal scrollbar sits at the very bottom of the block, below "Show all N lines", and moves with the code; the code itself still scrolls by touch, Shift and the wheel, or the arrow keys. Without script the scrollbar stays under the code. Line numbers are drawn by CSS, so they are neither read aloud nor copied. Copying leaves out lines marked as removed.
 
 ## API
 

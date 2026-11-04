@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `CodeBlock` folds a block longer than 12 lines to its first 10, where it folded one longer than 20 to its first 16.
+- `CodeBlock`'s horizontal scrollbar is a rail at the very bottom of the block, below "Show all N lines", kept in step with the code, whose own scrollbar is hidden. The code still scrolls by touch, Shift and the wheel, or the arrow keys. Without script the scrollbar stays under the code.
+
 ### Added
 
 - `surface.on-card`, for a part inside a card that would take the card's own colour: `#e0d8ca` in the light theme and `#322f2a` in the dark, one step from the card in each, as the dark theme's code bar is.
@@ -14,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Content inside an `Admonition` stands apart from it in the light theme. A code block's bar and a table's header took the card's own colour, and the light hairline around them barely shows on the card, so they ran into the admonition; an admonition inside another ran into it in both themes. Inside an admonition, `--surface-card`, `--surface-code-bar` and `--surface-cream-strong` now take `--surface-on-card`, which also covers a formula's card, a spoiler's cover and an OptionGroup's tabs. `tone="dark"` is unchanged.
-- A folded `CodeBlock` with a line too long for it keeps its horizontal scrollbar below the code. The fold cut the scroll area itself, so the scrollbar lay across the last line shown, inside the fade; the `<pre>` now takes the fold and the fade, and the scrollbar sits under it as in an unfolded block.
 
 ### Removed
 

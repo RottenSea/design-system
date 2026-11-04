@@ -9,7 +9,9 @@ import Example from "../../../../../components/Example.astro";
 
 显示代码，带文件名、语言、行号和复制按钮，并标出要紧的行。
 
-<Example system="personal-website" name="code-block" title="带文件名、高亮、diff 和折叠的代码块" />
+<Example system="personal-website" name="code-block" title="带文件名、高亮、diff、长行和折叠的代码块" />
+
+最后两个是长的情况：比代码块宽的行横向滚动，超过 12 行的代码块一开始折叠，只显示前 10 行。
 
 ## 什么时候用
 
@@ -59,11 +61,11 @@ export default defineConfig({
 | 状态 | 变化 |
 | --- | --- |
 | 已复制 | 复制按钮变成珊瑚色，显示 “Copied” 1.6 秒 |
-| 折叠 | 超过 20 行的代码块只显示前 16 行和一个 “Show all N lines” 按钮，点开后不再收起 |
+| 折叠 | 超过 12 行的代码块只显示前 10 行和一个 “Show all N lines” 按钮，点开后不再收起 |
 
 ## 无障碍
 
-复制按钮是真正的按钮，名字是 “Copy code”，复制成功后变成 “Copied”。展开按钮会报告 `aria-expanded`。长行横向滚动、不换行，因为换行会丢掉缩进。行号由 CSS 画出，读屏软件不读，复制时也不带上。复制时会跳过标记为删除的行。
+复制按钮是真正的按钮，名字是 “Copy code”，复制成功后变成 “Copied”。展开按钮会报告 `aria-expanded`。长行横向滚动、不换行，因为换行会丢掉缩进。横向滚动条在代码块的最下面，“Show all N lines” 的下方，和代码一起动；代码本身照样能用触控板、Shift 加滚轮或方向键滚动。没有脚本时，滚动条留在代码下面。行号由 CSS 画出，读屏软件不读，复制时也不带上。复制时会跳过标记为删除的行。
 
 ## API
 

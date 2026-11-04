@@ -17,15 +17,39 @@ const diff = `export default defineConfig({
   trailingSlash: "never"
 });`;
 
-const long = Array.from(
-  { length: 28 },
-  (_, i) => `const line${i + 1} = ${i + 1};`
-).join("\n");
+const wide = `# Build the post site, then deploy it to Cloudflare with its own Wrangler config
+pnpm --filter article exec astro build --site https://article.rottenth.cafe && npx wrangler deploy --config sites/article/wrangler.jsonc --keep-vars`;
+
+const tall = `import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
+import {
+  markdown,
+  rehypeDsExternalLinks,
+  rehypeDsHeadingAnchors,
+  shikiTransformers
+} from "@rottensea/ds-personal-website/markdown";
+
+export default defineConfig({
+  site: "https://article.rottenth.cafe",
+  trailingSlash: "never",
+  build: { format: "file" },
+  integrations: [mdx(), sitemap()],
+  markdown: {
+    remarkPlugins: [markdown],
+    rehypePlugins: [rehypeDsHeadingAnchors, rehypeDsExternalLinks],
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+      transformers: shikiTransformers()
+    }
+  }
+});`;
 ---
 
 <ExampleLayout title="CodeBlock">
   <CodeBlock code={css} lang="css" filename="src/styles/motion.css" highlightLines={[2]} />
   <CodeBlock code={diff} lang="ts" filename="astro.config.ts" />
   <CodeBlock code="pnpm add astro" lang="sh" />
-  <CodeBlock code={long} lang="js" filename="long.js" caption="A block longer than 20 lines starts folded." />
+  <CodeBlock code={wide} lang="sh" />
+  <CodeBlock code={tall} lang="ts" filename="astro.config.ts" />
 </ExampleLayout>
