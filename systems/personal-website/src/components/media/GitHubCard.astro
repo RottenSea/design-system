@@ -102,14 +102,10 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
 </a>
 
 <style>
-  /* The hairline is an inset shadow over an extra pixel of padding, not a border: the card is a
-     link, and Chrome draws a visited link's border in a colour of its own, which it does not redraw
-     while the theme fades. */
   .ds-repo {
-    --ds-repo-line: var(--hairline);
     align-items: flex-start;
     background: var(--surface-canvas);
-    box-shadow: inset 0 0 0 1px var(--ds-repo-line);
+    border: 1px solid var(--hairline);
     border-radius: var(--radius-lg);
     box-sizing: border-box;
     color: var(--text-body);
@@ -117,13 +113,13 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
     gap: var(--space-sm);
     margin: var(--space-lg) 0;
     max-width: var(--container-reading);
-    padding: calc(var(--space-md) + 1px);
+    padding: var(--space-md);
     text-decoration: none;
     transition: box-shadow var(--motion-fast) var(--ease-enter);
   }
 
   .ds-repo:hover {
-    box-shadow: inset 0 0 0 1px var(--ds-repo-line), var(--shadow-hover);
+    box-shadow: var(--shadow-hover);
   }
 
   .ds-repo__mark {
@@ -240,7 +236,7 @@ const count = new Intl.NumberFormat("en", { notation: "compact", maximumFraction
 
   .ds-repo--dark {
     background: var(--surface-dark);
-    --ds-repo-line: var(--hairline-on-dark);
+    border-color: var(--hairline-on-dark);
     color: var(--text-on-dark);
   }
 

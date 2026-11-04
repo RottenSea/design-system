@@ -51,14 +51,10 @@ const classes = ["ds-icon-button", `ds-icon-button--${tone}`, className];
 }
 
 <style>
-  /* The hairline is an inset shadow inside the fixed size, not a border: an icon button with href
-     is a link, and Chrome draws a visited link's border in a colour of its own, which it does not
-     redraw while the theme fades. */
   .ds-icon-button {
-    --ds-icon-button-line: transparent;
     align-items: center;
     border-radius: var(--radius-full);
-    box-shadow: inset 0 0 0 1px var(--ds-icon-button-line);
+    border: 1px solid transparent;
     box-sizing: border-box;
     cursor: pointer;
     display: inline-flex;
@@ -73,7 +69,7 @@ const classes = ["ds-icon-button", `ds-icon-button--${tone}`, className];
 
   .ds-icon-button--canvas {
     background: var(--surface-canvas);
-    --ds-icon-button-line: var(--hairline);
+    border-color: var(--hairline);
     color: var(--text-ink);
   }
 

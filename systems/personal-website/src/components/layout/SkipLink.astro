@@ -18,19 +18,17 @@ const { href = "#main", label = "Skip to content" } = Astro.props;
 <a class="ds-skip-link" href={href}>{label}</a>
 
 <style>
-  /* The hairline is an inset shadow over an extra pixel of padding, not a border: Chrome draws a
-     visited link's border in a colour of its own, which it does not redraw while the theme fades. */
   .ds-skip-link {
     background: var(--surface-canvas);
+    border: 1px solid var(--hairline);
     border-radius: var(--radius-full);
-    box-shadow: inset 0 0 0 1px var(--hairline);
     color: var(--text-ink);
     font-family: var(--font-sans);
     font-size: var(--nav-link-size);
     font-weight: var(--nav-link-weight);
     left: var(--space-md);
     line-height: var(--nav-link-lh);
-    padding: calc(var(--space-xs) + 1px) calc(var(--space-md) + 1px);
+    padding: var(--space-xs) var(--space-md);
     position: fixed;
     text-decoration: none;
     top: var(--space-sm);
@@ -39,7 +37,7 @@ const { href = "#main", label = "Skip to content" } = Astro.props;
   }
 
   .ds-skip-link:focus {
-    box-shadow: inset 0 0 0 1px var(--hairline), 0 0 0 4px var(--focus-ring);
+    box-shadow: 0 0 0 4px var(--focus-ring);
     transform: none;
   }
 </style>

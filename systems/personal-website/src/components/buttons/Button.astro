@@ -68,13 +68,9 @@ const tap = variant === "text" ? undefined : "cell";
 }
 
 <style>
-  /* The hairline is an inset shadow over an extra pixel of padding, not a border: a button with
-     href is a link, and Chrome draws a visited link's border in a colour of its own, which it
-     does not redraw while the theme fades. */
   .ds-button {
-    --ds-button-line: transparent;
     align-items: center;
-    box-shadow: inset 0 0 0 1px var(--ds-button-line);
+    border: 1px solid transparent;
     border-radius: var(--radius-md);
     box-sizing: border-box;
     cursor: pointer;
@@ -87,7 +83,7 @@ const tap = variant === "text" ? undefined : "cell";
     justify-content: center;
     letter-spacing: 0;
     line-height: var(--button-lh);
-    padding: 13px 21px;
+    padding: 12px 20px;
     text-decoration: none;
     transition: var(--transition-tint);
     white-space: nowrap;
@@ -100,7 +96,7 @@ const tap = variant === "text" ? undefined : "cell";
   .ds-button--sm {
     border-radius: var(--radius-sm);
     height: 32px;
-    padding: 9px 15px;
+    padding: 8px 14px;
   }
 
   .ds-button--primary {
@@ -118,7 +114,7 @@ const tap = variant === "text" ? undefined : "cell";
 
   .ds-button--secondary {
     background: var(--surface-canvas);
-    --ds-button-line: var(--hairline);
+    border-color: var(--hairline);
     color: var(--text-ink);
   }
 
@@ -143,7 +139,7 @@ const tap = variant === "text" ? undefined : "cell";
     background: transparent;
     color: var(--text-ink);
     height: auto;
-    padding: 1px;
+    padding: 0;
   }
 
   .ds-button--text:active:not(:disabled) {
@@ -152,7 +148,7 @@ const tap = variant === "text" ? undefined : "cell";
 
   .ds-button:disabled {
     background: var(--color-primary-disabled);
-    --ds-button-line: transparent;
+    border-color: transparent;
     color: var(--text-muted);
     cursor: not-allowed;
   }
