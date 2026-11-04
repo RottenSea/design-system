@@ -1,22 +1,7 @@
 ---
 /**
- * Search without leaving the page: a 560px panel under the nav line over a scrim, a 56px input
- * row, then the results, each a title, a meta line and the matching sentence. The row under the
- * arrow keys sits on the cream card. Skeleton lines show while results load, and one sentence
- * when nothing matches.
- *
- * Ported from the handoff's SearchPanel.jsx. Like the handoff's, it never fetches: the page owns
- * the index. Instead of props and callbacks it sends `ds-open` when it opens (load the index
- * then) and `ds-query` with the text as it changes, and the page answers with `setLoading()`
- * and `setResults()`. It is a native modal <dialog>: the focus goes to the input and stays in
- * the panel, Escape and a click on the scrim close it. Arrow keys move through the results with
- * the focus left in the input, and Enter opens the one marked. Any element with
- * data-ds-search-open set to the panel's id opens it, and so do "/" and Ctrl+K or ⌘K unless
- * `shortcuts` is false.
- *
- *   <IconButton icon="search" label="Search" data-ds-search-open="site-search" />
- *   <SearchPanel id="site-search" />
- *   panel.addEventListener("ds-query", async (event) => panel.setResults(await find(event.detail)));
+ * A search dialog that never fetches: it sends `ds-open` and `ds-query`, and the page answers with
+ * `setLoading()` and `setResults()`. An element with data-ds-search-open set to its id opens it.
  */
 import SearchIcon from "../../icons/search.svg";
 import X from "../../icons/x.svg";
@@ -174,7 +159,6 @@ const {
       }
     }
 
-    /** Opens the panel with the focus in the input, and sends ds-open. */
     open() {
       if (this.#dialog.open) return;
       this.#dialog.showModal();
@@ -190,7 +174,6 @@ const {
       this.#dialog.close();
     }
 
-    /** Shows the skeleton lines in place of the results. */
     setLoading(loading: boolean) {
       this.#loading.hidden = !loading;
       if (loading) {
@@ -199,10 +182,7 @@ const {
       }
     }
 
-    /**
-     * Shows these results. With none, it shows `message`, or the empty label when the input has
-     * text, or nothing.
-     */
+    /** With no results: `message`, else the empty label if there is a query. */
     setResults(results: SearchResult[], message?: string) {
       this.#loading.hidden = true;
       this.#active = -1;
@@ -381,8 +361,7 @@ const {
     width: 24px;
   }
 
-  /* The results change while the panel is open, so the scrollbar's space is kept and the rows do
-     not move sideways when the list grows past the panel. */
+  /* Rows do not shift sideways when the results grow a scrollbar. */
   .ds-search__body {
     min-height: 0;
     overflow-y: auto;

@@ -1,16 +1,7 @@
 ---
 /**
- * The left rail's filter list: categories, sections, with counts. The selected row has a coral
- * mark at its left and coral text, with no fill and no pill, because a rail is a list of links,
- * not a set of tabs. Counts sit at the right in tabular figures.
- *
- * Ported from the handoff's FilterList.jsx with the same props, except `onSelect`. Rows with
- * `href` are links, the current one marked as the page. Rows without are toggle buttons: pressing
- * one selects it, pressing it again clears it, and the list sends a `ds-select` event whose
- * detail is the label, or null when cleared. The page does the filtering.
- *
- *   <FilterList label="Categories" items={[{ label: "AI", count: 3 }]} />
- *   list.addEventListener("ds-select", (event) => filter(event.detail));
+ * A rail's filter list with counts. Rows with `href` are links; others are toggles that send
+ * `ds-select` with the label, or null when cleared.
  */
 export interface FilterItem {
   label: string;

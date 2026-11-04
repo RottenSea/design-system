@@ -1,17 +1,7 @@
 ---
 /**
- * The numbered pager under a list: Previous, the page numbers, Next. The current page has the
- * cream card fill, never a coral pill. With more than seven pages it shows the first, the last,
- * and the current one with its neighbours. A pager with one page draws nothing.
- *
- * Ported from the handoff's Pagination.jsx with the same props, in two forms:
- * - with `href`, a pattern such as "/page/{n}", every number is a link to its page;
- * - without it, the numbers are buttons. A press sends a `ds-page` event whose detail is the new
- *   page number, and the page shows that page. Setting the element's `page` or `page-count`
- *   attribute redraws it, so it can follow a list the reader filters.
- *
- *   <Pagination page={1} pageCount={4} />
- *   pager.addEventListener("ds-page", (event) => show(event.detail));
+ * A numbered pager. With `href` the numbers are links; without, buttons that send `ds-page`, and
+ * setting the element's `page` or `page-count` attribute redraws it.
  */
 import ArrowLeft from "../../icons/arrow-left.svg";
 import ArrowRight from "../../icons/arrow-right.svg";
@@ -162,7 +152,6 @@ const link = (n: number) => href?.replace("{n}", String(n));
       nav.hidden = pageCount <= 1;
       this.querySelector<HTMLButtonElement>('[data-step="-1"]')!.disabled = page <= 1;
       this.querySelector<HTMLButtonElement>('[data-step="1"]')!.disabled = page >= pageCount;
-      // Reuse the built buttons' classes and attributes, so the redraw matches the build.
       const sample = pages.querySelector(".ds-pagination__page");
       const gap = pages.querySelector(".ds-pagination__gap");
       pages.replaceChildren(

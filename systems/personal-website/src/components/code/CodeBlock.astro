@@ -1,24 +1,10 @@
 ---
 /**
- * The code surface. By default it follows the theme: cream and hairline in the light theme, the
- * dark warm navy in the dark, fading between the two with the page. tone="dark" keeps the navy in
- * both themes, and tone="cream" the cream surfaces, which darken in the dark theme. The bar
- * carries the filename in the mono face (without one, "Code Block", or "Terminal" for a shell
- * language, in the same face), the language as an uppercase micro-label and a copy
- * button that turns coral and reads "Copied" for 1.6s. Highlighted lines take a wash and a
- * coral gutter rule. Long lines scroll instead of wrapping, because indentation is information.
+ * A code block: pass `code` and `lang` to highlight with Shiki, or put Shiki's <pre> in the slot.
+ * Long lines scroll rather than wrap, and a block over 20 lines starts folded to 16.
  *
- * Ported from the handoff's CodeBlock.jsx with the same props. Highlighting is Shiki's: pass
- * `code` and `lang` and the block runs Shiki with the system's transformers, or put
- * Shiki's <pre> in the slot, which is what MarkdownCode does for a post's code fences. Either
- * way the numbers, copy and highlights work. Added here: a block longer than 20 lines starts
- * folded to 16 with a button to show the rest, a feature the handoff does not have.
- *
- * It calls Shiki itself rather than Astro's <Code>, and imports the two theme objects instead of
- * naming them. When a site bundles Shiki into its build, as the docs site does with this package
- * linked from the workspace, the bundler empties Shiki's table of named themes, and a theme given
- * by name is then "not included in this bundle". The package depends on the same Shiki version as
- * Astro, so a site installs one copy.
+ * It imports Shiki's theme objects instead of naming them: a bundler that inlines Shiki empties
+ * its table of named themes.
  */
 import githubDark from "@shikijs/themes/github-dark";
 import githubLight from "@shikijs/themes/github-light";
@@ -32,10 +18,7 @@ interface Props {
   code?: string;
   /** Shown left in the bar, in the mono face: "tokens/motion.css". */
   filename?: string;
-  /**
-   * Shown in the bar when there is no filename: "Terminal" for a shell language and "Code Block"
-   * for any other by default; false shows nothing there.
-   */
+  /** Shown without a filename; defaults to "Terminal" or "Code Block", false for none. */
   label?: string | false;
   /** Uppercase language label right of the filename, and Shiki's language for `code`. */
   lang?: string;
@@ -46,10 +29,7 @@ interface Props {
   copy?: boolean;
   /** Caption under the block. */
   caption?: string;
-  /**
-   * `auto` (default) is cream in the light theme and the warm navy in the dark; `dark` is the
-   * warm navy in both; `cream` is canvas and hairline, darkened in the dark theme.
-   */
+  /** `auto` follows the theme, `dark` is navy in both, `cream` darkens in the dark theme. */
   tone?: "auto" | "dark" | "cream";
   /** false drops the frame (margin, border, radius, fill). */
   frame?: boolean;
@@ -71,7 +51,6 @@ const {
   ...rest
 } = Astro.props;
 
-// Highlighted lines go to Shiki as meta, in the same form as a code fence: {2,4}.
 const meta = highlightLines.length ? `{${highlightLines.join(",")}}` : "";
 const html =
   code === undefined
@@ -166,9 +145,7 @@ const name =
 
       const button = this.querySelector<HTMLButtonElement>(".ds-code__copy");
       if (button) {
-        // The code as it reads after the change it shows: lines marked removed are left out,
-        // and so is the space a removed [!code] comment leaves at the end of a line. The line
-        // numbers are drawn by CSS, so textContent never includes them.
+        // Copies the code after the change: removed lines and trailing [!code] spaces left out.
         const text = () =>
           [...pre.querySelectorAll(".line")]
             .filter((line) => !line.classList.contains("remove"))
@@ -238,16 +215,11 @@ const name =
     --ds-code-wash: var(--surface-soft);
     --ds-code-bar: var(--surface-card);
     --ds-code-fill: var(--surface-canvas);
-    /* The cream surfaces turn dark in the dark theme, so the tokens follow the page's theme,
-       whose block in tokens.css sets both, and fade with it. */
     --theme-dark: inherit;
     color-scheme: inherit;
   }
 
-  /* Cream in the light theme and the navy in the dark, from tokens the theme sets: the theme's
-     own fade on <html> blends them, so the block changes at the page's pace. Mixing the two
-     tones here by --theme-dark would not: both ends would be fading as well, and the block
-     would run ahead of the page. */
+  /* Own theme tokens, not a --theme-dark mix of two fading tones, which would run ahead of the page. */
   .ds-code--auto {
     --ds-code-ink: var(--text-body-strong);
     --ds-code-soft: var(--text-muted);
@@ -341,14 +313,12 @@ const name =
     display: inline;
   }
 
-  /* The scrollbar in the block's own soft text colour, so it reads on the navy as well. */
   .ds-code__scroll {
     overflow-x: auto;
     scrollbar-color: var(--ds-code-soft) transparent;
     padding: var(--space-md) 0;
   }
 
-  /* Shiki's <pre>, from <Code> or from the slot. Its own background is replaced by the frame. */
   .ds-code__scroll :global(pre) {
     background: transparent !important;
     color: color-mix(in srgb, var(--shiki-light), var(--shiki-dark) var(--theme-dark));
@@ -377,7 +347,6 @@ const name =
     padding: 0 var(--space-md);
   }
 
-  /* Numbers only when the block has more than one line and has not turned them off. */
   .ds-code--numbered .ds-code__scroll :global(pre:not([data-line-numbers="false"]) code:has(.line + .line) .line::before) {
     color: var(--ds-code-soft);
     content: counter(ds-code-line);

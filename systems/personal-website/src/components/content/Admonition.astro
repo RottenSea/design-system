@@ -1,14 +1,5 @@
 ---
-/**
- * The long-form callout: note, tip, important, warning, caution, details. A cream card, a 6px
- * status dot and an uppercase micro-label in the semantic colour. The accent lives in the dot
- * and the label only, so several of these down a page never turn it into a paint chart.
- *
- * Ported from the handoff's Admonition.jsx with the same props, except that the foldable
- * `details` variant is a native <details>, which opens and closes, takes the keyboard and
- * reports its state to screen readers without any script. `open` and `defaultOpen` both set
- * whether it starts open; there is no `onToggle` because nothing runs in the browser.
- */
+/** A callout; the `details` variant is a native <details>. */
 import ChevronDown from "../../icons/chevron-down.svg";
 
 type Variant = "note" | "tip" | "important" | "warning" | "caution" | "details";

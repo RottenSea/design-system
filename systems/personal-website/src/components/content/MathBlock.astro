@@ -1,14 +1,7 @@
 ---
 /**
- * The surface for typeset math: a --surface-card block, centred, capped at the reading measure,
- * scrolling sideways when the expression is wider than the column, with an optional equation
- * number in tabular mono to the right. Inline, it keeps the paragraph's line height and never
- * breaks across a line. It does not typeset: `html` takes MathML the build made, and `tex` alone
- * shows the source in the mono face, so a formula that could not be typeset is still legible.
- *
- * Ported from the handoff's MathBlock.jsx with the same props. The system's directive plugin
- * typesets a post's $...$ and $$...$$ with KaTeX at build time, as MathML only, so no KaTeX
- * stylesheet or font reaches the browser; the browser draws MathML itself in --font-math.
+ * The surface for math, display or inline. It does not typeset: `html` takes MathML from the
+ * build, and `tex` alone shows the source, so a formula that failed to typeset stays legible.
  */
 interface Props {
   /** Typeset markup, such as KaTeX's MathML. Inserted as HTML, so only from your own build. */

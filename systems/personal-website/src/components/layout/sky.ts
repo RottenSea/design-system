@@ -1,17 +1,12 @@
-// The drawing behind Starfield and DotGlobe, ported from the handoff's Rainbow Stone page: stars
-// that drift across the canvas and twinkle, and a globe of dots that turns on a tilted axis. The
-// shapes, speeds and numbers are the handoff's; the colours come from the system's tokens through
-// custom properties on the element, so they follow the theme.
-//
-// Only the functions touch the page, so tests can import this file. land.ts uses the lattice at
-// build time to work out which points are land.
-import { themeStore } from "../../scripts/theme.ts";
+// The drawing behind Starfield and DotGlobe. Only the functions touch the page, so tests can
+// import this file.
+import { easing } from "../../scripts/fade.ts";
+import { themeFade, themeStore } from "../../scripts/theme.ts";
 
-/** The angle between consecutive points of the lattice, which spreads them evenly. */
 const GOLDEN = Math.PI * (3 - Math.sqrt(5));
 /** The Earth's axial tilt, in degrees. */
 const TILT = 23.44;
-/** The camera's distance from the globe's centre, in radii, for the perspective. */
+/** The camera's distance from the globe's centre, in radii. */
 const CAMERA = 3.2;
 
 /** How many points a Fibonacci lattice needs for `spacing` degrees between neighbours. */
@@ -57,10 +52,7 @@ export interface Star {
   depth: number;
 }
 
-/**
- * A field of stars for a width × height canvas, one for every `area` square pixels. The same seed
- * every time, so a resize keeps the sky's pattern and only rescales it.
- */
+/** One star per `area` square pixels, from a fixed seed so a resize only rescales the pattern. */
 export function makeStars(width: number, height: number, area = 5000): Star[] {
   let seed = 20260829;
   const random = () => {
@@ -83,12 +75,8 @@ export type Rgb = [number, number, number];
 const rgba = ([r, g, b]: Rgb, alpha: number) =>
   `rgba(${r},${g},${b},${Math.max(0, Math.min(1, alpha)).toFixed(3)})`;
 
-/**
- * Where star s is at time t, in ms; stars leave one edge and come back at the other. The speed
- * follows the longer side, so a tall phone screen drifts as fast as a wide one instead of a
- * quarter as fast.
- */
-export function starAt(
+/** The speed follows the longer side, so a tall phone screen drifts as fast as a wide one. */
+function starAt(
   s: Star,
   t: number,
   width: number,
@@ -134,10 +122,7 @@ export interface Globe {
   radius: number;
 }
 
-/**
- * The globe for a width × height canvas: a radius of 62% of the shorter side, its centre below
- * the bottom edge by `drop` radii, so only its top shows.
- */
+/** The centre sits `drop` radii below the bottom edge, so only the top shows. */
 export function globeFor(width: number, height: number, drop: number): Globe {
   const radius = Math.min(width, height) * 0.62;
   return { cx: width / 2, cy: height + radius * drop, radius };
@@ -198,15 +183,8 @@ export function drawGlobe(
   }
 }
 
-/** A CSS time such as "350ms" or "0.35s" in milliseconds; 350 when there is none. */
-export function milliseconds(time: string): number {
-  const value = Number.parseFloat(time);
-  if (Number.isNaN(value)) return 350;
-  return /\dms\s*$/.test(time) ? value : value * 1000;
-}
-
-/** Any CSS colour as rgb, by letting a canvas parse it. */
-export function parseColor(ctx: CanvasRenderingContext2D, css: string): Rgb {
+/** Any CSS colour as rgb, parsed by the canvas. */
+function parseColor(ctx: CanvasRenderingContext2D, css: string): Rgb {
   ctx.fillStyle = "#000";
   ctx.fillStyle = css;
   const value = String(ctx.fillStyle);
@@ -219,16 +197,13 @@ export function parseColor(ctx: CanvasRenderingContext2D, css: string): Rgb {
 }
 
 export interface Sky {
-  /** The custom properties holding the colours, read again on every theme change. */
+  /** Custom properties holding colours, read again on every theme change. */
   colors: string[];
-  /** Custom properties holding plain numbers, such as factors, read and faded with the colours. */
+  /** Custom properties holding plain numbers, faded with the colours. */
   numbers?: string[];
-  /** Called with the canvas's new size in CSS pixels. */
+  /** The canvas's new size in CSS pixels. */
   resize(width: number, height: number): void;
-  /**
-   * Draws one frame at t ms, with the colours in the order of `colors` and the numbers in the
-   * order of `numbers`.
-   */
+  /** One frame at t ms, with colours and numbers in the order they were named. */
   draw(
     ctx: CanvasRenderingContext2D,
     t: number,
@@ -240,11 +215,9 @@ export interface Sky {
 }
 
 /**
- * Runs a sky on a canvas inside host: sizes it to the host at the screen's resolution (at most
- * 2×), and draws a frame whenever the screen refreshes while the host is on screen. It keeps
- * moving when the reader asked for less motion: the sky is slow and the site wants it so. On a
- * theme change the colours and numbers move to the new theme's over the page's fade, or at once when
- * the page's colours change at once. Returns a function that stops it all.
+ * Draws on every frame while the host is on screen, at most at 2× resolution. It keeps moving
+ * with reduced motion, since the sky is slow; only its theme fade is skipped. Returns a stop
+ * function.
  */
 export function runSky(
   host: HTMLElement,
@@ -253,17 +226,12 @@ export function runSky(
 ): () => void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => undefined;
-  const root = document.documentElement;
-  // With reduced motion the page's colours change at once on a theme change, and so do the sky's.
-  const calm = () =>
-    matchMedia("(prefers-reduced-motion: reduce)").matches ||
-    root.dataset.reduceMotion === "true";
 
   let width = 0;
   let height = 0;
   let visible = true;
   let frame = 0;
-  // Time only moves while the sky is on screen, so it picks up where it was when it comes back.
+  // Time only moves while the sky is on screen.
   let elapsed = 0;
   let last: number | undefined;
 
@@ -285,15 +253,20 @@ export function runSky(
   };
   let values = read();
   let tween:
-    | { from: Values; to: Values; start: number; duration: number }
+    | {
+        from: Values;
+        to: Values;
+        start: number;
+        duration: number;
+        progress: (time: number) => number;
+      }
     | undefined;
 
   const current = (now: number): Values => {
     if (!tween) return values;
     const { from, to } = tween;
     const k = Math.min(1, (now - tween.start) / tween.duration);
-    // Eases out, close to the page's own colour fade.
-    const e = 1 - (1 - k) ** 3;
+    const e = tween.progress(k);
     const mix = (a: number, b: number) => a + (b - a) * e;
     const mixed = {
       colors: to.colors.map(
@@ -349,12 +322,16 @@ export function runSky(
     const now = performance.now();
     const from = current(now);
     values = read();
-    const duration = calm()
-      ? 0
-      : milliseconds(
-          getComputedStyle(root).getPropertyValue("--motion-entrance")
-        );
-    tween = duration ? { from, to: values, start: now, duration } : undefined;
+    const fade = themeFade();
+    tween = fade
+      ? {
+          from,
+          to: values,
+          start: now,
+          duration: fade.duration,
+          progress: easing(fade.easing)
+        }
+      : undefined;
     wake();
   });
 

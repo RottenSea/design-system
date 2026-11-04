@@ -1,12 +1,5 @@
 ---
-/**
- * Text the reader chooses to see: an answer, a plot point, a solution. The cover is a flat fill
- * with the text set to the same colour (the system has no blur layer), and it lifts on click,
- * Enter or Space. Revealing is one-way. `block` covers a paragraph, `inline` a few words.
- *
- * Ported from the handoff's Spoiler.jsx with the same props. `revealed` sets whether it starts
- * uncovered; there is no `onReveal` because the reveal runs in a small script, not in React.
- */
+/** Text hidden under a flat fill of its own colour until pressed; revealing is one-way. */
 interface Props {
   /** `inline` covers a run of words (default) · `block` covers a paragraph. */
   variant?: "inline" | "block";

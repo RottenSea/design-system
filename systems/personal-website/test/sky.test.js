@@ -7,8 +7,7 @@ import {
   landPoints,
   latticeCount,
   latticePoint,
-  makeStars,
-  milliseconds
+  makeStars
 } from "../src/components/layout/sky.ts";
 
 /** The lattice point nearest a longitude and latitude, and whether the mask marks it as land. */
@@ -87,10 +86,4 @@ test("the light theme's growth adds the same pixels to every star", () => {
   assert.equal(grown.length, plain.length);
   for (const [i, r] of plain.entries())
     assert.ok(Math.abs(grown[i] - r - 0.3) < 1e-9);
-});
-
-test("CSS times read as milliseconds", () => {
-  assert.equal(milliseconds("350ms"), 350);
-  assert.equal(milliseconds(" 0.35s"), 350);
-  assert.equal(milliseconds(""), 350);
 });

@@ -1,32 +1,10 @@
 /**
- * The theme as one store per page, the only thing that changes it. It holds the reader's choice
- * (light, dark or system) and the theme in use, and it alone writes data-theme on <html>, the
- * choice in localStorage, and the fade. It follows the OS while the choice is system, and other
- * tabs of the site as they change the choice. Components ask for a change with set() and hear of
- * one with subscribe(); none of them reads localStorage or the OS itself.
+ * The page's one theme store. It alone writes data-theme on <html>, the choice in localStorage and
+ * the fade; components call set() and subscribe() and never read localStorage or the OS.
  *
- * A change fades every colour on the page over --motion-entrance. The store writes the theme's
- * variables, the ones --theme-variables lists, on <html> on each frame, a step further from the
- * old theme's values to the new one's, and every element reads them as they blend. It writes them
- * itself because Chrome will not draw a visited link from a variable that a CSS transition is
- * changing (crbug.com/569257985): the link and the text inside it showed the colour of the element
- * around the link until the transition ended. While the fade runs, <html> carries
- * data-theme-fade, and base.css holds every element's own transitions. What a script draws, such as a
- * Mermaid diagram or the share poster, draws again for the new theme with the colours themeValues
- * reads, and fades in with fadeIn. With reduced motion, in the OS or data-reduce-motion="true",
- * the theme changes at once.
- *
- * Something that writes data-theme itself is taken as a change too, so it still fades and the
- * subscribers still hear of it, with a warning in development. The fade can come too late if that
- * script reads styles straight after writing, so set() is the way.
- *
- *   import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
- *   const theme = themeStore();
- *   theme.set("dark");
- *   theme.subscribe((state, previous) => { if (state.theme !== previous.theme) redraw(); });
- *
- * The localStorage key is the one ThemeScript writes on <html> as data-theme-key, else the one
- * passed to the first themeStore() call, else "ds-theme".
+ * The fade writes the --theme-variables on <html> on each frame instead of using a CSS transition:
+ * Chrome draws a visited link whose colour variable is transitioning in the colour around it
+ * (crbug.com/569257985).
  */
 
 import { easing, mixFadeValue, parseFadeValue } from "./fade.ts";
@@ -60,7 +38,7 @@ let running: { values: Map<string, string>; finish: () => void } | undefined;
 let heldScheme: string | undefined;
 let timing: { duration: number; easing: string } | undefined;
 
-/** The page's theme store, made on the first call. */
+/** The key is ThemeScript's data-theme-key, else the first call's key, else "ds-theme". */
 export function themeStore(key?: string): ThemeStore {
   const root = document.documentElement;
   if (!store) store = createStore(root.dataset.themeKey || key || "ds-theme");
@@ -101,11 +79,8 @@ function createStore(key: string): ThemeStore {
     root.dataset.theme === "light" || root.dataset.theme === "dark"
       ? root.dataset.theme
       : undefined;
-  // Read the fade's timing now: reading styles after data-theme has changed but before the mark
-  // is on would apply the new colours at once.
-  themeFade(root);
 
-  // ThemeScript has set the theme before the first paint; without it, set it now, at once.
+  // ThemeScript has set the theme before the first paint; without it, set it now.
   let state: ThemeState = {
     preference: read(),
     theme: current() ?? resolve(read())
@@ -132,15 +107,13 @@ function createStore(key: string): ThemeStore {
     if (state.preference === "system")
       change({ preference: "system", theme: resolve("system") });
   });
-  // Another tab, or a document in a frame, changed the choice.
   window.addEventListener("storage", (event) => {
     if (event.key !== key && event.key !== null) return;
     const preference = read();
     change({ preference, theme: resolve(preference) });
   });
-  // Someone wrote data-theme without the store. Following the OS is expected (Starlight does it
-  // itself), and so is a page that shows one part in another theme for a while and marks <html>
-  // with data-theme-pinned (the docs site's examples); anything else gets a warning in development.
+  // data-theme written without the store still fades. Following the OS (Starlight) and a page
+  // marked data-theme-pinned are expected; anything else warns in development.
   const observer = new MutationObserver(() => {
     const theme = current();
     if (!theme || theme === state.theme) return;
@@ -156,8 +129,7 @@ function createStore(key: string): ThemeStore {
     }
     const previous = state;
     state = { preference: state.preference, theme };
-    // The fade reads the old theme's values before the change, so the change is undone for that
-    // moment. Nothing has been drawn in the new theme yet: this runs before the next frame.
+    // Undone for a moment so the fade can read the old values; nothing has been drawn yet.
     root.dataset.theme = previous.theme;
     fadeTheme(root, previous.theme, () => {
       root.dataset.theme = theme;
@@ -182,21 +154,17 @@ function createStore(key: string): ThemeStore {
 }
 
 /**
- * Changes the theme with apply() and fades the theme's variables from their values before it to
- * their values after it, written on <html> on each frame. A fade still running goes on from where
- * it is. While it runs, <html> has data-theme-fade, and its color-scheme stays at the theme being
- * left: the scrollbars and form controls, which follow color-scheme and cannot fade, change at the
- * end. With reduced motion, or on a page nobody can see, the theme changes at once.
+ * A fade still running goes on from where it is. color-scheme keeps the old theme until the end:
+ * scrollbars and form controls follow it and cannot fade.
  */
 function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
   const fade = themeFade(root);
-  const names = (
-    getComputedStyle(root).getPropertyValue("--theme-variables") || ""
-  )
+  const before = getComputedStyle(root);
+  const names = before
+    .getPropertyValue("--theme-variables")
     .split(",")
     .map((name) => name.trim())
     .filter((name) => name.startsWith("--"));
-  const before = getComputedStyle(root);
   const start = new Map(
     names.map((name) => [
       name,
@@ -207,7 +175,6 @@ function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
   apply();
   if (!fade || document.hidden || names.length === 0) return;
 
-  // The values the new theme settles on, read with nothing written over them.
   const after = getComputedStyle(root);
   const steps = names.map((name) => {
     const end = after.getPropertyValue(name).trim();
@@ -245,16 +212,12 @@ function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
     frame = requestAnimationFrame(step);
   };
   frame = requestAnimationFrame(step);
-  // A frame that never comes, in a hidden frame or a busy page, does not leave the page between
-  // the two themes.
+  // Hidden frames get no animation frames; this ends the fade anyway.
   const timer = window.setTimeout(finish, fade.duration + 250);
   running = { values, finish };
 }
 
-/**
- * The fade's duration in ms and easing, or null with reduced motion. They are read from the tokens
- * once and kept, so later calls never make the browser work out styles.
- */
+/** The fade's duration in ms and easing, read once; null with reduced motion. */
 export function themeFade(root: HTMLElement = document.documentElement) {
   if (!timing) {
     const style = getComputedStyle(root);
@@ -275,10 +238,8 @@ export function themeFade(root: HTMLElement = document.documentElement) {
 }
 
 /**
- * The values of custom properties on element once the theme has settled: in theme, else in the
- * theme of the nearest data-theme around element. While the theme fades, its colour variables are
- * partway between the two themes, so a script that draws for the new theme reads them here. A
- * hidden probe inside element, with its own data-theme, takes them from tokens.css as they end.
+ * Custom property values in a settled theme (by default the nearest data-theme's), for a script
+ * that draws for the new theme while the variables are still fading.
  */
 export function themeValues<Name extends string>(
   element: Element,

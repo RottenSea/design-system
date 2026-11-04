@@ -1,5 +1,3 @@
-// A rehype plugin for task lists (- [ ] and - [x]). Plain JavaScript for the same reason as
-// index.js: a site's astro.config imports it.
 import { visit } from "unist-util-visit";
 
 /** Elements that end a task's own text: a nested list or a block in a loose item. */
@@ -19,11 +17,7 @@ const isCheckbox = (node) =>
   node.tagName === "input" &&
   node.properties?.type === "checkbox";
 
-/**
- * Puts each task's checkbox and the text after it in a <label>, so the checkbox is named by its
- * task instead of having no name at all. GFM writes the checkbox first in the list item, or first
- * in its paragraph when the list is loose; a nested list after the text stays outside the label.
- */
+/** GFM writes the checkbox first in the item, or first in its paragraph when the list is loose. */
 export function rehypeDsTaskLists() {
   return (tree) => {
     visit(tree, "element", (node) => {

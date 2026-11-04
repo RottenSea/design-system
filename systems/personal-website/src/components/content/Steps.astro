@@ -1,11 +1,5 @@
 ---
-/**
- * Sequential instructions as a numbered vertical flow.
- *
- * Ported from the handoff's Steps.jsx with the same props: pass `items`, and `current` to mark
- * progress. In Markdown the `:::steps` directive writes the Step elements itself and works out
- * each one's status, so the default slot also takes Step elements directly.
- */
+/** Numbered steps from `items`, or Step children as the :::steps directive writes them. */
 import Step from "./Step.astro";
 
 interface StepItem {
@@ -20,8 +14,7 @@ interface StepItem {
 
 interface Props {
   items?: StepItem[];
-  /** Index of the step in progress. Earlier steps render done, later ones todo. Omit for a
-   *  plain numbered list with no progress state. */
+  /** Index of the step in progress; omit for a plain numbered list. */
   current?: number;
   /** The surface the list sits on. */
   tone?: "cream" | "dark";

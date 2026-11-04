@@ -14,10 +14,7 @@ const specPages = [
   ["writing", "Writing", "写作"]
 ] as const;
 
-// Served by GitHub Pages at rottensea.github.io/design-system/, this repository's project site,
-// so every URL starts with the base. Links in pages are relative (../tokens/) or go through
-// import.meta.env.BASE_URL, never from the domain's root. Every language has its own folder in
-// src/content/docs/, so there is no page at the base; it redirects to English.
+// A GitHub Pages project site: links are relative or go through import.meta.env.BASE_URL.
 const base = "/design-system";
 
 export default defineConfig({
@@ -25,13 +22,9 @@ export default defineConfig({
   base,
   // A redirect's target is a URL as it is: Astro does not add the base to it.
   redirects: { "/": `${base}/en/` },
-  // The pages link to each other with relative paths such as ../tokens/, which only resolve from
-  // an address that ends in a slash. With "always", every link Starlight writes ends in one,
-  // including the site title's link to /en/.
+  // Relative links such as ../tokens/ resolve only from an address ending in a slash.
   trailingSlash: "always",
-  // The packages the system's components import in the browser. Bundled when the dev server
-  // starts, they are not found one page at a time; each late find makes Vite re-bundle and
-  // reload, and leaves Astro's dev toolbar script answering 504 until the cache is cleared.
+  // A browser package found late makes Vite re-bundle, and the dev toolbar then answers 504.
   vite: {
     optimizeDeps: {
       include: [
@@ -70,8 +63,7 @@ export default defineConfig({
             link: slug ? `/spec/${slug}/` : "/spec/"
           }))
         },
-        // One group per system. Entries given as a slug take their label from the page's title
-        // in each language.
+        // A slug entry takes its label from the page's title in each language.
         {
           label: "Personal website",
           translations: { "zh-CN": "个人网站" },

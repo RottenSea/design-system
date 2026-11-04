@@ -1,46 +1,23 @@
 /* biome-ignore-all lint/complexity/noImportantStyles: these rules must win over component styles. */
-/*
- * The scrollbar's space is kept on every page, so a page does not shift sideways when the search
- * dialog hides the scrollbar, or between a page that scrolls and one that does not.
- */
+/* Pages do not shift sideways when the search dialog hides the scrollbar. */
 html {
   scrollbar-gutter: stable;
 }
 
-/*
- * The article column, wider than Starlight's 45rem so an example in a wide enough window gets more
- * than the 768px the system's desktop layout needs (Example.astro scales it down in a narrower
- * one).
- */
+/* Wider than Starlight's 45rem, so examples get closer to the system's 768px desktop width. */
 :root {
   --sl-content-width: 52rem;
 }
 
-/*
- * A table wider than the article scrolls sideways (Starlight makes it a scroll box) instead of
- * squeezing a column down to its longest word. Every cell keeps room for a few words; a cell that
- * holds a sentence, such as a description, sets a wider minimum of its own.
- */
+/* Wide tables scroll rather than squeeze a column down to its longest word. */
 .sl-markdown-content :is(th, td) {
   min-width: 8rem;
 }
 
 /*
- * A change of theme, as on the personal-website system's pages: the theme store (ThemeSelect.astro)
- * writes Starlight's colour variables, the ones --theme-variables lists at the end of this file,
- * on <html> on each frame, a step further from the old theme to the new. They are registered as
- * colours below, so the store reads each one as a colour it can blend. Every element reads them as
- * they blend and drops its own transitions while <html> has data-theme-fade, since one would start
- * again on every frame and lag behind. --motion-entrance and --ease-move are the system's, which
- * the store reads here.
- * Starlight sets --sl-color-gray-7 in the light theme only, and where it is missing LinkCard and
- * the code frames fall back to gray-6. A registered variable is never missing, so the dark theme
- * gets gray-6 under that name here.
- *
- * The code blocks' colours come from Expressive Code, which sets its own variables on <html> for
- * each theme: those that are colours of their own, not Starlight's, are registered too. It colours
- * each token with --0 in the dark theme and --1 in the light; here a token mixes the two by
- * --theme-dark, which goes from 100% in the dark theme to 0% in the light, so it fades as well.
+ * The theme store fades Starlight's and Expressive Code's colour variables, registered here so it
+ * can blend them. A registered variable is never missing, so the dark theme gets the gray-6 that
+ * Starlight's missing gray-7 falls back to. Code tokens mix their --0 and --1 by --theme-dark.
  */
 :root {
   --motion-entrance: 350ms;

@@ -1,10 +1,6 @@
-# Builds the docs site in docs/ and deploys it to GitHub Pages,
-# following https://docs.astro.build/en/guides/deploy/github/
+# Deploys docs/ to GitHub Pages: https://docs.astro.build/en/guides/deploy/github/
 name: Docs
 
-# The site is served at rottensea.github.io/design-system/, this repository's project site, and
-# builds with that base. It deploys when the docs change, when a system changes (the docs show
-# each system's tokens and components), and when this file does; or by hand.
 on:
   push:
     branches: [main]
@@ -36,8 +32,7 @@ jobs:
           cache: pnpm
       - uses: actions/configure-pages@v6
       - run: pnpm install --frozen-lockfile
-      # The docs and the systems they depend on, in order: the docs import each system's built
-      # tokens.css, which a fresh checkout does not have.
+      # The systems build first: the docs import their generated tokens.css.
       - run: pnpm --filter "@rottensea/ds-docs..." build
       - uses: actions/upload-pages-artifact@v5
         with:

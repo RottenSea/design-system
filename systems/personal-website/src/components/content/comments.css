@@ -1,9 +1,6 @@
 /*
- * Twikoo's comment area in the system's tokens, for Comments.astro. Twikoo builds this markup in the
- * browser, so these rules are global, each under .ds-comments .twikoo, and use Twikoo's class names.
- * Its own stylesheet is removed, so these rules also carry what it did beyond looks: which parts are
- * hidden until opened (the admin panel, long comments and replies, the emoji panel), and where the
- * overlays sit.
+ * Twikoo's markup, built in the browser, styled globally under .ds-comments. Twikoo's own
+ * stylesheet is removed, so these rules also hide and place its panels.
  */
 
 .ds-comments .twikoo {

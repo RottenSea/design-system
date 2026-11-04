@@ -1,6 +1,4 @@
-// The blurred stand-in an image shows while it loads: the image itself shrunk to 16px and written
-// into the HTML as a data URL, about 200 bytes. It is made at build time with sharp, which Astro
-// uses for its own images, from the file an imported image points to (`fsPath`).
+// A 16px data-URL copy of an imported image, made with sharp at build time, for the blur.
 import type { ImageMetadata } from "astro";
 import sharp from "sharp";
 

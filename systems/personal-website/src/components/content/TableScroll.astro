@@ -1,12 +1,7 @@
 ---
 /**
- * Wraps a <table> so a wide one scrolls inside the reading column instead of pushing it open.
- * The table is styled by element selectors under the wrapper, because a Markdown table arrives
- * as plain HTML with nothing to pass props to. Cells do not wrap by default: a wrapped column is
- * harder to read than a scrolled one.
- *
- * Ported from the handoff's TableScroll.jsx with the same props. The scrolling region takes the
- * keyboard focus, so it can be scrolled without a mouse, and is named by the caption.
+ * Wraps a <table> so a wide one scrolls. Styled by element selectors, since a Markdown table
+ * arrives as plain HTML.
  */
 interface Props {
   /** Caption under the table. Also the region's accessible name. */
@@ -51,9 +46,7 @@ const {
     max-width: 100%;
   }
 
-  /* Positioned, so it clips what is absolutely positioned inside it too: a link to another site
-     carries a visually hidden note, which in a cell past the right edge would otherwise widen the
-     page, and a phone would zoom out to fit it. */
+  /* Positioned to clip an external link's hidden note, which would otherwise widen the page. */
   .ds-table-scroll {
     background: var(--surface-canvas);
     border: 1px solid var(--hairline);

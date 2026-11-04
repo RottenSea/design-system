@@ -1,12 +1,5 @@
 ---
-/**
- * One step inside Steps. The marker is a 28px numbered disc joined to the next step by a 1px
- * hairline; the current step takes the darker coral of --color-primary-active, and a done step
- * the coral fill with a check. The number comes from a CSS counter on Steps.
- *
- * The title goes in `title`, or in the `title` slot when it needs links or code. The body is
- * the default slot.
- */
+/** One step inside Steps, numbered by its CSS counter; the `title` slot takes links or code. */
 import Check from "../../icons/check.svg";
 
 interface Props {

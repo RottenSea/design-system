@@ -1,26 +1,14 @@
 ---
 /**
- * A sky of small stars that drift slowly sideways and twinkle, drawn on a canvas behind a page.
- * By default it is fixed to the window, under everything else on the page; with
- * position="absolute" it fills its nearest positioned ancestor instead.
- *
- * The stars are teal, as in the handoff, and stronger on the light canvas so they still show on
- * cream. They are also larger there, each by 0.3px on its radius: a dark dot on a light ground
- * looks smaller than the same light dot on a dark one, by about as much for a small dot as for a
- * large one, so the smallest stars need it most. Set --ds-sky-star (a colour),
- * --ds-sky-star-strength (a factor on the stars' opacity) and --ds-sky-star-grow (a length added
- * to their radius) on the element or an ancestor to change them; on a theme change they move to the new theme's values over the page's
- * fade. It keeps moving with reduced motion: the drift is slow enough, and
- * the site wants its sky alive. It is decoration: hidden from screen readers, and it takes no
- * clicks.
- *
- * From the handoff's The Key of Urala and Rainbow Stone pages, where it was drawn by each page.
+ * Drifting, twinkling stars on a canvas behind the page. --ds-sky-star sets the colour,
+ * --ds-sky-star-strength the opacity factor and --ds-sky-star-grow a length added to each radius:
+ * a dark dot on a light ground looks smaller, so the light theme grows them.
  */
 
 interface Props {
-  /** Seconds a star at full depth takes to cross the longer side; the handoff's 140 by default. */
+  /** Seconds a star at full depth takes to cross the longer side. */
   period?: number;
-  /** One star per this many square pixels; the handoff's 5000 by default. */
+  /** One star per this many square pixels. */
   area?: number;
   /** "fixed" (default) covers the window; "absolute" fills the nearest positioned ancestor. */
   position?: "fixed" | "absolute";
@@ -92,9 +80,7 @@ const {
     --ds-sky-star-grow: 0px;
   }
 
-  /* Under the page's content, which needs no z-index of its own. base.css gives <body> the
-     canvas colour and <html> none, so the browser paints that colour under the whole page, below
-     the sky; a page that also gives <html> a background would paint <body>'s over the sky. */
+  /* A page that gives <html> a background would paint <body>'s over the sky. */
   .ds-sky--fixed {
     position: fixed;
     z-index: -1;

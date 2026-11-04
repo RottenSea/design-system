@@ -1,15 +1,7 @@
 ---
 /**
- * A cloud of tag pills with optional counts: the rail's tag widget, a tag index, the filter row
- * above a list. One component for all three, so a tag looks like a tag everywhere. A selected tag
- * turns to the dark surface, because dark is this system's sign of selection.
- *
- * Ported from the handoff's TagList.jsx with the same props, except `onSelect`. Tags with `href`
- * are links. Tags without are toggle buttons that send a `ds-select` event: its detail is the
- * label or null for one selection (`value`, or nothing), and the list of labels with `multiple`.
- * Pressing a selected tag clears it. The page does the filtering.
- *
- *   <TagList items={[{ label: "agent", count: 3 }]} />
+ * Tag pills with optional counts. Tags with `href` are links; others are toggles that send
+ * `ds-select` with the label or null, or the list of labels with `multiple`.
  */
 export interface TagItem {
   label: string;

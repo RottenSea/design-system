@@ -1,24 +1,6 @@
-// Turns the directive shorthand in MDX posts into this system's components:
-//
-//   :::tip[Title]      → <Admonition variant="tip" title="Title">
-//   :::details[Title]{open}
-//   :::spoiler         → <Spoiler variant="block">
-//   :::steps{current=1} with an ordered list inside → <Steps> and one <Step> per item
-//   :::code-group{sync="pkg"} with code fences inside → <OptionGroup> and one <Option> per fence
-//   :::file-tree{label="Your project"} with a nested list inside → <FileTree> of <FileTreeNode>
-//   :::gallery{columns=3 ratio="4/3"} with images inside → <ImageGrid> of figures
-//   ![alt](./a.png "Caption") on a line of its own → a figure with that caption
-//   ::video{src="https://www.bilibili.com/video/BV..." title="..." poster="./cover.png"} → <VideoEmbed>
-//   ::::fields with :::field{name type required default} blocks inside → <Fields> of <Field>
-//   ::github{repo="owner/name"}           → <GitHubCard>, filled in from GitHub at build time
-//   $E = mc^2$ and $$...$$               → <MathBlock> holding MathML typeset by KaTeX
-//   ```mermaid                             → <Mermaid>, drawn in the browser
-//   :spoiler[words]    → <Spoiler>
-//   :term[SSR]{note="Server-Side Rendering"} → <Abbreviation term="...">
-//
-// It is plain JavaScript because a site's Astro config imports it straight from node_modules,
-// where Node does not strip TypeScript. The components it names must be passed to the page,
-// for example with `components` from "../components/index.js".
+// Turns the directive shorthand in MDX posts into this system's components; the page must be
+// given those components. Plain JavaScript, because a site's Astro config imports it from
+// node_modules, where Node does not strip TypeScript.
 
 import { toString as textOf } from "mdast-util-to-string";
 import remarkDirective from "remark-directive";
@@ -138,9 +120,8 @@ function takeTitle(meta) {
 }
 
 /**
- * Each code fence starts an option, labelled with the fence's title (or its language); anything
- * between two fences belongs to the option above it. The title moves to the switch, so the code
- * block's bar does not repeat it.
+ * Each code fence starts an option labelled with its title or language, which moves off the code
+ * block's bar. Anything between two fences belongs to the option above it.
  */
 function codeGroup(node, file) {
   const label = groupLabel(node);
@@ -197,9 +178,8 @@ function sourceOf(node, file) {
 }
 
 /**
- * One FileTreeNode per list item. The item's first line is the name, and text two or more
- * spaces after it is the hint. A name ending in / is a folder; so is an item with a list
- * inside, which holds its contents and starts open.
+ * An item's first line is the name, and text two or more spaces after it the hint. A name ending
+ * in / is a folder, and so is an item with a nested list, which starts open.
  */
 function fileTreeNodes(list, depth, file) {
   return list.children.map((item) => {
@@ -240,10 +220,7 @@ function fileTree(node, file) {
   };
 }
 
-/**
- * Marks an image as a figure. The mark rides on the <img> into the site's `img` component,
- * MarkdownImage, which then draws a Figure with the title as its caption.
- */
+/** The mark rides on the <img> into MarkdownImage, which draws a Figure captioned with the title. */
 function asFigure(image) {
   image.data = {
     ...image.data,
@@ -263,7 +240,6 @@ const isImageParagraph = (node) =>
       child.type === "image" || child.type === "break" || isBlank(child)
   );
 
-/** Takes images out of the paragraphs they sit in alone, so each becomes a figure. */
 function liftImages(node) {
   if (!Array.isArray(node.children)) return;
   node.children = node.children.flatMap((child) => {
@@ -274,7 +250,6 @@ function liftImages(node) {
   });
 }
 
-/** Every image in the container becomes a tile; anything else is dropped, with a warning. */
 function gallery(node, file) {
   takeLabel(node);
   const images = [];
@@ -303,10 +278,7 @@ function gallery(node, file) {
   };
 }
 
-/**
- * ::video{src title poster caption ratio}. A local poster goes in as an image, so Astro imports
- * and processes it like any image in the post; MarkdownImage draws it as the poster.
- */
+/** A local poster goes in as an image, so Astro processes it like any image in the post. */
 function video(node, file) {
   const label = takeLabel(node);
   const { src, poster, caption, ratio } = node.attributes ?? {};
@@ -350,10 +322,8 @@ function video(node, file) {
 }
 
 /**
- * $...$ and $$...$$, typeset with KaTeX at build time as MathML only, so no KaTeX stylesheet or
- * font is needed: the browser draws MathML itself. \tag{n} becomes MathBlock's number, because
- * KaTeX puts a tag in an <mlabeledtr>, which browsers do not draw. A formula KaTeX cannot read
- * keeps its source, shown by MathBlock in the mono face, and the build warns.
+ * Typeset as MathML only, so no KaTeX stylesheet or font is needed. \tag{n} becomes MathBlock's
+ * number because browsers do not draw KaTeX's <mlabeledtr>.
  */
 function math(node, display, file) {
   const tag = display ? node.value.match(/\\tag\*?\{([^}]*)\}/) : null;
@@ -378,10 +348,6 @@ function math(node, display, file) {
   };
 }
 
-/**
- * A ```mermaid fence becomes a diagram, drawn in the browser. The fence's title="..." is the
- * frame's label and caption="..." its caption.
- */
 function mermaid(node) {
   const meta = node.meta ?? "";
   const quoted = (name) =>
@@ -402,7 +368,6 @@ function mermaid(node) {
   };
 }
 
-/** :::field{name type required default} with the description inside. */
 function field(node, file) {
   takeLabel(node);
   const { name, type, default: fallback } = node.attributes ?? {};
@@ -427,7 +392,6 @@ function field(node, file) {
 const isField = (node) =>
   node.type === "mdxJsxFlowElement" && node.name === "Field";
 
-/** ::::fields holds :::field blocks; anything else stays above the card, with a warning. */
 function fields(node, file) {
   const label = groupLabel(node);
   const rows = node.children.filter(isField);
@@ -447,10 +411,7 @@ function fields(node, file) {
   return [...rest, element];
 }
 
-/**
- * A Field outside a Fields card would be a <dt> with no <dl>, so runs of them get a card of their
- * own, with a warning.
- */
+/** A Field outside Fields would be a <dt> with no <dl>, so a run of them gets its own card. */
 function wrapStrayFields(node, file, inFields = false) {
   if (!Array.isArray(node.children)) return;
   const inside = inFields || node.data?.dsFields === true;
@@ -480,7 +441,6 @@ function wrapStrayFields(node, file, inFields = false) {
   node.children = children;
 }
 
-/** ::github{repo="owner/name"}, a card filled in from GitHub when the site builds. */
 function github(node, file) {
   const repo = node.attributes?.repo;
   if (!repo || !/^[\w.-]+\/[\w.-]+$/.test(repo)) {
@@ -547,7 +507,6 @@ const HANDLERS = {
   }
 };
 
-/** Markdown nodes, not directives, that become components. Anything else stays as it is. */
 const NODE_HANDLERS = {
   math: (node, file) => math(node, true, file),
   inlineMath: (node, file) => math(node, false, file),
@@ -561,10 +520,9 @@ const PREFIX = {
 };
 
 /**
- * A directive this plugin does not know. remark-directive reads any ASCII colon followed by a
- * letter as one, so ordinary text such as `note:abc` would otherwise vanish. The original text
- * is put back and a warning names it. A known directive written wrongly comes here too, after
- * its handler has warned and set data.dsReported, so it is not called unknown as well.
+ * remark-directive reads any colon followed by a letter as a directive, so text such as `note:abc`
+ * would vanish; an unknown one is put back as text. A known one written wrongly has already
+ * warned and set data.dsReported.
  */
 function restore(node, file) {
   // Times such as 10:30 parse as a directive named 30; those are never meant as one.
@@ -583,7 +541,6 @@ function restore(node, file) {
   if (node.type === "leafDirective") {
     return { type: "paragraph", children: [{ type: "text", value: source }] };
   }
-  // An unknown container keeps its content, without the fences.
   takeLabel(node);
   return node.children;
 }
@@ -602,8 +559,7 @@ function transform(node, file) {
 }
 
 /**
- * The remark plugin. It also turns on the parsers of remark-directive and remark-math, so a site
- * adds only this one.
+ * Also turns on remark-directive and remark-math, so a site adds only this plugin.
  * @this {import("unified").Processor}
  */
 export function remarkDsDirectives() {

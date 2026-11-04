@@ -1,13 +1,7 @@
-// Which points of DotGlobe's lattice fall on land, worked out when the site is built so the page
-// never loads a map. The lattice is the one sky.ts rebuilds in the browser: point i of n sits at
-// the same place on both sides, so the page needs only n and one bit per point.
-//
-// The land is Natural Earth's at 1:110m, from world-atlas, the map the handoff fetched in the
-// browser. Each point is tested against the coastlines drawn flat in longitude and latitude, which
-// at this scale and a dot every 1.7° agrees with a test on the sphere at all but a few points on
-// the coasts, and takes a tenth of the time. Two shapes need help to lie flat: one that crosses
-// the 180° meridian is unwrapped past 180°, and Antarctica, which goes all the way round, is closed
-// through the South Pole.
+// Which points of DotGlobe's lattice fall on land, worked out at build time; the page gets the
+// point count and one bit per point. The test is flat in longitude and latitude, which at this
+// scale differs from a spherical test at only a few coastal points and is ten times faster.
+// Shapes crossing 180° are unwrapped, and Antarctica is closed through the South Pole.
 import { feature } from "topojson-client";
 import atlas from "world-atlas/land-110m.json" with { type: "json" };
 import { latticeCount, latticePoint } from "./sky.ts";
@@ -109,9 +103,7 @@ function inRing(ring: Ring, lon: number, lat: number): boolean {
 
 function inPiece(p: Piece, lon: number, lat: number): boolean {
   if (lat < p.south || lat > p.north) return false;
-  // An unwrapped piece reaches past ±180°, where the same point is at lon ± 360. Its rings are
-  // unwrapped from their own starts, so a hole (the Caspian in Eurasia) may sit 360° from the
-  // outline around it: a point is in a hole at any of the three.
+  // Rings unwrap from their own starts, so a hole (the Caspian) may sit 360° from its outline.
   const at = [lon, lon + 360, lon - 360];
   if (!at.some((x) => x >= p.west && x <= p.east && inRing(p.rings[0], x, lat)))
     return false;

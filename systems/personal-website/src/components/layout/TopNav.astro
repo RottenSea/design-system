@@ -1,30 +1,8 @@
 ---
 /**
- * The nav bar at the top of every page: a few links on the left, the site's mark and name in the
- * middle, and actions on the right. The three stay within the container's 1200px, so on a wide
- * window the links and the actions line up with the content instead of running out to the edges.
- * 64px tall on the canvas, with no border and no shadow; the current page's link is ink and the
- * rest are muted. Below 768px the links give way to a menu button that opens a sheet holding
- * them, so a page with only a TopNav still has working small-screen navigation, and the brand
- * moves to the left as the mark alone (the name stays for screen readers); without a mark in the
- * `logo` slot it keeps the name. A page with grouped navigation mounts a NavDrawer and passes its
- * id as `menu`.
- *
- * `overlay` is for a page that opens on a full-height band such as QuoteBand: the nav is fixed,
- * takes no height, and starts transparent over the band. Over the first `ramp` pixels of scroll
- * the wash, the blur and the hairline come up together, written out at every step so nothing
- * appears at a threshold; the text colours switch once, halfway. With reduced motion the ramp
- * becomes two states. Without backdrop-filter the bar is near-opaque past halfway.
- *
- * Ported from the handoff's TopNav.jsx, with links as { label, href } and the current one named
- * by `active`. The nav measures the scroll itself instead of taking `scrollProgress`. Left out:
- * `signInLabel` and `ctaLabel`; a site's own buttons go in the `actions` slot. The handoff puts
- * the brand on the left; this system centres it (2026-11-03).
- *
- *   <TopNav brand="The Key of Urala" links={[{ label: "Blog", href: "/" }]} active="Blog">
- *     <Logo slot="logo" width={24} height={24} aria-hidden="true" />
- *     <ThemeToggle slot="actions" />
- *   </TopNav>
+ * The top nav: links left, brand centred, `actions` slot right. Below 768px the links move into a
+ * menu sheet, or the NavDrawer named by `menu`. With `overlay` it floats transparent over a
+ * full-height band and its surface ramps in over the first `ramp` pixels of scroll.
  */
 import IconButton from "../buttons/IconButton.astro";
 import MenuPanel, { type MenuGroup, type MenuLink } from "./MenuPanel.astro";
@@ -162,8 +140,7 @@ const menuId = menu ?? `ds-nav-menu-${crypto.randomUUID().slice(0, 8)}`;
     padding: 0 var(--space-lg);
   }
 
-  /* The brand comes first for screen readers and the keyboard, and sits in the middle column.
-     Equal outer columns keep it centred whatever the links and the actions take. */
+  /* The brand comes first in source order; equal outer columns keep it centred. */
   .ds-nav__inner {
     align-items: center;
     display: grid;

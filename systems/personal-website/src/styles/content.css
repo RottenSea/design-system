@@ -37,8 +37,7 @@
     color var(--motion-fast) var(--ease-enter);
 }
 
-/* The "#" sits outside the heading, so it takes the heading's size from the level: the sizes of
-   the handoff's Prose headings. */
+/* The "#" sits outside the heading, so it takes the heading's size from the level. */
 .ds-heading--h2 .ds-heading__anchor {
   font-size: var(--display-sm-size);
 }

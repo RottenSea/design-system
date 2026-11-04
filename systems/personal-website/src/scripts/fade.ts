@@ -1,17 +1,11 @@
-/**
- * The arithmetic of a theme fade (theme.ts): a computed variable value read as a colour or a
- * percentage, a blend of two of them, and a CSS easing as a function of time.
- */
+/** The arithmetic of the theme fade in theme.ts. */
 
 /** A colour in sRGB, channels 0 to 255 and alpha 0 to 1, or a percentage. */
 export type FadeValue =
   | { rgb: [number, number, number]; alpha: number }
   | { percent: number };
 
-/**
- * A computed value as the browser writes it for a registered colour or percentage: rgb(),
- * rgba() or a percentage. Anything else is null, and the fade sets it at the start.
- */
+/** A computed rgb(), rgba() or percentage; anything else is null and is set at the start. */
 export function parseFadeValue(value: string): FadeValue | null {
   const text = value.trim();
   const colour = /^rgba?\(([^)]*)\)$/i.exec(text);
@@ -37,9 +31,8 @@ export function parseFadeValue(value: string): FadeValue | null {
 const round = (value: number) => Math.round(value * 100) / 100;
 
 /**
- * The value a fraction of the way from one value to another, as CSS would write it. Colours blend
- * in sRGB with premultiplied alpha, as a CSS transition blends legacy colours, so a colour fading
- * to transparent keeps its hue. Null if the two are not the same kind.
+ * Colours blend in premultiplied sRGB, as a CSS transition does, so one fading to transparent
+ * keeps its hue. Null if the two are not the same kind.
  */
 export function mixFadeValue(
   from: FadeValue,

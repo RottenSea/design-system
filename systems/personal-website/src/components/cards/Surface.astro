@@ -1,15 +1,5 @@
 ---
-/**
- * The card atom: fill, radius, padding, and the one hover the system allows. `fill` is the cream
- * card with no border; `outline` is the canvas with a hairline. Those are the system's two card
- * bodies; a page does not invent a third by setting a background. Padding is 0, 16, 24 or 32px:
- * 16px for rail widgets, 32px for feature-scale cards. `hover` lifts the card with
- * --shadow-hover, and nothing else moves. With `href` the card is a link, in body ink, so its
- * contents do not turn coral.
- *
- * Ported from the handoff's Surface.jsx with the same props. The hover is CSS instead of React
- * state.
- */
+/** The card atom, `fill` or `outline`; with `href` it is a link in body ink. */
 import type { HTMLAttributes, HTMLTag } from "astro/types";
 
 type Props = Omit<HTMLAttributes<"div">, "class"> & {

@@ -1,6 +1,5 @@
-// The month grid MiniCalendar draws, as HTML: MiniCalendar.astro writes it at build time, and its
-// script writes it again in the reader's browser, where "today" and the current month are known.
-// Dates are "YYYY-MM-DD" strings in the reader's own calendar, so no time zone is involved here.
+// MiniCalendar's grid as HTML, for the build and the browser. Dates are "YYYY-MM-DD" strings in
+// the reader's calendar, so no time zone is involved.
 
 export interface MonthOptions {
   year: number;

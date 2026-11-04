@@ -1,6 +1,4 @@
-// Works out which site a video is on and the address of its player. Plain JavaScript, so the
-// directive plugin, which Node loads straight from node_modules, can use it as well as
-// VideoEmbed. Providers are URL builders only: no SDK and no script from the video site.
+// Video page and player addresses. Plain JavaScript so the directive plugin can use it too.
 
 /** Seconds from YouTube's t parameter: "90", "90s" or "1m30s". */
 function seconds(value) {
@@ -113,6 +111,6 @@ export function videoSource({ provider, videoId, src }) {
       page: PAGES[site](id, extra)
     };
   }
-  // Any other address is taken as a player's own address, as the handoff does.
+  // Any other address is taken as a player's own address.
   return { kind: "iframe", embed: src, page: src };
 }

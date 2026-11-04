@@ -10,11 +10,7 @@ interface Props {
   title: string;
   /** Drops the padding, for an example that is a whole page. */
   bare?: boolean;
-  /**
-   * Where the example's theme store keeps a choice made inside the example. By default it is
-   * Starlight's key, so the example follows the docs site; an example whose own controls choose a
-   * theme passes a key of its own, so a choice there changes that example only.
-   */
+  /** Starlight's key by default; an example with its own theme controls passes its own. */
   themeKey?: string;
 }
 
@@ -32,16 +28,9 @@ const Wrapper = bare ? "div" : "main";
     <title>{title}</title>
     <Fonts />
     {/*
-      Takes the docs page's theme before the first paint. The docs page and the example share an
-      origin, so the parent's data-theme can be read directly. Later changes come through the theme
-      store below, under Starlight's key.
-
-      It also sizes the iframe to the content from here, starting while the page is still being
-      parsed, instead of waiting for the load event, which in development comes only after every
-      module, font and image has arrived. The <html> element's own height is the content height;
-      scrollHeight never reports less than the iframe, so it could only grow. The iframe's
-      borders are added on top. With the iframe always as tall as the content, the page never
-      needs a vertical scrollbar, so it has none, and none flashes while the height catches up.
+      Takes the docs page's theme before the first paint, and sizes the iframe while the page is
+      still parsing: in development the load event waits for every module. The <html> height is
+      used because scrollHeight never reports less than the iframe.
     */}
     <script is:inline define:vars={{ themeKey }}>
       const root = document.documentElement;
@@ -55,8 +44,7 @@ const Wrapper = bare ? "div" : "main";
           root.dataset.theme = "light";
         }
       } else {
-        // Opened on its own ("Open at 1280px"): the theme the example showed on the docs page, or
-        // the one picked on the docs site, which Starlight keeps in localStorage, or else the OS.
+        // Opened on its own: the ?theme= it was shown in, else Starlight's choice, else the OS.
         let picked = new URLSearchParams(location.search).get("theme") ?? "";
         if (picked !== "light" && picked !== "dark") {
           try {
@@ -72,9 +60,7 @@ const Wrapper = bare ? "div" : "main";
       }
       // The iframe element belongs to the docs page, so instanceof against this page's classes fails.
       const frame = window.frameElement;
-      // A whole-page example has a fixed window height from Example's `height` and scrolls
-      // inside it, as a page does in a browser window: a full-height band such as QuoteBand would
-      // otherwise grow with the iframe it sizes, and the iframe with it.
+      // A fixed height, or a full-height band would grow with the iframe it sizes.
       const fixed = frame ? Number(frame.getAttribute("data-height")) : 0;
       if (frame && fixed) {
         frame.style.height = `${fixed}px`;
@@ -102,13 +88,9 @@ const Wrapper = bare ? "div" : "main";
 <script>
   import { themeStore } from "@rottensea/ds-personal-website/scripts/theme";
 
-  // The example follows the docs site, in a frame or on its own: a choice made there arrives as a
-  // storage event under Starlight's key, and the OS is followed while the choice is Auto.
   themeStore();
 
-  // Shows the example in a theme of its own until the docs site's theme next changes. It writes
-  // data-theme without the store, which would save the choice under Starlight's key and so change
-  // the docs site too; the store sees the change and tells the components, which fade as usual.
+  // Writes data-theme directly: set() would save the choice under Starlight's key.
   const root = document.documentElement;
   const dsExample = {
     theme: (): "light" | "dark" => (root.dataset.theme === "dark" ? "dark" : "light"),
@@ -144,22 +126,18 @@ const Wrapper = bare ? "div" : "main";
     padding: 0;
   }
 
-  /* A whole page with a Footer: what the system does for <body>, done here for the wrapper, so a
-     short page still ends with the footer at the bottom of the window. */
+  /* What the system does for <body> with a Footer, for the wrapper. */
   .example--bare:has(> :global(.ds-footer)) {
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
   }
 
-  /* The system keeps the scrollbar's space on every page. An example that never scrolls would
-     keep an empty strip at the right instead, showing the docs page behind the iframe. */
+  /* An example never scrolls, so a kept gutter would be an empty strip. */
   :global(html) {
     scrollbar-gutter: auto;
   }
 
-  /* A whole-page example scrolls; its scrollbar's track is see-through, so the page's own ground
-     goes under it rather than the docs page behind the iframe. */
   :global(html) {
     background: var(--surface-canvas);
   }

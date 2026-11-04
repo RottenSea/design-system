@@ -1,12 +1,5 @@
 ---
-/**
- * One option of an OptionGroup: its label on the switch and its panel. Use it only directly
- * inside an OptionGroup, which reads the label and value from the marker attributes below and
- * gives the panel its id, its tab and its hidden state.
- *
- * The handoff passes options as an `options` array with a `content` node each. An Astro
- * component cannot take content through a prop, so each option is an element with a slot.
- */
+/** One option, only directly inside an OptionGroup, which reads the marker attributes below. */
 interface Props {
   /** Text on the switch: "pnpm", "macOS". One word where possible. */
   label: string;

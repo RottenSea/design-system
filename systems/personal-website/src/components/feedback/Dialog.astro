@@ -1,23 +1,8 @@
 ---
 /**
- * The system's one modal surface: a centred card over a dimmed scrim. A top-level dialog swings
- * in edge-on from the (1, 1, 0) diagonal, past flat by 6° and back, over 350ms; a dialog opened
- * from another uses `lift`, a 200ms settle from 1.04; `none` is for one that opens without the
- * reader asking. It is the one component allowed a transform on entrance. Closing goes without the
- * entrance's overshoot: a tilt dialog turns away on the same diagonal over 250ms, slowly at
- * first and then faster and faster, as it fades; a lift dialog grows back to 1.04 the same way
- * over 200ms; the scrim fades out with it, and then the dialog goes. Canvas fill, 16px
- * radius, a hairline, 32px padding and --shadow-float; 420, 560 or 720px wide, scrolling inside
- * rather than growing past the window.
- *
- * Ported from the handoff's Dialog.jsx, except `open`, `onClose`, `onConfirm` and the built-in
- * confirm and cancel buttons: the content and the buttons are slots, the default and `actions`.
- * It is a native modal <dialog>, which keeps the focus inside, makes the page behind it inert,
- * and closes on Escape; a click on the scrim and the close button close it too. Any element with
- * data-ds-dialog-open set to its id opens it.
- *
- *   <Button data-ds-dialog-open="poster">Share poster</Button>
- *   <Dialog id="poster" title="Share poster">…<Fragment slot="actions">…</Fragment></Dialog>
+ * The modal card, a native <dialog>; an element with data-ds-dialog-open set to its id opens it.
+ * `tilt` swings in on a diagonal, `lift` (for a dialog opened from another) settles from 1.04, and
+ * `none` is for one the reader did not ask for. Closing plays the entrance back without overshoot.
  */
 import IconButton from "../buttons/IconButton.astro";
 
@@ -83,8 +68,7 @@ const {
     connectedCallback() {
       const dialog = this.querySelector("dialog");
       if (!dialog) return;
-      // Plays the exit, then closes. With reduced motion the animations last 1ms
-      // (base.css), so the dialog still closes at once.
+      // With reduced motion base.css makes the exit 1ms.
       const close = async () => {
         if (!dialog.open || dialog.classList.contains("ds-dialog--closing")) return;
         dialog.classList.add("ds-dialog--closing");
@@ -94,8 +78,7 @@ const {
         dialog.classList.remove("ds-dialog--closing");
         dialog.close();
       };
-      // The dialog fills the window and is the scrim, so a click on the dialog itself, not
-      // inside the card, is a click on the scrim.
+      // The dialog itself is the scrim.
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) close();
       });
@@ -175,8 +158,7 @@ const {
     animation: ds-dialog-lift-in 200ms ease-out both;
   }
 
-  /* Closing: straight out, without the entrance's overshoot. The turn speeds up as it goes, and
-     the fade starts later and ends faster, so the card is plainly seen turning before it goes. */
+  /* The fade starts later than the turn, so the card is seen turning before it goes. */
   .ds-dialog--closing::backdrop {
     animation: ds-dialog-scrim-out 250ms var(--ease-exit) both;
   }

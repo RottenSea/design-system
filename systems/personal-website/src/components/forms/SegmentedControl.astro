@@ -1,16 +1,7 @@
 ---
 /**
- * Two to four short options for how the reader sees the same thing: the theme, list or grid. The
- * container is the track on the cream card, and the chosen option is raised to the canvas with a
- * hairline, so it reads on the canvas and on a card alike.
- *
- * Ported from the handoff's SegmentedControl.jsx with the same props, except `onChange`. The
- * handoff marks it up as tabs; this is a radio group, since choosing an option sets a value
- * rather than showing a panel. The arrow keys move the choice and the focus together, and the
- * control sends a `ds-change` event whose detail is the new value. `select(value)` sets it
- * without an event.
- *
- *   <SegmentedControl label="Theme" value="system" options={["Light", "Dark", "System"]} />
+ * Two to four options as a radio group, since a choice sets a value rather than showing a panel.
+ * It sends `ds-change`; `select(value)` sets it without an event.
  */
 export interface SegmentOption {
   value: string;

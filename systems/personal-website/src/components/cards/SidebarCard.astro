@@ -1,16 +1,5 @@
 ---
-/**
- * The shell for a rail widget: an uppercase label, a soft hairline, then the widget (stats, a
- * calendar, a list of links). 16px padding and the small label keep rail cards below the main
- * column, whose cards are larger; a rail card never gets a display-face heading. `fill` is the
- * cream card; `outline` is for a rail that sits on a cream band, where the fill would vanish.
- *
- * Ported from the handoff's SidebarCard.jsx with the same props, except `onDismiss`: a rail card
- * on this site is never temporary. `action` is a named slot, for a small link or button at the
- * right of the label, drawn as the same uppercase micro-label in the muted colour.
- *
- *   <SidebarCard title="Stats"><StatList … /></SidebarCard>
- */
+/** The shell for a rail widget, with an `action` slot beside the label. */
 import Surface from "./Surface.astro";
 
 interface Props {

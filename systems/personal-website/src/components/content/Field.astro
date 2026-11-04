@@ -1,11 +1,7 @@
 ---
 /**
- * One option or parameter in a Fields card: the name and type in the mono face on the first line,
- * "Required" or the default value at the right, and the description below. Use it only directly
- * inside Fields, whose <dl> it fills with a <dt> and a <dd>.
- *
- * Not in the handoff; see Fields. Nested options are written with dotted names (build.format),
- * not as Fields inside a Field.
+ * One parameter, a <dt> and <dd>, only directly inside Fields. Nested options use dotted names
+ * rather than nesting.
  */
 interface Props {
   /** The option's name, as the reader writes it: "build.format". */

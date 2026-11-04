@@ -1,14 +1,7 @@
 ---
 /**
- * How many times a page has been viewed, from a Twikoo comment service, as one more part of a
- * PostMeta line: "· 128 views". Each page load asks the service once, and the service counts that
- * load, a reload included. The part stays hidden until the count arrives, so without JavaScript, or
- * when the service does not answer, the line simply ends one part sooner.
- *
- * The handoff has no view count. It asks with the request Twikoo's own getVisitorsCount sends
- * (event COUNTER_GET), so the page does not load Twikoo's script just for the number.
- *
- *   <PostMeta items={meta}><ViewCount server="https://comment.example.com" path="/blog/000001" /></PostMeta>
+ * A page's view count from Twikoo, as a PostMeta part; hidden until the count arrives. It sends
+ * Twikoo's COUNTER_GET request itself, so the page does not load Twikoo's script for the number.
  */
 interface Props {
   /** The Twikoo service's address. */

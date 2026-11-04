@@ -1,18 +1,7 @@
 ---
 /**
- * The menu sheet: a scrim, a panel at the side of the window with the site's name and a close
- * button, the links in groups, and an optional note at the bottom. TopNav opens it from its menu
- * button below 768px; NavDrawer is the same sheet for a page with grouped navigation. The scrim
- * fades and the panel fades and travels --motion-shift; nothing slides across, nothing springs.
- *
- * Ported from the handoff's MenuPanel.jsx with the same props, except `open`, `onClose` and
- * `onNavigate`: it is a native modal <dialog>, which keeps the focus inside, makes the page
- * behind it inert, and closes on Escape. A click on the scrim closes it too. Any element with
- * data-ds-menu-open set to the panel's id opens it. `label` names the dialog and its close button,
- * for a sheet that holds something other than the menu, such as TocButton's table of contents.
- *
- *   <MenuPanel id="site-menu" brand="The Key of Urala" groups={[{ links: [{ label: "Blog", href: "/" }] }]} />
- *   <button data-ds-menu-open="site-menu">Menu</button>
+ * A side sheet of grouped links, a native modal <dialog>; an element with data-ds-menu-open set to
+ * its id opens it. TopNav, NavDrawer and TocButton use it.
  */
 import IconButton from "../buttons/IconButton.astro";
 
@@ -111,19 +100,17 @@ const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
       const dialog = this.querySelector("dialog");
       if (!dialog) return;
       const opener = () => document.querySelector<HTMLElement>(`[data-ds-menu-open="${dialog.id}"]`);
-      // The scrim is the dialog's own box around the panel, so a click that lands on the dialog
-      // itself, not inside the panel, is a click on the scrim.
+      // The dialog itself is the scrim.
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) dialog.close();
       });
       dialog.querySelector("[data-ds-menu-close]")?.addEventListener("click", () => dialog.close());
-      // However the dialog closes (Escape, the scrim, a link, the button), its open attribute
-      // goes; the opener's state follows that rather than the close event.
+      // Follows the open attribute: the close event does not fire in a hidden browser pane.
       new MutationObserver(() => opener()?.setAttribute("aria-expanded", String(dialog.open))).observe(dialog, {
         attributes: true,
         attributeFilter: ["open"]
       });
-      // A link to a place on this page closes the menu, so the page is not left inert under it.
+      // An in-page link would otherwise leave the page inert under the menu.
       dialog.addEventListener("click", (event) => {
         if ((event.target as Element).closest("a")) dialog.close();
       });
@@ -141,7 +128,6 @@ const external = (href: string) => /^(?:[a-z]+:|\/\/)/i.test(href);
 </script>
 
 <style>
-  /* The dialog fills the window and is the scrim; the panel inside it is the sheet. */
   .ds-menu {
     background: transparent;
     border: 0;

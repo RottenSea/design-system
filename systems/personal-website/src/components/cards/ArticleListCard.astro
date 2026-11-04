@@ -1,16 +1,7 @@
 ---
 /**
- * One post in a list: the title in the display serif, a meta line, the excerpt, and the tags,
- * with an optional 4:3 cover on the right. The whole card is the link and lifts on hover. A
- * pinned post has a coral pin in the title's first line, in a column of its own, so the title's
- * left edge does not move.
- *
- * Ported from the handoff's ArticleListCard.jsx with the same props. The excerpt is the default
- * slot and a cover can be the `cover` slot; `date` can come with `datetime` for its <time>. Other
- * attributes (data-* for a page's filter) go on the card.
- *
- *   <ArticleListCard href="/blog/windows" title="安装干净稳定的 Windows" date="2026-06-17" category="System"
- *     readTime="12 min" tags={["windows", "tutorial"]} pinned>Windows 太臃肿了？…</ArticleListCard>
+ * One post in a list, the whole card a link; the excerpt is the slot. Other attributes, such as a
+ * page filter's data-*, go on the card.
  */
 import type { HTMLAttributes } from "astro/types";
 import PinnedFilled from "../../icons/pinned-filled.svg";

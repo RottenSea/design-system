@@ -1,21 +1,10 @@
 ---
 import { getImage, Image } from "astro:assets";
 /**
- * One image in a post: full measure, --radius-lg corners, an optional one-line caption in muted
- * body-sm below. Clicking it, or pressing Enter on it, opens it over the page with medium-zoom,
- * from where it sits to as large as the window allows; Escape, a click or a scroll closes it.
- * There is no stepping to the next image. While a local image loads, a 16px copy of it made at
- * build time shows behind it, blurred.
- *
- * The handoff has no single-image component; this follows its Prose styles for img and
- * figcaption, and the scrim of its Dialog and Lightbox, so every overlay in the system darkens
- * the page by the same amount.
- *
- * The zoom opens at once, from the image already on the page, and a larger WebP made at build time
- * takes its place when it arrives: the open image is soft for a moment, then sharp. The build makes
- * copies 1200, 1800 and 2400px wide (none wider than the image), and the browser loads the smallest
- * that covers the open image on its screen. It starts loading as soon as the pointer rests on the
- * image or the image takes the focus, so it is often there by the time the zoom opens.
+ * One image in a post with an optional caption; it opens larger with medium-zoom. A blurred 16px
+ * copy shows while a local image loads. The zoom opens from the image on the page, and the
+ * smallest larger copy that covers the screen replaces it once loaded; loading starts on hover or
+ * focus.
  */
 import type { ImageMetadata } from "astro";
 import { placeholderOf } from "./placeholder";
@@ -41,7 +30,6 @@ interface Props {
   class?: string;
 }
 
-/** The widths of the larger copies the zoom can load. */
 const ZOOM_WIDTHS = [1200, 1800, 2400];
 
 const {
@@ -60,8 +48,6 @@ const {
 
 const local = typeof src !== "string";
 const stand = local && placeholder ? await placeholderOf(src) : undefined;
-// One copy per width up to the image's own; an image narrower than all of them gets one at its own
-// width.
 const zoomSources =
   local && zoom && src.format !== "svg"
     ? (
@@ -114,14 +100,11 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
   import mediumZoom from "medium-zoom";
   import { parseZoomSources, pickZoomSource, ZOOM_MARGIN, zoomedWidth } from "./zoom";
 
-  // One zoom for the whole page, so opening one image closes any other. The scrim is the
-  // handoff's Dialog scrim.
+  // One zoom for the page, so opening one image closes any other.
   const zoom = mediumZoom({ background: "rgba(20, 20, 19, 0.72)", margin: ZOOM_MARGIN });
 
-  /** The larger copy for this screen, loading or loaded, by image. */
   const larger = new WeakMap<HTMLImageElement, HTMLImageElement>();
 
-  /** Starts loading the larger copy that covers the open image on this screen, once. */
   function loadLarger(img: HTMLImageElement): HTMLImageElement | undefined {
     const known = larger.get(img);
     if (known) return known;
@@ -145,9 +128,7 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
     return copy;
   }
 
-  // medium-zoom opens at once from the image on the page; the larger copy takes the place of the
-  // open copy (the one medium-zoom adds to <body> right after its open event) when it has loaded
-  // and decoded, unless the zoom has closed by then.
+  // The open copy is the one medium-zoom adds to <body> right after its open event.
   function swapIn(img: HTMLImageElement) {
     const copy = loadLarger(img);
     if (!copy) return;
@@ -247,11 +228,7 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
     margin-top: var(--space-xs);
   }
 
-  /*
-   * medium-zoom moves a copy of the image to the end of <body>, in the box the image had. A tile
-   * cropped to a fixed ratio would stay cropped, so the open copy shows the whole image. The
-   * overlay and the copy sit above a sticky header.
-   */
+  /* medium-zoom's copy would keep a tile's crop; it shows the whole image, above a sticky header. */
   :global(.ds-figure__img.medium-zoom-image--opened) {
     object-fit: contain;
   }

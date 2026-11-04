@@ -1,8 +1,5 @@
 ---
-// A post as the personal website builds it: one reading column, 680px at most, centred in the
-// grid with the table of contents in the right rail, which stays beside it at any width the rail
-// fits; there is no left rail. The meta line and title, the cover, the text, then the end matter:
-// tags, licence, share and the neighbouring posts.
+// A post as the personal website builds it.
 import {
   ContentGrid,
   Figure,
@@ -127,8 +124,7 @@ const title = "Hairlines carry more than they look like they do";
 </ExampleLayout>
 
 <style>
-  /* The example's <html> has the canvas colour, so <body> drops its own, which would cover the
-     sky; on the site <body>'s colour goes to the whole window instead. */
+  /* The example's <html> has the canvas colour, so <body>'s would cover the sky. */
   :global(body) {
     background: transparent;
   }

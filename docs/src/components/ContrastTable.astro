@@ -1,12 +1,5 @@
 ---
-/**
- * The contrast ratio of every foreground colour on every background colour given, in both themes,
- * worked out from the token files when the docs build. Each ratio is marked against WCAG 2 AA:
- * 4.5:1 for body text and 3:1 for large text, or, with `nonText`, 3:1 for marks and the parts of
- * controls, which have no large-text allowance.
- *
- * <ContrastTable system="personal-website" foreground={["text.*"]} background={["surface.canvas"]} />
- */
+/** WCAG 2 contrast of each foreground on each background, in both themes; `nonText` uses 3:1. */
 import { contrast, loadTokens, select } from "../lib/tokens";
 
 interface Props {

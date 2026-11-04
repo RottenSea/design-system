@@ -1,17 +1,9 @@
 ---
 import { Image } from "astro:assets";
 /**
- * A video in a post. Nothing from the video site loads until the reader presses play: the frame
- * shows a poster, or the striped placeholder with the title in the mono face, under one coral
- * 56px play control, and the player replaces it on activation. 16/9 by default, --radius-lg,
- * one caption line.
- *
- * Ported from the handoff's VideoEmbed.jsx with the same props, plus three things. AcFun is a
- * provider too. `src` also takes a video page's address (YouTube, Bilibili, AcFun, Vimeo) and
- * works out the player from it. And the play control is a link to the video's page, which the
- * script turns into a play button, so without script it still takes the reader to the video.
- * A poster can be an imported image, a URL, or an image in the slot, which is how the ::video
- * directive passes a local poster so that Astro processes it.
+ * A video that loads nothing from the video site until the reader presses play. `src` takes a
+ * video page's address and works out the player. The play control is a link to the video's page
+ * until the script makes it a button.
  */
 import type { ImageMetadata } from "astro";
 import Play from "../../icons/player-play-filled.svg";
@@ -92,8 +84,7 @@ const placeholderLabel =
     connectedCallback() {
       const link = this.querySelector<HTMLAnchorElement>(".ds-video__play");
       if (!link) return;
-      // With script the control plays the video in place, so it is a button, and Space works
-      // as well as Enter.
+      // A button, so Space works as well as Enter.
       link.setAttribute("role", "button");
       link.addEventListener("click", (event) => {
         // A modified click still opens the video's page, in a new tab or window.

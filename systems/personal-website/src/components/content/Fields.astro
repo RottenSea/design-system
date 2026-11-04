@@ -1,13 +1,5 @@
 ---
-/**
- * A list of options or parameters on one card: the canvas with a hairline, one Field per row,
- * the rows divided by soft hairlines. It is a real <dl>, so each name is announced with what it
- * describes.
- *
- * Not in the handoff. It follows the handoff's DeviceCard, whose specs are label and value
- * hairline rows in a <dl> on an outline Surface; here a row is a whole parameter. The ::::fields
- * directive makes one from :::field blocks.
- */
+/** A card of parameters as a <dl>, one Field per row. */
 interface Props {
   /** Uppercase micro-label above the list: "Options". */
   label?: string;

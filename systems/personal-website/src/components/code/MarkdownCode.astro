@@ -1,10 +1,5 @@
 ---
-/**
- * Stands in for the <pre> of a code fence in an MDX post, through the `components` map
- * (`pre: MarkdownCode`). It receives Shiki's <pre> attributes and the highlighted code, and puts
- * them inside a CodeBlock. The fence's `title="..."` arrives as data-title, from the system's
- * Shiki transformers, and the language as data-language.
- */
+/** An MDX post's `pre`: Shiki's output inside a CodeBlock. */
 import CodeBlock from "./CodeBlock.astro";
 
 type Props = Record<string, unknown>;

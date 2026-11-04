@@ -1,17 +1,7 @@
 ---
-/**
- * The menu behind the nav's menu button, and the home of the site's grouped navigation. Keep the
- * nav bar to three or four links and put the rest here under group titles: social links,
- * secondary pages. Mount it once, next to TopNav, and give TopNav its id as `menu`.
- *
- * Ported from the handoff's NavDrawer.jsx, which is MenuPanel under the name a page reaches for
- * when it owns the menu. Same here: it takes MenuPanel's props and draws MenuPanel.
- *
- *   <TopNav … menu="site-menu" />
- *   <NavDrawer id="site-menu" brand="…" groups={[{ links }, { title: "Elsewhere", links: social }]} />
- */
+/** A MenuPanel for the site's grouped navigation; give TopNav its id as `menu`. */
 import type { ComponentProps } from "astro/types";
-import type MenuPanel from "./MenuPanel.astro";
+import MenuPanel from "./MenuPanel.astro";
 
 type Props = ComponentProps<typeof MenuPanel>;
 ---

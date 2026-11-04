@@ -1,9 +1,5 @@
-// Fetches a repository's details from GitHub when the site builds, for GitHubCard. Each repository
-// is asked for once per build. A failed request gives undefined and a warning, never an error, so
-// the card falls back to its name and link and the build goes on.
-//
-// Without a token GitHub allows 60 requests an hour from one address, which a shared build
-// machine can use up; a GITHUB_TOKEN in the build's environment raises that to 5,000.
+// GitHubCard's build-time fetch, once per repository per build. A failure warns and gives
+// undefined so the build goes on. A GITHUB_TOKEN raises the shared limit of 60 requests an hour.
 
 const cache = new Map();
 

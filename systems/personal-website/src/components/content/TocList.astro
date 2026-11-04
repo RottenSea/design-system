@@ -1,23 +1,8 @@
 ---
 /**
- * On-this-page navigation for a post: the headings as links, h2 flush and h3 indented, the mark
- * as well as the text. The
- * heading being read is coral text with a 2px coral mark in the gutter, the one place coral marks
- * position rather than action. Everything else is muted. No fills, no pills: a contents list is a
- * list of links, and a filled current item would read as a selected tab.
- *
- * Ported from the handoff's TocList.jsx with the same props, except `activeId` and `onSelect`. The
- * handoff left scroll tracking to the page; here the list does it: the current heading is the last
- * one whose top is within 96px of the window's top (the nav's height and 32px more), the first
- * before any is, and the last when the page has scrolled to its end. A line any lower would mark
- * the next heading of a short section the reader has just jumped to. The current link carries aria-current="location". The
- * links are plain anchors, so the list works without its script. Deeper levels are dropped.
- *
- * Put it in a SidebarCard in the right rail, and give narrow screens a TocButton.
- *
- *   <SidebarCard title="On this page">
- *     <TocList items={headings.map((h) => ({ id: h.slug, text: h.text, level: h.depth }))} />
- *   </SidebarCard>
+ * A post's h2 and h3 headings as links, tracking the one being read: the last whose top is within
+ * 96px of the window's top, or the last heading at the page's end. A lower line would mark the
+ * next heading of a short section the reader just jumped to.
  */
 export interface TocItem {
   /** The heading's id, used as the link's fragment. */
@@ -136,8 +121,7 @@ const height = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
     transition: var(--transition-tint);
   }
 
-  /* The whole link moves in, so the current mark sits at the heading's level; the text lands
-     where padding alone would put it. */
+  /* The whole link moves in, so the current mark sits at the heading's level. */
   .ds-toc__link--sub {
     margin-left: calc(var(--space-md) - var(--space-xs));
   }

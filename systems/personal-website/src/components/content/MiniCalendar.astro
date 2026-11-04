@@ -1,24 +1,9 @@
 ---
 /**
- * The rail's month grid: which days have posts. Marked days take a wash of ink and today is ink
- * with canvas type, because the darkest thing is this system's sign of selection; other days stay
- * muted. In the dark theme, and on a dark card, today turns the other way round: a cream chip with
- * night type. Cells are square
- * fractions of the rail, so the grid fits a 200px or a 300px column. `emphasis="soft"` steps the
- * grid down a notch: today becomes an outlined chip and marked days lose their fill.
- *
- * Ported from the handoff's MiniCalendar.jsx, except the marked days' fill: the handoff's cream card
- * fill vanishes on a rail's cream card, so the wash is ink at 8%. Its `counts` are keyed by "YYYY-MM-DD" instead of
- * the day of one month, so the grid can move between months. The build cannot know the reader's
- * today, so the script draws the grid again in the browser: the reader's current month (unless
- * `year` and `month` are given) with their today marked. `navigable` adds Previous and Next month
- * buttons. `selectable` makes marked days buttons that send a `ds-select` event with the date, or
- * null when the selected day is pressed again. A button anywhere on the page with
- * data-ds-calendar-clear set to the calendar's id clears the selection the same way; the calendar
- * shows it only while a day is selected, so give it `hidden` to start with. In a SidebarCard it
- * goes in the `action` slot.
- *
- *   <MiniCalendar counts={{ "2026-05-18": 1, "2026-06-16": 1 }} weekStart="sun" navigable selectable />
+ * A month grid of the days with posts, redrawn in the browser for the reader's today. With
+ * `selectable`, marked days send `ds-select` with the date, or null when pressed again. A button
+ * with data-ds-calendar-clear set to the calendar's id clears the selection and shows only while
+ * a day is selected, so give it `hidden`.
  */
 import { localToday, monthHtml, monthLabel } from "./calendar";
 
@@ -258,11 +243,7 @@ const grid = monthHtml({
     padding-bottom: 2px;
   }
 
-  /*
-   * A wash of ink rather than the handoff's cream card fill, which vanishes on the cream card a rail
-   * puts the calendar on. Today is ink with canvas type: dark in the light theme and cream in the
-   * dark one, the inversion the handoff gives a dark card.
-   */
+  /* A wash of ink: a card-colour fill would vanish on the rail's card. */
   .ds-cal__grid > :global(.ds-cal__day--marked) {
     background: color-mix(in srgb, var(--text-ink) 8%, transparent);
     color: var(--text-ink);

@@ -1,20 +1,8 @@
 ---
 /**
- * A poster of a post, drawn on a 1080 by 1440 canvas: the cover over the top 9:16 of the width, or
- * the cream card without one; the title in the display serif, up to three lines; the description;
- * then a hairline, the site's name, the date, a short coral rule, and a QR code of the address in
- * ink at the right. Its colours are the theme it sits in, read from the tokens, and it is drawn
- * again when the theme changes, the new poster fading in over the old one as the page's colours
- * fade, so a reader in the dark theme gets a dark poster. The QR code is
- * always dark on a light tile: not every scanner reads a light code on a dark ground. It is drawn
- * after the fonts it uses have loaded.
- *
- * The handoff has no poster. PostShare shows this one in its dialog and draws it when the dialog
- * first opens (`lazy`); on its own it draws at once. The element has `draw()`, which draws once and
- * resolves when done, and `blob()`, the PNG. The QR code comes from the `qrcode` package's module
- * matrix, drawn square by square.
- *
- *   <SharePoster title="Vibe Coding" url="https://…/blog/000001" site="The Key of Urala" date="2026-05-19" cover={coverUrl} />
+ * A 1080 by 1440 poster of a post in the current theme's colours, drawn again on a theme change.
+ * The element has `draw()` and `blob()`. The QR code stays dark on a light tile, since not every
+ * scanner reads a light code on a dark ground.
  */
 interface Props {
   title: string;
@@ -147,7 +135,6 @@ const {
     ctx.fillStyle = c.canvas;
     ctx.fillRect(0, 0, W, H);
 
-    // The cover fills the top 9:16 of the width, cropped to cover; without one, the cream card.
     const coverHeight = Math.round((W * 9) / 16);
     ctx.fillStyle = c.card;
     ctx.fillRect(0, 0, W, coverHeight);
@@ -157,7 +144,6 @@ const {
         const scale = Math.max(W / image.width, coverHeight / image.height);
         const w = image.width * scale;
         const h = image.height * scale;
-        // Cropped to the cover area: a tall image would otherwise run down over the title.
         ctx.save();
         ctx.beginPath();
         ctx.rect(0, 0, W, coverHeight);
@@ -187,7 +173,6 @@ const {
       }
     }
 
-    // The footer: a hairline, the site's name and the date, and the QR code at the right.
     const qrSize = 200;
     const footerTop = H - PAD - qrSize;
     ctx.fillStyle = c.hairline;
@@ -246,14 +231,12 @@ const {
       this.#unsubscribe?.();
     }
 
-    /** Draws the poster once; later calls wait for the same drawing. */
     draw() {
       // Drawings run one after another, so a theme change in the middle of a fade waits for it.
       this.#drawn ??= this.#queue = this.#queue.then(() => this.#paint()).catch(() => undefined);
       return this.#drawn;
     }
 
-    /** The first drawing goes on the canvas; a later one on a new canvas that fades in over it. */
     async #paint() {
       const canvas = this.querySelector("canvas");
       if (!canvas) return;
@@ -271,7 +254,6 @@ const {
       canvas.remove();
     }
 
-    /** The poster as a PNG, once drawn. */
     async blob() {
       await this.draw();
       const canvas = this.querySelector("canvas");

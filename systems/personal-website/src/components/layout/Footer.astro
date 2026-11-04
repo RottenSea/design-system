@@ -1,30 +1,7 @@
 ---
 /**
- * The dark footer that closes every page, in both themes: a column with the site's mark and name
- * at the top and whatever the `brand-extra` slot holds (a badge, a short line) at the bottom, then
- * a column for each list of links under its uppercase micro-label, all from the left. The link
- * columns are as wide as their links and close together; a wider space parts them from the brand,
- * which leads. A line across the bottom holds the copyright. The link columns set the height, and
- * brand-extra sits level with the end of the longest.
- * --surface-dark, 64px of padding above and below, within --container-max. Below 768px the brand
- * column stacks above the links, which go two across. A
- * link to another site opens in a new tab with the arrow and the hidden note the system's other
- * links to other sites have. Placed straight in <body>, it sits on the window's bottom edge on a
- * page shorter than the window: <body> becomes a column at least as tall as the window, and the
- * footer takes the space left over above it.
- *
- * Ported from the handoff's Footer.jsx with the same props, with links as { label, href } and
- * `onNavigate` left out. The handoff puts the name above four columns of links; this system gives
- * the brand a column of its own beside them (2026-11-03). `note` can also be a slot, for a line
- * with links in it. The
- * note is --text-on-dark-soft rather than the handoff's --text-muted-soft, which is 3.5:1 on the
- * footer in the dark theme.
- *
- *   <Footer brand="The Key of Urala" columns={[{ title: "Site", links: [{ label: "Blog", href: "/" }] }]}
- *     note="© 2026 …">
- *     <Logo slot="logo" width={24} height={24} aria-hidden="true" />
- *     <img slot="brand-extra" src="/badge.svg" alt="…" width="131" height="42" />
- *   </Footer>
+ * The dark footer: a brand column with the `brand-extra` slot, link columns, and a note line.
+ * Placed straight in <body>, it sits on the window's bottom edge on a short page.
  */
 import type { MenuLink } from "./MenuPanel.astro";
 
@@ -105,18 +82,13 @@ const hasExtra = Astro.slots.has("brand-extra");
     padding: 64px var(--space-lg);
   }
 
-  /* <body>, when the footer is in it: at least as tall as the window, so the footer's auto top
-     margin takes up a short page's spare height. dvh follows a phone's address bar as it shows
-     and hides. A child with auto side margins would shrink to its content in a column, so such a
-     child sets its width as well. */
+  /* A child with auto side margins shrinks to its content in this column, so it must set a width. */
   :global(body:has(> .ds-footer)) {
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
   }
 
-  /* The brand column, then the link columns, from the left; the note across the bottom. The space
-     after the brand, 96px, is a third wider than the 72px between the link columns. */
   .ds-footer__inner {
     align-items: start;
     column-gap: calc(var(--space-xxl) * 2);

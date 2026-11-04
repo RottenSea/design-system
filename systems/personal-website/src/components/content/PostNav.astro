@@ -1,15 +1,5 @@
 ---
-/**
- * The way on at the end of a post: the previous post on the left, the next on the right, each an
- * uppercase micro-label over its serif title. A soft hairline above sets it apart from the post.
- * A missing side leaves its cell empty, so Next stays on the right in the first post. Below 560px
- * the two stack.
- *
- * The handoff draws this inline in its personal-site template; this is that markup as a
- * component. Which post is previous is the page's call; the links carry rel="prev" and rel="next".
- *
- *   <PostNav prev={{ title: "Vibe Coding", href: "/blog/vibe-coding" }} next={{ title: "…", href: "…" }} />
- */
+/** Previous and next post links; a missing side leaves its cell empty. */
 export interface PostLink {
   title: string;
   href: string;

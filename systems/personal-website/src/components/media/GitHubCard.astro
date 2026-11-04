@@ -1,16 +1,8 @@
 ---
 /**
- * A GitHub repository as a card that links to it: the GitHub mark in a 32px card-colour square,
- * owner/name, the description, a row with the main language, stars, forks and licence, and the
- * topics as pills. An archived repository takes a muted archive icon before its name, a shape
- * rather than a colour, so it reads without telling colours apart. The details are fetched from
- * GitHub when the site builds and written into the page, so readers never contact GitHub; if the
- * request fails, the card shows the name and link only.
- *
- * Not in the handoff. It follows the handoff's ProjectCard: an outline Surface that lifts on
- * hover, the boxed mark and Badge pills. The language dot is the muted text
- * colour, since in this system a dot's colour means a state. Like a link to another site in a
- * post, it opens in a new tab, with an arrow and a hidden note.
+ * A card linking to a GitHub repository, with details fetched at build time so readers never
+ * contact GitHub; if the request fails, it shows the name only. The language dot is muted, since a
+ * dot's colour means a state in this system.
  */
 import Archive from "../../icons/archive.svg";
 import GitHubMark from "../../icons/brand-github.svg";
@@ -215,7 +207,6 @@ const count = new Intl.NumberFormat("en", {
     margin-top: var(--space-xs);
   }
 
-  /* The handoff's Badge, pill tone. */
   .ds-repo__topic {
     background: var(--surface-card);
     border-radius: var(--radius-pill);

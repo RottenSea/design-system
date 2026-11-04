@@ -1,11 +1,5 @@
-// Every component, for passing to an MDX page at once:
-//   import { components } from "@rottensea/ds-personal-website/components";
-//   <Content components={components} />
-// The map also replaces the <pre> of code fences, Markdown tables and images, so a post's plain
-// Markdown gets the system's code blocks, scrolling tables and figures too.
-// The page shell (TopNav, ContentGrid, Footer and the rest) is exported by name only: a post has
-// no use for it. The Markdown directives in ../markdown/index.js write these names. This file is TypeScript
-// so pages get the components' prop types; pages are compiled by Vite, which handles it.
+// `components` is the map for an MDX page's <Content>, and also replaces Markdown's <pre>, tables
+// and images. Page shell components are exported by name only.
 import Button from "./buttons/Button.astro";
 import IconButton from "./buttons/IconButton.astro";
 import ArticleListCard from "./cards/ArticleListCard.astro";

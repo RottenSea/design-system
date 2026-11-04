@@ -1,19 +1,8 @@
 ---
 /**
- * The display settings behind one round button: the theme, as Light, Dark or System, and Reduce
- * motion. A choice applies at once and is remembered in localStorage. The theme goes through the
- * page's theme store (scripts/theme.ts), which writes data-theme and fades every colour over
- * --motion-entrance; the panel shows the store's choice, whoever changed it. The menu owns
- * data-reduce-motion on <html>. Every colour and every motion rule follows from those two. Put
- * ThemeScript, with the same keys, in the <head> so both are set before the first paint.
- *
- * The handoff has ThemeToggle and a site-level reduced-motion switch but no panel; this one is
- * made of its SegmentedControl and Switch under a small popover, the size of DropdownMenu's.
- * The panel is a native popover: a click outside or Escape closes it, and the focus goes back to
- * the button. System follows the OS as it changes. When the OS already asks for reduced motion,
- * the switch shows on and cannot be turned off here.
- *
- *   <TopNav …><SettingsMenu slot="actions" storageKey="theme-preference" /></TopNav>
+ * A popover with the theme (through the theme store) and Reduce motion, which it owns as
+ * data-reduce-motion on <html>. Give ThemeScript the same keys. When the OS asks for reduced
+ * motion, the switch shows on and cannot be turned off.
  */
 import IconButton from "../buttons/IconButton.astro";
 import SegmentedControl from "../forms/SegmentedControl.astro";
@@ -118,8 +107,7 @@ const {
       });
       calm.addEventListener("change", showMotion);
 
-      // The panel opens in the top layer: its right edge under the button's, kept 8px inside the
-      // window. Its width is fixed in CSS, so it can be read before the panel shows.
+      // Right-aligned under the button, 8px inside the window; the width is fixed in CSS.
       panel?.addEventListener("beforetoggle", (event) => {
         if ((event as ToggleEvent).newState !== "open" || !button) return;
         const box = button.getBoundingClientRect();

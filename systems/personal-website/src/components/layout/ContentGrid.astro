@@ -1,30 +1,8 @@
 ---
 /**
- * The content page grid: a fixed left rail, the main column, a fixed right rail, capped at the
- * 1200px container. Rails stack their own children with `railGap` and stick below the nav while
- * the main column scrolls. Give only one rail for a two-column page; the missing track is
- * dropped, not left empty, and so is a rail whose slot renders nothing.
- *
- * Narrower screens lose columns rather than shrink them: below 1080px the right rail is hidden
- * (so it holds nothing a reader needs), and below 768px everything is one column with the main
- * content first and the rails unstuck under it. `stackRails` says which rails join that column;
- * an article page sets "left" and gives its table of contents to FloatingControls, because a
- * contents list under the last paragraph is no use to a reader who got there. `keepRails` keeps
- * the right rail down to 768px. Pages declare these; they never write the media query.
- *
- * `mainWidth` gives the main column that width and keeps it in the middle of the page, with the
- * rails right beside it rather than at the container's edges, as a post with its table of
- * contents wants. The grid then spans the page: each rail's track is at least the rail's width and
- * grows with the space left over, so both sides match and the main column is centred whenever
- * there is room for it; with less, the side without a rail gives way first.
- *
- * Ported from the handoff's ContentGrid.jsx with the same props. The rails are named slots:
- *
- *   <ContentGrid stackRails="left">
- *     <Fragment slot="left">…</Fragment>
- *     <article>…</article>
- *     <Fragment slot="right">…</Fragment>
- *   </ContentGrid>
+ * The content grid: left rail, main column, right rail, in the `left` and `right` slots. Below
+ * 1080px the right rail is hidden, and below 768px it is one column; a missing or empty rail drops
+ * its track.
  */
 interface Props {
   /** A length; a number is px. */
@@ -64,9 +42,7 @@ const {
   class: className
 } = Astro.props;
 
-// A rail is there only if its slot renders something. Astro.slots.has is true for content given
-// under a condition that turned out false, such as {hasToc && <Fragment slot="right">…}, which
-// would keep an empty rail's track open beside the main column.
+// Astro.slots.has is true even for {false && <Fragment slot="right">…}.
 const render = async (name: "left" | "right") =>
   Astro.slots.has(name) ? (await Astro.slots.render(name)).trim() : "";
 const leftHtml = await render("left");
@@ -196,8 +172,7 @@ const sticks = (side: "left" | "right") => sticky === "both" || sticky === side;
       order: 1;
     }
 
-    /* As specific as the rules that place the columns, so it wins over them: with `> *` the main
-       column stayed in track 2, beside an empty track 1 and the gap. */
+    /* As specific as the rules that place the columns, so it wins over them. */
     .ds-cgrid[data-centred] > :is(.ds-cgrid__main, .ds-cgrid__rail) {
       grid-column: auto;
       justify-self: stretch;

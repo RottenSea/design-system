@@ -1,19 +1,10 @@
 ---
 /**
- * The same instruction in several flavours (npm or pnpm, macOS or Windows) behind a segmented
- * switch. Groups that share a syncKey switch together, so a reader who picks pnpm once reads
- * pnpm for the rest of the page. The choice lives in memory only; a reload returns to the
- * first option.
+ * The same instruction in several flavours behind a tablist; groups sharing a syncKey switch
+ * together. Switching keeps the clicked tab still on screen, since synced groups change height.
  *
- * Ported from the handoff's OptionGroup.jsx with the same props, except that the options are
- * <Option> children instead of an `options` array, and the `icon` of an option is not ported.
- * The switch is the handoff's SegmentedControl, drawn here on the server: a tablist with roving
- * focus, arrow keys, Home and End. Without script the first option shows and the switch does
- * nothing. Switching keeps the clicked switch where it was on screen, because the groups that
- * follow it change height when they switch too.
- *
- * It renders its slot to HTML and reads the options from the markers <Option> writes, then
- * renames those markers so an OptionGroup further out does not count them as its own.
+ * It reads the options from the markers <Option> writes, then renames them so an outer group does
+ * not count them too.
  */
 interface Props {
   /** Groups sharing a key switch together, e.g. "pkg" for every install snippet on the page. */
@@ -38,9 +29,8 @@ const {
 
 const id = `ds-options-${crypto.randomUUID().slice(0, 8)}`;
 const html = await Astro.slots.render("default");
-// Astro has already escaped both values, so they can go back into the HTML as they are. The
-// tag can carry more attributes after the markers (in development Astro adds
-// data-astro-source-file and -loc to every element); they are kept.
+// Astro has escaped both values already. In development the tag also carries Astro's
+// data-astro-source-* attributes.
 const options: { label: string; value: string }[] = [];
 const panels = html.replace(
   /<div data-ds-option-label="([^"]*)" data-ds-option-value="([^"]*)"([^>]*)>/g,
@@ -173,7 +163,6 @@ const panels = html.replace(
       document.removeEventListener(SYNC, this.#onSync);
     }
 
-    /** The reader picked a tab: show it, tell the sync partners, and hold the tab still. */
     #pick(index: number) {
       const tab = this.#tabs[index];
       if (!tab || !this.#select(index)) return;
@@ -193,7 +182,7 @@ const panels = html.replace(
       if (index !== -1) this.#select(index);
     }
 
-    /** Shows one panel. Returns false when it was already showing. */
+    /** False when the panel was already showing. */
     #select(index: number) {
       if (this.#tabs[index]?.ariaSelected === "true") return false;
       this.#tabs.forEach((tab, i) => {
@@ -205,7 +194,6 @@ const panels = html.replace(
       });
       const panel = this.#panels[index];
       if (panel) {
-        // Restart the reveal each time, as the handoff does by remounting the panel.
         panel.classList.remove("ds-reveal-in");
         void panel.offsetWidth;
         panel.classList.add("ds-reveal-in");
@@ -252,8 +240,6 @@ const panels = html.replace(
     text-transform: uppercase;
   }
 
-  /* The track is the card colour and the picked segment is raised to the canvas, so the switch
-     reads on the canvas and on a card alike. */
   .ds-option-group__tabs {
     align-items: center;
     background: var(--surface-card);
@@ -295,8 +281,6 @@ const panels = html.replace(
     color: var(--text-ink);
   }
 
-  /* The panels are written as a string from the slot's HTML, so they carry no scope attribute
-     and are reached through :global. */
   .ds-option-group > :global(.ds-option-group__panel) {
     color: var(--text-body);
     font-family: var(--font-sans);
@@ -304,11 +288,7 @@ const panels = html.replace(
     line-height: var(--body-sm-lh);
   }
 
-  /*
-   * The panel's first and last blocks sit flush, including a code block's framed figure. Scripts
-   * are skipped when counting: Astro writes a component's <script> once a page, right after its
-   * first use, so the first panel with a CodeBlock ends in that script.
-   */
+  /* Scripts are skipped: Astro writes a component's <script> right after its first use. */
   .ds-option-group > :global(.ds-option-group__panel > :nth-child(1 of :not(script))),
   .ds-option-group > :global(.ds-option-group__panel > :nth-child(1 of :not(script)) > figure) {
     margin-top: 0;

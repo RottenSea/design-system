@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Starfield` and `DotGlobe` fade their colours on a theme change with the page's own duration and easing, from `themeFade()`, instead of a separate ease-out curve.
+- The source comments are shorter, and the repository is formatted with Biome.
+
 ## [1.0.9] - 2026-11-04
 
 ### Added

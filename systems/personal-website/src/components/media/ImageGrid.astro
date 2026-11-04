@@ -1,14 +1,7 @@
 ---
 /**
- * Several images as one block. Fixed column count and a fixed aspect ratio, so a row never goes
- * ragged; tiles crop rather than letterbox. Clicking a tile opens the whole image over the page.
- * A tile with no `src` draws the system's striped placeholder with its alt text in the mono face,
- * so a page can be laid out before the photographs exist.
- *
- * Ported from the handoff's ImageGrid.jsx with the same props, with two changes. `lightbox`
- * turns on Figure's medium-zoom instead of the handoff's Lightbox, which steps from image to
- * image; posts open one image at a time. And the tiles can be Figure children instead of
- * `items`, which is what the :::gallery directive writes; `ratio` and `columns` still apply.
+ * Images in fixed columns and one aspect ratio, cropped to fit. Tiles come from `items` or, as the
+ * :::gallery directive writes them, Figure children.
  */
 import type { ImageMetadata } from "astro";
 import Figure from "./Figure.astro";
@@ -97,7 +90,6 @@ const cellStyle = (item: Item) =>
     max-width: var(--container-reading);
   }
 
-  /* The tiles are Figures, whose elements belong to Figure, so they are reached through :global. */
   .ds-image-grid :global(.ds-figure),
   .ds-image-grid__stub-figure {
     margin: 0;

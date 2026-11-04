@@ -1,9 +1,5 @@
-// Reads a design system's tokens with Terrazzo when the docs build, so the tables show the values in
-// the token files and cannot drift from them. Nothing generated is committed.
-//
-// A system keeps its tokens in systems/<system>/tokens/, with a DTCG resolver named after the
-// system. The light theme and the wide screen are the resolver's defaults; the other contexts are
-// applied on top, and a value is listed for a context only where it differs.
+// Reads a system's tokens through its resolver at build time, so the docs tables cannot drift from
+// the token files. Dark and narrow values are listed only where they differ.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -114,10 +110,7 @@ export function loadTokens(system: string): Promise<TokenInfo[]> {
   return result;
 }
 
-/**
- * The position of each token in the foundation's files, in the order the resolver lists them. The
- * parser does not keep that order, and a table reads best the way the file was written.
- */
+/** Token positions in file order, which the parser does not keep. */
 function fileOrder(resolverPath: string): Map<string, number> {
   const resolverJson = JSON.parse(readFileSync(resolverPath, "utf8"));
   const sets = Object.values(resolverJson.sets ?? {}) as {

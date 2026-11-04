@@ -1,9 +1,3 @@
-/*
- * Motion. Short and flat: color and opacity first. Nothing scales, bounces, springs or fires on
- * scroll. The one exception to "no transforms" is the dialog entrance, which shares --motion-entrance
- * with the colour fade of a theme change (base.css).
- */
-
 /* Composed transitions. They live here because a DTCG transition token cannot list CSS properties. */
 :root {
   --transition-tint:
@@ -50,10 +44,7 @@
   transition: var(--transition-collapse);
 }
 
-/*
- * The one looping animation: the progress bar's indeterminate segment. It carries no information,
- * because the bar always has a label, so reduced motion parks it as a static wash (see base.css).
- */
+/* Reduced motion parks this as a static wash (base.css); the bar always has a label. */
 @keyframes ds-progress-slide {
   0% {
     left: -40%;

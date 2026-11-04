@@ -1,9 +1,5 @@
 /* biome-ignore-all lint/complexity/noImportantStyles: these rules must win over component styles. */
-/*
- * Element defaults: the cream floor and the type voice, for free. Every rule sits in the `base`
- * layer, so any unlayered rule in a site overrides it whatever its specificity. index.css puts the
- * Tailwind Preflight reset in the `reset` layer underneath.
- */
+/* Element defaults, in the `base` layer so any unlayered site rule overrides them. */
 @layer reset, base;
 
 @layer base {
@@ -13,15 +9,8 @@
     /* Show only the weights and styles fonts.css loads instead of faking bold or italic. */
     font-synthesis: none;
     /*
-     * The page's scrollbar: thin, in the soft muted text colour on the page's own ground. Its
-     * space is kept whether the page scrolls or not, so a short page and a long one centre the
-     * same, and the page does not move sideways when a panel locks the scroll or the content
-     * grows past the window. Only the right side is kept: keeping both would leave a strip of
-     * canvas beside every full-width dark band. scrollbar-color is inherited as a colour, so a
-     * scroll area inside takes this one unless it sets its own (CodeBlock does, for the navy).
-     * The thumb fades with the theme, since --text-muted-soft is one of its variables. Browsers
-     * that ignore scrollbar-color draw their own scrollbar from color-scheme, which the theme
-     * store changes at the end of the fade.
+     * The gutter is kept so the page does not shift when it starts scrolling or a panel locks it.
+     * One side only: both would leave a canvas strip beside full-width dark bands.
      */
     scrollbar-color: var(--text-muted-soft) transparent;
     scrollbar-gutter: stable;
@@ -111,22 +100,13 @@
     background: rgb(217 119 87 / 22%);
   }
 
-  /*
-   * Keyboard focus on links and buttons. Inputs draw their own --focus-ring halo; everything else
-   * gets this outline so a keyboard user can always see where they are (WCAG 2.4.7).
-   */
+  /* Inputs draw their own --focus-ring halo. */
   :focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 
-  /*
-   * A change of theme. The theme store (scripts/theme.ts) writes the variables --theme-variables
-   * lists on <html> on each frame for --motion-entrance, a step further from the old theme to the
-   * new, and every element reads them as they blend, so the whole page changes together. Meanwhile
-   * <html> carries data-theme-fade, and elements drop their own transitions: one would start again
-   * on every frame of the fade and lag behind the rest. Reduced motion never sets the mark.
-   */
+  /* During a theme fade, an element's own transition would restart every frame and lag behind. */
   [data-theme-fade] *,
   [data-theme-fade] *::before,
   [data-theme-fade] *::after {
@@ -134,11 +114,8 @@
   }
 
   /*
-   * Reduced motion, at two levels: the OS setting, and a site switch a page can set on <html> as
-   * data-reduce-motion="true". Transitions and animations finish in 1ms instead of 0 so transitionend
-   * and animationend still fire, and run once so a looping animation cannot flicker. Loading
-   * animations opt out with data-motion="essential", which covers the element and its children.
-   * !important inside a layer outranks !important outside it, so component styles cannot undo this.
+   * Reduced motion, from the OS or data-reduce-motion="true" on <html>. 1ms rather than 0 so the
+   * end events still fire; data-motion="essential" opts out.
    */
   @media (prefers-reduced-motion: reduce) {
     html {

@@ -1,18 +1,7 @@
 ---
 /**
- * The stack of round buttons in the bottom right corner: back to top, plus at most two others,
- * such as the theme or, on a small screen, the table of contents a rail held. Back to top fades
- * in once the reader has scrolled a window's height, and carries --shadow-float. Which screens
- * show the stack is a media query at ContentGrid's breakpoints, so nothing flashes while a script
- * measures the window.
- *
- * Ported from the handoff's FloatingControls.jsx with the same props, except `showTop` and
- * `onTop`: the component watches the scroll itself. Back to top scrolls smoothly unless the
- * reader asked for reduced motion, and then moves the keyboard focus to the top of the page.
- *
- *   <FloatingControls>
- *     <ThemeToggle />
- *   </FloatingControls>
+ * Round buttons in the bottom right: back to top, shown after a window's height of scroll, and up
+ * to two from the slot. Which screens show it is a media query, so nothing flashes on load.
  */
 import IconButton from "../buttons/IconButton.astro";
 

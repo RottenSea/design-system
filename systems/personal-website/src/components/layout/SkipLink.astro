@@ -1,11 +1,5 @@
 ---
-/**
- * The first thing a keyboard reader reaches on a page: a link past the nav to the main content.
- * It is hidden until it has the focus, then shows at the top left over the nav as a canvas pill
- * with the focus ring. Put it first in the <body>, and give the main content the id it points to.
- *
- * Not in the handoff, which has no skip link; drawn here from its focus ring and canvas pill.
- */
+/** A link to the main content, shown only when focused. Put it first in the <body>. */
 interface Props {
   /** The main content's id, with the #. */
   href?: string;

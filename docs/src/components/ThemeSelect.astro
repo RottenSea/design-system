@@ -1,13 +1,7 @@
 ---
 /**
- * Starlight's theme select, handed to the personal-website system's theme store, so the docs site
- * changes theme the way the system's pages do: one place writes data-theme and the choice, and
- * every colour fades over the same 350ms (custom.css). The store keeps the choice under
- * Starlight's own key, with Auto as "system", so Starlight's head script still sets the theme
- * before the first paint, and the example iframes hear each change as a storage event.
- *
- * Starlight's script listens for change on its select; a listener on the document in the capture
- * phase runs first and stops it, then the store applies the choice and the pickers show it.
+ * Starlight's theme select, handed to the system's theme store under Starlight's own key. A
+ * capturing listener on the document stops Starlight's own change handler.
  */
 import Default from "@astrojs/starlight/components/ThemeSelect.astro";
 ---

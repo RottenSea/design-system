@@ -1,17 +1,7 @@
 ---
 /**
- * Sharing a post: a row of two buttons, Copy link and Share poster. Copy link puts the post's
- * address on the clipboard and says so in a Snackbar. Share poster opens a Dialog with a poster
- * drawn on a canvas: the cover, or the cream canvas without one, then the title in the display
- * serif, the description, the site's name and the date, and a QR code of the address. The poster
- * downloads as a PNG, and where the browser can share files (most phones), Share hands it to the
- * system's share sheet.
- *
- * The handoff has no share component; this one is made of its Button, Dialog and Snackbar, with
- * SharePoster in the dialog, drawn when the dialog first opens.
- *
- *   <PostShare title="Vibe Coding" description="…" url="https://…/blog/000001" site="The Key of Urala"
- *     date="2026-05-19" cover={coverUrl} filename="vibe-coding" />
+ * Copy link, and Share poster, which opens a SharePoster in a Dialog to download or hand to the
+ * system's share sheet where the browser can share files.
  */
 import Button from "../buttons/Button.astro";
 import Dialog from "../feedback/Dialog.astro";

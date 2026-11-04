@@ -1,14 +1,7 @@
 ---
 /**
- * The surface for a diagram the page draws itself, such as a Mermaid graph or an SVG chart: the
- * canvas with a hairline, or the dark surface, an optional uppercase label inside the top left,
- * interior padding, sideways scroll for a wide drawing, and a caption below. It never draws the
- * diagram: `svg` takes a drawing as a string, the slot takes any element, and `source` alone
- * shows the diagram's own source in the mono face, so a page that could not draw it still shows
- * what it is.
- *
- * Ported from the handoff's DiagramFrame.jsx with the same props, except `style`. The handoff's
- * data-om-raster attribute, a hint for its PowerPoint export, is left out.
+ * The surface for a diagram drawn elsewhere: from `svg`, the slot, or `source` shown as text so a
+ * page that could not draw it still shows what it is.
  */
 interface Props {
   caption?: string;

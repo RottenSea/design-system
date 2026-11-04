@@ -1,13 +1,7 @@
 ---
 /**
- * An <abbr> the reader can reach: a dotted hairline underline, focusable, and the expansion in
- * the system's Tooltip, which opens on hover, keyboard focus and a tap.
- *
- * Ported from the handoff's Abbreviation.jsx with the same props. It leaves out the `title`
- * attribute the handoff also sets: with it, a mouse would get the browser's own bubble on top
- * of the Tooltip. Screen readers get the expansion through the Tooltip's aria-describedby.
- *
- * Expand the term in the prose on first use as well; the tip is a reminder, not the definition.
+ * A focusable <abbr> with its expansion in a Tooltip. No `title`: the browser's bubble would show
+ * over the Tooltip.
  */
 import Tooltip from "../feedback/Tooltip.astro";
 

@@ -1,16 +1,7 @@
 ---
 /**
- * Switches the page between the light and the dark theme, through the page's theme store
- * (scripts/theme.ts), which writes data-theme on <html>, remembers the choice as "light" or
- * "dark", fades every colour over --motion-entrance, and until there is a choice follows the OS.
- * Every colour follows from the tokens, so no other component needs to know the theme. Put
- * ThemeScript in the <head> so the right theme is there before the first paint.
- *
- * Ported from the handoff's ThemeToggle.jsx, its icon form. The icon names what pressing it will
- * do: a sun in the dark theme, a moon in the light one. Both buttons are in the HTML and CSS
- * shows the one for the current theme, so the icon is right from the first paint. The accessible
- * names say "Switch to light theme" rather than the handoff's bare "Light". The segmented form
- * with a third "System" choice is in SettingsMenu.
+ * A button that switches between the light and dark theme through the theme store. Both icons are
+ * in the HTML and CSS shows the current one, so it is right from the first paint.
  */
 import IconButton from "../buttons/IconButton.astro";
 

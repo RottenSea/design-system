@@ -1,20 +1,11 @@
 ---
 /**
- * The table of contents for a screen too narrow for the right rail: a round Contents button for
- * FloatingControls that opens the TocList in a MenuPanel sheet. Following a link closes the sheet.
- * By default the button shows below 1080px, where ContentGrid hides the right rail; which screens
- * show it is a media query at ContentGrid's breakpoints, like FloatingControls' own `devices`.
- *
- * The handoff has no component for this: its FloatingControls takes an IconButton with an onClick
- * that the page wires to its own sheet. This is that IconButton and sheet in one.
- *
- *   <FloatingControls>
- *     <TocButton items={toc} />
- *   </FloatingControls>
+ * A button for FloatingControls that opens a TocList in a MenuPanel, shown by default below
+ * 1080px, where ContentGrid hides the right rail.
  */
 import type { ComponentProps } from "astro/types";
 import IconButton from "../buttons/IconButton.astro";
-import type TocList from "../content/TocList.astro";
+import TocList from "../content/TocList.astro";
 import MenuPanel from "./MenuPanel.astro";
 
 type Device = "mobile" | "tablet" | "desktop";

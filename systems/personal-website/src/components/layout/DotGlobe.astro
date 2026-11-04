@@ -1,27 +1,15 @@
 ---
 /**
- * A globe made of dots that turns slowly on a tilted axis, rising from the bottom edge, with a
- * soft glow at its rim and a starfield around it. Only the land is dotted, and which dots are
- * land is worked out when the site is built (land.ts), so the page loads no map and no mapping
- * library: it gets the lattice's size and one bit per point. By default it is fixed to the window,
- * under everything else on the page; with position="absolute" it fills its nearest positioned
- * ancestor instead.
- *
- * Coral dots and glow and teal stars, as in the handoff; the light theme uses the brighter coral
- * so the dots hold up on cream, and the stars are larger there, as Starfield's are. Set
- * --ds-globe-dot, --ds-globe-halo, --ds-sky-star, --ds-sky-star-strength and --ds-sky-star-grow to
- * change them; on a theme change they move to the new theme's over the
- * page's fade. It keeps turning with reduced motion, as Starfield keeps drifting. It is
- * decoration: hidden from screen readers, and it takes no clicks.
- *
- * From the handoff's Rainbow Stone page, where it was drawn by the page from a map it fetched.
+ * A dotted globe turning behind the page, rising from the bottom edge, with stars around it. The
+ * land points are worked out at build time (land.ts), so the page loads no map. Colours come from
+ * --ds-globe-dot, --ds-globe-halo and Starfield's --ds-sky-* properties.
  */
 import { landMask } from "./land";
 
 interface Props {
   /** Seconds for one turn, and for a star at full depth to cross the longer side; 140 by default. */
   period?: number;
-  /** Degrees between neighbouring dots; the handoff's 1.7 by default. */
+  /** Degrees between neighbouring dots. */
   spacing?: number;
   /** How far below the bottom edge the centre sits, in radii: 0.6 shows about the top 40%. */
   drop?: number;

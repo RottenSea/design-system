@@ -1,17 +1,5 @@
 ---
-/**
- * A labelled button. `primary`, coral, for the one main action in a place; `secondary`, the
- * canvas with a hairline, beside it; `secondary-on-dark` on the night surface; `text` for a bare
- * action in a line of type. 40px high, or 32px at `size="sm"`; below 768px it grows to the 44px
- * touch target, except `text`. Labels are verbs in sentence case, one to three words. The
- * pressed fill is the only state; there is no hover style.
- *
- * Ported from the handoff's Button.jsx with the same props, except `onClick` and `as`. The
- * pressed state is :active instead of React pointer state, `href` makes it a link, and the icons
- * are the system's Tabler outlines by name.
- *
- *   <Button variant="secondary" iconLeft="link">Copy link</Button>
- */
+/** A labelled button, or a link with `href`; icons are Tabler names from src/icons/. */
 import type { HTMLAttributes } from "astro/types";
 import ArrowRight from "../../icons/arrow-right.svg";
 import Download from "../../icons/download.svg";

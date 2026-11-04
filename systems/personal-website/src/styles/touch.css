@@ -1,11 +1,5 @@
 /* biome-ignore-all lint/complexity/noImportantStyles: these rules must win over component styles. */
-/*
- * Touch targets. List rows, rail links, tag pills and pager cells are drawn for a mouse, 28 to 36px
- * tall, which is under the 44px a finger needs. Below 768px every element that carries data-ds-tap
- * grows to --tap-min. "row" is for full-width rows (taller, same type); "cell" is for inline targets
- * that must also be 44px wide. Only elements that opt in are reached, so a tappable element without
- * data-ds-tap keeps its pointer size. Inline links in running text are the one deliberate exception.
- */
+/* Below 768px, elements with data-ds-tap grow to --tap-min; "cell" also grows that wide. */
 @media (max-width: 768px) {
   [data-ds-tap] {
     min-height: var(--tap-min) !important;

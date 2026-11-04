@@ -1,14 +1,7 @@
 ---
 /**
- * Project structure as a foldable tree: where files go after a step, what a template contains.
- * Rows are 28px in the mono face, indented 16px per level along a hairline guide; folders fold;
- * a file can carry a change state as a 6px dot. Keep it to the part of the tree the point needs;
- * a full repository listing is a CodeBlock.
- *
- * Ported from the handoff's FileTree.jsx with the same props, except `onSelect`: nothing runs in
- * the browser, so files are not buttons, and folders fold as native <details>. The tree comes
- * from `items` as in the handoff, or from FileTreeNode children, which is what the :::file-tree
- * directive writes.
+ * A foldable project tree with no script, from `items` or, as the :::file-tree directive writes
+ * it, FileTreeNode children.
  */
 import FileTreeNode, { type FileNode } from "./FileTreeNode.astro";
 

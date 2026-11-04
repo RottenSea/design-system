@@ -1,14 +1,7 @@
 ---
 /**
- * A post's comments, from a Twikoo comment service: the form to write one and the thread under
- * it. Twikoo builds the form and the thread; this component loads it when the comments come near
- * the screen, so a reader who never scrolls there never downloads it, and dresses it in the
- * system's tokens, light and dark. Without JavaScript it says so.
- *
- * The handoff has no comments. Twikoo's own stylesheet, which its script adds to the page, is
- * taken out again, and every rule here is the system's own; the class names are Twikoo's.
- *
- *   <Comments server="https://comment.example.com" path="/blog/000001" />
+ * A Twikoo comment thread, loaded when it nears the screen and styled by comments.css in place of
+ * Twikoo's own stylesheet.
  */
 import "./comments.css";
 

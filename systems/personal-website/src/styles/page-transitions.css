@@ -1,11 +1,4 @@
-/*
- * Page transitions, for a site to import once: a change of page fades the old page out and the
- * new one in over --motion-base, while the nav stays where it is. They are the browser's own
- * cross-document view transitions, so every page still loads in full and its scripts run as
- * usual, and Back and Forward return to where the reader was. A browser without them changes
- * page at once, and so does a reader who asked for reduced motion, in the OS or with
- * data-reduce-motion="true".
- */
+/* Cross-document view transitions: pages cross-fade while the nav stays put. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition {
     navigation: auto;

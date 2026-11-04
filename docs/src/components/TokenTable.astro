@@ -1,13 +1,5 @@
 ---
-/**
- * A table of tokens, in the docs site's own theme, with the values read from the token files when
- * the docs build. Each row shows the CSS variable, which the copy button copies, the DTCG path
- * under it, the value in each theme or screen width where it differs, the token it points to, and
- * the description in the page's language. A typography token is named by its size variable, with
- * its class and other variables listed under it.
- *
- * In a page: <TokenTable system="personal-website" tokens={["text.*", "color.primary"]} />
- */
+/** A table of tokens read from the token files at build time. */
 import { loadTokens, select } from "../lib/tokens";
 
 interface Props {

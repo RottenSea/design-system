@@ -1,24 +1,8 @@
 ---
 /**
- * A full-window opening statement: an uppercase micro-label, one large serif line, its source,
- * and a hint at the bottom edge that scrolls on to what follows. One per page, at the top, in
- * place of a hero. Length is handled rather than assumed: the line wraps at `measure`, and with
- * `autoSize` the size steps down by length (up to 90 characters display-lg, up to 180
- * display-md, then display-sm), so a quote from content cannot overflow.
- *
- * Ported from the handoff's QuoteBand.jsx with the same props, except `background` and
- * `onScrollHint`: the hint scrolls to the element after the band, stopping below a fixed or sticky
- * TopNav. Two additions:
- * - `quotes`: several quotes, one shown at random on each visit. The build writes the first, so
- *   a page without script shows that one.
- * - `pullNext`: the element after the band rises over it faster than the page scrolls for the
- *   first part of the scroll (a scroll-driven animation, easing out), so a reader reaches it in a
- *   couple of scrolls. Browsers without scroll-driven animations, and readers who asked for
- *   reduced motion, get an ordinary scroll. That element gets the canvas as its background, so
- *   it covers the band as it rises.
- *
- *   <QuoteBand eyebrow="Welcome" quotes={[{ text: "…", attribution: "…" }]} pullNext />
- *   <main>…</main>
+ * A full-window opening quote at the top of a page, with a hint that scrolls to what follows. With
+ * `autoSize` the size steps down by length (up to 90 characters display-lg, 180 display-md).
+ * `pullNext` makes the next element rise over the band faster than the page scrolls.
  */
 import ChevronDown from "../../icons/chevron-down.svg";
 
@@ -123,10 +107,7 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
         const reduce =
           matchMedia("(prefers-reduced-motion: reduce)").matches ||
           document.documentElement.dataset.reduceMotion === "true";
-        // The element's own place in the layout (with pullNext it starts 40svh up, over the band),
-        // not where the pull-in animation is drawing it now; by then that animation has all but
-        // finished. Less the TopNav that stays over the page (fixed in overlay mode), so the nav
-        // does not cover the start.
+        // Its layout position, not where pullNext draws it, less a TopNav that stays over the page.
         let top = 0;
         for (let element: HTMLElement | null = next; element; element = element.offsetParent as HTMLElement | null) {
           top += element.offsetTop;
@@ -138,7 +119,6 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
       });
     }
 
-    /** Shows one of the quotes at random. */
     pick() {
       const data = this.querySelector("[data-ds-quotes]");
       if (!data) return;
@@ -150,8 +130,7 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
       text.textContent = quote.text;
       const length = quote.text.length;
       const size = !this.hasAttribute("data-auto-size") || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
-      // classList, not className: a site that scopes styles by class (Starlight sets Astro to do
-      // that) has the scope as a class here, and replacing the list dropped the band's styles.
+      // classList: a site that scopes styles by class (Starlight) keeps the scope class here.
       text.classList.remove("ds-quote-band__quote--lg", "ds-quote-band__quote--md", "ds-quote-band__quote--sm");
       text.classList.add(`ds-quote-band__quote--${size}`);
       source.textContent = quote.attribution ?? "";
@@ -281,12 +260,7 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
     color: var(--text-on-dark-soft);
   }
 
-  /*
-   * pullNext. The next element starts 40svh up in the layout, overlapping the band, and is drawn
-   * 40svh lower, right under it. Over the first 60svh of scroll the offset eases out to nothing,
-   * so it rises faster than the page at first; at the end the layout and the drawing agree and
-   * nothing is left over at the bottom of the page.
-   */
+  /* pullNext: laid out 40svh up and drawn 40svh down, an offset that eases out over 60svh of scroll. */
   @supports (animation-timeline: scroll()) {
     @media (prefers-reduced-motion: no-preference) {
       /* The element after the band, or after the script Astro writes there in a built page. */

@@ -1,13 +1,5 @@
 ---
-/**
- * A 36px circular button with one icon: back to top, the menu, the theme. It grows to the 44px
- * touch target below 768px through data-ds-tap="cell" (touch.css). `label` is its accessible
- * name; there is no visible text, so it is required.
- *
- * Ported from the handoff's IconButton.jsx with the same props. The pressed fill is the :active
- * state instead of React pointer state. With `href` it is a link drawn the same way. The icons
- * are the Tabler outlines in src/icons/ that the system's components use, by name.
- */
+/** A round icon button, or a link with `href`; `label` is required as its only name. */
 import type { HTMLAttributes } from "astro/types";
 import Adjustments from "../../icons/adjustments.svg";
 import ArrowUp from "../../icons/arrow-up.svg";

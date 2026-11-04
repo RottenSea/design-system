@@ -1,12 +1,7 @@
 ---
 /**
- * One row of a FileTree: a file, or a folder with its contents below it. A folder with contents
- * is a native <details>, so it folds with a click or the keyboard without any script; an empty
- * folder is a plain row. Change state is a 6px dot, never a coloured name.
- *
- * Give it either a `node` (the handoff's FileNode data, as FileTree passes when it has `items`)
- * or the props one by one with its contents as FileTreeNode children, which is what the
- * :::file-tree directive writes.
+ * One FileTree row; a folder with contents is a native <details>. Give it a `node`, or the props
+ * with FileTreeNode children as the :::file-tree directive writes.
  */
 import FileIcon from "../../icons/file.svg";
 import Folder from "../../icons/folder.svg";
@@ -110,7 +105,6 @@ const style = `--ds-depth: ${depth}`;
     padding: 0;
   }
 
-  /* 28px mono rows, indented one --space-md per level. */
   .ds-file-tree__row {
     align-items: center;
     border-radius: var(--radius-sm);

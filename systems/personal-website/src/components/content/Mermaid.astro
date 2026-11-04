@@ -1,17 +1,8 @@
 ---
 /**
- * A Mermaid diagram in a DiagramFrame, drawn in the browser. The page carries the diagram's
- * source, shown in the mono face, and mermaid is fetched, as a separate file, only on a page that
- * has a diagram; then the drawing replaces the source. The colours are read from the
- * system's tokens on the element, so the graph matches the page. Mermaid writes its colours into
- * the SVG, so there is a drawing for each theme: the other theme's is drawn once the browser is
- * idle, and when the page switches between light and dark the new drawing fades in over the old
- * one as the page's colours fade, starting with them. The drawing is flat, without the shadows of
- * Mermaid's newer look.
- *
- * Not in the handoff, which leaves drawing to the page (its DiagramFrame "Mermaid contract"); this
- * follows that contract's way 2 and its token mapping. Coral is not used: nodes stay on the cream
- * and dark surfaces.
+ * A Mermaid diagram in a DiagramFrame, drawn in the browser over the source the page carries.
+ * Mermaid writes colours into the SVG, so each theme gets its own drawing; the other theme's is
+ * drawn when the browser is idle and fades in on a theme change.
  */
 import DiagramFrame from "./DiagramFrame.astro";
 
@@ -44,11 +35,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
   let count = 0;
   let stage: HTMLElement | undefined;
 
-  /**
-   * Where Mermaid draws before the drawing goes into the frame. Mermaid measures its labels in an
-   * element it adds to the container it is given, the body by default, which made the page taller
-   * for a moment on every drawing. This one is fixed to the window and hidden, so it takes no room.
-   */
+  /** Mermaid measures labels in the container it is given; the body would grow for a moment. */
   function drawingStage() {
     if (!stage?.isConnected) {
       stage = document.createElement("div");
@@ -60,10 +47,8 @@ const { code, label, caption, tone = "cream" } = Astro.props;
   }
 
   /**
-   * The stylesheet with the sans faces, first in the Fonts component's list, once it has loaded.
-   * Fonts loads it without holding up the page, and until it arrives the browser knows no web font
-   * to wait for, so document.fonts.ready alone let Mermaid measure the labels in the fallback font
-   * and then show them in the web font, too wide or too narrow for their boxes.
+   * Fonts loads the sans stylesheet without blocking, and until it arrives document.fonts.ready
+   * has no web font to wait for, so labels would be measured in the fallback font.
    */
   const sansSheet = new Promise<void>((resolve) => {
     const link = [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].find(
@@ -74,14 +59,12 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     link.addEventListener("error", () => resolve(), { once: true });
   });
 
-  /** How long the page's diagrams wait for the font, together: a second from when this runs. */
+  /** All diagrams on the page wait for the font for one second in total. */
   const patience = new Promise<false>((resolve) => setTimeout(() => resolve(false), 1000));
 
-  /** The sans font in the faces the text needs, once its stylesheet and those files have come. */
   const sansFont = (family: string, text: string) =>
     sansSheet.then(() => document.fonts.load(`14px ${family}`, text)).catch(() => undefined);
 
-  /** The tokens for each frame tone, as the handoff's contract pairs them. */
   const PALETTE = {
     cream: {
       canvas: "--surface-canvas",
@@ -101,11 +84,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     }
   };
 
-  /**
-   * Mermaid's colour settings, each given one of the tone's tokens. The contract names the first
-   * six. Mermaid works the rest out from those, some into colours of its own: a sequence diagram's
-   * arrows in the text colour, a crossed arrow in black. So they are all given here.
-   */
+  /** Every colour is set: Mermaid derives unset ones into colours of its own, even black. */
   const VARIABLES = {
     background: "canvas",
     primaryColor: "fill",
@@ -138,14 +117,12 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     activationBorderColor: "border"
   } as const;
 
-  /** Runs a drawing after the ones before it. */
   function enqueue<T>(task: () => Promise<T>) {
     const run = queue.then(task);
     queue = run.catch(() => undefined);
     return run;
   }
 
-  /** Runs a task once the browser is idle, or soon where it cannot say. */
   const whenIdle = (task: () => void) =>
     "requestIdleCallback" in window ? requestIdleCallback(task, { timeout: 2000 }) : setTimeout(task, 200);
 
@@ -153,7 +130,6 @@ const { code, label, caption, tone = "cream" } = Astro.props;
     #code = "";
     #unsubscribe: (() => void) | undefined;
     #inFallback = false;
-    /** The drawing for each theme, kept so a theme change shows its drawing at once. */
     #drawings = new Map<Theme, Promise<string | undefined>>();
     /** The theme of the drawing shown last or on its way. */
     #shown: Theme = "light";
@@ -171,11 +147,6 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       this.#unsubscribe?.();
     }
 
-    /**
-     * Shows the page theme's drawing. The other theme's is drawn while the browser is idle, so a
-     * theme change only swaps two drawings: the new one fades in over the old one as the page's
-     * colours fade, starting with them.
-     */
     async #show(theme: Theme, fade: boolean) {
       this.#shown = theme;
       const svg = await this.#drawing(theme);
@@ -210,19 +181,15 @@ const { code, label, caption, tone = "cream" } = Astro.props;
       for (const element of old) element.remove();
     }
 
-    /** A drawing in a theme's colours, or nothing if Mermaid cannot draw the source. */
     async #render(theme: Theme) {
       library ??= import("mermaid").then((module) => module.default);
       const mermaid = await library;
       const tone = this.dataset.tone === "dark" ? "dark" : "cream";
-      // The theme's colours as they end, not as they are partway through a theme's fade. A frame
-      // inside an element with a data-theme of its own keeps that one.
+      // A frame inside an element with its own data-theme keeps that theme.
       const fixed = this.parentElement?.closest<HTMLElement>("[data-theme]:not(html)")?.dataset.theme;
       const names = [...new Set([...Object.values(PALETTE[tone]), "--font-sans"])];
       const read = themeValues(this, names, fixed === "dark" || fixed === "light" ? fixed : theme);
-      // Mermaid measures its labels, so it waits for the font, for up to a second after the page
-      // started. On a slow connection it draws in the fallback font first, and both themes once
-      // more when the font has come.
+      // A font later than the second gets both themes drawn again when it comes.
       const font = sansFont(read["--font-sans"], this.#code);
       const inTime = await Promise.race([font.then(() => true), patience]);
       if (!inTime && !this.#inFallback) {
@@ -239,7 +206,7 @@ const { code, label, caption, tone = "cream" } = Astro.props;
         startOnLoad: false,
         securityLevel: "strict",
         theme: "base",
-        // Flat, as the system draws: Mermaid's newer look adds drop shadows and gradient strokes.
+        // Mermaid's newer look adds drop shadows and gradient strokes.
         look: "classic",
         themeVariables: { ...themeVariables, fontFamily: read["--font-sans"], fontSize: "14px" }
       });
@@ -249,7 +216,6 @@ const { code, label, caption, tone = "cream" } = Astro.props;
         // The half arrowheads of a sequence diagram are black whatever the settings say.
         return svg.replaceAll('stroke="black"', `stroke="${themeVariables.lineColor}"`);
       } catch (error) {
-        // The source stays on the page, which is the frame's fallback.
         console.warn("Mermaid could not draw a diagram:", error);
         return undefined;
       }

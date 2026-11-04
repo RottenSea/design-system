@@ -1,12 +1,7 @@
 ---
 /**
- * The inverse-surface tip: dark on a cream page, cream on a dark one. `tone` names the surface
- * the trigger sits on, as everywhere else in the system. It opens on hover after `delay`, on
- * keyboard focus and on a tap, fades only, and closes on Escape.
- *
- * Ported from the handoff's Tooltip.jsx with the same props. The handoff opens it on hover and
- * focus only; a tap is added here so a phone, which has neither, can open it too.
- * The trigger goes in the default slot and must be focusable for the keyboard path to work.
+ * A tip on the inverse surface that opens on hover, focus or a tap, so phones can open it too.
+ * The trigger in the slot must be focusable.
  */
 interface Props {
   /** The tip text. One short line. */

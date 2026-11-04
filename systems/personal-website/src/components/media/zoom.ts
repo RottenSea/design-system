@@ -28,10 +28,7 @@ export function pickZoomSource(
   return sources.find((source) => source.width >= needed) ?? sources.at(-1);
 }
 
-/**
- * How many image pixels wide the open image is: the image fitted into the window less `margin` on
- * every side, as medium-zoom fits it, at the screen's resolution.
- */
+/** The open image's width in device pixels, fitted as medium-zoom fits it. */
 export function zoomedWidth(
   natural: { width: number; height: number },
   viewport: { width: number; height: number },
