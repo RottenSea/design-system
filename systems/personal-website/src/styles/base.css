@@ -14,8 +14,13 @@
     /*
      * The page's scrollbar: thin, in the soft muted text colour on the page's own ground. Its
      * space is kept whether the page scrolls or not, so a short page and a long one centre the
-     * same. Only the right side is kept: keeping both would leave a strip of canvas beside every
-     * full-width dark band. Browsers that ignore these properties draw their own.
+     * same, and the page does not move sideways when a panel locks the scroll or the content
+     * grows past the window. Only the right side is kept: keeping both would leave a strip of
+     * canvas beside every full-width dark band. scrollbar-color is inherited as a colour, so a
+     * scroll area inside takes this one unless it sets its own (CodeBlock does, for the navy).
+     * The thumb fades with the theme, since --text-muted-soft is one of its variables. Browsers
+     * that ignore scrollbar-color draw their own scrollbar from color-scheme, which the theme
+     * store changes at the end of the fade.
      */
     scrollbar-color: var(--text-muted-soft) transparent;
     scrollbar-gutter: stable;

@@ -319,8 +319,10 @@ const name =
     display: inline;
   }
 
+  /* The scrollbar in the block's own soft text colour, so it reads on the navy as well. */
   .ds-code__scroll {
     overflow-x: auto;
+    scrollbar-color: var(--ds-code-soft) transparent;
     padding: var(--space-md) 0;
   }
 

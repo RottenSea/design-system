@@ -1,0 +1,27 @@
+---
+title: Scrollbars
+description: The page's scrollbar and those inside panels keep their space, and their colour fades with the theme.
+---
+
+## Keeping the space
+
+`base.css` sets `scrollbar-gutter: stable` on `<html>`, so the scrollbar's width is kept on the right whether the page scrolls or not. A short page and a long one centre their content in the same place, and the page does not shift sideways when the content grows past the window or a panel locks the scroll. Only the right side is kept, because keeping both would leave a strip of canvas beside every full-width dark band.
+
+Inside the page, a scroll area keeps the space only when its content changes while it is open. SearchPanel's results do: when more results bring in a scrollbar, the rows stay where they are. The table of contents, the menu and a dialog hold fixed content and do not, or they would show an empty strip when nothing scrolls.
+
+The docs site's example pages do not keep it either. An example never scrolls, and the strip would show the docs page behind the iframe.
+
+## Colour
+
+The scrollbar is thin, with the thumb in `--text-muted-soft` and a transparent track that shows the surface under it. `scrollbar-color` is inherited as a computed colour, so a scroll area inside takes the page's by default. One on a dark surface sets its own; CodeBlock uses its own soft text colour, which also reads on the navy.
+
+## Theme changes
+
+`--text-muted-soft` is one of the theme's variables, so the thumb fades with every other colour on the page. Browsers that ignore `scrollbar-color` draw their own scrollbar from `color-scheme`, which the theme store changes at the end of the fade, so in those browsers the scrollbar switches at the end.
+
+## On a site
+
+| To do | Write |
+| --- | --- |
+| Add a vertical scroll area whose content changes while it is open | `overflow-y: auto; scrollbar-gutter: stable;` |
+| A scroll area on a dark surface | `scrollbar-color: var(--text-on-dark-soft) transparent;` |

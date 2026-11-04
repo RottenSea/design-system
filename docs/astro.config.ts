@@ -80,7 +80,7 @@ export default defineConfig({
             {
               label: "Foundations",
               translations: { "zh-CN": "基础" },
-              items: ["colors", "typography", "spacing-radius", "shadows-borders", "motion", "themes", "accessibility"].map((name) => ({
+              items: ["colors", "typography", "spacing-radius", "shadows-borders", "motion", "themes", "scrollbars", "accessibility"].map((name) => ({
                 slug: `personal-website/${name}`
               }))
             },

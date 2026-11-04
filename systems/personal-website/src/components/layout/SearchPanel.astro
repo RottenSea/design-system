@@ -381,9 +381,12 @@ const {
     width: 24px;
   }
 
+  /* The results change while the panel is open, so the scrollbar's space is kept and the rows do
+     not move sideways when the list grows past the panel. */
   .ds-search__body {
     min-height: 0;
     overflow-y: auto;
+    scrollbar-gutter: stable;
     padding: var(--space-xs);
   }
 
