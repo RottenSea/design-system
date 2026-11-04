@@ -1,19 +1,19 @@
 ---
-// SkipLink alone: the space is empty until the link takes the focus, which is how it looks on a
-// page. Click the space, press Tab, and the link shows at the top left.
-import { SkipLink } from "@rottensea/ds-personal-website/components";
+// SkipLink stays hidden until it has the keyboard focus, so the example only says how to reach it.
 import ExampleLayout from "../../../layouts/ExampleLayout.astro";
 ---
 
 <ExampleLayout title="SkipLink">
-  <SkipLink href="#content" />
-  <div class="space"></div>
-  <div id="content" tabindex="-1"></div>
+  <p class="hint">
+    On a page of the site, press Tab right after it loads: “Skip to content” shows at the top left.
+    Press Enter to jump past the nav to the main content.
+  </p>
 </ExampleLayout>
 
 <style>
-  /* Room for the link, which shows at the top left. */
-  .space {
-    height: 4rem;
+  .hint {
+    color: var(--text-muted);
+    font-size: var(--body-sm-size);
+    margin: 0;
   }
 </style>
