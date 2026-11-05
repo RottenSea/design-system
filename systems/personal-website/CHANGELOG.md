@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `THIRD-PARTY-NOTICES.md` in the package: the icons in `src/icons/` are from Tabler Icons, and it carries Tabler's MIT License.
+
 ### Changed
 
+- `LICENSE` names the copyright holder: `Copyright 2026 RottenSea`.
 - `Figure` zooms with its own script, and medium-zoom is no longer a dependency. The zoom starts at once, placed from the original's size, which the build writes on the image; medium-zoom waited for the larger copy to load and showed only the scrim until then. The first frame is the image as the page shows it, a tile's crop and corners included, and the cropped parts unfold as it grows. Closing runs the same way back. Resizing the window also closes it.
 
 ### Fixed
