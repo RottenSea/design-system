@@ -28,6 +28,20 @@ export function parseFadeValue(value: string): FadeValue | null {
   return null;
 }
 
+/**
+ * A CSS time in ms, null if it is not one. A minifier may write 350ms as .35s, so the unit
+ * counts: read with parseFloat alone, .35s was a fade of 0.35ms.
+ */
+export function parseDuration(value: string): number | null {
+  const time = /^(-?(?:\d+\.?\d*|\.\d+))(ms|s)?$/i.exec(value.trim());
+  if (!time) return null;
+  const number = Number.parseFloat(time[1]);
+  if (time[2]?.toLowerCase() === "s") return number * 1000;
+  // A bare number is only valid as 0.
+  if (!time[2] && number !== 0) return null;
+  return number;
+}
+
 const round = (value: number) => Math.round(value * 100) / 100;
 
 /**

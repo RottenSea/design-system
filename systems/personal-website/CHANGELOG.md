@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The theme fade works in a built site. The minifier writes `--motion-entrance: 350ms` as `.35s`, which the theme store read with `parseFloat` as 0.35ms, so every colour jumped to the new theme at once and anything with its own transition, such as a `Spoiler` and the text it reveals, caught up 120ms later. The fade's last frame also draws the new values now, so no transition starts when it ends.
+
 ## [1.1.2] - 2026-11-04
 
 ### Added

@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { easing, mixFadeValue, parseFadeValue } from "../src/scripts/fade.ts";
+import {
+  easing,
+  mixFadeValue,
+  parseDuration,
+  parseFadeValue
+} from "../src/scripts/fade.ts";
 
 test("computed colours and percentages are read", () => {
   assert.deepEqual(parseFadeValue("rgb(250, 249, 245)"), {
@@ -53,4 +58,14 @@ test("the easing follows the curve and keeps its ends", () => {
   assert.ok(move(0.25) < move(0.5) && move(0.5) < move(0.75));
   assert.ok(Math.abs(easing("linear")(0.3) - 0.3) < 0.001);
   assert.ok(Math.abs(easing("nonsense")(0.5) - easing("ease")(0.5)) < 1e-9);
+});
+
+test("a CSS time is read in ms, as written or as a minifier rewrites it", () => {
+  assert.equal(parseDuration("350ms"), 350);
+  assert.equal(parseDuration(".35s"), 350);
+  assert.equal(parseDuration(" 0.35s "), 350);
+  assert.equal(parseDuration("1s"), 1000);
+  assert.equal(parseDuration("0"), 0);
+  assert.equal(parseDuration(""), null);
+  assert.equal(parseDuration("fast"), null);
 });

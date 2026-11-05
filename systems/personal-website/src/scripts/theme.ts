@@ -7,7 +7,7 @@
  * (crbug.com/569257985).
  */
 
-import { easing, mixFadeValue, parseFadeValue } from "./fade.ts";
+import { easing, mixFadeValue, parseDuration, parseFadeValue } from "./fade.ts";
 
 export type Theme = "light" | "dark";
 export type ThemePreference = Theme | "system";
@@ -202,14 +202,15 @@ function fadeTheme(root: HTMLElement, from: Theme, apply: () => void) {
   };
   const step = (now: number) => {
     const time = (now - began) / fade.duration;
-    if (time >= 1) return finish();
-    const amount = progress(Math.max(0, time));
+    const amount = progress(Math.min(1, Math.max(0, time)));
     for (const { name, from: a, to: b, end } of steps) {
       const value = (a && b && mixFadeValue(a, b, amount)) || end;
       values.set(name, value);
       root.style.setProperty(name, value);
     }
-    frame = requestAnimationFrame(step);
+    // The last frame draws the new values, so when elements get their transitions back on the
+    // next one, nothing changes for them to start.
+    frame = requestAnimationFrame(time >= 1 ? finish : step);
   };
   frame = requestAnimationFrame(step);
   // Hidden frames get no animation frames; this ends the fade anyway.
@@ -223,7 +224,7 @@ export function themeFade(root: HTMLElement = document.documentElement) {
     const style = getComputedStyle(root);
     timing = {
       duration:
-        Number.parseFloat(style.getPropertyValue("--motion-entrance")) || 350,
+        parseDuration(style.getPropertyValue("--motion-entrance")) || 350,
       easing:
         style.getPropertyValue("--ease-move").trim() ||
         "cubic-bezier(0.4, 0, 0.2, 1)"
