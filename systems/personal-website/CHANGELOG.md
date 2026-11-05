@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `Figure` zooms with its own script, and medium-zoom is no longer a dependency. The zoom starts at once, placed from the original's size, which the build writes on the image; medium-zoom waited for the larger copy to load and showed only the scrim until then. The first frame is the image as the page shows it, a tile's crop and corners included, and the cropped parts unfold as it grows. Closing runs the same way back. Resizing the window also closes it.
+
 ### Fixed
 
 - The theme fade works in a built site. The minifier writes `--motion-entrance: 350ms` as `.35s`, which the theme store read with `parseFloat` as 0.35ms, so every colour jumped to the new theme at once and anything with its own transition, such as a `Spoiler` and the text it reveals, caught up 120ms later. The fade's last frame also draws the new values now, so no transition starts when it ends.

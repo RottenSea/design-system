@@ -41,7 +41,7 @@ import Example from "../../../../../components/Example.astro";
 | 状态 | 变化 |
 | --- | --- |
 | 加载中 | 构建时生成的 16px 缩略图模糊地铺在图片的位置，给页面增加大约 200 字节 |
-| 放大 | 图片从原来的位置放大到窗口能容纳的最大尺寸，背后是深色遮罩。点下去马上用页面上已经显示的图放大，构建时生成、按屏幕选尺寸的大图到了再换上，所以先略糊一下、随后变清楚。鼠标停在图上或键盘聚焦时就开始下载大图。点击、按 Esc 或滚动页面就关闭 |
+| 放大 | 图片从原来的位置放大到窗口能容纳的最大尺寸，背后是深色遮罩。构建时把原图尺寸写在图片上，点下去不用等任何下载就开始放大。第一帧和页面上的图一模一样，包括图块的裁切和圆角，被裁掉的部分随着放大向外展开。先用页面上已经显示的图，构建时生成、按屏幕选尺寸的大图到了再换上，所以先略糊一下、随后变清楚。鼠标停在图上或键盘聚焦时就开始下载大图。点击、按 Esc、滚动页面或改变窗口大小都会关闭，图片缩回原位，裁掉的部分重新盖回去 |
 
 ## 无障碍
 
@@ -49,7 +49,7 @@ import Example from "../../../../../components/Example.astro";
 
 ## API
 
-[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro)，以及替换文章里图片的 [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro)。交付包里没有单张图片的组件，这个组件沿用交付包里正文图片和图注的样式。放大用 [medium-zoom](https://github.com/francoischalifour/medium-zoom)。缩略图用 sharp 生成，Astro 处理图片用的也是它。
+[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro)，以及替换文章里图片的 [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro)。交付包里没有单张图片的组件，这个组件沿用交付包里正文图片和图注的样式。放大是组件自己实现的，所以能从图块裁切后的样子直接展开。缩略图用 sharp 生成，Astro 处理图片用的也是它。
 
 ## 相关
 

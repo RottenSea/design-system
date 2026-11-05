@@ -1,10 +1,11 @@
 ---
 import { getImage, Image } from "astro:assets";
 /**
- * One image in a post with an optional caption; it opens larger with medium-zoom. A blurred 16px
- * copy shows while a local image loads. The zoom opens from the image on the page, and the
- * smallest larger copy that covers the screen replaces it once loaded; loading starts on hover or
- * focus.
+ * One image in a post with an optional caption; it opens larger on click. A blurred 16px copy
+ * shows while a local image loads. The zoom starts at once from the image as the page shows it,
+ * crop and corners included, and grows to the whole image, its size known from the original's;
+ * the smallest larger copy that covers the screen replaces it once loaded, and loading starts on
+ * hover or focus. Closing runs the same way back.
  */
 import type { ImageMetadata } from "astro";
 import { placeholderOf } from "./placeholder";
@@ -60,6 +61,9 @@ const zoomSources =
       ).join(", ")
     : undefined;
 const frameStyle = stand ? `--ds-placeholder: url("${stand}")` : undefined;
+// The original's size, so the zoom knows where it ends before anything larger loads.
+const zoomWidth = local ? src.width : width;
+const zoomHeight = local ? src.height : height;
 const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
 ---
 
@@ -77,9 +81,20 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
               loading={loading}
               class="ds-figure__img"
               data-ds-zoom={zoomSources}
+              data-ds-zoom-width={zoomWidth}
+              data-ds-zoom-height={zoomHeight}
             />
           ) : (
-            <img src={src} alt={alt} width={width} height={height} loading={loading} class="ds-figure__img" />
+            <img
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              loading={loading}
+              class="ds-figure__img"
+              data-ds-zoom-width={zoomWidth}
+              data-ds-zoom-height={zoomHeight}
+            />
           )}
         </button>
       ) : (
@@ -97,29 +112,53 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
 </ds-figure>
 
 <script>
-  import mediumZoom from "medium-zoom";
-  import { parseZoomSources, pickZoomSource, ZOOM_MARGIN, zoomedWidth } from "./zoom";
+  import { parseDuration } from "../../scripts/fade";
+  import {
+    pickZoomSource,
+    parseZoomSources,
+    type Rect,
+    shownImage,
+    ZOOM_MARGIN,
+    type ZoomFrame,
+    zoomEnd,
+    zoomedWidth,
+    zoomStart,
+    zoomTarget
+  } from "./zoom";
 
-  // One zoom for the page, so opening one image closes any other.
-  const zoom = mediumZoom({ background: "rgba(20, 20, 19, 0.72)", margin: ZOOM_MARGIN });
+  interface Open {
+    img: HTMLImageElement;
+    copy: HTMLImageElement;
+    overlay: HTMLElement;
+    target: Rect;
+    scroll: number;
+    closing: boolean;
+    timer?: number;
+  }
 
+  /** The zoom open now; one for the page, so opening an image closes any other. */
+  let open: Open | undefined;
   const larger = new WeakMap<HTMLImageElement, HTMLImageElement>();
+
+  /** The original's size, which Figure writes; else the shape of what has loaded. */
+  function naturalOf(img: HTMLImageElement) {
+    const width = Number(img.dataset.dsZoomWidth) || img.naturalWidth || Number(img.getAttribute("width"));
+    const height = Number(img.dataset.dsZoomHeight) || img.naturalHeight || Number(img.getAttribute("height"));
+    return width && height ? { width, height } : undefined;
+  }
+
+  function viewport() {
+    const root = document.documentElement;
+    return { width: root.clientWidth, height: root.clientHeight };
+  }
 
   function loadLarger(img: HTMLImageElement): HTMLImageElement | undefined {
     const known = larger.get(img);
     if (known) return known;
     const sources = parseZoomSources(img.dataset.dsZoom ?? "");
-    // Only the shape matters; before the image loads, its width and height attributes give it.
-    const width = img.naturalWidth || Number(img.getAttribute("width"));
-    const height = img.naturalHeight || Number(img.getAttribute("height"));
-    if (!sources.length || !width || !height) return undefined;
-    const needed = zoomedWidth(
-      { width, height },
-      { width: window.innerWidth, height: window.innerHeight },
-      ZOOM_MARGIN,
-      window.devicePixelRatio || 1
-    );
-    const source = pickZoomSource(sources, needed);
+    const natural = naturalOf(img);
+    if (!sources.length || !natural) return undefined;
+    const source = pickZoomSource(sources, zoomedWidth(natural, viewport(), ZOOM_MARGIN, window.devicePixelRatio || 1));
     if (!source) return undefined;
     const copy = new Image();
     copy.decoding = "async";
@@ -128,21 +167,101 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
     return copy;
   }
 
-  // The open copy is the one medium-zoom adds to <body> right after its open event.
-  function swapIn(img: HTMLImageElement) {
-    const copy = loadLarger(img);
-    if (!copy) return;
-    copy
-      .decode()
+  /** The open image laid over the image as the page shows it now, crop and corners included. */
+  function startFrame(img: HTMLImageElement, target: Rect): ZoomFrame {
+    const natural = naturalOf(img) ?? target;
+    const box = img.getBoundingClientRect();
+    const shown = shownImage(box, natural, getComputedStyle(img).objectFit);
+    const frame = img.closest<HTMLElement>(".ds-figure__frame") ?? img;
+    const radius = Number.parseFloat(getComputedStyle(frame).borderTopLeftRadius) || 0;
+    return zoomStart(box, shown, target, radius);
+  }
+
+  function draw(copy: HTMLElement, frame: ZoomFrame) {
+    copy.style.transform = frame.transform;
+    copy.style.clipPath = frame.clip;
+  }
+
+  const onKey = (event: KeyboardEvent) => {
+    if (event.key === "Escape") zoomOut();
+  };
+  const onScroll = () => {
+    if (open && Math.abs(window.scrollY - open.scroll) > 40) zoomOut();
+  };
+  const onResize = () => zoomOut();
+  function listen(on: boolean) {
+    const method = on ? "addEventListener" : "removeEventListener";
+    document[method]("keydown", onKey as EventListener);
+    window[method]("scroll", onScroll);
+    window[method]("resize", onResize);
+  }
+
+  async function zoomIn(img: HTMLImageElement) {
+    finish();
+    const natural = naturalOf(img);
+    if (!natural) return;
+    const shown = shownImage(img.getBoundingClientRect(), natural, getComputedStyle(img).objectFit);
+    const target = zoomTarget(natural, viewport(), ZOOM_MARGIN, shown.width);
+    const copy = document.createElement("img");
+    copy.className = "ds-zoom-image";
+    copy.alt = img.alt;
+    copy.src = img.currentSrc || img.src;
+    copy.style.left = `${target.left}px`;
+    copy.style.top = `${target.top}px`;
+    copy.style.width = `${target.width}px`;
+    copy.style.height = `${target.height}px`;
+    draw(copy, startFrame(img, target));
+    const overlay = document.createElement("div");
+    overlay.className = "ds-zoom-overlay";
+    const state: Open = { img, copy, overlay, target, scroll: window.scrollY, closing: false };
+    open = state;
+    overlay.addEventListener("click", zoomOut);
+    copy.addEventListener("click", zoomOut);
+    // The page's own copy is already loaded; decoding it first keeps the first frame from being blank.
+    await copy.decode().catch(() => undefined);
+    if (open !== state) return;
+    document.body.append(overlay, copy);
+    img.dataset.dsZoomed = "";
+    // The start frame is drawn before the end is set, so the change runs as a transition.
+    copy.getBoundingClientRect();
+    overlay.classList.add("ds-zoom--open");
+    draw(copy, zoomEnd);
+    listen(true);
+    const sharper = loadLarger(img);
+    sharper
+      ?.decode()
       .then(() => {
-        // The open copy keeps the image's attributes, so another image opened since is told apart.
-        const open = document.querySelector<HTMLImageElement>("img.medium-zoom-image--opened");
-        if (!open || open.dataset.dsZoom !== img.dataset.dsZoom) return;
-        open.removeAttribute("srcset");
-        open.removeAttribute("sizes");
-        open.src = copy.src;
+        if (open === state) copy.src = sharper.src;
       })
       .catch(() => undefined);
+  }
+
+  /** Back to the image on the page, where it is now: the hidden sides close in as it shrinks. */
+  function zoomOut() {
+    const state = open;
+    if (!state || state.closing) return;
+    state.closing = true;
+    listen(false);
+    state.overlay.classList.remove("ds-zoom--open");
+    draw(state.copy, startFrame(state.img, state.target));
+    const time = parseDuration(getComputedStyle(state.copy).transitionDuration.split(",")[0] ?? "") ?? 0;
+    if (time <= 0) return finish();
+    state.copy.addEventListener("transitionend", (event) => {
+      if (event.propertyName === "transform") finish();
+    });
+    state.timer = window.setTimeout(finish, time + 100);
+  }
+
+  /** Ends the zoom at once. */
+  function finish() {
+    const state = open;
+    if (!state) return;
+    open = undefined;
+    clearTimeout(state.timer);
+    listen(false);
+    state.overlay.remove();
+    state.copy.remove();
+    delete state.img.dataset.dsZoomed;
   }
 
   class DsFigure extends HTMLElement {
@@ -153,25 +272,20 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
       this.#img = button?.querySelector("img") ?? null;
       if (!button || !this.#img) return;
       const img = this.#img;
-      zoom.attach(img);
       const warm = () => loadLarger(img);
       button.addEventListener("pointerenter", warm);
       button.addEventListener("focus", warm);
       button.addEventListener("touchstart", warm, { passive: true });
-      // medium-zoom's events do not bubble, so each image listens for its own.
-      img.addEventListener("medium-zoom:open", () => swapIn(img));
-      button.addEventListener("click", (event) => {
-        // A pointer lands on the image, which medium-zoom handles from the document. Enter and
-        // Space land on the button itself; stopping there keeps medium-zoom from reading the
-        // click as one outside the image, which would close it again.
-        if (event.target !== button) return;
-        event.stopPropagation();
-        zoom.open({ target: img });
+      // A click on the image and Enter or Space on the button both land here; while the zoom is
+      // open, the overlay takes pointer clicks and the button only sees the keyboard.
+      button.addEventListener("click", () => {
+        if (open?.img === img && !open.closing) zoomOut();
+        else void zoomIn(img);
       });
     }
 
     disconnectedCallback() {
-      if (this.#img) zoom.detach(this.#img);
+      if (open?.img === this.#img) finish();
     }
   }
 
@@ -228,13 +342,37 @@ const label = alt ? `Enlarge image: ${alt}` : "Enlarge image";
     margin-top: var(--space-xs);
   }
 
-  /* medium-zoom's copy would keep a tile's crop; it shows the whole image, above a sticky header. */
-  :global(.ds-figure__img.medium-zoom-image--opened) {
-    object-fit: contain;
+  /* The image on the page while its zoom is open. */
+  .ds-figure__img[data-ds-zoomed] {
+    visibility: hidden;
   }
 
-  :global(.medium-zoom-overlay),
-  :global(.medium-zoom-image--opened) {
+  /* The zoom, above a sticky header: the image is set at its open size and drawn from the page's. */
+  :global(.ds-zoom-overlay) {
+    background: rgb(20 20 19 / 72%);
+    cursor: zoom-out;
+    inset: 0;
+    opacity: 0;
+    position: fixed;
+    transition: opacity var(--motion-entrance) var(--ease-move);
+    z-index: 100;
+  }
+
+  :global(.ds-zoom-overlay.ds-zoom--open) {
+    opacity: 1;
+  }
+
+  :global(.ds-zoom-image) {
+    cursor: zoom-out;
+    display: block;
+    max-width: none;
+    object-fit: fill;
+    position: fixed;
+    transform-origin: 0 0;
+    transition:
+      transform var(--motion-entrance) var(--ease-move),
+      clip-path var(--motion-entrance) var(--ease-move);
+    will-change: transform, clip-path;
     z-index: 100;
   }
 </style>

@@ -41,7 +41,7 @@ The image with `--radius-lg` corners at the full measure, and an optional captio
 | State | What changes |
 | --- | --- |
 | Loading | A 16px copy of the image, made at build time, shows blurred in its place. It adds about 200 bytes to the page |
-| Zoomed | The image grows from where it sits to as large as the window allows, over a dark scrim. It opens at once from the image already on the page; a larger copy made at build time, sized for the screen, takes its place when it arrives, so it is soft for a moment and then sharp. The copy starts loading when the pointer rests on the image or the image takes the focus. A click, Escape or scrolling closes it |
+| Zoomed | The image grows from where it sits to as large as the window allows, over a dark scrim. It opens at once, because the build writes the original's size on the image and the zoom knows where it ends before anything larger loads. Its first frame looks like the image on the page, crop and rounded corners included, and the parts a tile crops away unfold as it grows. It starts with the image already on the page; a larger copy made at build time, sized for the screen, takes its place when it arrives, so it is soft for a moment and then sharp. The copy starts loading when the pointer rests on the image or the image takes the focus. A click, Escape, scrolling or resizing the window closes it: the image shrinks back and the cropped parts close over again |
 
 ## Accessibility
 
@@ -49,7 +49,7 @@ The image is a real button named "Enlarge image" followed by the alt text, so En
 
 ## API
 
-[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro), and [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro), which stands in for a post's images. The handoff has no single-image component; this one follows the handoff's styles for images and captions in running text. The zoom is [medium-zoom](https://github.com/francoischalifour/medium-zoom). The placeholder is made with sharp, which Astro uses for its own images.
+[`Figure.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/Figure.astro), and [`MarkdownImage.astro`](https://github.com/RottenSea/design-system/blob/main/systems/personal-website/src/components/media/MarkdownImage.astro), which stands in for a post's images. The handoff has no single-image component; this one follows the handoff's styles for images and captions in running text. The zoom is the component's own, so it can open straight from a tile's crop. The placeholder is made with sharp, which Astro uses for its own images.
 
 ## Related
 
