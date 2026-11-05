@@ -57,6 +57,28 @@ const length = first
   : slotText.replace(/<[^>]*>/g, "").trim().length;
 const shownAttribution = first ? first.attribution : attribution;
 const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
+
+/*
+ * Picks the quote while the page is still parsing, before the first paint: a module script runs
+ * after it, when the first quote, the one in the HTML, has already been drawn.
+ */
+const PICK = `(function (band) {
+  var data = band.querySelector("[data-ds-quotes]");
+  var text = band.querySelector(".ds-quote-band__quote");
+  var source = band.querySelector(".ds-quote-band__source");
+  if (!data || !text || !source) return;
+  var quotes = JSON.parse(data.textContent || "[]");
+  var quote = quotes[Math.floor(Math.random() * quotes.length)];
+  if (!quote) return;
+  var length = quote.text.length;
+  var size = !band.hasAttribute("data-auto-size") || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
+  text.textContent = quote.text;
+  /* classList: a site that scopes styles by class (Starlight) keeps the scope class. */
+  text.classList.remove("ds-quote-band__quote--lg", "ds-quote-band__quote--md", "ds-quote-band__quote--sm");
+  text.classList.add("ds-quote-band__quote--" + size);
+  source.textContent = quote.attribution || "";
+  source.hidden = !quote.attribution;
+})(document.currentScript.parentElement);`;
 ---
 
 <ds-quote-band
@@ -93,12 +115,12 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
     )
   }
   {quotes && quotes.length > 1 && <script type="application/json" data-ds-quotes set:html={JSON.stringify(quotes)} />}
+  {quotes && quotes.length > 1 && <script is:inline set:html={PICK} />}
 </ds-quote-band>
 
 <script>
   class DsQuoteBand extends HTMLElement {
     connectedCallback() {
-      this.pick();
       this.querySelector("[data-ds-quote-hint]")?.addEventListener("click", () => {
         // Astro writes this component's script right after it in a built page; skip it.
         let next = this.nextElementSibling as HTMLElement | null;
@@ -117,24 +139,6 @@ const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
         if (nav && (position === "fixed" || position === "sticky")) top -= nav.offsetHeight;
         window.scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
       });
-    }
-
-    pick() {
-      const data = this.querySelector("[data-ds-quotes]");
-      if (!data) return;
-      const quotes: { text: string; attribution?: string }[] = JSON.parse(data.textContent ?? "[]");
-      const quote = quotes[Math.floor(Math.random() * quotes.length)];
-      const text = this.querySelector(".ds-quote-band__quote");
-      const source = this.querySelector<HTMLElement>(".ds-quote-band__source");
-      if (!quote || !text || !source) return;
-      text.textContent = quote.text;
-      const length = quote.text.length;
-      const size = !this.hasAttribute("data-auto-size") || length <= 90 ? "lg" : length <= 180 ? "md" : "sm";
-      // classList: a site that scopes styles by class (Starlight) keeps the scope class here.
-      text.classList.remove("ds-quote-band__quote--lg", "ds-quote-band__quote--md", "ds-quote-band__quote--sm");
-      text.classList.add(`ds-quote-band__quote--${size}`);
-      source.textContent = quote.attribution ?? "";
-      source.hidden = !quote.attribution;
     }
   }
 
