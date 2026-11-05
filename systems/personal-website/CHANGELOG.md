@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-05
+
 ### Added
 
 - `THIRD-PARTY-NOTICES.md` in the package: the icons in `src/icons/` are from Tabler Icons, and it carries Tabler's MIT License.
@@ -357,7 +359,8 @@ This release redesigns the system after the brand design handoff. Most variable 
 - `base.css`, element defaults in the `base` cascade layer: page background and body text, h1 to h6 on the display and title styles, underlined links, monospace code, placeholder and selection colors, and a `:focus-visible` outline in the new `--color-focus`. When the reader asks for reduced motion, transitions and animations finish in 1ms and run once, except inside an element with `data-motion="essential"`.
 - `index.css`, which loads the Tailwind Preflight reset from `@unocss/reset` into a `reset` layer, then the fonts, the tokens and `base.css`.
 
-[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.2...HEAD
+[unreleased]: https://github.com/RottenSea/design-system/compare/personal-website-v1.2.0...HEAD
+[1.2.0]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.2...personal-website-v1.2.0
 [1.1.2]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.1...personal-website-v1.1.2
 [1.1.1]: https://github.com/RottenSea/design-system/compare/personal-website-v1.1.0...personal-website-v1.1.1
 [1.1.0]: https://github.com/RottenSea/design-system/compare/personal-website-v1.0.9...personal-website-v1.1.0
