@@ -31,7 +31,7 @@ import Example from "../../../../../components/Example.astro";
 </script>
 ```
 
-一条结果是 `{ title, href, meta, excerpt, group }`。`excerpt` 里的 `<mark>` 保留，别的标记当文字显示。`setResults([], message)` 改为显示一句话，例如说明为什么没有索引。
+一条结果是 `{ title, href, meta, excerpt, group }`。`excerpt` 里的 `<mark>` 和 `&lt;` 这类实体保留（Pagefind 就是这样写的），别的标记当文字显示。`setResults([], message)` 改为显示一句话，例如说明为什么没有索引。
 
 ## 结构
 

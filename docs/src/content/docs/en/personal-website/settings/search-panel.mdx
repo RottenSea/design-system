@@ -31,7 +31,7 @@ Once per site, opened from a search button in the nav. The panel never fetches: 
 </script>
 ```
 
-A result is `{ title, href, meta, excerpt, group }`. The excerpt keeps its `<mark>` elements and shows any other markup as text. `setResults([], message)` shows a sentence instead, such as why there is no index.
+A result is `{ title, href, meta, excerpt, group }`. The excerpt keeps its `<mark>` elements and entities such as `&lt;`, as Pagefind writes them, and shows any other markup as text. `setResults([], message)` shows a sentence instead, such as why there is no index.
 
 ## Anatomy
 

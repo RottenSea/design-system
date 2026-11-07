@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `SearchPanel` shows `<` and `>` in an excerpt from Pagefind as themselves. Pagefind writes them as `&lt;` and `&gt;`, and the panel escaped the `&` again, so `Array<string>` read `Array&lt;string&gt;`. Entities in an excerpt are kept now; a bare `&` is still escaped.
+
 ## [1.2.0] - 2026-11-05
 
 ### Added

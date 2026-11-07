@@ -11,7 +11,10 @@ export interface SearchResult {
   href: string;
   /** The second line: date, category. */
   meta?: string;
-  /** The matching text. Its <mark> elements are kept; any other markup is shown as text. */
+  /**
+   * The matching text. Its <mark> elements and entities such as &lt; are kept; any other markup
+   * is shown as text.
+   */
   excerpt?: string;
   /** An uppercase micro-label that starts a group; rows in a row with the same one share it. */
   group?: string;
@@ -81,10 +84,13 @@ const {
     group?: string;
   }
 
-  /** Escapes markup, then lets <mark> and </mark> back in. */
+  /**
+   * Escapes markup, then lets <mark> and </mark> back in. An entity is kept: Pagefind's excerpts
+   * already write < and > as &lt; and &gt;, which escaping again would show as text.
+   */
   const marked = (html: string) =>
     html
-      .replace(/&/g, "&amp;")
+      .replace(/&(?![a-z][a-z\d]*;|#\d+;|#x[\da-f]+;)/gi, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/&lt;(\/?)mark&gt;/g, "<$1mark>");
