@@ -35,6 +35,10 @@ const items = options.map((option) =>
 const chosen = items.some((item) => item.value === value)
   ? value
   : items[0]?.value;
+// Tab reaches the chosen option, or the first enabled one when the chosen one is disabled.
+const stop =
+  items.find((item) => item.value === chosen && !item.disabled) ??
+  items.find((item) => !item.disabled);
 ---
 
 <ds-segmented
@@ -51,7 +55,7 @@ const chosen = items.some((item) => item.value === value)
           role="radio"
           class="ds-segmented__option"
           aria-checked={on ? "true" : "false"}
-          tabindex={on ? 0 : -1}
+          tabindex={item === stop ? 0 : -1}
           disabled={item.disabled}
           data-value={item.value}
           data-ds-tap="cell"
@@ -81,8 +85,10 @@ const chosen = items.some((item) => item.value === value)
         if (!step) return;
         event.preventDefault();
         const list = options();
-        const current = list.findIndex((button) => button.getAttribute("aria-checked") === "true");
-        const next = list[(current + step + list.length) % list.length];
+        // From the option with the focus, which is the chosen one unless nothing is chosen.
+        const from = list.indexOf(event.target as HTMLButtonElement);
+        const index = from === -1 ? (step > 0 ? 0 : list.length - 1) : (from + step + list.length) % list.length;
+        const next = list[index];
         if (!next) return;
         choose(next);
         next.focus();
@@ -91,10 +97,14 @@ const chosen = items.some((item) => item.value === value)
 
     /** Sets the chosen value without sending an event. */
     select(value: string | null) {
-      for (const button of this.querySelectorAll<HTMLButtonElement>("button[data-value]")) {
-        const on = button.dataset.value === value;
-        button.setAttribute("aria-checked", String(on));
-        button.tabIndex = on ? 0 : -1;
+      const buttons = [...this.querySelectorAll<HTMLButtonElement>("button[data-value]")];
+      // Tab reaches the chosen option, or the first enabled one when none is chosen.
+      const stop =
+        buttons.find((button) => button.dataset.value === value && !button.disabled) ??
+        buttons.find((button) => !button.disabled);
+      for (const button of buttons) {
+        button.setAttribute("aria-checked", String(button.dataset.value === value));
+        button.tabIndex = button === stop ? 0 : -1;
       }
     }
   }
