@@ -298,6 +298,11 @@ test("a mermaid fence becomes a Mermaid diagram with its label and caption", () 
   });
 });
 
+test("a mermaid fence reads title= only as a whole word", () => {
+  const { tree } = run('```mermaid subtitle="Sub"\ngraph LR\n  A --> B\n```\n');
+  assert.equal(attrs(tree.children[0]).label, undefined);
+});
+
 test("other code fences stay code", () => {
   const { tree } = run("```js\nconst a = 1;\n```\n");
   assert.equal(tree.children[0].type, "code");

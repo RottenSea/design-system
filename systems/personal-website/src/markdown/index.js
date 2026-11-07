@@ -366,7 +366,7 @@ function mermaid(node) {
   const meta = node.meta ?? "";
   const quoted = (name) =>
     meta
-      .match(new RegExp(`${name}=(?:"([^"]*)"|'([^']*)')`))
+      .match(new RegExp(`(?:^|\\s)${name}=(?:"([^"]*)"|'([^']*)')`))
       ?.slice(1)
       .find(Boolean);
   const attributes = [attribute("code", node.value)];
