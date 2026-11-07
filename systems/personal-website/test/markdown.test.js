@@ -84,6 +84,17 @@ test(":::steps turns each list item into a Step with a title slot and a status",
   assert.equal(text(first.children[1]), "Detail.");
 });
 
+test(":::steps keeps the text beside its list outside the steps, with a warning", () => {
+  const { tree, messages } = run(
+    ":::steps\nBefore.\n\n1. First\n2. Second\n\nAfter.\n:::\n"
+  );
+  assert.deepEqual(
+    tree.children.map((node) => node.name ?? text(node)),
+    ["Before.", "Steps", "After."]
+  );
+  assert.match(messages[0], /holds only its ordered list/);
+});
+
 test("directives nest: a spoiler inside a tip is handled too", () => {
   const { tree } = run(":::tip\nIt was :spoiler[him].\n:::\n");
   const inline = tree.children[0].children[0].children.find(

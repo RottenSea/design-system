@@ -55,11 +55,13 @@ function blockSpoiler(node) {
   };
 }
 
+/** Anything beside the list stays where it was, above or below the steps. */
 function steps(node, file) {
   takeLabel(node);
-  const list = node.children.find(
+  const at = node.children.findIndex(
     (child) => child.type === "list" && child.ordered
   );
+  const list = node.children[at];
   if (!list) {
     file.message(":::steps needs an ordered list inside it", node);
     return {
@@ -97,12 +99,24 @@ function steps(node, file) {
       children: [titleSlot, ...body]
     };
   });
-  return {
-    type: "mdxJsxFlowElement",
-    name: "Steps",
-    attributes: [],
-    children: items
-  };
+  const before = node.children.slice(0, at);
+  const after = node.children.slice(at + 1);
+  if (before.length || after.length) {
+    file.message(
+      ":::steps holds only its ordered list; the rest stays outside the steps",
+      node
+    );
+  }
+  return [
+    ...before,
+    {
+      type: "mdxJsxFlowElement",
+      name: "Steps",
+      attributes: [],
+      children: items
+    },
+    ...after
+  ];
 }
 
 /** A container's label: the `label` attribute, or the `[label]` after the name. */
