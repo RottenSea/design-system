@@ -80,3 +80,13 @@ test("links to other sites open in a new tab, with a hidden note", () => {
   for (const link of [about, mail, own, zip])
     assert.equal(link.properties.target, undefined);
 });
+
+test("a malformed address warns instead of stopping the build", () => {
+  const tree = root(
+    element("a", { href: "https://exa mple.com" }, [text("Typo")])
+  );
+  const file = new VFile();
+  rehypeDsExternalLinks({ site: "https://rottenth.cafe" })(tree, file);
+  assert.equal(tree.children[0].properties.target, "_blank");
+  assert.match(String(file.messages[0]), /is not a valid address/);
+});

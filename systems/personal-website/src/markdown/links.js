@@ -59,6 +59,16 @@ export function rehypeDsHeadingAnchors({
 
 const WEB = /^(?:https?:)?\/\//i;
 
+/** The address's host, or undefined with a warning when it is not a valid address. */
+function hostOf(href, node, file) {
+  try {
+    return new URL(href, "https://example.invalid").host;
+  } catch {
+    file?.message(`${href} is not a valid address`, node);
+    return undefined;
+  }
+}
+
 /**
  * Only web addresses count, since mailto: and tel: open an app. A link with its own target or
  * download attribute is left alone.
@@ -69,7 +79,7 @@ export function rehypeDsExternalLinks({
   note = " (opens in a new tab)"
 } = {}) {
   const own = site ? new URL(site).host : undefined;
-  return (tree) => {
+  return (tree, file) => {
     visit(tree, "element", (node) => {
       if (node.tagName !== "a") return;
       const href = String(node.properties?.href ?? "");
@@ -79,7 +89,7 @@ export function rehypeDsExternalLinks({
         node.properties.download != null
       )
         return;
-      if (own && new URL(href, "https://example.invalid").host === own) return;
+      if (own && hostOf(href, node, file) === own) return;
       node.properties.target = "_blank";
       node.properties.rel = ["noreferrer"];
       node.properties.className = [
