@@ -57,6 +57,8 @@ const length = first
   : slotText.replace(/<[^>]*>/g, "").trim().length;
 const shownAttribution = first ? first.attribution : attribution;
 const dark = tone === "dark" || (tone === "bare" && overlayTone === "on-dark");
+// In a <script>, a quote holding "</script>" would end the element; < is the same < to JSON.
+const quotesJson = JSON.stringify(quotes ?? []).replace(/</g, "\\u003c");
 
 /*
  * Picks the quote while the page is still parsing, before the first paint: a module script runs
@@ -114,7 +116,7 @@ const PICK = `(function (band) {
       </button>
     )
   }
-  {quotes && quotes.length > 1 && <script type="application/json" data-ds-quotes set:html={JSON.stringify(quotes)} />}
+  {quotes && quotes.length > 1 && <script type="application/json" data-ds-quotes set:html={quotesJson} />}
   {quotes && quotes.length > 1 && <script is:inline set:html={PICK} />}
 </ds-quote-band>
 

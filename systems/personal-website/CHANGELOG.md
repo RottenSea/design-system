@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A malformed web address in a post, such as `https://exa mple.com`, warns with its place in the file. `rehypeDsExternalLinks` used to throw `Invalid URL` on it and stop the build, without saying which post.
 - `:::steps` keeps the text beside its ordered list, above or below the steps, with a warning. It used to drop it without a word.
 - A mermaid fence reads `title=` and `caption=` only as whole words, so `subtitle="…"` no longer becomes the diagram's label.
+- `QuoteBand` writes its quotes into the page with `<` escaped, so a quote holding `</script>` no longer ends the element that carries them.
 
 ## [1.2.0] - 2026-11-05
 
