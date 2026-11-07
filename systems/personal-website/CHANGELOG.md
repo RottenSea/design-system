@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `:::steps` keeps the text beside its ordered list, above or below the steps, with a warning. It used to drop it without a word.
 - A mermaid fence reads `title=` and `caption=` only as whole words, so `subtitle="…"` no longer becomes the diagram's label.
 - `QuoteBand` writes its quotes into the page with `<` escaped, so a quote holding `</script>` no longer ends the element that carries them.
+- A link inside a covered `Spoiler` can no longer be followed or reached with Tab: a press on it reveals the spoiler. The first press used to follow the link at once, and Tab went into the covered text.
 
 ## [1.2.0] - 2026-11-05
 

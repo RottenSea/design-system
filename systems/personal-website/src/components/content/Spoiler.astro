@@ -43,7 +43,11 @@ const {
   class DsSpoiler extends HTMLElement {
     connectedCallback() {
       if (this.hasAttribute("data-revealed")) return;
+      // A covered link can be neither followed nor tabbed to; the first press only reveals.
+      const covered = [...this.children];
+      for (const element of covered) element.inert = true;
       const reveal = () => {
+        for (const element of covered) element.inert = false;
         this.setAttribute("data-revealed", "");
         this.setAttribute("aria-expanded", "true");
         this.removeAttribute("role");
@@ -92,10 +96,14 @@ const {
     padding: var(--space-sm);
   }
 
-  /* Links and code inside keep their own colours, so they are covered too. */
+  /*
+   * Links and code inside keep their own colours, so they are covered too. A press on a covered
+   * link lands on the spoiler, which reveals it, and does not follow the link.
+   */
   .ds-spoiler:not([data-revealed]) :global(*) {
     color: inherit;
     background: transparent;
+    pointer-events: none;
   }
 
   .ds-spoiler[data-revealed] {
