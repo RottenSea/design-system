@@ -13,23 +13,12 @@ hero:
 
 import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
-## Docs spec
-
-The [Design System Doc Spec (DSDS)](https://designsystemdocspec.org/) is a specification for documenting a design system: which parts its documentation has, what a page about a token, a theme or a component says, and where each fact comes from. It points to other standards for the facts themselves: DTCG for tokens and themes, WCAG and the ARIA Authoring Practices for accessibility, Semantic Versioning for releases.
-
-This site's docs spec is a summary of DSDS and those standards, written for the systems in this repository. Every system's docs follow it, and where the summary and a standard disagree, the standard wins.
-
 <CardGrid>
-  <LinkCard title="Docs spec" description="Structure, tokens, themes, components, guidelines, accessibility, versioning and writing." href="./spec/" />
-</CardGrid>
-
-## Design systems
-
-A design system is the shared set of decisions a product is built from. Its tokens hold the values (colours, type, spacing, motion) as data; its styles and components put them to use; its guidelines say when to use what. A site installs it as a package instead of restating those decisions in its own code.
-
-Each system here has its own section: what it is for and how to install it, its foundations with values read from its token files, and its components with live examples.
-
-<CardGrid>
+  <LinkCard
+    title="Docs spec"
+    description="The docs spec drawn from DSDS and related standards: structure, tokens, themes, components, guidelines, accessibility, versioning and writing."
+    href="./spec/"
+  />
   <LinkCard
     title="Personal website"
     description="The system behind The Key of Urala, a personal blog: warm cream surfaces, one brand colour, and the components its pages and posts use."
